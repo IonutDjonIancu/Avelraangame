@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Service_Delegators</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
+    <ProjectReference Include="..\Independent Modules\Independent Modules.csproj" />
+    <ProjectReference Include="..\Persistance Manager\Persistance Manager.csproj" />
+  </ItemGroup>
+
+</Project>

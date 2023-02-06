@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="FluentAssertions.Json" Version="6.1.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit.Extension.NUnitProjectLoader" Version="3.7.1" />
+    <PackageReference Include="NUnit.Runners" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avelraangame\Avelraangame.csproj" />
+    <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
+    <ProjectReference Include="..\Independent Modules\Independent Modules.csproj" />
+    <ProjectReference Include="..\Persistance Manager\Persistance Manager.csproj" />
+    <ProjectReference Include="..\Service Delegators\Service Delegators.csproj" />
+  </ItemGroup>
+
+</Project>
