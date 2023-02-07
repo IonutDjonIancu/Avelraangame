@@ -252,9 +252,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UpdateCharacter(charUpdate, request.PlayerName);
+            var character = factory.ServiceFactory.CharacterService.UpdateCharacter(charUpdate, playerId);
 
             return Ok(character);
         }
@@ -271,9 +271,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            factory.ServiceFactory.CharacterService.DeleteCharacter(characterId, request.PlayerName);
+            factory.ServiceFactory.CharacterService.DeleteCharacter(characterId, playerId);
 
             return Ok("Character deleted");
         }

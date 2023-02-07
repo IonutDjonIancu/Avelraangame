@@ -1,4 +1,6 @@
-﻿using Data_Mapping_Containers.Dtos;
+﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
 
 namespace Service_Delegators;
@@ -14,7 +16,7 @@ public class CharacterMetadata
         dbm = databaseManager;
     }
 
-    internal Character GetCharacter(string playerId, string charId)
+    internal Character GetCharacter(string charId, string playerId)
     {
         return dbm.Snapshot.Players!.Find(p => p.Identity.Id == playerId)!.Characters!.Find(c => c.Identity!.Id == charId)!;
     }
@@ -23,5 +25,5 @@ public class CharacterMetadata
     {
         return dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Exists(c => c.Identity.Id == charId);
     }
-
 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

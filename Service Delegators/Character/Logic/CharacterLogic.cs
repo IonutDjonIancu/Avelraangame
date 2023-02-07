@@ -36,6 +36,7 @@ internal class CharacterLogic
 
         var stub = new CharacterStub
         {
+            PlayerId = playerId,
             EntityLevel = entityLevel,
             StatPoints = RandomizeStatPoints(entityLevel),
             SkillPoints = RandomizeSkillPoints(entityLevel),
@@ -90,7 +91,10 @@ internal class CharacterLogic
 
     internal Character UpdateCharacter(CharacterUpdate charUpdate, string playerId)
     {
-        var oldChar = metadata.GetCharacter(playerId, charUpdate.CharacterId);
+        var oldChar = metadata.GetCharacter(charUpdate.CharacterId, playerId);
+
+        // name
+        oldChar.Info.Name = charUpdate.Name;
 
         // stats
         var newCharStats = CharacterOperations.SumStats(charUpdate.Doll);
@@ -110,6 +114,7 @@ internal class CharacterLogic
         var oldCharSkills = CharacterOperations.SumSkills(oldChar.Doll);
         var skillPointsLeft = oldCharSkills + oldChar.LevelUp.SkillPoints - newCharSkills;
 
+        oldChar.LevelUp.SkillPoints = skillPointsLeft;
         oldChar.Doll.Combat     = charUpdate.Doll.Combat;
         oldChar.Doll.Arcane     = charUpdate.Doll.Arcane;
         oldChar.Doll.Psionics   = charUpdate.Doll.Psionics;

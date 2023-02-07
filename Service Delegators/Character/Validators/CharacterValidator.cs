@@ -1,4 +1,6 @@
-﻿using Data_Mapping_Containers.Dtos;
+﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Validators;
 using Persistance_Manager;
 
@@ -41,9 +43,11 @@ public class CharacterValidator : ValidatorBase
         ValidateGuid(charUpdate.CharacterId);
         ValidateIfCharacterExists(playerId, charUpdate.CharacterId);
 
-        if      (charUpdate.HasChangesToName) ValidateName(charUpdate.Name);
-        else if (charUpdate.HasChangesToStats) ValidateCharacterStatsOnUpdate(charUpdate, playerId);
-        else if (charUpdate.HasChangesToSkills) ValidateCharacterSkillsOnUpdate(charUpdate, playerId);
+        var (hasChangesToName, hasChangesToStats, hasChangesToSkills) = DiscoverChangesAtUpdate(charUpdate, playerId);
+
+        if (hasChangesToName) ValidateName(charUpdate.Name);
+        if (hasChangesToStats) ValidateCharacterStatsOnUpdate(charUpdate, playerId);
+        if (hasChangesToSkills) ValidateCharacterSkillsOnUpdate(charUpdate, playerId);
     }
 
     public void ValidateCharacterOnDelete(string characterId, string playerId)
@@ -54,6 +58,43 @@ public class CharacterValidator : ValidatorBase
     }
 
     #region privates
+    private (bool name, bool stats, bool skills) DiscoverChangesAtUpdate(CharacterUpdate newChar, string playerId)
+    {
+        var oldChar = metadata.GetCharacter(newChar.CharacterId, playerId);
+        bool name = false;
+        bool stats = false;
+        bool skills = false;
+
+        if (newChar.Name != oldChar.Info.Name)
+        {
+            name = true;
+        }
+        if (newChar.Doll.Strength != oldChar.Doll.Strength ||
+            newChar.Doll.Constitution != oldChar.Doll.Constitution ||
+            newChar.Doll.Agility != oldChar.Doll.Agility ||
+            newChar.Doll.Willpower != oldChar.Doll.Willpower ||
+            newChar.Doll.Perception != oldChar.Doll.Perception ||
+            newChar.Doll.Abstract != oldChar.Doll.Abstract)
+        {
+            stats = true;
+        }
+        if (newChar.Doll.Combat != oldChar.Doll.Combat ||
+            newChar.Doll.Arcane != oldChar.Doll.Arcane ||
+            newChar.Doll.Psionics != oldChar.Doll.Psionics ||
+            newChar.Doll.Hide != oldChar.Doll.Hide ||
+            newChar.Doll.Traps != oldChar.Doll.Traps ||
+            newChar.Doll.Tactics != oldChar.Doll.Tactics ||
+            newChar.Doll.Social != oldChar.Doll.Social ||
+            newChar.Doll.Apothecary != oldChar.Doll.Apothecary ||
+            newChar.Doll.Travel != oldChar.Doll.Travel ||
+            newChar.Doll.Sail != oldChar.Doll.Sail)
+        {
+            skills = true;
+        }
+
+        return (name, stats, skills);
+    }
+
     private string ValidatePlayer(string playerName)
     {
         ValidateString(playerName);
@@ -65,31 +106,53 @@ public class CharacterValidator : ValidatorBase
         return player.Identity.Id;
     }
 
-    private void ValidateCharacterStatsOnUpdate(CharacterUpdate charUpdate, string playerId)
+    private void ValidateCharacterStatsOnUpdate(CharacterUpdate newChar, string playerId)
     {
-        ValidateObject(charUpdate.Doll);
-        var oldChar = dbm.Snapshot.Players!.Find(p => p.Identity.Id == playerId)!.Characters!.Find(c => c.Identity!.Id == charUpdate.CharacterId);
+        ValidateObject(newChar.Doll);
+        var oldChar = dbm.Snapshot.Players!.Find(p => p.Identity.Id == playerId)!.Characters!.Find(c => c.Identity!.Id == newChar.CharacterId);
 
-        var sumOfStats = CharacterOperations.SumStats(charUpdate.Doll!);
+        // do not allow decrease of stats
+        if (newChar.Doll.Strength < oldChar.Doll.Strength ||
+            newChar.Doll.Constitution < oldChar.Doll.Constitution ||
+            newChar.Doll.Agility < oldChar.Doll.Agility ||
+            newChar.Doll.Willpower < oldChar.Doll.Willpower ||
+            newChar.Doll.Perception < oldChar.Doll.Perception ||
+            newChar.Doll.Abstract < oldChar.Doll.Abstract)
+        {
+            Throw("Cannot decrease stats.");
+        }
+
+        var sumOfStats = CharacterOperations.SumStats(newChar.Doll!);
         var sumOfOldStats = CharacterOperations.SumStats(oldChar!.Doll!) + oldChar.LevelUp!.StatPoints;
 
-        if (sumOfStats > sumOfOldStats) Throw("Number of requested stat points is greater than the stored.");
+        if (sumOfStats > sumOfOldStats) Throw("No stat points.");
     }
 
-    private void ValidateCharacterSkillsOnUpdate(CharacterUpdate charUpdate, string playerId)
+    private void ValidateCharacterSkillsOnUpdate(CharacterUpdate newChar, string playerId)
     {
-        ValidateObject(charUpdate.Doll);
-        var oldChar = dbm.Snapshot.Players!.Find(p => p.Identity.Id == playerId)!.Characters!.Find(c => c.Identity!.Id == charUpdate.CharacterId);
+        ValidateObject(newChar.Doll);
+        var oldChar = dbm.Snapshot.Players!.Find(p => p.Identity.Id == playerId)!.Characters!.Find(c => c.Identity!.Id == newChar.CharacterId);
 
-        var sumOfSkills = CharacterOperations.SumSkills(charUpdate.Doll!);
+        // do not allow decrease of skills
+        if (newChar.Doll.Combat < oldChar.Doll.Combat ||
+            newChar.Doll.Arcane < oldChar.Doll.Arcane ||
+            newChar.Doll.Psionics < oldChar.Doll.Psionics ||
+            newChar.Doll.Hide < oldChar.Doll.Hide ||
+            newChar.Doll.Traps < oldChar.Doll.Traps ||
+            newChar.Doll.Tactics < oldChar.Doll.Tactics ||
+            newChar.Doll.Social < oldChar.Doll.Social ||
+            newChar.Doll.Apothecary < oldChar.Doll.Apothecary ||
+            newChar.Doll.Travel < oldChar.Doll.Travel ||
+            newChar.Doll.Sail < oldChar.Doll.Sail)
+        {
+            Throw("Cannot decrease skills.");
+        }
+
+        var sumOfSkills = CharacterOperations.SumSkills(newChar.Doll!);
         var sumOfOldSkills = CharacterOperations.SumSkills(oldChar!.Doll!) + oldChar.LevelUp!.SkillPoints;
 
-        if (sumOfSkills > sumOfOldSkills) Throw("Number of requested skill points is greater than the stored.");
+        if (sumOfSkills > sumOfOldSkills) Throw("No skills points.");
     }
-
-    
-
-    
 
     private void ValidateIfCharacterExists(string playerId, string characterId)
     {
@@ -140,3 +203,5 @@ public class CharacterValidator : ValidatorBase
     }
     #endregion
 }
+
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
