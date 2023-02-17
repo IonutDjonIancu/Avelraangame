@@ -38,11 +38,11 @@ public class CharacterService : ICharacterService
         return logic.SaveStub(origins, playerId);
     }
 
-    public Character UpdateCharacter(CharacterUpdate charUpdate, string playerId)
+    public Character UpdateCharacterName(CharacterUpdate charUpdate, string playerId)
     {
-        validator.ValidateCharacterOnUpdate(charUpdate, playerId);
+        validator.ValidateCharacterOnNameUpdate(charUpdate, playerId);
 
-        return logic.UpdateCharacter(charUpdate, playerId);
+        return logic.ChangeName(charUpdate, playerId);
     }
 
     public void DeleteCharacter(string characterId, string playerId)

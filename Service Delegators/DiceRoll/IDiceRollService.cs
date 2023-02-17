@@ -5,6 +5,7 @@ namespace Service_Delegators;
 public interface IDiceRollService
 {
     public int Roll_d20(bool hasReroll = false);
+    public int Roll_d100(bool hasReroll = false);
 
     public int Roll_dX(int n);
 

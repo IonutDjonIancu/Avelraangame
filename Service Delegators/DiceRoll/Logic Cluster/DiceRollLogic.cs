@@ -29,6 +29,24 @@ internal class DiceRollLogic
         return totalRoll;
     }
 
+    internal int Roll1d100WithReroll(int roll = 0)
+    {
+        var handRoll = random.Next(1, 101);
+        var totalRoll = roll + handRoll;
+
+        if (handRoll > 95)
+        {
+            totalRoll = Roll1d100WithReroll(totalRoll);
+        }
+
+        return totalRoll;
+    }
+
+    internal int Roll1d100NoReroll()
+    {
+        return random.Next(1, 101);
+    }
+
     internal int Roll1dNnoReroll(int upperLimit)
     {
         return random.Next(1, upperLimit + 1);

@@ -246,15 +246,15 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Character/UpdateCharacter
-    [HttpPut("Character/UpdateCharacter")]
-    public IActionResult UpdateCharacter([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
+    // PUT: /api/palantir/Character/UpdateCharacterName
+    [HttpPut("Character/UpdateCharacterName")]
+    public IActionResult UpdateCharacterName([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UpdateCharacter(charUpdate, playerId);
+            var character = factory.ServiceFactory.CharacterService.UpdateCharacterName(charUpdate, playerId);
 
             return Ok(character);
         }

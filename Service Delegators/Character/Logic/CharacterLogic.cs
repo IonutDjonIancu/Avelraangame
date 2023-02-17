@@ -62,14 +62,10 @@ internal class CharacterLogic
 
             Info = info,
 
-            HasLevelUp = true,
-            LevelUp = new CharacterLevelUp
-            {
-                StatPoints = stub.StatPoints,
-                SkillPoints = stub.SkillPoints
-            },
+            HasLevelUp = false,
+            LevelUp = new CharacterLevelUp(),
 
-            Doll = SetPaperDoll(info),
+            Doll = SetPaperDoll(info, stub.StatPoints, stub.SkillPoints),
             Traits = new List<CharacterTrait>(),
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
@@ -89,48 +85,12 @@ internal class CharacterLogic
         return character;
     }
 
-    internal Character UpdateCharacter(CharacterUpdate charUpdate, string playerId)
+    internal Character ChangeName(CharacterUpdate charUpdate, string playerId)
     {
         var oldChar = metadata.GetCharacter(charUpdate.CharacterId, playerId);
 
-        // name
         oldChar.Info.Name = charUpdate.Name;
-
-        // stats
-        var newCharStats = CharacterOperations.SumStats(charUpdate.Doll);
-        var oldCharStats = CharacterOperations.SumStats(oldChar.Doll);
-        var statPointsLeft = oldCharStats + oldChar.LevelUp.StatPoints - newCharStats;
         
-        oldChar.LevelUp.StatPoints = statPointsLeft;
-        oldChar.Doll.Strength       = charUpdate.Doll.Strength;
-        oldChar.Doll.Constitution   = charUpdate.Doll.Constitution;
-        oldChar.Doll.Agility        = charUpdate.Doll.Agility;
-        oldChar.Doll.Willpower      = charUpdate.Doll.Willpower;
-        oldChar.Doll.Perception     = charUpdate.Doll.Perception;
-        oldChar.Doll.Abstract       = charUpdate.Doll.Abstract;
-
-        // skills
-        var newCharSkills = CharacterOperations.SumSkills(charUpdate.Doll);
-        var oldCharSkills = CharacterOperations.SumSkills(oldChar.Doll);
-        var skillPointsLeft = oldCharSkills + oldChar.LevelUp.SkillPoints - newCharSkills;
-
-        oldChar.LevelUp.SkillPoints = skillPointsLeft;
-        oldChar.Doll.Combat     = charUpdate.Doll.Combat;
-        oldChar.Doll.Arcane     = charUpdate.Doll.Arcane;
-        oldChar.Doll.Psionics   = charUpdate.Doll.Psionics;
-        oldChar.Doll.Hide       = charUpdate.Doll.Hide;
-        oldChar.Doll.Traps      = charUpdate.Doll.Traps;
-        oldChar.Doll.Tactics    = charUpdate.Doll.Tactics;
-        oldChar.Doll.Social     = charUpdate.Doll.Social;
-        oldChar.Doll.Apothecary = charUpdate.Doll.Apothecary;
-        oldChar.Doll.Travel     = charUpdate.Doll.Travel;
-        oldChar.Doll.Sail       = charUpdate.Doll.Sail;
-        
-        if (statPointsLeft == 0 && skillPointsLeft == 0)
-        {
-            oldChar.HasLevelUp = false;
-        }
-
         dbm.Persist();
 
         return oldChar;
@@ -171,15 +131,15 @@ internal class CharacterLogic
         return roll * entityLevel;
     }
 
-    private static CharacterPaperDoll SetPaperDoll(CharacterInfo info)
+    private CharacterPaperDoll SetPaperDoll(CharacterInfo info, int statPoints, int skillPoints)
     {
-        if      (info.Race == CharactersLore.Races.Human) return SetDollForHuman(info);
+        if      (info.Race == CharactersLore.Races.Human) return SetDollForHuman(info, statPoints, skillPoints);
         else if (info.Race == CharactersLore.Races.Elf) return SetDollForElf(info);
         else if (info.Race == CharactersLore.Races.Dwarf) return SetDollForDwarf(info);
         else    throw new NotImplementedException();
     }
 
-    private static CharacterPaperDoll SetDollForHuman(CharacterInfo info)
+    private CharacterPaperDoll SetDollForHuman(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
@@ -208,6 +168,8 @@ internal class CharacterLogic
             //    character.Supplies.Add(item);
             //}
         }
+
+        humanPaperDoll = DistributeClassStatsAndSkills(humanPaperDoll, info.Class, statPoints, skillPoints);
 
         return humanPaperDoll;
     }
@@ -266,6 +228,131 @@ internal class CharacterLogic
         return dwarfPaperDoll;
     }
 
+    private CharacterPaperDoll DistributeClassStatsAndSkills(CharacterPaperDoll doll, string classes, int statPoints, int skillPoints)
+    {
+        if (classes == CharactersLore.Classes.Warrior) return SetClassForWarrior(doll, statPoints, skillPoints);
+
+        return doll;
+    }
+
+    private CharacterPaperDoll SetClassForWarrior(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    {
+        doll = ArrangeStats(doll, statPoints);
+        doll = ArrangeSkills(doll, skillPoints);
+
+        return doll;
+    }
+
+    private CharacterPaperDoll ArrangeSkills(CharacterPaperDoll doll, int skillPoints)
+    {
+        var mainSkills = new List<string>
+        {
+            CharactersLore.Skills.Combat,
+        };
+
+        var secondarySkills = new List<string>
+        {
+            CharactersLore.Skills.Tactics,
+            CharactersLore.Skills.Travel
+        };
+
+        while (skillPoints != 0)
+        {
+            var roll = dice.Roll_d100();
+            string chosenSkill;
+
+            if (roll <= 70)
+            {
+                var rollForStat = dice.Roll_dX(mainSkills.Count);
+                chosenSkill = mainSkills[rollForStat - 1];
+            }
+            else
+            {
+                var rollForStat = dice.Roll_dX(secondarySkills.Count);
+                chosenSkill = secondarySkills[rollForStat - 1];
+            }
+
+            if (chosenSkill == CharactersLore.Skills.Combat)
+            {
+                doll.Combat++;
+                skillPoints--;
+            }
+            else if (chosenSkill == CharactersLore.Skills.Tactics)
+            {
+                doll.Tactics++;
+                skillPoints--;
+            }
+            else if (chosenSkill == CharactersLore.Skills.Travel)
+            {
+                doll.Travel++;
+                skillPoints--;
+            }
+        }
+
+        return doll;
+    }
+
+    private CharacterPaperDoll ArrangeStats(CharacterPaperDoll doll, int statPoints)
+    {
+        var mainStats = new List<string>
+        {
+            CharactersLore.Stats.Strength,
+            CharactersLore.Stats.Constitution,
+            CharactersLore.Stats.Agility
+        };
+
+        var secondaryStats = new List<string>
+        {
+            CharactersLore.Stats.Willpower,
+            CharactersLore.Stats.Perception
+        };
+
+        while (statPoints != 0)
+        {
+            var roll = dice.Roll_d100();
+            string chosenStat;
+
+            if (roll <= 70)
+            {
+                var rollForStat = dice.Roll_dX(mainStats.Count);
+                chosenStat = mainStats[rollForStat - 1];
+            }
+            else
+            {
+                var rollForStat = dice.Roll_dX(secondaryStats.Count);
+                chosenStat = secondaryStats[rollForStat - 1];
+            }
+
+            if (chosenStat == CharactersLore.Stats.Strength) 
+            {
+                doll.Strength++;
+                statPoints--;
+            }
+            else if (chosenStat == CharactersLore.Stats.Constitution)
+            {
+                doll.Constitution++;
+                statPoints--;
+            }
+            else if (chosenStat == CharactersLore.Stats.Agility)
+            {
+                doll.Agility++;
+                statPoints--;
+            }
+            else if (chosenStat == CharactersLore.Stats.Willpower)
+            {
+                doll.Willpower++;
+                statPoints--;
+            }
+            else if (chosenStat == CharactersLore.Stats.Perception)
+            {
+                doll.Perception++;
+                statPoints--;
+            }
+        }
+
+        return doll;
+    }
+
     private List<Item> SetSupplies()
     {
         var roll = dice.Roll_dX(6);
@@ -307,6 +394,7 @@ internal class CharacterLogic
             Race = origins.Race,
             Culture = origins.Culture,
             Tradition = origins.Tradition,
+            Class = origins.Class,
 
             DateOfBirth = DateTime.Now.ToShortDateString(),
 

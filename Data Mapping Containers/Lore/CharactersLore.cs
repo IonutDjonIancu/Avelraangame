@@ -76,18 +76,34 @@ public class CharactersLore
         };
     }
 
+    public static class Classes
+    {
+        public static readonly string Warrior = "Warrior";
+        public static readonly string Spellcaster = "Spellcaster";
+        public static readonly string Psionist = "Psionist";
+        public static readonly string Merchant = "Merchant";
+        public static readonly string Adventurer = "Adventurer";
+        public static readonly string Apothecary = "Apothecary";
+        public static readonly string Scout = "Scout";
+
+        public static readonly List<string> All = new()
+        {
+            Warrior, Spellcaster, Psionist, Merchant, Adventurer, Apothecary, Scout
+        };
+    }
+
     public static class Stats
     {
         public static readonly string Strength = "Strength";
-        public static readonly string Endurance = "Endurance";
-        public static readonly string Resolve = "Resolve";
-        public static readonly string Athletics = "Athletics";
-        public static readonly string Awareness = "Awareness";
+        public static readonly string Constitution = "Constitution";
+        public static readonly string Agility = "Agility";
+        public static readonly string Willpower = "Willpower";
+        public static readonly string Perception = "Perception";
         public static readonly string Abstract = "Abstract";
 
         public static readonly List<string> All = new()
         {
-            Strength, Endurance, Resolve, Athletics, Awareness, Abstract
+            Strength, Constitution, Willpower, Agility, Perception, Abstract
         };
     }
 

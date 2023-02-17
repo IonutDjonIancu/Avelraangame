@@ -23,6 +23,18 @@ public class DiceRollService : IDiceRollService
         }
     }
 
+    public int Roll_d100(bool hasReroll = false)
+    {
+        if (hasReroll)
+        {
+            return logic.Roll1d100WithReroll();
+        }
+        else
+        {
+            return logic.Roll1d100NoReroll();
+        }
+    }
+
     public int Roll_dX(int x)
     {
         return logic.Roll1dNnoReroll(x);

@@ -125,14 +125,14 @@ internal class ItemEnchants
     private void IncreaseRandomStat(int amount, Item item)
     {
         var skillIndex = dice.Roll_dX(CharactersLore.Stats.All.Count) - 1;
-        var choseStat = CharactersLore.Stats.All[skillIndex];
+        var chosenStat = CharactersLore.Stats.All[skillIndex];
 
-        if      (choseStat == CharactersLore.Stats.Strength)    item.Doll.Strength += amount;
-        else if (choseStat == CharactersLore.Stats.Endurance)   item.Doll.Constitution += amount;
-        else if (choseStat == CharactersLore.Stats.Resolve)     item.Doll.Willpower += amount;
-        else if (choseStat == CharactersLore.Stats.Athletics)   item.Doll.Agility += amount;
-        else if (choseStat == CharactersLore.Stats.Awareness)   item.Doll.Perception += amount;
-        else  /*(choseStat == CharactersLore.Stats.Abstract)*/  item.Doll.Abstract += amount;
+        if      (chosenStat == CharactersLore.Stats.Strength)        item.Doll.Strength += amount;
+        else if (chosenStat == CharactersLore.Stats.Constitution)    item.Doll.Constitution += amount;
+        else if (chosenStat == CharactersLore.Stats.Willpower)       item.Doll.Willpower += amount;
+        else if (chosenStat == CharactersLore.Stats.Agility)         item.Doll.Agility += amount;
+        else if (chosenStat == CharactersLore.Stats.Perception)      item.Doll.Perception += amount;
+        else  /*(choseStat == CharactersLore.Stats.Abstract)*/      item.Doll.Abstract += amount;
     }
 
     private void IncreaseRandomAsset(int amount, Item item)
