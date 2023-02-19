@@ -3,7 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avelraangame", "Avelraangame\Avelraangame.csproj", "{B645CBA6-F3C4-4B73-A855-4F211B4F3AF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avelraangame", "Avelraangame\Avelraangame.csproj", "{B645CBA6-F3C4-4B73-A855-4F211B4F3AF8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Mapping Containers", "Data Mapping Containers\Data Mapping Containers.csproj", "{CDA0FB20-DF7C-4299-936B-8C76F42DDD06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Independent Modules", "Independent Modules\Independent Modules.csproj", "{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistance Manager", "Persistance Manager\Persistance Manager.csproj", "{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service Delegators", "Service Delegators\Service Delegators.csproj", "{BCC07B90-693E-4AAE-BF34-85A38CA2D561}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Test\Tests.csproj", "{D85430E7-C986-4A27-A5CB-896170974A84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C94287EB-A3A7-44E2-BB6E-B8EAFB033F35}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +30,26 @@ Global
 		{B645CBA6-F3C4-4B73-A855-4F211B4F3AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B645CBA6-F3C4-4B73-A855-4F211B4F3AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B645CBA6-F3C4-4B73-A855-4F211B4F3AF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDA0FB20-DF7C-4299-936B-8C76F42DDD06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDA0FB20-DF7C-4299-936B-8C76F42DDD06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDA0FB20-DF7C-4299-936B-8C76F42DDD06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDA0FB20-DF7C-4299-936B-8C76F42DDD06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85430E7-C986-4A27-A5CB-896170974A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85430E7-C986-4A27-A5CB-896170974A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85430E7-C986-4A27-A5CB-896170974A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85430E7-C986-4A27-A5CB-896170974A84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
