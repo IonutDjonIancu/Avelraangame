@@ -80,15 +80,16 @@ public class CharactersLore
     {
         public static readonly string Warrior = "Warrior";
         public static readonly string Spellcaster = "Spellcaster";
-        public static readonly string Psionist = "Psionist";
-        public static readonly string Merchant = "Merchant";
-        public static readonly string Adventurer = "Adventurer";
-        public static readonly string Apothecary = "Apothecary";
-        public static readonly string Scout = "Scout";
+        public static readonly string Hunter = "Hunter";
+        //public static readonly string Ranger = "Ranger";
+        //public static readonly string Merchant = "Merchant";
+        //public static readonly string Adventurer = "Adventurer";
+        //public static readonly string Apothecary = "Apothecary";
+        //public static readonly string Psionics = "Psionics";
 
         public static readonly List<string> All = new()
         {
-            Warrior, Spellcaster, Psionist, Merchant, Adventurer, Apothecary, Scout
+            Warrior, Spellcaster, Hunter, /*Merchant, Adventurer, Apothecary, Psionics*/
         };
     }
 

@@ -10,8 +10,8 @@ namespace Service_Delegators;
 public class CharacterService : ICharacterService
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterLogic logic;
     private readonly CharacterValidator validator;
+    private readonly CharacterLogic logic;
 
     public CharacterService(
         IDatabaseManager manager,
@@ -22,8 +22,8 @@ public class CharacterService : ICharacterService
 
         var metadata = new CharacterMetadata(dbm);
 
-        logic = new CharacterLogic(dbm, diceRollService, itemService, metadata);
         validator = new CharacterValidator(dbm, metadata);
+        logic = new CharacterLogic(dbm, diceRollService, itemService, metadata);
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
