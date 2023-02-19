@@ -147,9 +147,9 @@ internal class CharacterLogic
         return supplies;
     }
 
-    private static string SetFame(string culture)
+    private static string SetFame(string culture, string classes)
     {
-        return $"Known as the {culture}";
+        return $"Known as the {culture} {classes.ToLower()}";
     }
 
     private int SetWealth()
@@ -178,7 +178,7 @@ internal class CharacterLogic
 
             DateOfBirth = DateTime.Now.ToShortDateString(),
 
-            Fame = SetFame(origins.Culture),
+            Fame = SetFame(origins.Culture, origins.Class),
         };
     }
 
