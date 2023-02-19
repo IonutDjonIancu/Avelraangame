@@ -28,14 +28,14 @@ public class PlayerValidator : ValidatorBase
     public void ValidatePlayerOnCreate(string playerName)
     {
         ValidatePlayerName(playerName);
+        ValidatePlayersCount();
 
         if (dbm.Snapshot.Players!.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) Throw("Player already exists");
     }
 
-    public void ValidatePlayerExistsById(string id)
+    public void ValidatePlayersCount()
     {
-        ValidateGuid(id);
-        if (!dbm.Snapshot.Players!.Exists(p => p.Identity.Id == id)) Throw("Player not found");
+        if (dbm.Snapshot.Players!.Count >= 30) Throw("Player limit reached, please contact support.");
     }
 
     public void ValidatePlayerExistsByName(string name)
@@ -64,6 +64,6 @@ public class PlayerValidator : ValidatorBase
     public void ValidatePlayerName(string name)
     {
         ValidateString(name);
-        if (name.Length > 50) Throw($"Name {name} too long, 50 characters max.");
+        if (name.Length > 20) Throw($"Name {name} too long, 20 characters max.");
     }
 }
