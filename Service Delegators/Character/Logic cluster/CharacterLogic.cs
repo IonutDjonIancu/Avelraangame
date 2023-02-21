@@ -64,7 +64,6 @@ internal class CharacterLogic
 
             Info = info,
 
-            HasLevelUp = false,
             LevelUp = new CharacterLevelUp(),
 
             Doll = dollOperations.SetPaperDoll(info, stub.StatPoints, stub.SkillPoints),
