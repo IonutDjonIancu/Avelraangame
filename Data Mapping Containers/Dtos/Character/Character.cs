@@ -7,7 +7,6 @@ public class Character
     public CharacterIdentity? Identity { get; set; }
     public CharacterInfo? Info { get; set; }
 
-    public bool HasLevelUp { get; set; }
     public CharacterLevelUp? LevelUp { get; set; }
 
     public CharacterPaperDoll? Doll { get; set; }
