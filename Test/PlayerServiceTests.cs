@@ -1,105 +1,70 @@
-//namespace Tests;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
-//public class PlayerServiceTests : TestBase
-//{
-//    public PlayerServiceTests()
-//    {
-//        dbm.Snapshot.Players.Clear();
-//    }
+namespace Tests;
 
-//    [Theory]
-//    [Description("Test to create two players, and then retrieve them from the db.")]
-//    public void Created_players_should_be_in_db_test()
-//    {
-//        Request request_admin = new()
-//        {
-//            PlayerName = "iiancu85@gmail.com",
-//            Token = "12345"
-//        };
-//        Request request_noAdmin = new()
-//        {
-//            PlayerName = "someEmail@gmail.com",
-//            Token = "1234"
-//        };
+public class PlayerServiceTests : TestBase
+{
+    public PlayerServiceTests()
+    {
+        dbm.Snapshot.Players.Clear();
+    }
 
-//        playerService.AuthorizePlayer(request_admin);
-//        playerService.AuthorizePlayer(request_noAdmin);
+    [Theory]
+    [Description("Create player should exist in db.")]
+    public void Create_player_test()
+    {
+        var playerName = "john";
 
-//        var adminPlayer = dbm.Snapshot.Players.FirstOrDefault(p => p.Identity.Name == request_admin.PlayerName);
-//        adminPlayer.Should().NotBeNull();
-//        adminPlayer.Identity.Id.Should().NotBeNullOrWhiteSpace();
-//        adminPlayer.LastAction.Should().NotBeNullOrWhiteSpace();
-//        adminPlayer.Identity.Token.Should().NotBeNullOrWhiteSpace();
-//        adminPlayer.IsAdmin.Should().BeTrue();
+        var playerAuth = playerService.CreatePlayer(playerName);
 
-//        var normalPlayer = dbm.Snapshot.Players.FirstOrDefault(p => p.Identity.Name == request_noAdmin.PlayerName);
-//        normalPlayer.Should().NotBeNull();
-//        normalPlayer.Identity.Id.Should().NotBeNullOrWhiteSpace();
-//        normalPlayer.LastAction.Should().NotBeNullOrWhiteSpace();
-//        normalPlayer.Identity.Token.Should().NotBeNullOrWhiteSpace();
-//        normalPlayer.IsAdmin.Should().BeFalse();
-//    }
+        playerAuth.Should().NotBeNull();
+        playerAuth.SetupCode.Length.Should().BeGreaterThan(0);
+        playerAuth.SetupImage.Length.Should().BeGreaterThan(0);
 
-//    [Theory]
-//    [Description("Validate player properties before authorization process.")]
-//    public void Invalid_player_properties_should_throw_test()
-//    {
-//        Request request_noId =      new();
-//        Request request_noEmail =   new() { Token = "1234" };
-//        Request request_badEmail =  new() { PlayerName = "asdas", Token = "1234" };
-//        Request request_noToken =   new() { PlayerName = "asddas@gmail.com" };
+        dbm.Snapshot.Players.Count.Should().Be(1);
+    }
 
-//#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-//        Assert.Throws<Exception>(() => playerService.AuthorizePlayer(null));
-//#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-//        Assert.Throws<Exception>(() => playerService.AuthorizePlayer(request_noId));
-//        Assert.Throws<Exception>(() => playerService.AuthorizePlayer(request_noEmail));
-//        Assert.Throws<Exception>(() => playerService.AuthorizePlayer(request_badEmail));
-//        Assert.Throws<Exception>(() => playerService.AuthorizePlayer(request_noToken));
-//    }
+    [Theory]
+    [Description("Wrong player name should throw.")]
+    public void Create_player_with_wrong_name_test()
+    {
+        dbm.Snapshot.Players.Clear();
+        var playerNameEmpty = " ";
+        var playerNameTooLong = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-//    [Theory]
-//    [Description("Update player will modify the existing one in the db snapshot.")]
-//    public void Update_player_modifies_the_existing_one_test()
-//    {
-//        var email = "test@gmail.com";
-//        var token = "1234";
-//        var newName = "new name";
+        Assert.Throws<Exception>(() => playerService.CreatePlayer(playerNameEmpty));
+        Assert.Throws<Exception>(() => playerService.CreatePlayer(playerNameTooLong));
+        dbm.Snapshot.Players.Count.Should().Be(0);
+    }
 
-//        Request request = new() { PlayerName = email, Token = token };
+    [Theory]
+    [Description("Same player name should throw.")]
+    public void Create_player_with_same_name_test()
+    {
+        dbm.Snapshot.Players.Clear();
+        var playerName = "aaa";
 
-//        playerService.AuthorizePlayer(request);
+        playerService.CreatePlayer(playerName);
+        dbm.Snapshot.Players.Count.Should().Be(1);
+        Assert.Throws<Exception>(() => playerService.CreatePlayer(playerName));
+    }
 
-//        PlayerUpdate playerUpdate = new()
-//        {
-//            Name = newName,
-//        };
+    [Theory]
+    [Description("Creating more players than the limit should throw.")]
+    public void Create_too_many_players_test()
+    {
+        dbm.Snapshot.Players.Clear();
 
-//        playerService.UpdatePlayerName(playerUpdate);
+        var index = 1;
 
-//        var player = dbm.Snapshot.Players.FirstOrDefault(p => p.Identity.Name == email);
+        for (int i = 0; i < 30; i++)
+        {
+            var playerName = $"aaa{index}";
+            playerService.CreatePlayer(playerName);
+            index++;
+        }
 
-//        player.Identity.Name.Should().Be(newName);
-//    }
-
-//    [Theory]
-//    [Description("Deleting a player should remove the player.")]
-//    public void Delete_player_should_remove_it_test()
-//    {
-//        var email = "test@gmail.com";
-//        var token = "1234";
-
-//        Request request = new() { PlayerName = email, Token = token };
-
-//        playerService.AuthorizePlayer(request);
-
-//        var numberOfPlayersBeforeDelete = dbm.Snapshot.Players.Count;
-
-//        var player = dbm.Snapshot.Players.FirstOrDefault(p => p.Identity.Name == email);
-//        dbm.Snapshot.Players.Remove(player);
-
-//        var numberOfPlayersAfterDelete = dbm.Snapshot.Players.Count;
-
-//        numberOfPlayersAfterDelete.Should().BeLessThan(numberOfPlayersBeforeDelete);
-//    }
-//}
+        Assert.Throws<Exception>(() => playerService.CreatePlayer("bbb"));
+    }
+}
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
