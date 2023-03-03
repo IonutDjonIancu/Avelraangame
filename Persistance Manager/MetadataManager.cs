@@ -21,6 +21,16 @@ public class MetadataManager
         mailingModule = new MailingModule(dbm.info.AvelraanEmail, dbm.info.AvelraanPassword);
     }
 
+    public Player? GetPlayerById(string id)
+    {
+        return dbm.Snapshot.Players.Find(p => p.Identity.Id == id);
+    }
+
+    public Player? GetPlayerByName(string name)
+    {
+        return dbm.Snapshot.Players.Find(p => p.Identity.Name == name);
+    }
+
     public bool IsPlayerBanned(string playerEmail)
     {
         return dbm.info.Banned.Contains(playerEmail);

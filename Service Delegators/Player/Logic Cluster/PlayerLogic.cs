@@ -34,7 +34,8 @@ internal class PlayerLogic
         };
 
         dbm.Snapshot.Players!.Add(player);
-        dbm.Persist();
+
+        dbm.PersistPlayer(player);
 
         var (imageUrl, code) = authModule.GenerateSetupCode(player.Identity.Id, player.Identity.Name);
 
@@ -56,7 +57,9 @@ internal class PlayerLogic
         if (isValid)
         {
             player.Identity.Token = Guid.NewGuid().ToString();
-            dbm.Persist();
+            player.LastAction = DateTime.Now.ToShortDateString();
+
+            dbm.PersistPlayer(player);
         }
         else
         {
@@ -73,7 +76,9 @@ internal class PlayerLogic
         if (player != null)
         {
             dbm.Snapshot.Players!.Remove(player);
-            dbm.Persist();
+
+            dbm.PersistPlayer(player, true);
+
             return true;
         } else
         {

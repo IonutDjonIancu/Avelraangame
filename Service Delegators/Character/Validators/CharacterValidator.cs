@@ -19,6 +19,13 @@ public class CharacterValidator : ValidatorBase
         this.metadata = metadata;
     }
 
+    public void ValidateMaxNumberOfCharacters(string playerId)
+    {
+        var playerCharsCount = dbm.Metadata.GetPlayerById(playerId).Characters.Count;
+
+        if (playerCharsCount >= 5) Throw("Max number of characters reached (5 characters allowed per player)");
+    }
+
     public void ValidateOriginsOnSaveCharacter(CharacterOrigins origins, string playerId)
     {
         ValidateObject(origins);

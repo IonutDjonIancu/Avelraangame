@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
 
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
@@ -28,6 +27,8 @@ public class CharacterService : ICharacterService
 
     public CharacterStub CreateCharacterStub(string playerId)
     {
+        validator.ValidateMaxNumberOfCharacters(playerId);
+
         return logic.CreateStub(playerId);
     }
 
@@ -52,11 +53,16 @@ public class CharacterService : ICharacterService
         logic.DeleteCharacter(characterId, playerId);
     }
 
-    public List<Character> GetCharacters(string playerName)
+    public Characters GetCharacters(string playerName)
     {
-        return dbm.Snapshot.Players.Find(p => p.Identity.Name == playerName).Characters;
+        var player = dbm.Metadata.GetPlayerByName(playerName);
+
+        return new Characters
+        {
+            Count = player.Characters.Count,
+            CharactersList = player.Characters
+        };
     }
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8603 // Possible null reference return.

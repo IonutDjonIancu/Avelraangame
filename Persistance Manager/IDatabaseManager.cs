@@ -8,5 +8,7 @@ namespace Persistance_Manager
         DatabaseSnapshot Snapshot { get; set; }
 
         void Persist();
+
+        void PersistPlayer(Player player, bool toRemove = false);
     }
 }
