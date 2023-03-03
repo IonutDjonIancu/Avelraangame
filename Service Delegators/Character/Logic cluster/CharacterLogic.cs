@@ -80,8 +80,10 @@ internal class CharacterLogic
 
         dbm.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
 
-        dbm.Snapshot.Players!.Find(p => p.Identity.Id == playerId)!.Characters!.Add(character);
-        dbm.Persist();
+        var player = dbm.Metadata.GetPlayerById(playerId); 
+        player.Characters!.Add(character);
+
+        dbm.PersistPlayer(player);
 
         return character;
     }
@@ -91,20 +93,22 @@ internal class CharacterLogic
         var oldChar = metadata.GetCharacter(charUpdate.CharacterId, playerId);
 
         oldChar.Info.Name = charUpdate.Name;
+
+        var player = dbm.Metadata.GetPlayerById(playerId);
         
-        dbm.Persist();
+        dbm.PersistPlayer(player);
 
         return oldChar;
     }
 
     internal void DeleteCharacter(string characterId, string playerId)
     {
-        var player = dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId);
+        var player = dbm.Metadata.GetPlayerById(playerId);
         var character = player.Characters.Find(c => c.Identity.Id == characterId);
 
         player.Characters.Remove(character);
-
-        dbm.Persist();
+        
+        dbm.PersistPlayer(player);
     }
 
     #region privates

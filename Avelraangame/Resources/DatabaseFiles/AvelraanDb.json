@@ -1,33 +1,6 @@
 {
   "DbDate": "2023-02-19T21:38:31.2962837+01:00",
-  "Players": [
-    {
-      "Identity": {
-        "Id": "1fb41539-5f60-4493-b285-652dca655480",
-        "Name": "djon",
-        "Token": "9b798fe8-9629-4ae6-a42b-3a503f7cac0d"
-      },
-      "LastAction": "1/21/2023",
-      "IsAdmin": false,
-      "Characters": []
-    },
-    {
-      "Identity": {
-        "Id": "0e92aa67-1412-4228-9bf9-2659057a2085",
-        "Name": "djon2",
-        "Token": "61405059-fa69-48a1-b06e-fe313b8e53d0"
-      },
-      "LastAction": "1/21/2023",
-      "IsAdmin": false,
-      "Characters": [
-      ]
-    }
-  ],
-  "Characters": null,
-  "CharacterStubs": [
-  ],
-  "Items": [
-  ],
-  "Traits": [
-  ]
+  "CharacterStubs": [],
+  "Items": [],
+  "Traits": []
 }

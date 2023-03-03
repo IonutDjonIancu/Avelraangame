@@ -10,5 +10,5 @@ public interface ICharacterService
     Character UpdateCharacterName(CharacterUpdate charUpdate, string playerId);
     void DeleteCharacter(string characterId, string playerId);
 
-    List<Character> GetCharacters(string playerName);   
+    Characters GetCharacters(string playerName);   
 }

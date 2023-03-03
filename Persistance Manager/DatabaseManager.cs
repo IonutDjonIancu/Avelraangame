@@ -38,11 +38,15 @@ public class DatabaseManager : IDatabaseManager
         info.DbPath = $"{Directory.GetCurrentDirectory()}{dbmconfig.DbPath}";
         validate.FileAtPath(info.DbPath);
 
+        validate.ValidateString(dbmconfig.DbPlayersPath);
+        info.DbPlayersPath = $"{Directory.GetCurrentDirectory()}{dbmconfig.DbPlayersPath}";
+        info.PlayerFilePaths = UploadPlayerFilePaths(info.DbPlayersPath);
+
         validate.ValidateString(dbmconfig.LogPath);
         info.LogPath = $"{Directory.GetCurrentDirectory()}{dbmconfig.LogPath}";
         validate.FileAtPath(info.LogPath);
 
-        Snapshot = CreateDatabaseSnapshot(info.DbPath);
+        Snapshot = CreateDatabaseSnapshot(info);
         Metadata = new MetadataManager(this);
     }
 
@@ -55,7 +59,62 @@ public class DatabaseManager : IDatabaseManager
         await SaveDatabaseSnapshot();
     }
 
+    public async void PersistPlayer(Player player, bool toRemove = false)
+    {
+        if (player == null) throw new Exception("Unable to find player");
+
+        if (toRemove)
+        {
+            RemovePlayerSnapshot(player.Identity.Id);
+        }
+        else
+        {
+            await SavePlayerSnapshot(player);
+        }
+    }
+
     #region privates
+    private static List<string> UploadPlayerFilePaths(string dbPlayersPath)
+    {
+        return Directory.GetFiles(dbPlayersPath).ToList();
+    }
+
+    private void RemovePlayerSnapshot(string playerId, int tries = 0)
+    {
+        validate.TriesLimit(tries);
+
+        try
+        {
+            tries++;
+            var path = $"{info.DbPlayersPath}\\Player{playerId}.json";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task SavePlayerSnapshot(Player player, int tries = 0)
+    {
+        var playerJson = JsonConvert.SerializeObject(Snapshot.Players.Find(p => p.Identity.Id == player.Identity.Id)) ?? throw new Exception("Could not serialize player object from snapshot.");
+        
+        try
+        {
+            tries++;
+            var path = $"{info.DbPlayersPath}\\Player{player.Identity.Id}.json";
+            await File.WriteAllTextAsync(path, playerJson);
+        }
+        catch (Exception)
+        {
+            Thread.Sleep(300);
+            await SavePlayerSnapshot(player, tries);
+        }
+    }
+
     private async Task SaveDatabaseSnapshot(int tries = 0)
     {
         validate.TriesLimit(tries);
@@ -75,11 +134,33 @@ public class DatabaseManager : IDatabaseManager
         }
     }
 
-    private static DatabaseSnapshot CreateDatabaseSnapshot(string path)
+    private static DatabaseSnapshot CreateDatabaseSnapshot(DatabaseManagerInfo dbmInfo)
     {
-        var text = File.ReadAllText(path);
+        var snapshot = new DatabaseSnapshot()
+        {
+            DbDate = DateTime.Now,
+            Players = ReadPlayerFiles(dbmInfo.PlayerFilePaths),
+            CharacterStubs = new List<CharacterStub>(),
+            Items = new List<Item>(),
+            Traits = new List<CharacterTrait>()
+        };
 
-        return JsonConvert.DeserializeObject<DatabaseSnapshot>(text);
+        return snapshot;
     }
+
+    private static List<Player> ReadPlayerFiles(List<string> paths)
+    {
+        var list = new List<Player>();
+
+        foreach (var path in paths)
+        {
+            var text = File.ReadAllText(path);
+            var player = JsonConvert.DeserializeObject<Player>(text);
+            list.Add(player);
+        }
+
+        return list;
+    }
+
     #endregion
 }

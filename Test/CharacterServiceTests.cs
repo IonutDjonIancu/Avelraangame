@@ -128,7 +128,8 @@ public class CharacterServiceTests : TestBase
 
         var characters = charService.GetCharacters(playerName);
 
-        characters.Should().NotContain(character);
+        characters.CharactersList.Should().NotContain(character);
+        characters.Count.Should().Be(0);
     }
 
     #region privates
