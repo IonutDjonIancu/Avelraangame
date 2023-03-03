@@ -17,6 +17,14 @@ public class AppSettingsConfigManager : IAppSettingsConfigManager
         }
     }
 
+    public string DbPlayers
+    {
+        get
+        {
+            return _configuration["AppSettings:DbPlayersPath"];
+        }
+    }
+
     public string DbTestPath
     {
         get
