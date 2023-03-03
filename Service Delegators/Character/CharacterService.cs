@@ -63,6 +63,15 @@ public class CharacterService : ICharacterService
             CharactersList = player.Characters
         };
     }
+
+    public Character IncreaseCharacterStats(CharacterUpdate charUpdate, string playerId)
+    {
+        validator.ValidateObject(charUpdate);
+        validator.ValidateGuid(charUpdate.CharacterId);
+        validator.ValidateStatsToDistribute(charUpdate.CharacterId, playerId);
+
+        return logic.IncreaseStats(charUpdate, playerId);
+    }
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

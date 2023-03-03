@@ -9,14 +9,21 @@ namespace Service_Delegators.Validators;
 public class CharacterValidator : ValidatorBase
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterMetadata metadata;
+    private readonly CharacterMetadata charMetadata;
 
     public CharacterValidator(
         IDatabaseManager manager,
         CharacterMetadata metadata)
     {
         dbm = manager;
-        this.metadata = metadata;
+        this.charMetadata = metadata;
+    }
+
+    public void ValidateStatsToDistribute(string charId, string playerId)
+    {
+        var statPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.StatPoints;
+
+        if (statPoints <= 0) Throw("No stat points to distribute.");
     }
 
     public void ValidateMaxNumberOfCharacters(string playerId)
@@ -58,7 +65,7 @@ public class CharacterValidator : ValidatorBase
     #region privates
     private void ValidateIfCharacterExists(string playerId, string characterId)
     {
-        if (!metadata.DoesCharacterExist(playerId, characterId)) Throw("Character not found.");
+        if (!charMetadata.DoesCharacterExist(playerId, characterId)) Throw("Character not found.");
     }
 
     private void ValidateRaceCultureCombination(CharacterOrigins sublore)

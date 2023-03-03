@@ -283,6 +283,27 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/IncreasesCharacterStats
+    [HttpPut("Character/IncreasesCharacterStats")]
+    public IActionResult IncreasesCharacterStats([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.IncreaseCharacterStats(charUpdate, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+
     #endregion
 
     #region privates

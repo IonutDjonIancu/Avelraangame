@@ -12,7 +12,7 @@ internal class CharacterLogic
     private readonly IDatabaseManager dbm;
     private readonly IDiceRollService dice;
     private readonly IItemService itemService;
-    private readonly CharacterMetadata metadata;
+    private readonly CharacterMetadata charMetadata;
     private readonly CharacterDollOperations dollOperations;
 
     private CharacterLogic() { }
@@ -21,12 +21,12 @@ internal class CharacterLogic
         IDatabaseManager databaseManager,
         IDiceRollService diceRollService,
         IItemService itemService,
-        CharacterMetadata metadata)
+        CharacterMetadata charMetadata)
     {
         dbm = databaseManager;
         dice = diceRollService;
         this.itemService = itemService;
-        this.metadata = metadata;
+        this.charMetadata = charMetadata;
         dollOperations = new CharacterDollOperations(dice);
     }
 
@@ -90,7 +90,7 @@ internal class CharacterLogic
 
     internal Character ChangeName(CharacterUpdate charUpdate, string playerId)
     {
-        var oldChar = metadata.GetCharacter(charUpdate.CharacterId, playerId);
+        var oldChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
 
         oldChar.Info.Name = charUpdate.Name;
 
@@ -109,6 +109,53 @@ internal class CharacterLogic
         player.Characters.Remove(character);
         
         dbm.PersistPlayer(player);
+    }
+
+    internal Character IncreaseStats(CharacterUpdate charUpdate, string playerId)
+    {
+        var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+
+        if (charUpdate.Stat == CharactersLore.Stats.Strength)
+        {
+            storedChar.LevelUp.StatPoints--;
+            storedChar.Doll.Strength++;
+        }
+        else if (charUpdate.Stat == CharactersLore.Stats.Constitution)
+        {
+            storedChar.LevelUp.StatPoints--;
+            storedChar.Doll.Constitution++;
+        }
+        else if (charUpdate.Stat == CharactersLore.Stats.Agility)
+        {
+            storedChar.LevelUp.StatPoints--;
+            storedChar.Doll.Agility++;
+        }
+        else if (charUpdate.Stat == CharactersLore.Stats.Willpower)
+        {
+            storedChar.LevelUp.StatPoints--;
+            storedChar.Doll.Willpower++;
+        }
+        else if (charUpdate.Stat == CharactersLore.Stats.Perception)
+        {
+            storedChar.LevelUp.StatPoints--;
+            storedChar.Doll.Perception++;
+        }
+        else if (charUpdate.Stat == CharactersLore.Stats.Abstract)
+        {
+            storedChar.LevelUp.StatPoints--;
+            storedChar.Doll.Abstract++;
+        }
+        else
+        {
+            throw new Exception("Unrecognized stat.");
+        }
+
+        var player = dbm.Metadata.GetPlayerById(playerId);
+
+        Thread.Sleep(100);
+        dbm.PersistPlayer(player);
+
+        return storedChar;
     }
 
     #region privates

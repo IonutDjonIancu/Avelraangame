@@ -4,4 +4,5 @@ public class CharacterUpdate
 {
     public string CharacterId { get; set; }
     public string Name { get; set; }
+    public string Stat { get; set; }
 }
