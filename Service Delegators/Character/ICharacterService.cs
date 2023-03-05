@@ -7,11 +7,8 @@ public interface ICharacterService
     CharacterStub CreateCharacterStub(string playerId);
     Character SaveCharacterStub(CharacterOrigins origins, string playerId);
 
-    Character UpdateCharacterName(CharacterUpdate charUpdate, string playerId);
+    Character UpdateCharacter(CharacterUpdate charUpdate, string playerId);
     void DeleteCharacter(string characterId, string playerId);
-
-    Character IncreaseCharacterStats(CharacterUpdate charUpdate, string playerId);
-
 
     Characters GetCharacters(string playerName);   
 }

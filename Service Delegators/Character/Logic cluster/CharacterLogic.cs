@@ -111,45 +111,46 @@ internal class CharacterLogic
         dbm.PersistPlayer(player);
     }
 
+    internal Character IncreaseSkills(CharacterUpdate charUpdate, string playerId)
+    {
+        var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+
+        if      (charUpdate.Skill == CharactersLore.Skills.Combat) storedChar.Doll.Combat++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Arcane) storedChar.Doll.Arcane++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Psionics) storedChar.Doll.Psionics++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Hide) storedChar.Doll.Hide++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Traps) storedChar.Doll.Traps++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Tactics) storedChar.Doll.Tactics++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Social) storedChar.Doll.Social++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Apothecary) storedChar.Doll.Apothecary++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Travel) storedChar.Doll.Travel++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Sail) storedChar.Doll.Sail++;
+        else throw new Exception("Unrecognized skill.");
+        
+        storedChar.LevelUp.SkillPoints--;
+
+        var player = dbm.Metadata.GetPlayerById(playerId);
+
+        Thread.Sleep(100);
+        dbm.PersistPlayer(player);
+
+        return storedChar;
+    }
+
     internal Character IncreaseStats(CharacterUpdate charUpdate, string playerId)
     {
         var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
 
-        if (charUpdate.Stat == CharactersLore.Stats.Strength)
-        {
-            storedChar.LevelUp.StatPoints--;
-            storedChar.Doll.Strength++;
-        }
-        else if (charUpdate.Stat == CharactersLore.Stats.Constitution)
-        {
-            storedChar.LevelUp.StatPoints--;
-            storedChar.Doll.Constitution++;
-        }
-        else if (charUpdate.Stat == CharactersLore.Stats.Agility)
-        {
-            storedChar.LevelUp.StatPoints--;
-            storedChar.Doll.Agility++;
-        }
-        else if (charUpdate.Stat == CharactersLore.Stats.Willpower)
-        {
-            storedChar.LevelUp.StatPoints--;
-            storedChar.Doll.Willpower++;
-        }
-        else if (charUpdate.Stat == CharactersLore.Stats.Perception)
-        {
-            storedChar.LevelUp.StatPoints--;
-            storedChar.Doll.Perception++;
-        }
-        else if (charUpdate.Stat == CharactersLore.Stats.Abstract)
-        {
-            storedChar.LevelUp.StatPoints--;
-            storedChar.Doll.Abstract++;
-        }
-        else
-        {
-            throw new Exception("Unrecognized stat.");
-        }
+        if      (charUpdate.Stat == CharactersLore.Stats.Strength) storedChar.Doll.Strength++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Constitution) storedChar.Doll.Constitution++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Agility) storedChar.Doll.Agility++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Willpower) storedChar.Doll.Willpower++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Perception) storedChar.Doll.Perception++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Abstract) storedChar.Doll.Abstract++;
+        else throw new Exception("Unrecognized stat.");
 
+        storedChar.LevelUp.StatPoints--;
+        
         var player = dbm.Metadata.GetPlayerById(playerId);
 
         Thread.Sleep(100);

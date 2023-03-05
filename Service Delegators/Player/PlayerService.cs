@@ -36,10 +36,11 @@ public class PlayerService : IPlayerService
         return token!;
     }
 
-    public bool DeletePlayer(string playerName)
+    public bool DeletePlayer(string playerId)
     {
-        validator.ValidatePlayerExistsByName(playerName);
+        var name = dbm.Metadata.GetPlayerById(playerId)!.Identity.Name;
+        validator.ValidatePlayerExistsByName(name);
 
-        return logic.RemovePlayer(playerName);
+        return logic.RemovePlayer(playerId);
     }
 }

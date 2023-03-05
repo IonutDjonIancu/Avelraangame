@@ -246,15 +246,15 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Character/UpdateCharacterName
-    [HttpPut("Character/UpdateCharacterName")]
-    public IActionResult UpdateCharacterName([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
+    // PUT: /api/palantir/Character/UpdateCharacter
+    [HttpPut("Character/UpdateCharacter")]
+    public IActionResult UpdateCharacter([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UpdateCharacterName(charUpdate, playerId);
+            var character = factory.ServiceFactory.CharacterService.UpdateCharacter(charUpdate, playerId);
 
             return Ok(character);
         }
@@ -283,27 +283,6 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
-    // PUT: /api/palantir/Character/IncreasesCharacterStats
-    [HttpPut("Character/IncreasesCharacterStats")]
-    public IActionResult IncreasesCharacterStats([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
-
-            var character = factory.ServiceFactory.CharacterService.IncreaseCharacterStats(charUpdate, playerId);
-
-            return Ok(character);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-
     #endregion
 
     #region privates
