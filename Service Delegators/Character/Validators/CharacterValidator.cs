@@ -3,20 +3,37 @@
 using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Validators;
 using Persistance_Manager;
+using static Data_Mapping_Containers.Dtos.CharactersLore;
 
 namespace Service_Delegators.Validators;
 
 public class CharacterValidator : ValidatorBase
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterMetadata metadata;
+    private readonly CharacterMetadata charMetadata;
 
     public CharacterValidator(
         IDatabaseManager manager,
-        CharacterMetadata metadata)
+        CharacterMetadata charMetadata)
     {
         dbm = manager;
-        this.metadata = metadata;
+        this.charMetadata = charMetadata;
+    }
+
+    public void ValidateSkillsToDistribute(string charId, string skill, string playerId)
+    {
+        var skillPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.SkillPoints;
+
+        if (skillPoints <= 0) Throw("No skill points to distribute.");
+        if (!Skills.All.Contains(skill)) Throw($"Unable to determine skill name: {skill}.");
+    }
+
+    public void ValidateStatsToDistribute(string charId, string stat, string playerId)
+    {
+        var statPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.StatPoints;
+
+        if (statPoints <= 0) Throw("No stat points to distribute.");
+        if (!Stats.All.Contains(stat)) Throw($"Unable to determine stat name: {stat}.");
     }
 
     public void ValidateMaxNumberOfCharacters(string playerId)
@@ -58,49 +75,49 @@ public class CharacterValidator : ValidatorBase
     #region privates
     private void ValidateIfCharacterExists(string playerId, string characterId)
     {
-        if (!metadata.DoesCharacterExist(playerId, characterId)) Throw("Character not found.");
+        if (!charMetadata.DoesCharacterExist(playerId, characterId)) Throw("Character not found.");
     }
 
     private void ValidateRaceCultureCombination(CharacterOrigins sublore)
     {
         string message = "Invalid race culture combination";
 
-        if (sublore.Race == CharactersLore.Races.Human)
+        if (sublore.Race == Races.Human)
         {
-            if (!CharactersLore.Cultures.Human.All.Contains(sublore.Culture)) Throw(message);
+            if (!Cultures.Human.All.Contains(sublore.Culture)) Throw(message);
         }
-        else if (sublore.Race == CharactersLore.Races.Elf)
+        else if (sublore.Race == Races.Elf)
         {
-            if (!CharactersLore.Cultures.Elf.All.Contains(sublore.Culture)) Throw(message);
+            if (!Cultures.Elf.All.Contains(sublore.Culture)) Throw(message);
         }
-        else if (sublore.Race == CharactersLore.Races.Dwarf)
+        else if (sublore.Race == Races.Dwarf)
         {
-            if (!CharactersLore.Cultures.Dwarf.All.Contains(sublore.Culture)) Throw(message);
+            if (!Cultures.Dwarf.All.Contains(sublore.Culture)) Throw(message);
         }
     }
 
     private void ValidateClass(string classes)
     {
         ValidateString(classes, "Invalid class.");
-        if (!CharactersLore.Classes.All.Contains(classes)) Throw($"Invalid class {classes}.");
+        if (!Classes.All.Contains(classes)) Throw($"Invalid class {classes}.");
     }
 
     private void ValidateTradition(string tradition)
     {
         ValidateString(tradition, "Invalid tradition.");
-        if (!CharactersLore.Traditions.All.Contains(tradition)) Throw($"Invalid tradition {tradition}.");
+        if (!Traditions.All.Contains(tradition)) Throw($"Invalid tradition {tradition}.");
     }
 
     private void ValidateCulture(string culture)
     {
         ValidateString(culture, "Invalid culture.");
-        if (!CharactersLore.Cultures.All.Contains(culture)) Throw($"Invalid culture {culture}");
+        if (!Cultures.All.Contains(culture)) Throw($"Invalid culture {culture}");
     }
 
     private void ValidateRace(string race)
     {
         ValidateString(race, "Invalid race.");
-        if (!CharactersLore.Races.All.Contains(race)) Throw($"Invalid race {race}");
+        if (!Races.All.Contains(race)) Throw($"Invalid race {race}");
     }
 
     private void ValidateName(string name)
