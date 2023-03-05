@@ -12,7 +12,7 @@ internal class CharacterLogic
     private readonly IDatabaseManager dbm;
     private readonly IDiceRollService dice;
     private readonly IItemService itemService;
-    private readonly CharacterMetadata metadata;
+    private readonly CharacterMetadata charMetadata;
     private readonly CharacterDollOperations dollOperations;
 
     private CharacterLogic() { }
@@ -21,12 +21,12 @@ internal class CharacterLogic
         IDatabaseManager databaseManager,
         IDiceRollService diceRollService,
         IItemService itemService,
-        CharacterMetadata metadata)
+        CharacterMetadata charMetadata)
     {
         dbm = databaseManager;
         dice = diceRollService;
         this.itemService = itemService;
-        this.metadata = metadata;
+        this.charMetadata = charMetadata;
         dollOperations = new CharacterDollOperations(dice);
     }
 
@@ -90,7 +90,7 @@ internal class CharacterLogic
 
     internal Character ChangeName(CharacterUpdate charUpdate, string playerId)
     {
-        var oldChar = metadata.GetCharacter(charUpdate.CharacterId, playerId);
+        var oldChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
 
         oldChar.Info.Name = charUpdate.Name;
 
@@ -109,6 +109,54 @@ internal class CharacterLogic
         player.Characters.Remove(character);
         
         dbm.PersistPlayer(player);
+    }
+
+    internal Character IncreaseSkills(CharacterUpdate charUpdate, string playerId)
+    {
+        var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+
+        if      (charUpdate.Skill == CharactersLore.Skills.Combat) storedChar.Doll.Combat++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Arcane) storedChar.Doll.Arcane++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Psionics) storedChar.Doll.Psionics++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Hide) storedChar.Doll.Hide++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Traps) storedChar.Doll.Traps++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Tactics) storedChar.Doll.Tactics++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Social) storedChar.Doll.Social++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Apothecary) storedChar.Doll.Apothecary++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Travel) storedChar.Doll.Travel++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Sail) storedChar.Doll.Sail++;
+        else throw new Exception("Unrecognized skill.");
+        
+        storedChar.LevelUp.SkillPoints--;
+
+        var player = dbm.Metadata.GetPlayerById(playerId);
+
+        Thread.Sleep(100);
+        dbm.PersistPlayer(player);
+
+        return storedChar;
+    }
+
+    internal Character IncreaseStats(CharacterUpdate charUpdate, string playerId)
+    {
+        var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+
+        if      (charUpdate.Stat == CharactersLore.Stats.Strength) storedChar.Doll.Strength++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Constitution) storedChar.Doll.Constitution++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Agility) storedChar.Doll.Agility++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Willpower) storedChar.Doll.Willpower++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Perception) storedChar.Doll.Perception++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Abstract) storedChar.Doll.Abstract++;
+        else throw new Exception("Unrecognized stat.");
+
+        storedChar.LevelUp.StatPoints--;
+        
+        var player = dbm.Metadata.GetPlayerById(playerId);
+
+        Thread.Sleep(100);
+        dbm.PersistPlayer(player);
+
+        return storedChar;
     }
 
     #region privates

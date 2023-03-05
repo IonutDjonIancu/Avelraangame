@@ -7,5 +7,5 @@ public interface IPlayerService
 {
     Authenticator CreatePlayer(string playerName);
     string LoginPlayer(PlayerLogin login);
-    bool DeletePlayer(string playerName);
+    bool DeletePlayer(string playerId);
 }

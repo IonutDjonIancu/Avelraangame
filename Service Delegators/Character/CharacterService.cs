@@ -39,11 +39,12 @@ public class CharacterService : ICharacterService
         return logic.SaveStub(origins, playerId);
     }
 
-    public Character UpdateCharacterName(CharacterUpdate charUpdate, string playerId)
+    public Character UpdateCharacter(CharacterUpdate charUpdate, string playerId)
     {
-        validator.ValidateCharacterOnNameUpdate(charUpdate, playerId);
-
-        return logic.ChangeName(charUpdate, playerId);
+        if      (!string.IsNullOrWhiteSpace(charUpdate.Name)) return ModifyName(charUpdate, playerId);
+        else if (!string.IsNullOrWhiteSpace(charUpdate.Stat)) return ModifyStats(charUpdate, playerId);
+        else if (!string.IsNullOrWhiteSpace(charUpdate.Skill)) return ModifySkills(charUpdate, playerId);
+        else throw new Exception("No changes detected on character update.");
     }
 
     public void DeleteCharacter(string characterId, string playerId)
@@ -63,6 +64,34 @@ public class CharacterService : ICharacterService
             CharactersList = player.Characters
         };
     }
+
+    #region privates
+    private Character ModifyName(CharacterUpdate charUpdate, string playerId)
+    {
+        validator.ValidateCharacterOnNameUpdate(charUpdate, playerId);
+
+        return logic.ChangeName(charUpdate, playerId);
+    }
+
+    private Character ModifyStats(CharacterUpdate charUpdate, string playerId)
+    {
+        validator.ValidateObject(charUpdate);
+        validator.ValidateGuid(charUpdate.CharacterId);
+        validator.ValidateStatsToDistribute(charUpdate.CharacterId, charUpdate.Stat, playerId);
+
+        return logic.IncreaseStats(charUpdate, playerId);
+    }
+
+    private Character ModifySkills(CharacterUpdate charUpdate, string playerId)
+    {
+        validator.ValidateObject(charUpdate);
+        validator.ValidateGuid(charUpdate.CharacterId);
+        validator.ValidateSkillsToDistribute(charUpdate.CharacterId, charUpdate.Skill, playerId);
+
+        return logic.IncreaseSkills(charUpdate, playerId);
+    }
+    #endregion
 }
+
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

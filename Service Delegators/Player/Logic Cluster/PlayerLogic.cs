@@ -69,9 +69,9 @@ internal class PlayerLogic
         return player.Identity.Token;
     }
 
-    internal bool RemovePlayer(string playerName)
+    internal bool RemovePlayer(string playerId)
     {
-        var player = dbm.Snapshot.Players!.FirstOrDefault(p => p.Identity.Name == playerName);
+        var player = dbm.Snapshot.Players!.FirstOrDefault(p => p.Identity.Id == playerId);
 
         if (player != null)
         {
