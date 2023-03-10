@@ -1,5 +1,7 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 
 using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Pocos;
@@ -152,11 +154,108 @@ internal class CharacterLogic
         storedChar.LevelUp.StatPoints--;
         
         var player = dbm.Metadata.GetPlayerById(playerId);
-
+        
         Thread.Sleep(100);
         dbm.PersistPlayer(player);
 
         return storedChar;
+    }
+
+    internal Character UnequipItem(CharacterEquip unequip, string playerId)
+    {
+        var chr = charMetadata.GetCharacter(unequip.CharacterId, playerId);
+        Item item;
+
+        if (unequip.Location == CharactersLore.Equipment.Head)
+        {
+            item = chr.Inventory.Head;
+            chr.Inventory.Head = null;
+        }
+        else if (unequip.Location == CharactersLore.Equipment.Body)
+        {
+            item = chr.Inventory.Body;
+            chr.Inventory.Body = null;
+        }
+        else if (unequip.Location == CharactersLore.Equipment.Mainhand)
+        {
+            item = chr.Inventory.Mainhand;
+            chr.Inventory.Mainhand = null;
+        }
+        else if (unequip.Location == CharactersLore.Equipment.Offhand)
+        {
+            item = chr.Inventory.Offhand;
+            chr.Inventory.Offhand = null;
+        }
+        else if (unequip.Location == CharactersLore.Equipment.Ranged)
+        {
+            item = chr.Inventory.Ranged;
+            chr.Inventory.Ranged = null;
+        }
+        else if (unequip.Location == CharactersLore.Equipment.Serviceweapon)
+        {
+            item = chr.Inventory.Serviceweapon;
+            chr.Inventory.Serviceweapon = null;
+        }
+        else
+        {
+            item = chr.Inventory.Heraldry.Find(i => i.Identity.Id == unequip.CharacterId);
+            chr.Inventory.Heraldry.Remove(item);
+        }
+
+        chr.Supplies.Add(item);
+
+        Thread.Sleep(100);
+        dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
+
+        return chr;
+    }
+
+    internal Character EquipItem(CharacterEquip equip, string playerId)
+    {
+        var chr = charMetadata.GetCharacter(equip.CharacterId, playerId);
+        var item = chr.Supplies.Find(i => i.Identity.Id == equip.ItemId);
+
+        if (equip.Location == CharactersLore.Equipment.Head)
+        {
+            if (chr.Inventory.Head != null) UnequipItem(equip, playerId);
+            chr.Inventory.Head = item;
+        }
+        else if (equip.Location == CharactersLore.Equipment.Body)
+        {
+            if (chr.Inventory.Body != null) UnequipItem(equip, playerId);
+            chr.Inventory.Body = item;
+        }
+        else if (equip.Location == CharactersLore.Equipment.Mainhand)
+        {
+            if (chr.Inventory.Mainhand != null) UnequipItem(equip, playerId);
+            chr.Inventory.Mainhand = item;
+        }
+        else if (equip.Location == CharactersLore.Equipment.Offhand)
+        {
+            if (chr.Inventory.Offhand != null) UnequipItem(equip, playerId);
+            chr.Inventory.Offhand = item;
+        }
+        else if (equip.Location == CharactersLore.Equipment.Ranged)
+        {
+            if (chr.Inventory.Ranged != null) UnequipItem(equip, playerId);
+            chr.Inventory.Ranged = item;
+        }
+        else if (equip.Location == CharactersLore.Equipment.Serviceweapon)
+        {
+            if (chr.Inventory.Serviceweapon != null) UnequipItem(equip, playerId);
+            chr.Inventory.Serviceweapon = item;
+        }
+        else if (equip.Location == CharactersLore.Equipment.Heraldry)
+        {
+            chr.Inventory.Heraldry.Add(item);
+        }
+
+        chr.Supplies.Remove(item);
+
+        Thread.Sleep(100);
+        dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
+
+        return chr;
     }
 
     #region privates
@@ -237,5 +336,7 @@ internal class CharacterLogic
 }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
 

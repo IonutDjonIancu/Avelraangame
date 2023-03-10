@@ -78,8 +78,11 @@ internal class ItemLogic
     {
         return new()
         {
-            Id = Guid.NewGuid().ToString(),
-            CharacterId = "",
+            Identity = new ItemIdentity
+            {
+                Id = Guid.NewGuid().ToString(),
+                CharacterId = "",
+            }
         };
     }
 

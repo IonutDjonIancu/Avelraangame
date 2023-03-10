@@ -4,8 +4,7 @@ namespace Data_Mapping_Containers.Dtos;
 
 public class Item
 {
-    public string Id { get; set; }
-    public string CharacterId { get; set; }
+    public ItemIdentity Identity { get; set; }
 
     public string Name { get; set; }
 

@@ -31,6 +31,71 @@ public class ItemsLore
         };
     }
 
+    public static class Equipment
+    {
+        public static readonly List<string> HeadAll = new()
+        {
+            Subtypes.Protections.Helmet
+        };
+
+        public static readonly List<string> BodyAll = new()
+        {
+            Subtypes.Protections.Armour
+        };
+
+        public static readonly List<string> MainhandAll = new()
+        {
+            Subtypes.Protections.Shield,
+            Subtypes.Weapons.Sword,
+            Subtypes.Weapons.Pike,
+            Subtypes.Weapons.Crossbow,
+            Subtypes.Weapons.Polearm,
+            Subtypes.Weapons.Mace,
+            Subtypes.Weapons.Axe,
+            Subtypes.Weapons.Dagger,
+            Subtypes.Weapons.Spear
+        };
+
+        public static readonly List<string> OffhandAll = new()
+        {
+            Subtypes.Protections.Shield,
+            Subtypes.Weapons.Sword,
+            Subtypes.Weapons.Pike,
+            Subtypes.Weapons.Crossbow,
+            Subtypes.Weapons.Polearm,
+            Subtypes.Weapons.Mace,
+            Subtypes.Weapons.Axe,
+            Subtypes.Weapons.Dagger,
+            Subtypes.Weapons.Spear
+        };
+
+        public static readonly List<string> RangedAll = new()
+        {
+            Subtypes.Weapons.Crossbow,
+            Subtypes.Weapons.Axe,
+            Subtypes.Weapons.Dagger,
+            Subtypes.Weapons.Bow,
+            Subtypes.Weapons.Sling,
+            Subtypes.Weapons.Spear
+        };
+
+        public static readonly List<string> ServiceweaponAll = new()
+        {
+            Subtypes.Weapons.Dagger,
+            Subtypes.Weapons.Sword,
+            Subtypes.Weapons.Mace,
+            Subtypes.Weapons.Axe
+        };
+
+        public static readonly List<string> HeraldryAll = new()
+        {
+            Subtypes.Weapons.Dagger,
+            Subtypes.Wealth.Gems,
+            Subtypes.Wealth.Valuables,
+            Subtypes.Wealth.Trinket
+        };
+    }
+
     public static class Subtypes
     {
         public static class Weapons

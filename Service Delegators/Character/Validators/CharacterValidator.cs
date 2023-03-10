@@ -3,7 +3,6 @@
 using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Validators;
 using Persistance_Manager;
-using static Data_Mapping_Containers.Dtos.CharactersLore;
 
 namespace Service_Delegators.Validators;
 
@@ -25,7 +24,7 @@ public class CharacterValidator : ValidatorBase
         var skillPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.SkillPoints;
 
         if (skillPoints <= 0) Throw("No skill points to distribute.");
-        if (!Skills.All.Contains(skill)) Throw($"Unable to determine skill name: {skill}.");
+        if (!CharactersLore.Skills.All.Contains(skill)) Throw($"Unable to determine skill name: {skill}.");
     }
 
     public void ValidateStatsToDistribute(string charId, string stat, string playerId)
@@ -33,7 +32,7 @@ public class CharacterValidator : ValidatorBase
         var statPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.StatPoints;
 
         if (statPoints <= 0) Throw("No stat points to distribute.");
-        if (!Stats.All.Contains(stat)) Throw($"Unable to determine stat name: {stat}.");
+        if (!CharactersLore.Stats.All.Contains(stat)) Throw($"Unable to determine stat name: {stat}.");
     }
 
     public void ValidateMaxNumberOfCharacters(string playerId)
@@ -72,6 +71,133 @@ public class CharacterValidator : ValidatorBase
         ValidateIfCharacterExists(playerId, characterId);
     }
 
+    public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, string playerId, bool isEquip)
+    {
+        ValidateObject(equip);
+        ValidateGuid(equip.CharacterId);
+        ValidateGuid(equip.ItemId);
+        ValidateIfCharacterExists(playerId, equip.CharacterId);
+        ValidateString(equip.Location);
+        if (!CharactersLore.Equipment.All.Contains(equip.Location)) Throw("Equipment location does not fit any possible slot in inventory.");
+
+        if (!isEquip) return;
+        
+        var chr = charMetadata.GetCharacter(equip.CharacterId, playerId);
+        var itemSubtype = chr.Supplies.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
+        if (itemSubtype == null) Throw("No such item found on this character.");
+
+        var isItemAtCorrectLocation = false;
+
+        if (itemSubtype == ItemsLore.Subtypes.Protections.Helmet)
+        {
+            isItemAtCorrectLocation = 
+                CharactersLore.Equipment.Head.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Protections.Armour)
+        {
+            isItemAtCorrectLocation = 
+                CharactersLore.Equipment.Body.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Protections.Shield)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Axe)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Ranged.Equals(equip.Location) ||
+                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Bow)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Ranged.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Crossbow)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Ranged.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Dagger)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Ranged.Equals(equip.Location) ||
+                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location) ||
+                CharactersLore.Equipment.Heraldry.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Mace)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Pike)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Polearm)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sling)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Ranged.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Spear)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Ranged.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
+                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Wealth.Gems ||
+            itemSubtype == ItemsLore.Subtypes.Wealth.Valuables ||
+            itemSubtype == ItemsLore.Subtypes.Wealth.Trinket)
+        {
+            isItemAtCorrectLocation =
+                CharactersLore.Equipment.Heraldry.Equals(equip.Location);
+
+            if (chr.Inventory.Heraldry.Count >= 5)
+            {
+                Throw("Heraldry is full, unequip some of the items first.");
+            }
+        }
+        else
+        {
+            isItemAtCorrectLocation = false;
+        }
+
+        if (!isItemAtCorrectLocation) Throw("Unable to equip the item at said location.");
+    }
+
     #region privates
     private void ValidateIfCharacterExists(string playerId, string characterId)
     {
@@ -82,42 +208,42 @@ public class CharacterValidator : ValidatorBase
     {
         string message = "Invalid race culture combination";
 
-        if (sublore.Race == Races.Human)
+        if (sublore.Race == CharactersLore.Races.Human)
         {
-            if (!Cultures.Human.All.Contains(sublore.Culture)) Throw(message);
+            if (!CharactersLore.Cultures.Human.All.Contains(sublore.Culture)) Throw(message);
         }
-        else if (sublore.Race == Races.Elf)
+        else if (sublore.Race == CharactersLore.Races.Elf)
         {
-            if (!Cultures.Elf.All.Contains(sublore.Culture)) Throw(message);
+            if (!CharactersLore.Cultures.Elf.All.Contains(sublore.Culture)) Throw(message);
         }
-        else if (sublore.Race == Races.Dwarf)
+        else if (sublore.Race == CharactersLore.Races.Dwarf)
         {
-            if (!Cultures.Dwarf.All.Contains(sublore.Culture)) Throw(message);
+            if (!CharactersLore.Cultures.Dwarf.All.Contains(sublore.Culture)) Throw(message);
         }
     }
 
     private void ValidateClass(string classes)
     {
         ValidateString(classes, "Invalid class.");
-        if (!Classes.All.Contains(classes)) Throw($"Invalid class {classes}.");
+        if (!CharactersLore.Classes.All.Contains(classes)) Throw($"Invalid class {classes}.");
     }
 
     private void ValidateTradition(string tradition)
     {
         ValidateString(tradition, "Invalid tradition.");
-        if (!Traditions.All.Contains(tradition)) Throw($"Invalid tradition {tradition}.");
+        if (!CharactersLore.Traditions.All.Contains(tradition)) Throw($"Invalid tradition {tradition}.");
     }
 
     private void ValidateCulture(string culture)
     {
         ValidateString(culture, "Invalid culture.");
-        if (!Cultures.All.Contains(culture)) Throw($"Invalid culture {culture}");
+        if (!CharactersLore.Cultures.All.Contains(culture)) Throw($"Invalid culture {culture}");
     }
 
     private void ValidateRace(string race)
     {
         ValidateString(race, "Invalid race.");
-        if (!Races.All.Contains(race)) Throw($"Invalid race {race}");
+        if (!CharactersLore.Races.All.Contains(race)) Throw($"Invalid race {race}");
     }
 
     private void ValidateName(string name)

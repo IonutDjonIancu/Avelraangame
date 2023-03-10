@@ -11,4 +11,7 @@ public interface ICharacterService
     void DeleteCharacter(string characterId, string playerId);
 
     Characters GetCharacters(string playerName);   
+
+    Character EquipCharacterItem(CharacterEquip equip, string playerId);
+    Character UnequipCharacterItem(CharacterEquip unequip, string playerId);
 }

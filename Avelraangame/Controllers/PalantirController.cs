@@ -302,6 +302,44 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/EquipItem
+    [HttpPut("Character/EquipItem")]
+    public IActionResult EquipItem([FromQuery] Request request, [FromBody] CharacterEquip equip)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/UnEquipItem
+    [HttpPut("Character/UnEquipItem")]
+    public IActionResult UnEquipItem([FromQuery] Request request, [FromBody] CharacterEquip unequip)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region privates
