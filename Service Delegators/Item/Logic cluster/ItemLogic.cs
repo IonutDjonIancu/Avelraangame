@@ -46,6 +46,7 @@ internal class ItemLogic
 
         item.Type = new CultureInfo("en-US").TextInfo.ToTitleCase(type);
         item.Subtype = new CultureInfo("en-US").TextInfo.ToTitleCase(subtype);
+        item.InventoryLocations = classif.SetItemInventoryLocation(item.Subtype);
 
         try
         {
@@ -78,15 +79,18 @@ internal class ItemLogic
     {
         return new()
         {
-            Id = Guid.NewGuid().ToString(),
-            CharacterId = "",
+            Identity = new ItemIdentity
+            {
+                Id = Guid.NewGuid().ToString(),
+                CharacterId = "",
+            }
         };
     }
 
     private void ClassifyItem(Item item)
     {
         classif.SetItemLevelAndLevelName(item);
-        classif.SetItemTypeAndSubtype(item);
+        classif.SetItemTypeAndSubtypeAndInventoryLocations(item);
         classif.SetItemCategoryAndDescription(item);
     }
 
