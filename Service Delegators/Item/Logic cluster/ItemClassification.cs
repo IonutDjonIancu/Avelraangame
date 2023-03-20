@@ -108,6 +108,11 @@ internal class ItemClassification
             listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
             listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
+        else if (subtype == ItemsLore.Subtypes.Weapons.Spear)
+        {
+            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+        }
         // wealth
         else if (subtype == ItemsLore.Subtypes.Wealth.Gems)
         {

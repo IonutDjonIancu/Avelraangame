@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 
 using Data_Mapping_Containers.Dtos;
@@ -166,35 +165,35 @@ internal class CharacterLogic
         var chr = charMetadata.GetCharacter(unequip.CharacterId, playerId);
         Item item;
 
-        if (unequip.Location == CharactersLore.Equipment.Head)
+        if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Head)
         {
             item = chr.Inventory.Head;
             chr.Inventory.Head = null;
         }
-        else if (unequip.Location == CharactersLore.Equipment.Body)
+        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Body)
         {
             item = chr.Inventory.Body;
             chr.Inventory.Body = null;
         }
-        else if (unequip.Location == CharactersLore.Equipment.Mainhand)
+        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Shield)
+        {
+            item = chr.Inventory.Shield;
+            chr.Inventory.Shield = null;
+        }
+        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand)
         {
             item = chr.Inventory.Mainhand;
             chr.Inventory.Mainhand = null;
         }
-        else if (unequip.Location == CharactersLore.Equipment.Offhand)
+        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Offhand)
         {
             item = chr.Inventory.Offhand;
             chr.Inventory.Offhand = null;
         }
-        else if (unequip.Location == CharactersLore.Equipment.Ranged)
+        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Ranged)
         {
             item = chr.Inventory.Ranged;
             chr.Inventory.Ranged = null;
-        }
-        else if (unequip.Location == CharactersLore.Equipment.Serviceweapon)
-        {
-            item = chr.Inventory.Serviceweapon;
-            chr.Inventory.Serviceweapon = null;
         }
         else
         {
@@ -215,37 +214,37 @@ internal class CharacterLogic
         var chr = charMetadata.GetCharacter(equip.CharacterId, playerId);
         var item = chr.Supplies.Find(i => i.Identity.Id == equip.ItemId);
 
-        if (equip.Location == CharactersLore.Equipment.Head)
+        if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head)
         {
             if (chr.Inventory.Head != null) UnequipItem(equip, playerId);
             chr.Inventory.Head = item;
         }
-        else if (equip.Location == CharactersLore.Equipment.Body)
+        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Body)
         {
             if (chr.Inventory.Body != null) UnequipItem(equip, playerId);
             chr.Inventory.Body = item;
         }
-        else if (equip.Location == CharactersLore.Equipment.Mainhand)
+        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Shield)
+        {
+            if (chr.Inventory.Shield != null) UnequipItem(equip, playerId);
+            chr.Inventory.Shield = item;
+        }
+        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand)
         {
             if (chr.Inventory.Mainhand != null) UnequipItem(equip, playerId);
             chr.Inventory.Mainhand = item;
         }
-        else if (equip.Location == CharactersLore.Equipment.Offhand)
+        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand)
         {
             if (chr.Inventory.Offhand != null) UnequipItem(equip, playerId);
             chr.Inventory.Offhand = item;
         }
-        else if (equip.Location == CharactersLore.Equipment.Ranged)
+        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged)
         {
             if (chr.Inventory.Ranged != null) UnequipItem(equip, playerId);
             chr.Inventory.Ranged = item;
         }
-        else if (equip.Location == CharactersLore.Equipment.Serviceweapon)
-        {
-            if (chr.Inventory.Serviceweapon != null) UnequipItem(equip, playerId);
-            chr.Inventory.Serviceweapon = item;
-        }
-        else if (equip.Location == CharactersLore.Equipment.Heraldry)
+        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry)
         {
             chr.Inventory.Heraldry.Add(item);
         }
@@ -336,7 +335,6 @@ internal class CharacterLogic
 }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8604 // Possible null reference argument.
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
 

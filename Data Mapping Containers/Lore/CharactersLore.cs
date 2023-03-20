@@ -2,22 +2,6 @@
 
 public class CharactersLore
 {
-    public static class Equipment
-    {
-        public static readonly string Head = "Head";
-        public static readonly string Body = "Body";
-        public static readonly string Mainhand = "Mainhand";
-        public static readonly string Offhand = "Offhand";
-        public static readonly string Ranged = "Ranged";
-        public static readonly string Serviceweapon = "Serviceweapon";
-        public static readonly string Heraldry = "Heraldry";
-
-        public static readonly List<string> All = new()
-        {
-            Head, Body, Mainhand, Offhand, Ranged, Serviceweapon, Heraldry
-        };
-    }
-
     public static class Races
     {
         public static readonly string Human = "Human";

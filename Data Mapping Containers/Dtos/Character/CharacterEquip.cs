@@ -4,6 +4,5 @@ public class CharacterEquip
 {
     public string CharacterId { get; set; }
     public string ItemId { get; set; }
-    public string Location { get; set; }
-
+    public string InventoryLocation { get; set; }
 }

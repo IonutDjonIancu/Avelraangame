@@ -40,6 +40,11 @@ public class ItemsLore
         public static readonly string Shield = "Shield";
         public static readonly string Ranged = "Ranged";
         public static readonly string Heraldry = "Heraldry";
+
+        public static readonly List<string> All = new()
+        {
+            Head, Body, Mainhand, Offhand, Shield, Ranged, Heraldry
+        };
     }
 
     public static class Subtypes

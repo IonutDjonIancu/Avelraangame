@@ -71,119 +71,106 @@ public class CharacterValidator : ValidatorBase
         ValidateIfCharacterExists(playerId, characterId);
     }
 
-    public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, string playerId, bool isEquip)
+    public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, string playerId, bool toEquip)
     {
         ValidateObject(equip);
         ValidateGuid(equip.CharacterId);
         ValidateGuid(equip.ItemId);
         ValidateIfCharacterExists(playerId, equip.CharacterId);
-        ValidateString(equip.Location);
-        if (!CharactersLore.Equipment.All.Contains(equip.Location)) Throw("Equipment location does not fit any possible slot in inventory.");
+        ValidateString(equip.InventoryLocation);
+        if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) Throw("Equipment location does not fit any possible slot in inventory.");
 
-        if (!isEquip) return;
+        if (!toEquip) return;
         
         var chr = charMetadata.GetCharacter(equip.CharacterId, playerId);
         var itemSubtype = chr.Supplies.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
         if (itemSubtype == null) Throw("No such item found on this character.");
 
-        var isItemAtCorrectLocation = false;
+        bool isItemAtCorrectLocation;
 
+        // protection
         if (itemSubtype == ItemsLore.Subtypes.Protections.Helmet)
         {
-            isItemAtCorrectLocation = 
-                CharactersLore.Equipment.Head.Equals(equip.Location);
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Head;
         }
         else if (itemSubtype == ItemsLore.Subtypes.Protections.Armour)
         {
-            isItemAtCorrectLocation = 
-                CharactersLore.Equipment.Body.Equals(equip.Location);
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Body;
         }
         else if (itemSubtype == ItemsLore.Subtypes.Protections.Shield)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location);
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Shield;
         }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Axe)
+        //weapons
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Ranged.Equals(equip.Location) ||
-                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
-        }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Bow)
-        {
-            isItemAtCorrectLocation =
-                CharactersLore.Equipment.Ranged.Equals(equip.Location);
-        }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Crossbow)
-        {
-            isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Ranged.Equals(equip.Location);
-        }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Dagger)
-        {
-            isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Ranged.Equals(equip.Location) ||
-                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location) ||
-                CharactersLore.Equipment.Heraldry.Equals(equip.Location);
-        }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Mace)
-        {
-            isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand;
         }
         else if (itemSubtype == ItemsLore.Subtypes.Weapons.Pike)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location);
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand;
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Crossbow)
+        {
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
         }
         else if (itemSubtype == ItemsLore.Subtypes.Weapons.Polearm)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location);
+               equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand;
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Mace)
+        {
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand;
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Axe)
+        {
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Dagger)
+        {
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+        }
+        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Bow)
+        {
+            isItemAtCorrectLocation =
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
         }
         else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sling)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Ranged.Equals(equip.Location);
+               equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+               equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
         }
         else if (itemSubtype == ItemsLore.Subtypes.Weapons.Spear)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Ranged.Equals(equip.Location);
+               equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+               equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
         }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
-        {
-            isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
-        }
-        else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
-        {
-            isItemAtCorrectLocation =
-                CharactersLore.Equipment.Mainhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Offhand.Equals(equip.Location) ||
-                CharactersLore.Equipment.Serviceweapon.Equals(equip.Location);
-        }
+        // wealth
         else if (itemSubtype == ItemsLore.Subtypes.Wealth.Gems ||
             itemSubtype == ItemsLore.Subtypes.Wealth.Valuables ||
             itemSubtype == ItemsLore.Subtypes.Wealth.Trinket)
         {
             isItemAtCorrectLocation =
-                CharactersLore.Equipment.Heraldry.Equals(equip.Location);
+               equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry;
 
             if (chr.Inventory.Heraldry.Count >= 5)
             {
