@@ -4,8 +4,7 @@ namespace Data_Mapping_Containers.Dtos;
 
 public class Item
 {
-    public string Id { get; set; }
-    public string CharacterId { get; set; }
+    public ItemIdentity Identity { get; set; }
 
     public string Name { get; set; }
 
@@ -15,6 +14,7 @@ public class Item
     public string Subtype { get; set; }
     public string Quality { get; set; }
     public string Category { get; set; }
+    public List<string> InventoryLocations { get; set; }
     public string Description { get; set; }
     public string Lore { get; set; }
     public bool HasTaint { get; set; }

@@ -31,6 +31,22 @@ public class ItemsLore
         };
     }
 
+    public static class InventoryLocation
+    {
+        public static readonly string Head = "Head";
+        public static readonly string Body = "Body";
+        public static readonly string Mainhand = "Mainhand";
+        public static readonly string Offhand = "Offhand";
+        public static readonly string Shield = "Shield";
+        public static readonly string Ranged = "Ranged";
+        public static readonly string Heraldry = "Heraldry";
+
+        public static readonly List<string> All = new()
+        {
+            Head, Body, Mainhand, Offhand, Shield, Ranged, Heraldry
+        };
+    }
+
     public static class Subtypes
     {
         public static class Weapons
@@ -327,7 +343,7 @@ public class ItemsLore
 
         public static readonly Dictionary<string, string> Trinkets = new()
         {
-            { "Jewelry"       , "A small ornament or item of jewellery that is of little value." },
+            { "Jewelry"       , "A small ornament or item of jewellery that is of symbolic value." },
         };
 
         public static readonly Dictionary<string, string> Goods = new()

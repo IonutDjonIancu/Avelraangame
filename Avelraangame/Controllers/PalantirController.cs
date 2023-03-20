@@ -208,6 +208,25 @@ public class PalantirController : ControllerBase
         }
     }
 
+    // GET: /api/palantir/Character/GetCharacter
+    [HttpGet("Character/GetCharacter")]
+    public IActionResult GetCharacter([FromQuery] Request request, string characterId)
+    {
+        try
+        {
+            MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.GetCharacters(request.PlayerName).CharactersList.Find(c => c.Identity!.Id == characterId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
     // GET: /api/palantir/Character/CreateCharacter
     [HttpGet("Character/CreateCharacter")]
     public IActionResult CreateCharacter([FromQuery] Request request)
@@ -276,6 +295,44 @@ public class PalantirController : ControllerBase
             factory.ServiceFactory.CharacterService.DeleteCharacter(characterId, playerId);
 
             return Ok("Character deleted");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/EquipItem
+    [HttpPut("Character/EquipItem")]
+    public IActionResult EquipItem([FromQuery] Request request, [FromBody] CharacterEquip equip)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/UnEquipItem
+    [HttpPut("Character/UnEquipItem")]
+    public IActionResult UnEquipItem([FromQuery] Request request, [FromBody] CharacterEquip unequip)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip, playerId);
+
+            return Ok(character);
         }
         catch (Exception ex)
         {

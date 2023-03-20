@@ -1,5 +1,6 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Dtos;
+using FluentAssertions.Extensions;
 
 namespace Tests;
 
@@ -145,6 +146,12 @@ public class ItemServiceTests : TestBase
 
         ItemsLore.Weapons.Swords.Keys.Should().Contain(sword.Category);
         ItemsLore.Weapons.Swords.Values.Should().Contain(sword.Description);
+
+        helmet.InventoryLocations.Count.Should().Be(1);
+        helmet.InventoryLocations.Should().Contain(ItemsLore.InventoryLocation.Head);
+
+        sword.InventoryLocations.Count.Should().Be(2);
+        sword.InventoryLocations.Should().Contain(ItemsLore.InventoryLocation.Mainhand).And.Subject.Should().Contain(ItemsLore.InventoryLocation.Offhand);
     }
 
     #region privates

@@ -65,6 +65,20 @@ public class CharacterService : ICharacterService
         };
     }
 
+    public Character EquipCharacterItem(CharacterEquip equip, string playerId)
+    {
+        validator.ValidateCharacterEquipUnequipItem(equip, playerId, true);
+
+        return logic.EquipItem(equip, playerId);
+    }
+
+    public Character UnequipCharacterItem(CharacterEquip unequip, string playerId)
+    {
+        validator.ValidateCharacterEquipUnequipItem(unequip, playerId, false);
+
+        return logic.UnequipItem(unequip, playerId);
+    }
+
     #region privates
     private Character ModifyName(CharacterUpdate charUpdate, string playerId)
     {
@@ -92,6 +106,4 @@ public class CharacterService : ICharacterService
     }
     #endregion
 }
-
-
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
