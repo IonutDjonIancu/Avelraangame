@@ -6,6 +6,8 @@ namespace Persistance_Manager;
 
 public class DatabaseManager : IDatabaseManager
 {
+    private static readonly string currentDir = Directory.GetCurrentDirectory();
+
     private readonly DatabaseManagerValidator validate;
     internal readonly DatabaseManagerInfo info = new()
     {
@@ -35,15 +37,18 @@ public class DatabaseManager : IDatabaseManager
         validate.KeyInSecretKeys(dbmconfig.Key);
 
         validate.ValidateString(dbmconfig.DbPath);
-        info.DbPath = $"{Directory.GetCurrentDirectory()}{dbmconfig.DbPath}";
+        info.DbPath = $"{currentDir}{dbmconfig.DbPath}";
         validate.FileAtPath(info.DbPath);
 
         validate.ValidateString(dbmconfig.DbPlayersPath);
-        info.DbPlayersPath = $"{Directory.GetCurrentDirectory()}{dbmconfig.DbPlayersPath}";
+        info.DbPlayersPath = $"{currentDir}{dbmconfig.DbPlayersPath}";
         info.PlayerFilePaths = UploadPlayerFilePaths(info.DbPlayersPath);
 
+        validate.ValidateString(dbmconfig.DbTraitsPath);
+        info.DbTraitsPath = $"{currentDir}{dbmconfig.DbTraitsPath}";
+
         validate.ValidateString(dbmconfig.LogPath);
-        info.LogPath = $"{Directory.GetCurrentDirectory()}{dbmconfig.LogPath}";
+        info.LogPath = $"{currentDir}{dbmconfig.LogPath}";
         validate.FileAtPath(info.LogPath);
 
         Snapshot = CreateDatabaseSnapshot(info);
@@ -142,7 +147,7 @@ public class DatabaseManager : IDatabaseManager
             Players = ReadPlayerFiles(dbmInfo.PlayerFilePaths),
             CharacterStubs = new List<CharacterStub>(),
             Items = new List<Item>(),
-            Traits = new List<CharacterTrait>()
+            Traits = ReadTraitsFile(dbmInfo.DbTraitsPath)
         };
 
         return snapshot;
@@ -162,5 +167,12 @@ public class DatabaseManager : IDatabaseManager
         return list;
     }
 
+    private static List<HeroicTrait> ReadTraitsFile(string path)
+    {
+        var text = File.ReadAllText(path);
+        var listOfTraits = JsonConvert.DeserializeObject<List<HeroicTrait>>(text);
+
+        return listOfTraits;
+    }
     #endregion
 }

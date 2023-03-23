@@ -75,8 +75,6 @@ public class CharacterServiceTests : TestBase
         character.Doll.Should().NotBeNull();
         character.Doll.Strength.Should().BeGreaterThanOrEqualTo(1);
 
-        character.Traits.Should().NotBeNull();
-
         character.Inventory.Should().NotBeNull();
 
         character.Supplies.Should().NotBeNull();

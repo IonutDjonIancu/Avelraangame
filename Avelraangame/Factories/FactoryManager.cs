@@ -17,8 +17,12 @@ public class FactoryManager : IFactoryManager
         {
             DbPath = configManager.DbPath,
             DbPlayersPath = configManager.DbPlayers,
+            DbTraitsPath = configManager.DbTraits,
+
             LogPath = configManager.LogPath,
+
             Key = configManager.DbKey,
+
             AppEmail = configManager.AvelraanEmail,
             AppPassword = configManager.AvelraanEmailPass
         };

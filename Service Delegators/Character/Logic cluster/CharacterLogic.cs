@@ -68,10 +68,11 @@ internal class CharacterLogic
             LevelUp = new CharacterLevelUp(),
 
             Doll = dollOperations.SetPaperDoll(info, stub.StatPoints, stub.SkillPoints),
-            Traits = new List<CharacterTrait>(),
+
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
 
+            HeroicTraits = new List<HeroicTrait>(),
             IsAlive = true,
         };
 

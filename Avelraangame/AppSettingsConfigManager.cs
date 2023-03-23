@@ -25,6 +25,14 @@ public class AppSettingsConfigManager : IAppSettingsConfigManager
         }
     }
 
+    public string DbTraits
+    {
+        get
+        {
+            return _configuration["AppSettings:DbTraitsPath"];
+        }
+    }
+
     public string DbTestPath
     {
         get
