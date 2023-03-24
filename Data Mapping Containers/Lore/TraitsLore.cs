@@ -5,8 +5,8 @@ public class TraitsLore
     public enum Type
     {
         Passive,
-        Once,
-        Active
+        Active,
+        Bonus
     }
 
     public enum Subtype
@@ -14,4 +14,94 @@ public class TraitsLore
         Common,
         Unique
     }
+
+    public static class ActiveTraits
+    {
+        public static readonly string metachaosDemonology = "Metachaos Demonology";
+        public static readonly string metachaosDemonology_description = "Increases your spellcraft evocation prowess by 50% for all spells during an entire round, will occur in the next 3 odd rounds.";
+        public static readonly string metachaosDemonology_lore = "It is said amongst mages that this technique was initially discovered by the forefathers of the first humans of Khardah. Others claim it came from the sorceres of V'ald during the first descent of the elves upon the Cloud Kingdom of mankind. Although uncertainty shrouds this spellweave expertise, there is evidence that links the great pyramid in Khardah to the Illithos that shows how deeply research has this been.";
+
+        public static readonly List<HeroicTrait> All = new()
+        {
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "7718aef3-4d96-4686-841f-45f5cae0266b",
+                    Name = metachaosDemonology,
+                },
+                Description = metachaosDemonology_description,
+                Lore = metachaosDemonology_lore,
+                Type = Type.Active,
+                Subtype = Subtype.Unique,
+                DeedsCost = 100
+            }
+        };
+    }
+
+    public static class PassiveTraits
+    {
+        public static readonly string fatePoint = "Fate Point";
+        public static readonly string fatePoint_description = "Your critical hits start from 19 out of a d20 die.";
+        public static readonly string fatePoint_lore = "Any adventurer whose hands hold the marks of a sword hilt or the burns of spellcraft will eventually develop this ability. It marks its bearer as one who has travelled roads seen by a few.";
+
+        public static readonly List<HeroicTrait> All = new()
+        {
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "f85a2b0f-428d-4691-8cdc-caa6c399ec94",
+                    Name = fatePoint,
+                },
+                Description = fatePoint_description,
+                Lore = fatePoint_lore,
+                Type = Type.Passive,
+                Subtype = Subtype.Unique,
+                DeedsCost = 50
+            }
+        };
+    }
+
+    public static class BonusTraits
+    {
+        public static readonly string skillful = "Skillful";
+        public static readonly string skillful_description = "Increases a specific skill by 20% of its base amount.";
+        public static readonly string skillful_lore = "A testament of your accomplishments during your years as an adventurer.";
+
+        public static readonly string swordsman = "Swordsman";
+        public static readonly string swordsman_description = "Increases the base Combat skill by 1% of its Paperdoll amount.";
+        public static readonly string swordsman_lore = "Steady arm and a stout shield are the best teachers you have ever known.";
+
+        public static readonly List<HeroicTrait> All = new()
+        {
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "0d5e0310-013b-42bd-b479-5c961dd583e1",
+                    Name = skillful,
+                },
+                Description = skillful_description,
+                Lore = skillful_lore,
+                Type = Type.Bonus,
+                Subtype = Subtype.Unique,
+                DeedsCost = 5
+            },
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "ea91b5bb-c338-431d-bef5-915483aac4a0",
+                    Name = swordsman,
+                },
+                Description = swordsman_description,
+                Lore = swordsman_lore,
+                Type = Type.Bonus,
+                Subtype = Subtype.Common,
+                DeedsCost = 1
+            }
+        };
+    }
+
 }
