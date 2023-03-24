@@ -244,7 +244,7 @@ public class CharacterServiceTests : TestBase
         }, playerId));
     }
 
-    #region privates
+    #region private methods
     private string CreatePlayer()
     {
         dbm.Snapshot.Players!.Clear();

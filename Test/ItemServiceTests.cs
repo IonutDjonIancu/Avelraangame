@@ -154,7 +154,7 @@ public class ItemServiceTests : TestBase
         sword.InventoryLocations.Should().Contain(ItemsLore.InventoryLocation.Mainhand).And.Subject.Should().Contain(ItemsLore.InventoryLocation.Offhand);
     }
 
-    #region privates
+    #region private methods
     private List<Item> CreateSomeItems(int numberOfItems)
     {
         var items = new List<Item>();

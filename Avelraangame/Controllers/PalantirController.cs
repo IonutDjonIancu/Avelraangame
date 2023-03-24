@@ -342,7 +342,7 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
-    #region privates
+    #region private methods
     private string MatchTokensForPlayer(Request request)
     {
         validator.ValidateObject(request);

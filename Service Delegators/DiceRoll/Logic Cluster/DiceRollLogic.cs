@@ -70,7 +70,7 @@ internal class DiceRollLogic
         };
     }
 
-    #region privates
+    #region private methods
     private int Rolld20WithList(List<int> dice, int bonus = 0)
     {
         var handRoll = random.Next(1, 21);

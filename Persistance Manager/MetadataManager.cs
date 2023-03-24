@@ -104,7 +104,7 @@ public class MetadataManager
         }
     }
 
-    #region privates
+    #region private methods
     private List<Attachment> GetLogFilesAsAttachments(string logsPath, int days)
     {
         validator.ValidateString(logsPath);

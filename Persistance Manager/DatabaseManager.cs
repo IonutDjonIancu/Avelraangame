@@ -78,7 +78,7 @@ public class DatabaseManager : IDatabaseManager
         }
     }
 
-    #region privates
+    #region private methods
     private static List<string> UploadPlayerFilePaths(string dbPlayersPath)
     {
         return Directory.GetFiles(dbPlayersPath).ToList();

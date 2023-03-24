@@ -79,7 +79,7 @@ public class CharacterService : ICharacterService
         return logic.UnequipItem(unequip, playerId);
     }
 
-    #region privates
+    #region private methods
     private Character ModifyName(CharacterUpdate charUpdate, string playerId)
     {
         validator.ValidateCharacterOnNameUpdate(charUpdate, playerId);

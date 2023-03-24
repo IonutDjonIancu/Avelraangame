@@ -30,7 +30,7 @@ internal class ItemEnchants
         }
     }
 
-    #region privates
+    #region private methods
     private void Imbue(Item item)
     {
         IncreaseRandomSkill(dice.Roll_d20(true) * item.Level, item);

@@ -19,7 +19,7 @@ internal class ItemUpgrades
         else  /*(item.Level >= 6)*/ UpgradeItemToRelic(item);
     }
 
-    #region privates
+    #region private methods
     #region heirloom
     private void UpgradeItemToHeirloom(Item item)
     {

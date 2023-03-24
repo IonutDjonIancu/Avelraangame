@@ -130,7 +130,7 @@ internal class ItemClassification
         return listOfLocations;
     }
 
-    #region privates
+    #region private methods
     private void SetCategoryAndDescriptionFor(Dictionary<string, string> category, Item item)
     {
         var count = category.Keys.Count;

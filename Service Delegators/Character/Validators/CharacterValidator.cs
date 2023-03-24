@@ -185,7 +185,7 @@ public class CharacterValidator : ValidatorBase
         if (!isItemAtCorrectLocation) Throw("Unable to equip the item at said location.");
     }
 
-    #region privates
+    #region private methods
     private void ValidateIfCharacterExists(string playerId, string characterId)
     {
         if (!charMetadata.DoesCharacterExist(playerId, characterId)) Throw("Character not found.");

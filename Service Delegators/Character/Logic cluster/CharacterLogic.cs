@@ -258,7 +258,7 @@ internal class CharacterLogic
         return chr;
     }
 
-    #region privates
+    #region private methods
     private int RandomizeEntityLevel()
     {
         var roll = dice.Roll_d20(true);
