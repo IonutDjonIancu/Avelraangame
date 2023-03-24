@@ -2,17 +2,27 @@
 
 public class TraitsLore
 {
-    public enum Type
+    public static class Type
     {
-        Passive,
-        Active,
-        Bonus
+        public static readonly string passive = "Passive";
+        public static readonly string active = "Active";
+        public static readonly string bonus = "Bonus";
+
+        public static readonly List<string> All = new() 
+        { 
+            passive, active, bonus
+        };
     }
 
-    public enum Subtype
+    public static class Subtype
     {
-        Common,
-        Unique
+        public static readonly string common = "Common";
+        public static readonly string unique = "Unique";
+
+        public static readonly List<string> All = new()
+        {
+            common, unique
+        };
     }
 
     public static class ActiveTraits
@@ -32,8 +42,8 @@ public class TraitsLore
                 },
                 Description = metachaosDemonology_description,
                 Lore = metachaosDemonology_lore,
-                Type = Type.Active,
-                Subtype = Subtype.Unique,
+                Type = Type.active,
+                Subtype = Subtype.unique,
                 DeedsCost = 100
             }
         };
@@ -56,8 +66,8 @@ public class TraitsLore
                 },
                 Description = fatePoint_description,
                 Lore = fatePoint_lore,
-                Type = Type.Passive,
-                Subtype = Subtype.Unique,
+                Type = Type.passive,
+                Subtype = Subtype.unique,
                 DeedsCost = 50
             }
         };
@@ -84,8 +94,8 @@ public class TraitsLore
                 },
                 Description = skillful_description,
                 Lore = skillful_lore,
-                Type = Type.Bonus,
-                Subtype = Subtype.Unique,
+                Type = Type.bonus,
+                Subtype = Subtype.unique,
                 DeedsCost = 5
             },
             new HeroicTrait
@@ -97,8 +107,8 @@ public class TraitsLore
                 },
                 Description = swordsman_description,
                 Lore = swordsman_lore,
-                Type = Type.Bonus,
-                Subtype = Subtype.Common,
+                Type = Type.bonus,
+                Subtype = Subtype.common,
                 DeedsCost = 1
             }
         };

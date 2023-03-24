@@ -7,8 +7,8 @@ public class HeroicTrait
     public string Description { get; set; }
     public string Lore { get; set; }
     
-    public TraitsLore.Type Type { get; set; }
-    public TraitsLore.Subtype Subtype { get; set; }
+    public string Type { get; set; }
+    public string Subtype { get; set; }
 
     public int DeedsCost { get; set; }
 }

@@ -342,6 +342,25 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
+    #region HeroicTraits
+    // GET: /api/palantir/HeroicTraits/GetHeroicTraits
+    [HttpGet("HeroicTraits/GetHeroicTraits")]
+    public IActionResult GetHeroicTraits()
+    {
+        try
+        {
+            var traits = factory.ServiceFactory.CharacterService.GetHeroicTraits();
+
+            return Ok(traits);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+    #endregion
+
     #region private methods
     private string MatchTokensForPlayer(Request request)
     {
