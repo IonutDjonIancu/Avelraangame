@@ -27,6 +27,7 @@ public class TraitsLore
 
     public static class ActiveTraits
     {
+        // 1
         public static readonly string metachaosDaemonology = "Metachaos Daemonology";
         public static readonly string metachaosDaemonology_description = "Increases your spellcraft evocation prowess by 50% for all spells during an entire round, will occur in the next 3 odd rounds.";
         public static readonly string metachaosDaemonology_lore = "It is said amongst mages that this technique was initially discovered by the forefathers of the first humans of Khardah. Others claim it came from the sorceres of V'ald during the first descent of the elves upon the Cloud Kingdom of mankind. Although uncertainty shrouds this spellweave expertise, there is evidence that links the great pyramid in Khardah to the Illithos that shows how deeply research has this been.";
@@ -51,6 +52,7 @@ public class TraitsLore
 
     public static class PassiveTraits
     {
+        // 1
         public static readonly string fatePoint = "Fate Point";
         public static readonly string fatePoint_description = "Your critical hits start from 19 out of a d20 die.";
         public static readonly string fatePoint_lore = "Any adventurer whose hands hold the marks of a sword hilt or the burns of spellcraft will eventually develop this ability. It marks its bearer as one who has travelled roads seen by a few.";
@@ -75,13 +77,14 @@ public class TraitsLore
 
     public static class BonusTraits
     {
+        // 1
+        public static readonly string swordsman = "Swordsman";
+        public static readonly string swordsman_description = "Increases the base Combat skill by 10 plus another 1% of its Paperdoll amount.";
+        public static readonly string swordsman_lore = "Steady arm and a stout shield are the best teachers you have ever known.";
+        // 2
         public static readonly string skillful = "Skillful";
         public static readonly string skillful_description = "Increases a specific skill by 20% of its base amount.";
         public static readonly string skillful_lore = "A testament of your accomplishments during your years as an adventurer.";
-
-        public static readonly string swordsman = "Swordsman";
-        public static readonly string swordsman_description = "Increases the base Combat skill by 1% of its Paperdoll amount.";
-        public static readonly string swordsman_lore = "Steady arm and a stout shield are the best teachers you have ever known.";
 
         public static readonly List<HeroicTrait> All = new()
         {

@@ -5,6 +5,7 @@
 using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Pocos;
 using Persistance_Manager;
+using System.Data;
 
 namespace Service_Delegators;
 
@@ -263,12 +264,36 @@ internal class CharacterLogic
         character.HeroicTraits.Add(heroicTrait);
         character.LevelUp.DeedsPoints -= heroicTrait.DeedsCost;
 
+        if (heroicTrait.Type == TraitsLore.Type.bonus) ApplyBonusHeroicTrait(character, heroicTrait, trait);
+
         dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
         
         return character;
     }
 
     #region private methods
+    private static void ApplyBonusHeroicTrait(Character character, HeroicTrait heroicTrait, CharacterHeroicTrait trait)
+    {
+        // should encapsulate this logic better
+        // possibly in a separate service logic or helper
+        
+        if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.swordsman)
+        {
+            var value = 10 + (int)Math.Ceiling(character.Sheet.Combat /*character PaperDoll*/ * 0.01); // TODO: should calculate the PaperDoll amount as stated in the HT's description
+            character.Sheet.Combat += value;
+        } 
+        else if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.skillful)
+        {
+            if (trait.Skill == CharactersLore.Skills.Combat)
+            {
+                var value = (int)Math.Ceiling(character.Sheet.Combat * 0.2);
+                character.Sheet.Combat += value;
+            }
+
+            // cater for all the other skills as well
+        }
+    }
+
     private int RandomizeEntityLevel()
     {
         var roll = dice.Roll_d20(true);
