@@ -74,6 +74,7 @@ public class DatabaseManager : IDatabaseManager
         }
         else
         {
+            Thread.Sleep(100);
             await SavePlayerSnapshot(player);
         }
     }

@@ -14,7 +14,7 @@ internal class CharacterLogic
     private readonly IDiceRollService dice;
     private readonly IItemService itemService;
     private readonly CharacterMetadata charMetadata;
-    private readonly CharacterDollOperations dollOperations;
+    private readonly CharacterSheetOperations sheetOperations;
 
     private CharacterLogic() { }
 
@@ -28,7 +28,7 @@ internal class CharacterLogic
         dice = diceRollService;
         this.itemService = itemService;
         this.charMetadata = charMetadata;
-        dollOperations = new CharacterDollOperations(dice);
+        sheetOperations = new CharacterSheetOperations(dice);
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -61,13 +61,14 @@ internal class CharacterLogic
             {
                 Id = Guid.NewGuid().ToString(),
                 PlayerId = playerId,
+                Name = $"The {origins.Culture.ToLower()}"
             },
 
             Info = info,
 
             LevelUp = new CharacterLevelUp(),
 
-            Doll = dollOperations.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
+            Sheet = sheetOperations.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
 
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
@@ -94,7 +95,7 @@ internal class CharacterLogic
     {
         var oldChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
 
-        oldChar.Info.Name = charUpdate.Name;
+        oldChar.Identity.Name = charUpdate.Name;
 
         var player = dbm.Metadata.GetPlayerById(playerId);
         
@@ -117,23 +118,22 @@ internal class CharacterLogic
     {
         var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
 
-        if      (charUpdate.Skill == CharactersLore.Skills.Combat) storedChar.Doll.Combat++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Arcane) storedChar.Doll.Arcane++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Psionics) storedChar.Doll.Psionics++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Hide) storedChar.Doll.Hide++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Traps) storedChar.Doll.Traps++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Tactics) storedChar.Doll.Tactics++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Social) storedChar.Doll.Social++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Apothecary) storedChar.Doll.Apothecary++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Travel) storedChar.Doll.Travel++;
-        else if (charUpdate.Skill == CharactersLore.Skills.Sail) storedChar.Doll.Sail++;
+        if      (charUpdate.Skill == CharactersLore.Skills.Combat) storedChar.Sheet.Combat++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Arcane) storedChar.Sheet.Arcane++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Psionics) storedChar.Sheet.Psionics++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Hide) storedChar.Sheet.Hide++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Traps) storedChar.Sheet.Traps++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Tactics) storedChar.Sheet.Tactics++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Social) storedChar.Sheet.Social++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Apothecary) storedChar.Sheet.Apothecary++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Travel) storedChar.Sheet.Travel++;
+        else if (charUpdate.Skill == CharactersLore.Skills.Sail) storedChar.Sheet.Sail++;
         else throw new Exception("Unrecognized skill.");
         
         storedChar.LevelUp.SkillPoints--;
 
         var player = dbm.Metadata.GetPlayerById(playerId);
 
-        Thread.Sleep(100);
         dbm.PersistPlayer(player);
 
         return storedChar;
@@ -143,19 +143,18 @@ internal class CharacterLogic
     {
         var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
 
-        if      (charUpdate.Stat == CharactersLore.Stats.Strength) storedChar.Doll.Strength++;
-        else if (charUpdate.Stat == CharactersLore.Stats.Constitution) storedChar.Doll.Constitution++;
-        else if (charUpdate.Stat == CharactersLore.Stats.Agility) storedChar.Doll.Agility++;
-        else if (charUpdate.Stat == CharactersLore.Stats.Willpower) storedChar.Doll.Willpower++;
-        else if (charUpdate.Stat == CharactersLore.Stats.Perception) storedChar.Doll.Perception++;
-        else if (charUpdate.Stat == CharactersLore.Stats.Abstract) storedChar.Doll.Abstract++;
+        if      (charUpdate.Stat == CharactersLore.Stats.Strength) storedChar.Sheet.Strength++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Constitution) storedChar.Sheet.Constitution++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Agility) storedChar.Sheet.Agility++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Willpower) storedChar.Sheet.Willpower++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Perception) storedChar.Sheet.Perception++;
+        else if (charUpdate.Stat == CharactersLore.Stats.Abstract) storedChar.Sheet.Abstract++;
         else throw new Exception("Unrecognized stat.");
 
         storedChar.LevelUp.StatPoints--;
         
         var player = dbm.Metadata.GetPlayerById(playerId);
         
-        Thread.Sleep(100);
         dbm.PersistPlayer(player);
 
         return storedChar;
@@ -204,7 +203,6 @@ internal class CharacterLogic
 
         chr.Supplies.Add(item);
 
-        Thread.Sleep(100);
         dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
 
         return chr;
@@ -252,10 +250,22 @@ internal class CharacterLogic
 
         chr.Supplies.Remove(item);
 
-        Thread.Sleep(100);
         dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
 
         return chr;
+    }
+
+    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    {
+        var character = charMetadata.GetCharacter(trait.CharacterId, playerId);
+        var heroicTrait = dbm.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId);
+
+        character.HeroicTraits.Add(heroicTrait);
+        character.LevelUp.DeedsPoints -= heroicTrait.DeedsCost;
+
+        dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
+        
+        return character;
     }
 
     #region private methods
@@ -318,7 +328,6 @@ internal class CharacterLogic
     {
         return new CharacterInfo
         {
-            Name = $"The {origins.Culture.ToLower()}",
             EntityLevel = stub!.EntityLevel,
 
             Race = origins.Race,

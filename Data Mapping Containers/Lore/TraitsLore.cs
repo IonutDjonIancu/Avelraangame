@@ -27,9 +27,9 @@ public class TraitsLore
 
     public static class ActiveTraits
     {
-        public static readonly string metachaosDemonology = "Metachaos Demonology";
-        public static readonly string metachaosDemonology_description = "Increases your spellcraft evocation prowess by 50% for all spells during an entire round, will occur in the next 3 odd rounds.";
-        public static readonly string metachaosDemonology_lore = "It is said amongst mages that this technique was initially discovered by the forefathers of the first humans of Khardah. Others claim it came from the sorceres of V'ald during the first descent of the elves upon the Cloud Kingdom of mankind. Although uncertainty shrouds this spellweave expertise, there is evidence that links the great pyramid in Khardah to the Illithos that shows how deeply research has this been.";
+        public static readonly string metachaosDaemonology = "Metachaos Daemonology";
+        public static readonly string metachaosDaemonology_description = "Increases your spellcraft evocation prowess by 50% for all spells during an entire round, will occur in the next 3 odd rounds.";
+        public static readonly string metachaosDaemonology_lore = "It is said amongst mages that this technique was initially discovered by the forefathers of the first humans of Khardah. Others claim it came from the sorceres of V'ald during the first descent of the elves upon the Cloud Kingdom of mankind. Although uncertainty shrouds this spellweave expertise, there is evidence that links the great pyramid in Khardah to the Illithos that shows how deeply research has this been.";
 
         public static readonly List<HeroicTrait> All = new()
         {
@@ -38,10 +38,10 @@ public class TraitsLore
                 Identity = new HeroicTraitIdentity
                 {
                     Id = "7718aef3-4d96-4686-841f-45f5cae0266b",
-                    Name = metachaosDemonology,
+                    Name = metachaosDaemonology,
                 },
-                Description = metachaosDemonology_description,
-                Lore = metachaosDemonology_lore,
+                Description = metachaosDaemonology_description,
+                Lore = metachaosDaemonology_lore,
                 Type = Type.active,
                 Subtype = Subtype.unique,
                 DeedsCost = 100

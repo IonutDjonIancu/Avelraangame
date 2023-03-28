@@ -71,6 +71,24 @@ public class CharacterValidator : ValidatorBase
         ValidateIfCharacterExists(playerId, characterId);
     }
 
+    public void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    {
+        ValidateGuid(trait.CharacterId);
+        ValidateIfCharacterExists(playerId, trait.CharacterId);
+        var character = dbm.Snapshot.Players.First(p => p.Identity.Id == playerId).Characters!.First(c => c.Identity.Id == trait.CharacterId);
+
+        ValidateGuid(trait.HeroicTraitId);
+        var heroicTrait = dbm.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId);
+        if (heroicTrait == null) Throw("No such Heroic Trait found with the provided id.");
+
+        if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) Throw("Character does not have enough Deeds points to aquire said Heroic Trait.");
+
+        if (!string.IsNullOrWhiteSpace(trait.Skill))
+        {
+            if (!CharactersLore.Skills.All.Contains(trait.Skill)) Throw("No such Skill was found with the indicated skill name.");
+        }
+    }
+
     public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, string playerId, bool toEquip)
     {
         ValidateObject(equip);

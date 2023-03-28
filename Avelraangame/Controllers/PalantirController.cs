@@ -341,15 +341,15 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Character/EquipHeroicTrait
-    [HttpPut("Character/EquipHeroicTrait")]
-    public IActionResult EquipHeroicTrait([FromQuery] Request request, [FromBody] CharacterHeroicTrait trait)
+    // PUT: /api/palantir/Character/LearnHeroicTrait
+    [HttpPut("Character/LearnHeroicTrait")]
+    public IActionResult LearnHeroicTrait([FromQuery] Request request, [FromBody] CharacterHeroicTrait trait)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip, playerId);
+            var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait, playerId);
 
             return Ok(character);
         }

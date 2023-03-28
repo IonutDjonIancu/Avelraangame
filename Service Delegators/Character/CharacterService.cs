@@ -80,6 +80,13 @@ public class CharacterService : ICharacterService
         return logic.UnequipItem(unequip, playerId);
     }
 
+    public Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    {
+        validator.ValidateCharacterLearnHeroicTrait(trait, playerId);
+
+        return logic.ApplyHeroicTrait(trait, playerId);
+    }
+
     public List<HeroicTrait> GetHeroicTraits()
     {
         return dbm.Snapshot.Traits;

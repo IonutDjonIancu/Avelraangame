@@ -4,27 +4,27 @@ namespace Service_Delegators;
 
 internal static class CharacterOperations
 {
-    internal static int SumStats(CharacterSheet doll)
+    internal static int SumStats(CharacterSheet sheet)
     {
-        return doll.Strength
-            + doll.Constitution
-            + doll.Agility
-            + doll.Willpower
-            + doll.Perception
-            + doll.Abstract;
+        return sheet.Strength
+            + sheet.Constitution
+            + sheet.Agility
+            + sheet.Willpower
+            + sheet.Perception
+            + sheet.Abstract;
     }
 
-    internal static int SumSkills(CharacterSheet doll)
+    internal static int SumSkills(CharacterSheet sheet)
     {
-        return doll.Combat
-            + doll.Arcane
-            + doll.Psionics
-            + doll.Hide
-            + doll.Traps
-            + doll.Tactics
-            + doll.Social
-            + doll.Apothecary
-            + doll.Travel
-            + doll.Sail;
+        return sheet.Combat
+            + sheet.Arcane
+            + sheet.Psionics
+            + sheet.Hide
+            + sheet.Traps
+            + sheet.Tactics
+            + sheet.Social
+            + sheet.Apothecary
+            + sheet.Travel
+            + sheet.Sail;
     }
 }
