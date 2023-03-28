@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
 
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
@@ -79,7 +80,19 @@ public class CharacterService : ICharacterService
         return logic.UnequipItem(unequip, playerId);
     }
 
-    #region privates
+    public Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    {
+        validator.ValidateCharacterLearnHeroicTrait(trait, playerId);
+
+        return logic.ApplyHeroicTrait(trait, playerId);
+    }
+
+    public List<HeroicTrait> GetHeroicTraits()
+    {
+        return dbm.Snapshot.Traits;
+    }
+
+    #region private methods
     private Character ModifyName(CharacterUpdate charUpdate, string playerId)
     {
         validator.ValidateCharacterOnNameUpdate(charUpdate, playerId);
@@ -107,3 +120,4 @@ public class CharacterService : ICharacterService
     #endregion
 }
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8603 // Possible null reference return.

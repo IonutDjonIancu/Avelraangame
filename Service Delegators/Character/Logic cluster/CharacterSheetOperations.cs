@@ -2,28 +2,28 @@
 
 namespace Service_Delegators;
 
-internal class CharacterDollOperations
+internal class CharacterSheetOperations
 {
     private readonly IDiceRollService dice;
 
-    internal CharacterDollOperations(IDiceRollService dice)
+    internal CharacterSheetOperations(IDiceRollService dice)
     {
         this.dice = dice;
     }
 
-    internal CharacterPaperDoll SetPaperDoll(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetCharacterSheet(CharacterInfo info, int statPoints, int skillPoints)
     {
-        if      (info.Race == CharactersLore.Races.Human) return SetDollForHuman(info, statPoints, skillPoints);
-        else if (info.Race == CharactersLore.Races.Elf) return SetDollForElf(info, statPoints, skillPoints);
-        else if (info.Race == CharactersLore.Races.Dwarf) return SetDollForDwarf(info, statPoints, skillPoints);
+        if      (info.Race == CharactersLore.Races.Human) return SetCharacterSheetForHuman(info, statPoints, skillPoints);
+        else if (info.Race == CharactersLore.Races.Elf) return SetCharacterSheetForElf(info, statPoints, skillPoints);
+        else if (info.Race == CharactersLore.Races.Dwarf) return SetCharacterSheetForDwarf(info, statPoints, skillPoints);
         else throw new NotImplementedException();
     }
 
-    internal CharacterPaperDoll SetDollForHuman(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetCharacterSheetForHuman(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
-        var humanPaperDoll = new CharacterPaperDoll
+        var charsheet = new CharacterSheet
         {
             Strength = 5 * lvl,
             Constitution = 5 * lvl,
@@ -35,10 +35,10 @@ internal class CharacterDollOperations
 
         if (info.Culture == CharactersLore.Cultures.Human.Danarian)
         {
-            humanPaperDoll.Combat += 20;
-            humanPaperDoll.Travel += 10;
-            humanPaperDoll.Hide -= 10;
-            humanPaperDoll.Sail -= 30;
+            charsheet.Combat += 20;
+            charsheet.Travel += 10;
+            charsheet.Hide -= 10;
+            charsheet.Sail -= 30;
 
             //var itemsRoll = dice.Roll_dX(6);
 
@@ -49,16 +49,16 @@ internal class CharacterDollOperations
             //}
         }
 
-        humanPaperDoll = DistributeClassStatsAndSkills(humanPaperDoll, info.Class, statPoints, skillPoints);
+        charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
 
-        return humanPaperDoll;
+        return charsheet;
     }
 
-    internal CharacterPaperDoll SetDollForElf(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetCharacterSheetForElf(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
-        var elfPaperDoll = new CharacterPaperDoll
+        var charsheet = new CharacterSheet
         {
             Strength = 2 * lvl,
             Constitution = 7 * lvl,
@@ -70,22 +70,22 @@ internal class CharacterDollOperations
 
         if (info.Culture == CharactersLore.Cultures.Elf.Highborn)
         {
-            elfPaperDoll.Arcane += 40;
-            elfPaperDoll.Mana += 50;
-            elfPaperDoll.Willpower += 10;
-            elfPaperDoll.Travel -= 100;
+            charsheet.Arcane += 40;
+            charsheet.Mana += 50;
+            charsheet.Willpower += 10;
+            charsheet.Travel -= 100;
         }
 
-        elfPaperDoll = DistributeClassStatsAndSkills(elfPaperDoll, info.Class, statPoints, skillPoints);
+        charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
 
-        return elfPaperDoll;
+        return charsheet;
     }
 
-    internal CharacterPaperDoll SetDollForDwarf(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetCharacterSheetForDwarf(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
-        var dwarfPaperDoll = new CharacterPaperDoll
+        var charsheet = new CharacterSheet
         {
             Strength = 15 * lvl,
             Constitution = 10 * lvl,
@@ -97,30 +97,30 @@ internal class CharacterDollOperations
 
         if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain)
         {
-            dwarfPaperDoll.Combat += 30;
-            dwarfPaperDoll.Armour += 10;
-            dwarfPaperDoll.Purge += 10;
-            dwarfPaperDoll.Harm += 20;
-            dwarfPaperDoll.Hide -= 40;
-            dwarfPaperDoll.Social -= 20;
-            dwarfPaperDoll.Travel -= 50;
-            dwarfPaperDoll.Sail -= 200;
+            charsheet.Combat += 30;
+            charsheet.Armour += 10;
+            charsheet.Purge += 10;
+            charsheet.Harm += 20;
+            charsheet.Hide -= 40;
+            charsheet.Social -= 20;
+            charsheet.Travel -= 50;
+            charsheet.Sail -= 200;
         }
 
-        dwarfPaperDoll = DistributeClassStatsAndSkills(dwarfPaperDoll, info.Class, statPoints, skillPoints);
+        charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
 
-        return dwarfPaperDoll;
+        return charsheet;
     }
 
-    internal CharacterPaperDoll DistributeClassStatsAndSkills(CharacterPaperDoll doll, string classes, int statPoints, int skillPoints)
+    internal CharacterSheet DistributeClassStatsAndSkills(CharacterSheet sheet, string classes, int statPoints, int skillPoints)
     {
-        if (classes == CharactersLore.Classes.Warrior) return SetClassForWarrior(doll, statPoints, skillPoints);
-        else if (classes == CharactersLore.Classes.Spellcaster) return SetClassForSpellcaster(doll, statPoints, skillPoints);
-        else if (classes == CharactersLore.Classes.Hunter) return SetClassForHunter(doll, statPoints, skillPoints);
+        if (classes == CharactersLore.Classes.Warrior) return SetClassForWarrior(sheet, statPoints, skillPoints);
+        else if (classes == CharactersLore.Classes.Spellcaster) return SetClassForSpellcaster(sheet, statPoints, skillPoints);
+        else if (classes == CharactersLore.Classes.Hunter) return SetClassForHunter(sheet, statPoints, skillPoints);
         else throw new NotImplementedException();
     }
 
-    internal CharacterPaperDoll SetClassForHunter(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    internal CharacterSheet SetClassForHunter(CharacterSheet sheet, int statPoints, int skillPoints)
     {
         var primaryStats = new List<string>
         {
@@ -162,17 +162,17 @@ internal class CharacterDollOperations
 
             if (chosenStat == CharactersLore.Stats.Agility)
             {
-                doll.Agility++;
+                sheet.Agility++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Perception)
             {
-                doll.Perception++;
+                sheet.Perception++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Constitution)
             {
-                doll.Constitution++;
+                sheet.Constitution++;
                 statPoints--;
             }
         }
@@ -195,30 +195,30 @@ internal class CharacterDollOperations
 
             if (chosenSkill == CharactersLore.Skills.Hide)
             {
-                doll.Hide++;
+                sheet.Hide++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Traps)
             {
-                doll.Traps++;
+                sheet.Traps++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Combat)
             {
-                doll.Combat++;
+                sheet.Combat++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Travel)
             {
-                doll.Travel++;
+                sheet.Travel++;
                 skillPoints--;
             }
         }
 
-        return doll;
+        return sheet;
     }
 
-    internal CharacterPaperDoll SetClassForSpellcaster(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    internal CharacterSheet SetClassForSpellcaster(CharacterSheet sheet, int statPoints, int skillPoints)
     {
         var primaryStats = new List<string>
         {
@@ -262,27 +262,27 @@ internal class CharacterDollOperations
 
             if (chosenStat == CharactersLore.Stats.Abstract)
             {
-                doll.Abstract++;
+                sheet.Abstract++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Constitution)
             {
-                doll.Constitution++;
+                sheet.Constitution++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Willpower)
             {
-                doll.Willpower++;
+                sheet.Willpower++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Agility)
             {
-                doll.Agility++;
+                sheet.Agility++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Perception)
             {
-                doll.Perception++;
+                sheet.Perception++;
                 statPoints--;
             }
         }
@@ -305,36 +305,36 @@ internal class CharacterDollOperations
 
             if (chosenSkill == CharactersLore.Skills.Arcane)
             {
-                doll.Arcane++;
+                sheet.Arcane++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Social)
             {
-                doll.Social++;
+                sheet.Social++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Apothecary)
             {
-                doll.Apothecary++;
+                sheet.Apothecary++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Combat)
             {
-                doll.Combat++;
+                sheet.Combat++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Tactics)
             {
-                doll.Tactics++;
+                sheet.Tactics++;
                 skillPoints--;
             }
         }
 
-        return doll;
+        return sheet;
     }
 
 
-    internal CharacterPaperDoll SetClassForWarrior(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    internal CharacterSheet SetClassForWarrior(CharacterSheet sheet, int statPoints, int skillPoints)
     {
         var primaryStats = new List<string>
         {
@@ -376,27 +376,27 @@ internal class CharacterDollOperations
 
             if (chosenStat == CharactersLore.Stats.Strength)
             {
-                doll.Strength++;
+                sheet.Strength++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Constitution)
             {
-                doll.Constitution++;
+                sheet.Constitution++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Agility)
             {
-                doll.Agility++;
+                sheet.Agility++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Willpower)
             {
-                doll.Willpower++;
+                sheet.Willpower++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Perception)
             {
-                doll.Perception++;
+                sheet.Perception++;
                 statPoints--;
             }
         }
@@ -419,21 +419,21 @@ internal class CharacterDollOperations
 
             if (chosenSkill == CharactersLore.Skills.Combat)
             {
-                doll.Combat++;
+                sheet.Combat++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Tactics)
             {
-                doll.Tactics++;
+                sheet.Tactics++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Travel)
             {
-                doll.Travel++;
+                sheet.Travel++;
                 skillPoints--;
             }
         }
 
-        return doll;
+        return sheet;
     }
 }

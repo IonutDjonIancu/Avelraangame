@@ -2,7 +2,6 @@
 
 public class CharacterInfo
 {
-    public string? Name { get; set; }
     public int? EntityLevel { get; set; }
 
     public string Race { get; set; }

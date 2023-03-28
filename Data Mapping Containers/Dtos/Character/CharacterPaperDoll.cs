@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class CharacterPaperDoll
+public class CharacterSheet
 {
     // stats
     public int Strength { get; set; }
