@@ -4,9 +4,9 @@ public class TraitsLore
 {
     public static class Type
     {
-        public static readonly string passive = "Passive";
-        public static readonly string active = "Active";
-        public static readonly string bonus = "Bonus";
+        public static readonly string passive = "Passive"; // it will always apply and has its own logic
+        public static readonly string active = "Active"; // you have to activate it during combat or otherwise
+        public static readonly string bonus = "Bonus"; // increases a stat, skill or asset based on trait's logic
 
         public static readonly List<string> All = new() 
         { 
@@ -16,8 +16,8 @@ public class TraitsLore
 
     public static class Subtype
     {
-        public static readonly string common = "Common";
-        public static readonly string unique = "Unique";
+        public static readonly string common = "Common"; // can be chosen multiple times
+        public static readonly string unique = "Unique"; // can only be chosen once
 
         public static readonly List<string> All = new()
         {
