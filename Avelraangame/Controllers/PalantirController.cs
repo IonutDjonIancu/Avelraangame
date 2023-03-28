@@ -340,6 +340,25 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/EquipHeroicTrait
+    [HttpPut("Character/EquipHeroicTrait")]
+    public IActionResult EquipHeroicTrait([FromQuery] Request request, [FromBody] CharacterHeroicTrait trait)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region HeroicTraits

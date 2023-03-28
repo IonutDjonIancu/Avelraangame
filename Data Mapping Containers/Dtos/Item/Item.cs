@@ -17,7 +17,7 @@ public class Item
     public string Lore { get; set; }
     public bool HasTaint { get; set; }
 
-    public CharacterPaperDoll Doll { get; set; } = new();
+    public CharacterSheet Doll { get; set; } = new();
     public int Value { get; set; }
 
 }

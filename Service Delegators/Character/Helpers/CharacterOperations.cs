@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 internal static class CharacterOperations
 {
-    internal static int SumStats(CharacterPaperDoll doll)
+    internal static int SumStats(CharacterSheet doll)
     {
         return doll.Strength
             + doll.Constitution
@@ -14,7 +14,7 @@ internal static class CharacterOperations
             + doll.Abstract;
     }
 
-    internal static int SumSkills(CharacterPaperDoll doll)
+    internal static int SumSkills(CharacterSheet doll)
     {
         return doll.Combat
             + doll.Arcane

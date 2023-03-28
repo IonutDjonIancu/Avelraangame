@@ -11,7 +11,7 @@ internal class CharacterDollOperations
         this.dice = dice;
     }
 
-    internal CharacterPaperDoll SetPaperDoll(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetCharacterSheet(CharacterInfo info, int statPoints, int skillPoints)
     {
         if      (info.Race == CharactersLore.Races.Human) return SetDollForHuman(info, statPoints, skillPoints);
         else if (info.Race == CharactersLore.Races.Elf) return SetDollForElf(info, statPoints, skillPoints);
@@ -19,11 +19,11 @@ internal class CharacterDollOperations
         else throw new NotImplementedException();
     }
 
-    internal CharacterPaperDoll SetDollForHuman(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetDollForHuman(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
-        var humanPaperDoll = new CharacterPaperDoll
+        var charsheet = new CharacterSheet
         {
             Strength = 5 * lvl,
             Constitution = 5 * lvl,
@@ -35,10 +35,10 @@ internal class CharacterDollOperations
 
         if (info.Culture == CharactersLore.Cultures.Human.Danarian)
         {
-            humanPaperDoll.Combat += 20;
-            humanPaperDoll.Travel += 10;
-            humanPaperDoll.Hide -= 10;
-            humanPaperDoll.Sail -= 30;
+            charsheet.Combat += 20;
+            charsheet.Travel += 10;
+            charsheet.Hide -= 10;
+            charsheet.Sail -= 30;
 
             //var itemsRoll = dice.Roll_dX(6);
 
@@ -49,16 +49,16 @@ internal class CharacterDollOperations
             //}
         }
 
-        humanPaperDoll = DistributeClassStatsAndSkills(humanPaperDoll, info.Class, statPoints, skillPoints);
+        charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
 
-        return humanPaperDoll;
+        return charsheet;
     }
 
-    internal CharacterPaperDoll SetDollForElf(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetDollForElf(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
-        var elfPaperDoll = new CharacterPaperDoll
+        var charsheet = new CharacterSheet
         {
             Strength = 2 * lvl,
             Constitution = 7 * lvl,
@@ -70,22 +70,22 @@ internal class CharacterDollOperations
 
         if (info.Culture == CharactersLore.Cultures.Elf.Highborn)
         {
-            elfPaperDoll.Arcane += 40;
-            elfPaperDoll.Mana += 50;
-            elfPaperDoll.Willpower += 10;
-            elfPaperDoll.Travel -= 100;
+            charsheet.Arcane += 40;
+            charsheet.Mana += 50;
+            charsheet.Willpower += 10;
+            charsheet.Travel -= 100;
         }
 
-        elfPaperDoll = DistributeClassStatsAndSkills(elfPaperDoll, info.Class, statPoints, skillPoints);
+        charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
 
-        return elfPaperDoll;
+        return charsheet;
     }
 
-    internal CharacterPaperDoll SetDollForDwarf(CharacterInfo info, int statPoints, int skillPoints)
+    internal CharacterSheet SetDollForDwarf(CharacterInfo info, int statPoints, int skillPoints)
     {
         var lvl = (int)info.EntityLevel!;
 
-        var dwarfPaperDoll = new CharacterPaperDoll
+        var charsheet = new CharacterSheet
         {
             Strength = 15 * lvl,
             Constitution = 10 * lvl,
@@ -97,22 +97,22 @@ internal class CharacterDollOperations
 
         if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain)
         {
-            dwarfPaperDoll.Combat += 30;
-            dwarfPaperDoll.Armour += 10;
-            dwarfPaperDoll.Purge += 10;
-            dwarfPaperDoll.Harm += 20;
-            dwarfPaperDoll.Hide -= 40;
-            dwarfPaperDoll.Social -= 20;
-            dwarfPaperDoll.Travel -= 50;
-            dwarfPaperDoll.Sail -= 200;
+            charsheet.Combat += 30;
+            charsheet.Armour += 10;
+            charsheet.Purge += 10;
+            charsheet.Harm += 20;
+            charsheet.Hide -= 40;
+            charsheet.Social -= 20;
+            charsheet.Travel -= 50;
+            charsheet.Sail -= 200;
         }
 
-        dwarfPaperDoll = DistributeClassStatsAndSkills(dwarfPaperDoll, info.Class, statPoints, skillPoints);
+        charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
 
-        return dwarfPaperDoll;
+        return charsheet;
     }
 
-    internal CharacterPaperDoll DistributeClassStatsAndSkills(CharacterPaperDoll doll, string classes, int statPoints, int skillPoints)
+    internal CharacterSheet DistributeClassStatsAndSkills(CharacterSheet doll, string classes, int statPoints, int skillPoints)
     {
         if (classes == CharactersLore.Classes.Warrior) return SetClassForWarrior(doll, statPoints, skillPoints);
         else if (classes == CharactersLore.Classes.Spellcaster) return SetClassForSpellcaster(doll, statPoints, skillPoints);
@@ -120,7 +120,7 @@ internal class CharacterDollOperations
         else throw new NotImplementedException();
     }
 
-    internal CharacterPaperDoll SetClassForHunter(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    internal CharacterSheet SetClassForHunter(CharacterSheet doll, int statPoints, int skillPoints)
     {
         var primaryStats = new List<string>
         {
@@ -218,7 +218,7 @@ internal class CharacterDollOperations
         return doll;
     }
 
-    internal CharacterPaperDoll SetClassForSpellcaster(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    internal CharacterSheet SetClassForSpellcaster(CharacterSheet doll, int statPoints, int skillPoints)
     {
         var primaryStats = new List<string>
         {
@@ -334,7 +334,7 @@ internal class CharacterDollOperations
     }
 
 
-    internal CharacterPaperDoll SetClassForWarrior(CharacterPaperDoll doll, int statPoints, int skillPoints)
+    internal CharacterSheet SetClassForWarrior(CharacterSheet doll, int statPoints, int skillPoints)
     {
         var primaryStats = new List<string>
         {

@@ -67,7 +67,7 @@ internal class CharacterLogic
 
             LevelUp = new CharacterLevelUp(),
 
-            Doll = dollOperations.SetPaperDoll(info, stub.StatPoints, stub.SkillPoints),
+            Doll = dollOperations.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
 
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),

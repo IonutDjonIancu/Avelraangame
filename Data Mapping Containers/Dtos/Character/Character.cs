@@ -9,7 +9,7 @@ public class Character
 
     public CharacterLevelUp? LevelUp { get; set; }
 
-    public CharacterPaperDoll? Doll { get; set; }
+    public CharacterSheet? Doll { get; set; }
     
     public CharacterInventory? Inventory { get; set; }
     public List<Item>? Supplies { get; set; }
