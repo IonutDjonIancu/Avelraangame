@@ -1,6 +1,4 @@
-﻿using Data_Mapping_Containers.Dtos;
-
-namespace Data_Mapping_Containers.Dtos;
+﻿namespace Data_Mapping_Containers.Dtos;
 
 public class Item
 {
@@ -19,7 +17,7 @@ public class Item
     public string Lore { get; set; }
     public bool HasTaint { get; set; }
 
-    public CharacterPaperDoll Doll { get; set; } = new();
+    public CharacterSheet Sheet { get; set; } = new();
     public int Value { get; set; }
 
 }

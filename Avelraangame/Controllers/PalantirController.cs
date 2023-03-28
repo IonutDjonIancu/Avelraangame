@@ -340,9 +340,47 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/LearnHeroicTrait
+    [HttpPut("Character/LearnHeroicTrait")]
+    public IActionResult LearnHeroicTrait([FromQuery] Request request, [FromBody] CharacterHeroicTrait trait)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
-    #region privates
+    #region HeroicTraits
+    // GET: /api/palantir/HeroicTraits/GetHeroicTraits
+    [HttpGet("HeroicTraits/GetHeroicTraits")]
+    public IActionResult GetHeroicTraits()
+    {
+        try
+        {
+            var traits = factory.ServiceFactory.CharacterService.GetHeroicTraits();
+
+            return Ok(traits);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+    #endregion
+
+    #region private methods
     private string MatchTokensForPlayer(Request request)
     {
         validator.ValidateObject(request);

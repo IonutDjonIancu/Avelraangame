@@ -7,5 +7,5 @@ public class DatabaseSnapshot
 
     public List<Player> Players { get; set; }
     public List<Item>? Items { get; set; }
-    public List<CharacterTrait>? Traits { get; set; }
+    public List<HeroicTrait>? Traits { get; set; }
 }

@@ -64,7 +64,7 @@ internal class ItemLogic
         }
     }
 
-    #region privates
+    #region private methods
     private void TaintItem(Item item)
     {
         item.HasTaint = dice.Roll_d20() % 2 == 0;

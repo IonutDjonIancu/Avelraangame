@@ -56,9 +56,9 @@ public class CharacterServiceTests : TestBase
         character.Identity.Should().NotBeNull();
         character.Identity.Id.Should().NotBeNullOrWhiteSpace();
         character.Identity.PlayerId.Should().Be(playerId);
+        character.Identity.Name.Should().NotBeNullOrWhiteSpace();
 
         character.Info.Should().NotBeNull();
-        character.Info.Name.Should().NotBeNullOrWhiteSpace();
         character.Info.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         character.Info.Race.Should().Be(origins.Race);
         character.Info.Culture.Should().Be(origins.Culture);
@@ -72,10 +72,8 @@ public class CharacterServiceTests : TestBase
         character.LevelUp.StatPoints.Should().Be(0);
         character.LevelUp.SkillPoints.Should().Be(0);
 
-        character.Doll.Should().NotBeNull();
-        character.Doll.Strength.Should().BeGreaterThanOrEqualTo(1);
-
-        character.Traits.Should().NotBeNull();
+        character.Sheet.Should().NotBeNull();
+        character.Sheet.Strength.Should().BeGreaterThanOrEqualTo(1);
 
         character.Inventory.Should().NotBeNull();
 
@@ -110,7 +108,7 @@ public class CharacterServiceTests : TestBase
             Name = newCharName
         }, playerId);
 
-        character.Info.Name.Should().Be(newCharName);
+        character.Identity.Name.Should().Be(newCharName);
     }
 
     [Theory]
@@ -159,7 +157,7 @@ public class CharacterServiceTests : TestBase
 
         var character = charService.SaveCharacterStub(origins, playerId);
 
-        var currentStr = character.Doll.Strength;
+        var currentStr = character.Sheet.Strength;
 
         dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.StatPoints = 1;
 
@@ -169,7 +167,7 @@ public class CharacterServiceTests : TestBase
             Stat = CharactersLore.Stats.Strength
         }, playerId);
 
-        character.Doll.Strength.Should().Be(currentStr + 1);
+        character.Sheet.Strength.Should().Be(currentStr + 1);
     }
 
     [Theory]
@@ -212,7 +210,7 @@ public class CharacterServiceTests : TestBase
 
         var character = charService.SaveCharacterStub(origins, playerId);
 
-        var currentCombat = character.Doll.Combat;
+        var currentCombat = character.Sheet.Combat;
 
         dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.SkillPoints = 1;
 
@@ -222,7 +220,7 @@ public class CharacterServiceTests : TestBase
             Skill = CharactersLore.Skills.Combat
         }, playerId);
 
-        character.Doll.Combat.Should().Be(currentCombat + 1);
+        character.Sheet.Combat.Should().Be(currentCombat + 1);
     }
 
     [Theory]
@@ -246,7 +244,7 @@ public class CharacterServiceTests : TestBase
         }, playerId));
     }
 
-    #region privates
+    #region private methods
     private string CreatePlayer()
     {
         dbm.Snapshot.Players!.Clear();

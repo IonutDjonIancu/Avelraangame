@@ -7,6 +7,7 @@ public class TestBase
     private static readonly string testSecret = "BQxevwF37aNAznk";
     private static readonly string dbTestPath = "\\Resources\\DatabaseFiles\\AvelraanTestDb.json";
     private static readonly string dbPlayersPath = "\\Resources\\DatabaseFiles\\Players";
+    private static readonly string dbTraitsPath = "\\Resources\\DatabaseFiles\\Traits\\Traits.json";
     private static readonly string logsPath = "\\Resources\\LogFiles\\Logs.txt";
 
     protected readonly IDatabaseManager dbm;
@@ -24,7 +25,8 @@ public class TestBase
             Key = testSecret,
             DbPath = dbTestPath,
             LogPath = logsPath,
-            DbPlayersPath = dbPlayersPath
+            DbPlayersPath = dbPlayersPath,
+            DbTraitsPath = dbTraitsPath
         };
 
         dbm = new DatabaseManager(dbmConfig);
