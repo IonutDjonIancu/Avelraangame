@@ -15,7 +15,8 @@ internal class CharacterLogic
     private readonly IDiceRollService dice;
     private readonly IItemService itemService;
     private readonly CharacterMetadata charMetadata;
-    private readonly CharacterSheetOperations sheetOperations;
+    private readonly CharacterSheetOperations sheetOps;
+    private readonly CharacterTraitsOperations traitsOps;
 
     private CharacterLogic() { }
 
@@ -29,7 +30,8 @@ internal class CharacterLogic
         dice = diceRollService;
         this.itemService = itemService;
         this.charMetadata = charMetadata;
-        sheetOperations = new CharacterSheetOperations(dice);
+        sheetOps = new CharacterSheetOperations(dice);
+        traitsOps = new CharacterTraitsOperations(dbm, charMetadata);
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -69,7 +71,7 @@ internal class CharacterLogic
 
             LevelUp = new CharacterLevelUp(),
 
-            Sheet = sheetOperations.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
+            Sheet = sheetOps.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
 
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
@@ -258,42 +260,10 @@ internal class CharacterLogic
 
     internal Character ApplyHeroicTrait(CharacterHeroicTrait trait, string playerId)
     {
-        var character = charMetadata.GetCharacter(trait.CharacterId, playerId);
-        var heroicTrait = dbm.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId);
-
-        character.HeroicTraits.Add(heroicTrait);
-        character.LevelUp.DeedsPoints -= heroicTrait.DeedsCost;
-
-        if (heroicTrait.Type == TraitsLore.Type.bonus) ApplyBonusHeroicTrait(character, heroicTrait, trait);
-
-        dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
-        
-        return character;
+        return traitsOps.ApplyHeroicTrait(trait, playerId);
     }
 
     #region private methods
-    private static void ApplyBonusHeroicTrait(Character character, HeroicTrait heroicTrait, CharacterHeroicTrait trait)
-    {
-        // should encapsulate this logic better
-        // possibly in a separate service logic or helper
-        
-        if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.swordsman)
-        {
-            var value = 10 + (int)Math.Ceiling(character.Sheet.Combat /*character PaperDoll*/ * 0.01); // TODO: should calculate the PaperDoll amount as stated in the HT's description
-            character.Sheet.Combat += value;
-        } 
-        else if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.skillful)
-        {
-            if (trait.Skill == CharactersLore.Skills.Combat)
-            {
-                var value = (int)Math.Ceiling(character.Sheet.Combat * 0.2);
-                character.Sheet.Combat += value;
-            }
-
-            // cater for all the other skills as well
-        }
-    }
-
     private int RandomizeEntityLevel()
     {
         var roll = dice.Roll_d20(true);
