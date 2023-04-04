@@ -11,7 +11,7 @@ public class CharacterService : ICharacterService
 {
     private readonly IDatabaseManager dbm;
     private readonly CharacterValidator validator;
-    private readonly CharacterLogic logic;
+    private readonly CharacterLogicDelegator logic;
 
     public CharacterService(
         IDatabaseManager manager,
@@ -20,10 +20,9 @@ public class CharacterService : ICharacterService
     {
         dbm = manager;
 
-        var metadata = new CharacterMetadata(dbm);
-
-        validator = new CharacterValidator(dbm, metadata);
-        logic = new CharacterLogic(dbm, diceRollService, itemService, metadata);
+        var charMetadata = new CharacterMetadata(dbm);
+        validator = new CharacterValidator(dbm, charMetadata);
+        logic = new CharacterLogicDelegator(dbm, diceRollService, itemService, charMetadata);
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
@@ -119,5 +118,6 @@ public class CharacterService : ICharacterService
     }
     #endregion
 }
+
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8603 // Possible null reference return.

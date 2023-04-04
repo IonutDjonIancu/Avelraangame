@@ -5,12 +5,12 @@ using Persistance_Manager;
 
 namespace Service_Delegators;
 
-internal class CharacterTraitsOperations
+internal class CharacterTraitsLogic
 {
     private readonly IDatabaseManager dbm;
     private readonly CharacterMetadata charMetadata;
 
-    public CharacterTraitsOperations(
+    public CharacterTraitsLogic(
         IDatabaseManager databaseManager,
         CharacterMetadata charMetadata) 
     {
@@ -36,9 +36,6 @@ internal class CharacterTraitsOperations
     #region private methods
     private static void ApplyBonusHeroicTrait(Character character, HeroicTrait heroicTrait, CharacterHeroicTrait trait)
     {
-        // should encapsulate this logic better
-        // possibly in a separate service logic or helper
-
         if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.swordsman)
         {
             var value = 10 + (int)Math.Ceiling(character.Sheet.Combat /*character PaperDoll*/ * 0.01); // TODO: should calculate the PaperDoll amount as stated in the HT's description
