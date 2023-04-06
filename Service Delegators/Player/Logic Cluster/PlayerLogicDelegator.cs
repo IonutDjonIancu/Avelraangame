@@ -5,14 +5,14 @@ using Persistance_Manager;
 
 namespace Service_Delegators;
 
-internal class PlayerLogic
+internal class PlayerLogicDelegator
 {
     private readonly IDatabaseManager dbm;
     private readonly IAuthenticatorModule authModule;
 
-    private PlayerLogic() { }
+    private PlayerLogicDelegator() { }
 
-    internal PlayerLogic(IDatabaseManager databaseManager)
+    internal PlayerLogicDelegator(IDatabaseManager databaseManager)
     {
         dbm = databaseManager;
         authModule = new AuthenticatorModule();
@@ -80,7 +80,8 @@ internal class PlayerLogic
             dbm.PersistPlayer(player, true);
 
             return true;
-        } else
+        } 
+        else
         {
             return false;
         }

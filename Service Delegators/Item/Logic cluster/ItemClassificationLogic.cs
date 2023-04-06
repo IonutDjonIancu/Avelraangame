@@ -4,11 +4,11 @@ using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators.Logic_Cluster;
 
-internal class ItemClassification
+internal class ItemClassificationLogic
 {
     private readonly IDiceRollService dice;
 
-    internal ItemClassification(IDiceRollService dice)
+    internal ItemClassificationLogic(IDiceRollService dice)
 	{
 		this.dice = dice;
 	}
