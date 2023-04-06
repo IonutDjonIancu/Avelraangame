@@ -335,8 +335,75 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().Be(1);
     }
 
-    #region private methods
+    [Theory]
+    [Description("Learning a common bonus heroic trait.")]
+    public void Learn_common_bonus_heroic_trait_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
 
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Classes.Warrior,
+            playerId);
+        character.LevelUp.DeedsPoints = 100;
+
+        var listOfTraits = charService.GetHeroicTraits();
+
+        var swordsman = listOfTraits.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman);
+
+        var trait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = swordsman.Identity.Id,
+        };
+
+        var combatBeforeTrait = character.Sheet.Combat;
+        charService.LearnHeroicTrait(trait, playerId);
+        var combatIncreasedOnce = character.Sheet.Combat;
+
+        combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
+
+        charService.LearnHeroicTrait(trait, playerId);
+        var combatIncreasedTwice = character.Sheet.Combat;
+
+        combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
+    }
+
+    [Theory]
+    [Description("Learning a unique heroic trait twice throws error.")]
+    public void Learn_unique_heroic_trait_throws_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Classes.Warrior,
+            playerId);
+        character.LevelUp.DeedsPoints = 1000;
+
+        var listOfTraits = charService.GetHeroicTraits();
+
+        var metachaos = listOfTraits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology);
+
+        var trait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = metachaos.Identity.Id,
+        };
+
+        charService.LearnHeroicTrait(trait, playerId);
+
+        Assert.Throws<Exception>(() => charService.LearnHeroicTrait(trait, playerId));
+    }
+
+
+    #region private methods
     private string GetItemLocation(Character character)
     {
         var item = itemService.GenerateRandomItem();
