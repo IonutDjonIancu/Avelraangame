@@ -9,6 +9,8 @@ namespace Persistance_Manager;
 
 public class MetadataManager
 {
+    private const string djonEmail = "iiancu85@gmail.com";
+
     private readonly IMailingModule mailingModule;
     private readonly DatabaseManagerValidator validator;
     private readonly DatabaseManager dbm;
@@ -54,19 +56,20 @@ public class MetadataManager
     #endregion
 
     #region database
-    public bool ExportLogs(LogsExport export)
+    public bool ExportLogs(int days, string playerId)
     {
-        validator.ValidateObject(export);
-        validator.EmailShouldBeAdmin(export.ReceiverEmail);
-        validator.DaysLimit(export.HowManyDays);
+        var player = GetPlayerById(playerId);
+
+        validator.PlayerShouldBeAdmin(player.Identity.Name);
+        validator.DaysLimit(days);
 
         var subject = $"Logs exported on - {DateTime.Now.ToShortDateString()}";
         var logsLocation = dbm.info.LogPath;
-        var attachments = GetLogFilesAsAttachments(logsLocation, export.HowManyDays);
+        var attachments = GetLogFilesAsAttachments(logsLocation, days);
 
         if (attachments.Count > 0)
         {
-            mailingModule.SendEmail(export.ReceiverEmail, subject, "See logs attached.", attachments);
+            mailingModule.SendEmail(djonEmail, subject, "See logs attached.", attachments);
             return true;
         }
         else
@@ -75,20 +78,19 @@ public class MetadataManager
         }
     }
 
-    public bool ExportDatabase(string recipient)
+    public bool ExportDatabase(string playerId)
     {
-        validator.EmailShouldBeAdmin(recipient);
+        var player = GetPlayerById(playerId);
+
+        validator.PlayerShouldBeAdmin(player.Identity.Name);
 
         var subject = $"Database exported on: {DateTime.Now.ToShortDateString()}";
 
-        var listOfAttachments = new List<Attachment>()
-        {
-            new Attachment(dbm.info.DbPath)
-        };
+        var listOfAttachments = SetExportDatabaseAttachments();
 
         if (listOfAttachments.Count > 0)
         {
-            mailingModule.SendEmail(recipient, subject, "Database json attached.", listOfAttachments);
+            mailingModule.SendEmail(djonEmail, subject, "Database json attached.", listOfAttachments);
             return true;
         }
         else
@@ -96,27 +98,46 @@ public class MetadataManager
             return false;
         }
     }
-
-    
     #endregion
 
     #region private methods
+    private List<Attachment> SetExportDatabaseAttachments()
+    {
+        var listOfAttachments = new List<Attachment>();
+
+        // database
+        var databaseAttachment = new Attachment(dbm.info.DbPath);
+        listOfAttachments.Add(databaseAttachment);
+
+        // players
+        var paths = Directory.GetFiles(dbm.info.DbPlayersPath);
+        foreach (var path in paths)
+        {
+            var playerAttachment = new Attachment(path);
+            listOfAttachments.Add(playerAttachment);
+        }
+
+        return listOfAttachments;
+    }
+
     private List<Attachment> GetLogFilesAsAttachments(string logsPath, int days)
     {
         validator.ValidateString(logsPath);
 
         var listOfAttachments = new List<Attachment>();
+        var listOfPaths = Directory.GetFiles(logsPath).Reverse().ToList();
+        var counter = 1;
 
-        for (int i = 0; i < days; i++)
+        foreach(var path in listOfPaths)
         {
-            var timeSpan = new TimeSpan(i, 0, 0, 0);
-            var dateString = DateTime.Now.Subtract(timeSpan).ToShortDateString().Split('/');
+            if (counter > days)
+            {
+                return listOfAttachments;
+            }
 
-            var logPath = $"{logsPath}Logs{dateString[2]}{dateString[0]}{dateString[1]}.txt";
-
-            listOfAttachments.Add(new Attachment(logPath));
-
-            validator.ValidateNumber(listOfAttachments.Count);
+            var attachment = new Attachment(path);
+            listOfAttachments.Add(attachment);
+            counter++;
         }
 
         return listOfAttachments;

@@ -10,7 +10,7 @@ public interface ICharacterService
     Character UpdateCharacter(CharacterUpdate charUpdate, string playerId);
     void DeleteCharacter(string characterId, string playerId);
 
-    Characters GetCharacters(string playerName);   
+    Characters GetCharacters(string playerId);   
 
     Character EquipCharacterItem(CharacterEquip equip, string playerId);
     Character UnequipCharacterItem(CharacterEquip unequip, string playerId);

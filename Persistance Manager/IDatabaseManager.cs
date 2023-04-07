@@ -11,6 +11,4 @@ public interface IDatabaseManager
 
     void PersistPlayer(Player player);
     void RemovePlayer(Player player);
-
-    bool OverwriteDatabase(DatabaseOverwrite overwrite);
 }

@@ -31,36 +31,15 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Database
-    // PUT: /api/palantir/Database/OverwriteDatabase
-    [HttpPut("Database/OverwriteDatabase")]
-    public IActionResult OverwriteDatabase([FromQuery] Request request, [FromBody] DatabaseOverwrite overwrite)
-    {
-        try
-        {
-            MatchTokensForPlayer(request);
-
-            var isDbOverwritten = factory.Dbm.Metadata.OverwriteDatabase(overwrite);
-
-            if (isDbOverwritten) return Ok("Database overwritten successfully.");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-
-        return Conflict("Unable to overwrite database.");
-    }
-
     // PUT: /api/palantir/Database/ExportDatabase
     [HttpPut("Database/ExportDatabase")]
-    public IActionResult ExportDatabase([FromQuery] Request request, [FromBody] string recipient)
+    public IActionResult ExportDatabase([FromQuery] Request request)
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            var isDbExported = factory.Dbm.Metadata.ExportDatabase(recipient);
+            var isDbExported = factory.Dbm.Metadata.ExportDatabase(playerId);
 
             if (isDbExported)
             {
@@ -78,13 +57,13 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Database/ExportLogs
     [HttpPut("Database/ExportLogs")]
-    public IActionResult ExportLogs([FromQuery] Request request, [FromBody] LogsExport export)
+    public IActionResult ExportLogs([FromQuery] Request request, int days)
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            var areLogsExported = factory.Dbm.Metadata.ExportLogs(export);
+            var areLogsExported = factory.Dbm.Metadata.ExportLogs(days, playerId);
 
             if (areLogsExported) return Ok("Logs exported successfully.");
         }
@@ -189,15 +168,15 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Characters
-    // GET: /api/palantir/Character/GetCharacters
-    [HttpGet("Character/GetCharacters")]
-    public IActionResult GetCharacters([FromQuery] Request request)
+    // GET: /api/palantir/Character/GetPlayerCharacters
+    [HttpGet("Character/GetPlayerCharacters")]
+    public IActionResult GetPlayerCharacters([FromQuery] Request request)
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            var characters = factory.ServiceFactory.CharacterService.GetCharacters(request.PlayerName);
+            var characters = factory.ServiceFactory.CharacterService.GetCharacters(playerId);
 
             return Ok(characters);
         }
@@ -208,15 +187,15 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // GET: /api/palantir/Character/GetCharacter
-    [HttpGet("Character/GetCharacter")]
-    public IActionResult GetCharacter([FromQuery] Request request, string characterId)
+    // GET: /api/palantir/Character/GetPlayerCharacter
+    [HttpGet("Character/GetPlayerCharacter")]
+    public IActionResult GetPlayerCharacter([FromQuery] Request request, string characterId)
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.GetCharacters(request.PlayerName).CharactersList.Find(c => c.Identity!.Id == characterId);
+            var character = factory.ServiceFactory.CharacterService.GetCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
 
             return Ok(character);
         }

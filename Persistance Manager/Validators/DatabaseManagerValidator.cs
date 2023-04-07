@@ -28,10 +28,10 @@ public class DatabaseManagerValidator : ValidatorBase
         if (!File.Exists(path)) Throw($"File not found at path {path}");
     }
 
-    public void EmailShouldBeAdmin(string email)
+    public void PlayerShouldBeAdmin(string playerName)
     {
-        ValidateString(email);
-        if (!dbm.info.Admins.Contains(email)) Throw($"Email {email} is not an admin.");
+        ValidateString(playerName);
+        if (!dbm.info.Admins.Contains(playerName)) Throw($"Email {playerName} is not an admin.");
     }
 
     public void DaysLimit(int days)
