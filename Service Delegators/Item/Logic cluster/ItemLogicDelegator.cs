@@ -4,26 +4,22 @@ using System.Globalization;
 
 namespace Service_Delegators.Logic_Cluster;
 
-internal class ItemLogic
+internal class ItemLogicDelegator
 {
-    private readonly IDatabaseManager dbm;
     private readonly IDiceRollService dice;
-    private readonly ItemClassification classif;
-    private readonly ItemEnchants enchants;
-    private readonly ItemUpgrades upgrades;
+    private readonly ItemClassificationLogic itemClassif;
+    private readonly ItemEnchantsLogic itemEnchants;
+    private readonly ItemUpgradesLogic itemUpgrades;
 
-    private ItemLogic() { }
+    private ItemLogicDelegator() { }
 
-    internal ItemLogic(
-        IDatabaseManager databaseManager,
-        IDiceRollService diceRollService)
+    internal ItemLogicDelegator(IDiceRollService diceRollService)
     {
-        dbm = databaseManager;
         dice = diceRollService;
 
-        classif = new ItemClassification(dice);
-        enchants = new ItemEnchants(dice);
-        upgrades = new ItemUpgrades(dice);
+        itemClassif = new ItemClassificationLogic(dice);
+        itemEnchants = new ItemEnchantsLogic(dice);
+        itemUpgrades = new ItemUpgradesLogic(dice);
     }
 
     internal Item GetARandomItem()
@@ -42,15 +38,15 @@ internal class ItemLogic
     internal Item GetASpecificItem(string type, string subtype)
     {
         var item = CreateItem();
-        classif.SetItemLevelAndLevelName(item);
+        itemClassif.SetItemLevelAndLevelName(item);
 
         item.Type = new CultureInfo("en-US").TextInfo.ToTitleCase(type);
         item.Subtype = new CultureInfo("en-US").TextInfo.ToTitleCase(subtype);
-        item.InventoryLocations = classif.SetItemInventoryLocation(item.Subtype);
+        item.InventoryLocations = itemClassif.SetItemInventoryLocation(item.Subtype);
 
         try
         {
-            classif.SetItemCategoryAndDescription(item);
+            itemClassif.SetItemCategoryAndDescription(item);
             TaintItem(item);
             EnchantItem(item);
             UpgradeItem(item);
@@ -89,20 +85,20 @@ internal class ItemLogic
 
     private void ClassifyItem(Item item)
     {
-        classif.SetItemLevelAndLevelName(item);
-        classif.SetItemTypeAndSubtypeAndInventoryLocations(item);
-        classif.SetItemCategoryAndDescription(item);
+        itemClassif.SetItemLevelAndLevelName(item);
+        itemClassif.SetItemTypeAndSubtypeAndInventoryLocations(item);
+        itemClassif.SetItemCategoryAndDescription(item);
     }
 
     private void EnchantItem(Item item)
     {
-        enchants.SetItemBonuses(item);
-        enchants.StrengthenOrImbue(item);
+        itemEnchants.SetItemBonuses(item);
+        itemEnchants.StrengthenOrImbue(item);
     }
 
     private void UpgradeItem(Item item)
     {
-        upgrades.UpgradeItem(item);
+        itemUpgrades.UpgradeItem(item);
     }
     #endregion
 }

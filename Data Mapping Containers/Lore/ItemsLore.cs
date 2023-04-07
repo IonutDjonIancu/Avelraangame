@@ -31,13 +31,13 @@ public class ItemsLore
 
     public static class InventoryLocation
     {
-        public static readonly string Head = "Head";
-        public static readonly string Body = "Body";
-        public static readonly string Mainhand = "Mainhand";
-        public static readonly string Offhand = "Offhand";
-        public static readonly string Shield = "Shield";
-        public static readonly string Ranged = "Ranged";
-        public static readonly string Heraldry = "Heraldry";
+        public const string Head = "Head";
+        public const string Body = "Body";
+        public const string Mainhand = "Mainhand";
+        public const string Offhand = "Offhand";
+        public const string Shield = "Shield";
+        public const string Ranged = "Ranged";
+        public const string Heraldry = "Heraldry";
 
         public static readonly List<string> All = new()
         {
@@ -49,16 +49,16 @@ public class ItemsLore
     {
         public static class Weapons
         {
-            public static readonly string Sword = "Sword";
-            public static readonly string Pike = "Pike";
-            public static readonly string Crossbow = "Crossbow";
-            public static readonly string Polearm = "Polearm";
-            public static readonly string Mace = "Mace";
-            public static readonly string Axe = "Axe";
-            public static readonly string Dagger = "Dagger";
-            public static readonly string Bow = "Bow";
-            public static readonly string Sling = "Sling";
-            public static readonly string Spear = "Spear";
+            public const string Sword = "Sword";
+            public const string Pike = "Pike";
+            public const string Crossbow = "Crossbow";
+            public const string Polearm = "Polearm";
+            public const string Mace = "Mace";
+            public const string Axe = "Axe";
+            public const string Dagger = "Dagger";
+            public const string Bow = "Bow";
+            public const string Sling = "Sling";
+            public const string Spear = "Spear";
 
             public static readonly List<string> All = new()
             {
@@ -77,9 +77,9 @@ public class ItemsLore
 
         public static class Protections
         {
-            public static readonly string Armour = "Armour";
-            public static readonly string Helmet = "Helmet";
-            public static readonly string Shield = "Shield";
+            public const string Armour = "Armour";
+            public const string Helmet = "Helmet";
+            public const string Shield = "Shield";
 
             public static readonly List<string> All = new()
             {
@@ -91,10 +91,10 @@ public class ItemsLore
         
         public static class Wealth
         {
-            public static readonly string Gems = "Gems";
-            public static readonly string Valuables = "Valuables";
-            public static readonly string Trinket = "Trinket";
-            public static readonly string Goods = "Goods";
+            public const string Gems = "Gems";
+            public const string Valuables = "Valuables";
+            public const string Trinket = "Trinket";
+            public const string Goods = "Goods";
 
             public static readonly List<string> All = new()
             {

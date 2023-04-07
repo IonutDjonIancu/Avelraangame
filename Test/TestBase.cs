@@ -33,7 +33,7 @@ public class TestBase
 
         diceService = new DiceRollService();
         playerService = new PlayerService(dbm);
-        itemService = new ItemService(dbm, diceService);
+        itemService = new ItemService(diceService);
         charService = new CharacterService(dbm, diceService, itemService);
     }
 }
