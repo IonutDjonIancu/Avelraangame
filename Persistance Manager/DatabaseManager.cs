@@ -1,7 +1,6 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
 using Persistance_Manager.Validators;
-using System.ComponentModel.DataAnnotations;
 
 namespace Persistance_Manager;
 
@@ -21,7 +20,7 @@ public class DatabaseManager : IDatabaseManager
 
         Admins = new()
         {
-            "iiancu85@gmail.com"
+            "djon"
         },
 
         Banned = new()
@@ -51,7 +50,12 @@ public class DatabaseManager : IDatabaseManager
 
         validator.ValidateString(dbmconfig.LogPath);
         info.LogPath = $"{currentDir}{dbmconfig.LogPath}";
-        validator.FileAtPath(info.LogPath);
+
+        validator.ValidateString(dbmconfig.AvelraanEmail);
+        info.AvelraanEmail = dbmconfig.AvelraanEmail;
+
+        validator.ValidateString(dbmconfig.AvelraanPassword);
+        info.AvelraanPassword = dbmconfig.AvelraanPassword;
 
         Snapshot = CreateDatabaseSnapshot(info);
         Metadata = new MetadataManager(this);
@@ -79,26 +83,6 @@ public class DatabaseManager : IDatabaseManager
         if (player == null) throw new Exception("Player object cannot be null.");
 
         RemovePlayerSnapshot(player.Identity.Id);
-    }
-
-    public bool OverwriteDatabase(DatabaseOverwrite overwrite)
-    {
-        validator.ValidateObject(overwrite);
-        validator.ValidateString(overwrite.DatabaseString);
-        validator.ValidateString(overwrite.Email);
-        validator.KeyInSecretKeys(overwrite.SecretKey);
-
-        Snapshot = JsonConvert.DeserializeObject<DatabaseSnapshot>(overwrite.DatabaseString)!;
-
-        if (Snapshot != null)
-        {
-            Persist();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     #region private methods

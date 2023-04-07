@@ -54,9 +54,11 @@ public class CharacterService : ICharacterService
         logic.DeleteCharacter(characterId, playerId);
     }
 
-    public Characters GetCharacters(string playerName)
+    public Characters GetCharacters(string playerId)
     {
-        var player = dbm.Metadata.GetPlayerByName(playerName);
+        var player = dbm.Metadata.GetPlayerById(playerId);
+
+        validator.ValidateObject(player);
 
         return new Characters
         {

@@ -23,8 +23,8 @@ public class FactoryManager : IFactoryManager
 
             Key = configManager.DbKey,
 
-            AppEmail = configManager.AvelraanEmail,
-            AppPassword = configManager.AvelraanEmailPass
+            AvelraanEmail = configManager.AvelraanEmail,
+            AvelraanPassword = configManager.AvelraanEmailPass
         };
         
         try
