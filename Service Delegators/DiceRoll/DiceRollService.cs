@@ -4,11 +4,11 @@ namespace Service_Delegators;
 
 public class DiceRollService : IDiceRollService
 {
-    private readonly DiceRollLogic logic;
+    private readonly DiceRollLogicDelegator logic;
 
     public DiceRollService()
     {
-        logic = new DiceRollLogic();
+        logic = new DiceRollLogicDelegator();
     }
 
     public int Roll_d20(bool hasReroll = false)

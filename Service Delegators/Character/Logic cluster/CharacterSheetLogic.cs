@@ -2,11 +2,11 @@
 
 namespace Service_Delegators;
 
-internal class CharacterSheetOperations
+internal class CharacterSheetLogic
 {
     private readonly IDiceRollService dice;
 
-    internal CharacterSheetOperations(IDiceRollService dice)
+    internal CharacterSheetLogic(IDiceRollService dice)
     {
         this.dice = dice;
     }

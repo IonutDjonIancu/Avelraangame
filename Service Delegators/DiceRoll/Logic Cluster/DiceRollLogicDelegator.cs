@@ -2,15 +2,10 @@
 
 namespace Service_Delegators;
 
-internal class DiceRollLogic
+internal class DiceRollLogicDelegator
 {
-    private readonly Random random;
+    private readonly Random random = new();
     
-    internal DiceRollLogic()
-    {
-        random = new Random();
-    }
-
     internal int Roll1d20NoReroll()
     {
         return random.Next(1, 21);

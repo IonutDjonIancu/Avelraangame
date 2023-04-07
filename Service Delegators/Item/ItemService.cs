@@ -1,18 +1,15 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
 using Service_Delegators.Logic_Cluster;
 
 namespace Service_Delegators;
 
 public class ItemService : IItemService
 {
-    private readonly ItemLogic logic;
+    private readonly ItemLogicDelegator logic;
 
-    public ItemService(
-        IDatabaseManager databaseOperations,
-        IDiceRollService diceRollService)
+    public ItemService(IDiceRollService diceRollService)
     { 
-        logic = new ItemLogic(databaseOperations, diceRollService);
+        logic = new ItemLogicDelegator(diceRollService);
     }
     
     public Item GenerateRandomItem()

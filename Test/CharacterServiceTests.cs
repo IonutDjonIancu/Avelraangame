@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
 
 namespace Tests;
 
@@ -244,7 +245,234 @@ public class CharacterServiceTests : TestBase
         }, playerId));
     }
 
+    [Theory]
+    [Description("Equipping an item in character inventory.")]
+    public void Equip_item_on_character_inventory_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Classes.Warrior,
+            playerId);
+
+        var item = character.Supplies?.First();
+        item.Should().NotBeNull();
+
+        var location = GetItemLocation(character);
+
+        var equip = new CharacterEquip
+        {
+            CharacterId = character.Identity.Id,
+            InventoryLocation = location,
+            ItemId = character.Supplies.First().Identity.Id
+        };
+
+        charService.EquipCharacterItem(equip, playerId);
+
+        var hasEquipedItem =
+            character.Inventory.Head != null
+            || character.Inventory.Ranged != null
+            || character.Inventory.Body != null
+            || character.Inventory.Mainhand != null
+            || character.Inventory.Offhand != null
+            || character.Inventory.Shield != null;
+
+        if (character.Inventory.Heraldry.Count > 0)
+        {
+            hasEquipedItem = character.Inventory.Heraldry.First() != null;
+        }
+
+        hasEquipedItem.Should().BeTrue();
+    }
+
+    [Theory]
+    [Description("Unequipping an item from character inventory.")]
+    public void Unequip_item_from_character_inventory_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Classes.Warrior,
+            playerId);
+
+        var item = character.Supplies?.First();
+        item.Should().NotBeNull();
+
+        var location = GetItemLocation(character);
+
+        var equip = new CharacterEquip
+        {
+            CharacterId = character.Identity.Id,
+            InventoryLocation = location,
+            ItemId = character.Supplies.First().Identity.Id
+        };
+
+        charService.EquipCharacterItem(equip, playerId);
+        charService.UnequipCharacterItem(equip, playerId);
+
+        var hasEquipedItem =
+            character.Inventory.Head != null
+            || character.Inventory.Ranged != null
+            || character.Inventory.Body != null
+            || character.Inventory.Mainhand != null
+            || character.Inventory.Offhand != null
+            || character.Inventory.Shield != null;
+
+        if (character.Inventory.Heraldry.Count > 0)
+        {
+            hasEquipedItem = character.Inventory.Heraldry.First() != null;
+        }
+
+        hasEquipedItem.Should().BeFalse();
+        character.Supplies.Count.Should().Be(1);
+    }
+
+    [Theory]
+    [Description("Learning a common bonus heroic trait.")]
+    public void Learn_common_bonus_heroic_trait_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Classes.Warrior,
+            playerId);
+        character.LevelUp.DeedsPoints = 100;
+
+        var listOfTraits = charService.GetHeroicTraits();
+
+        var swordsman = listOfTraits.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman);
+
+        var trait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = swordsman.Identity.Id,
+        };
+
+        var combatBeforeTrait = character.Sheet.Combat;
+        charService.LearnHeroicTrait(trait, playerId);
+        var combatIncreasedOnce = character.Sheet.Combat;
+
+        combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
+
+        charService.LearnHeroicTrait(trait, playerId);
+        var combatIncreasedTwice = character.Sheet.Combat;
+
+        combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
+    }
+
+    [Theory]
+    [Description("Learning a unique heroic trait twice throws error.")]
+    public void Learn_unique_heroic_trait_throws_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Classes.Warrior,
+            playerId);
+        character.LevelUp.DeedsPoints = 1000;
+
+        var listOfTraits = charService.GetHeroicTraits();
+
+        var metachaos = listOfTraits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology);
+
+        var trait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = metachaos.Identity.Id,
+        };
+
+        charService.LearnHeroicTrait(trait, playerId);
+
+        Assert.Throws<Exception>(() => charService.LearnHeroicTrait(trait, playerId));
+    }
+
+
     #region private methods
+    private string GetItemLocation(Character character)
+    {
+        var item = itemService.GenerateRandomItem();
+        if (item.Subtype == ItemsLore.Subtypes.Wealth.Goods)
+        {
+            return GetItemLocation(character);
+        }
+
+        item.Identity.CharacterId = character.Identity.Id;
+        character.Supplies.Clear();
+        character.Supplies.Add(item);
+
+        string location = string.Empty;
+        if (ItemsLore.Subtypes.Weapons.All.Contains(item.Subtype))
+        {
+            switch (item.Subtype)
+            {
+                case ItemsLore.Subtypes.Weapons.Axe:
+                case ItemsLore.Subtypes.Weapons.Dagger:
+                case ItemsLore.Subtypes.Weapons.Mace:
+                case ItemsLore.Subtypes.Weapons.Pike:
+                case ItemsLore.Subtypes.Weapons.Polearm:
+                case ItemsLore.Subtypes.Weapons.Spear:
+                case ItemsLore.Subtypes.Weapons.Sword:
+                    location = ItemsLore.InventoryLocation.Mainhand;
+                    break;
+                case ItemsLore.Subtypes.Weapons.Bow:
+                case ItemsLore.Subtypes.Weapons.Crossbow:
+                case ItemsLore.Subtypes.Weapons.Sling:
+                    location = ItemsLore.InventoryLocation.Ranged;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else if (ItemsLore.Subtypes.Protections.All.Contains(item.Subtype))
+        {
+            switch (item.Subtype)
+            {
+                case ItemsLore.Subtypes.Protections.Helmet:
+                    location = ItemsLore.InventoryLocation.Head;
+                    break;
+                case ItemsLore.Subtypes.Protections.Armour:
+                    location = ItemsLore.InventoryLocation.Body;
+                    break;
+                case ItemsLore.Subtypes.Protections.Shield:
+                    location = ItemsLore.InventoryLocation.Shield;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            switch (item.Subtype)
+            {
+                case ItemsLore.Subtypes.Wealth.Gems:
+                case ItemsLore.Subtypes.Wealth.Trinket:
+                case ItemsLore.Subtypes.Wealth.Valuables:
+                    location = ItemsLore.InventoryLocation.Heraldry;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return location;
+    }
+
     private string CreatePlayer()
     {
         dbm.Snapshot.Players!.Clear();
@@ -271,4 +499,6 @@ public class CharacterServiceTests : TestBase
     }
     #endregion
 }
+
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument.

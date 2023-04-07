@@ -2,11 +2,11 @@
 
 namespace Service_Delegators.Logic_Cluster;
 
-internal class ItemUpgrades
+internal class ItemUpgradesLogic
 {
     private readonly IDiceRollService dice;
 
-    internal ItemUpgrades(IDiceRollService dice)
+    internal ItemUpgradesLogic(IDiceRollService dice)
     {
         this.dice = dice;
     }

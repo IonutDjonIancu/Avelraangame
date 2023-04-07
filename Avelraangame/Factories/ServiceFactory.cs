@@ -18,7 +18,7 @@ public class ServiceFactory : IServiceFactory
         dbm = databaseManager;
         DicerollService = new DiceRollService();
         PlayerService = new PlayerService(dbm);
-        ItemService = new ItemService(dbm, DicerollService);
+        ItemService = new ItemService(DicerollService);
         CharacterService = new CharacterService(dbm, DicerollService, ItemService);
     }
 }

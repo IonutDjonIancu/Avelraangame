@@ -8,14 +8,14 @@ namespace Service_Delegators;
 public class PlayerService : IPlayerService
 {
     private readonly IDatabaseManager dbm;
-    private readonly PlayerLogic logic;
+    private readonly PlayerLogicDelegator logic;
     private readonly PlayerValidator validator;
 
     public PlayerService(IDatabaseManager manager)
     {
         dbm = manager;
         validator = new PlayerValidator(dbm);
-        logic = new PlayerLogic(dbm);
+        logic = new PlayerLogicDelegator(dbm);
 
     }
 

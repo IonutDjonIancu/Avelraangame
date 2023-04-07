@@ -1,6 +1,7 @@
-﻿using Data_Mapping_Containers.Dtos;
+﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+using Data_Mapping_Containers.Dtos;
 using Independent_Modules;
-using Newtonsoft.Json;
 using Persistance_Manager.Validators;
 using System.Net.Mail;
 
@@ -21,6 +22,7 @@ public class MetadataManager
         mailingModule = new MailingModule(dbm.info.AvelraanEmail, dbm.info.AvelraanPassword);
     }
 
+    #region players
     public Player? GetPlayerById(string id)
     {
         return dbm.Snapshot.Players.Find(p => p.Identity.Id == id);
@@ -40,7 +42,18 @@ public class MetadataManager
     {
         return dbm.info.Admins.Contains(playerName);
     }
+    #endregion
 
+    #region characters
+    public Character? GetCharacterById(string characterId, string playerId)
+    {
+        var player = GetPlayerById(playerId);
+
+        return player.Characters.Find(c => c.Identity.Id == characterId);
+    }
+    #endregion
+
+    #region database
     public bool ExportLogs(LogsExport export)
     {
         validator.ValidateObject(export);
@@ -84,25 +97,8 @@ public class MetadataManager
         }
     }
 
-    public bool OverwriteDatabase(DatabaseOverwrite overwrite)
-    {
-        validator.ValidateObject(overwrite);
-        validator.ValidateString(overwrite.DatabaseString);
-        validator.ValidateString(overwrite.Email);
-        validator.KeyInSecretKeys(overwrite.SecretKey);
-
-        dbm.Snapshot = JsonConvert.DeserializeObject<DatabaseSnapshot>(overwrite.DatabaseString)!;
-
-        if (dbm.Snapshot != null)
-        {
-            dbm.Persist();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    
+    #endregion
 
     #region private methods
     private List<Attachment> GetLogFilesAsAttachments(string logsPath, int days)
@@ -127,3 +123,5 @@ public class MetadataManager
     }
     #endregion
 }
+
+#pragma warning restore CS8602 // Dereference of a possibly null reference.

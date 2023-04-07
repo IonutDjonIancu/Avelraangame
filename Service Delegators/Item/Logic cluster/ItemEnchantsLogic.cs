@@ -2,11 +2,11 @@
 
 namespace Service_Delegators.Logic_Cluster;
 
-internal class ItemEnchants
+internal class ItemEnchantsLogic
 {
     private readonly IDiceRollService dice;
 
-    internal ItemEnchants(IDiceRollService dice)
+    internal ItemEnchantsLogic(IDiceRollService dice)
 	{
         this.dice = dice;
 	}
