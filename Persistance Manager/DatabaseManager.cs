@@ -1,6 +1,7 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
 using Persistance_Manager.Validators;
+using System.ComponentModel.DataAnnotations;
 
 namespace Persistance_Manager;
 
@@ -8,7 +9,8 @@ public class DatabaseManager : IDatabaseManager
 {
     private static readonly string currentDir = Directory.GetCurrentDirectory();
 
-    private readonly DatabaseManagerValidator validate;
+    private readonly DatabaseManagerValidator validator;
+
     internal readonly DatabaseManagerInfo info = new()
     {
         SecretKeys = new()
@@ -33,23 +35,23 @@ public class DatabaseManager : IDatabaseManager
 
     public DatabaseManager(DatabaseManagerConfig dbmconfig)
     {
-        validate = new DatabaseManagerValidator(this);
-        validate.KeyInSecretKeys(dbmconfig.Key);
+        validator = new DatabaseManagerValidator(this);
+        validator.KeyInSecretKeys(dbmconfig.Key);
 
-        validate.ValidateString(dbmconfig.DbPath);
+        validator.ValidateString(dbmconfig.DbPath);
         info.DbPath = $"{currentDir}{dbmconfig.DbPath}";
-        validate.FileAtPath(info.DbPath);
+        validator.FileAtPath(info.DbPath);
 
-        validate.ValidateString(dbmconfig.DbPlayersPath);
+        validator.ValidateString(dbmconfig.DbPlayersPath);
         info.DbPlayersPath = $"{currentDir}{dbmconfig.DbPlayersPath}";
         info.PlayerFilePaths = UploadPlayerFilePaths(info.DbPlayersPath);
 
-        validate.ValidateString(dbmconfig.DbTraitsPath);
+        validator.ValidateString(dbmconfig.DbTraitsPath);
         info.DbTraitsPath = $"{currentDir}{dbmconfig.DbTraitsPath}";
 
-        validate.ValidateString(dbmconfig.LogPath);
+        validator.ValidateString(dbmconfig.LogPath);
         info.LogPath = $"{currentDir}{dbmconfig.LogPath}";
-        validate.FileAtPath(info.LogPath);
+        validator.FileAtPath(info.LogPath);
 
         Snapshot = CreateDatabaseSnapshot(info);
         Metadata = new MetadataManager(this);
@@ -64,18 +66,38 @@ public class DatabaseManager : IDatabaseManager
         await SaveDatabaseSnapshot();
     }
 
-    public async void PersistPlayer(Player player, bool toRemove = false)
+    public async void PersistPlayer(Player player)
     {
-        if (player == null) throw new Exception("Unable to find player");
+        if (player == null) throw new Exception("Player object cannot be null.");
 
-        if (toRemove)
+        Thread.Sleep(100);
+        await SavePlayerSnapshot(player);
+    }
+
+    public void RemovePlayer(Player player)
+    {
+        if (player == null) throw new Exception("Player object cannot be null.");
+
+        RemovePlayerSnapshot(player.Identity.Id);
+    }
+
+    public bool OverwriteDatabase(DatabaseOverwrite overwrite)
+    {
+        validator.ValidateObject(overwrite);
+        validator.ValidateString(overwrite.DatabaseString);
+        validator.ValidateString(overwrite.Email);
+        validator.KeyInSecretKeys(overwrite.SecretKey);
+
+        Snapshot = JsonConvert.DeserializeObject<DatabaseSnapshot>(overwrite.DatabaseString)!;
+
+        if (Snapshot != null)
         {
-            RemovePlayerSnapshot(player.Identity.Id);
+            Persist();
+            return true;
         }
         else
         {
-            Thread.Sleep(100);
-            await SavePlayerSnapshot(player);
+            return false;
         }
     }
 
@@ -87,7 +109,7 @@ public class DatabaseManager : IDatabaseManager
 
     private void RemovePlayerSnapshot(string playerId, int tries = 0)
     {
-        validate.TriesLimit(tries);
+        validator.TriesLimit(tries);
 
         try
         {
@@ -123,7 +145,7 @@ public class DatabaseManager : IDatabaseManager
 
     private async Task SaveDatabaseSnapshot(int tries = 0)
     {
-        validate.TriesLimit(tries);
+        validator.TriesLimit(tries);
 
         Snapshot.DbDate = DateTime.Now;
         var dbJson = JsonConvert.SerializeObject(Snapshot);

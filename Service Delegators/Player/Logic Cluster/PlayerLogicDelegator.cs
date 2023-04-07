@@ -77,7 +77,7 @@ internal class PlayerLogicDelegator
         {
             dbm.Snapshot.Players!.Remove(player);
 
-            dbm.PersistPlayer(player, true);
+            dbm.RemovePlayer(player);
 
             return true;
         } 

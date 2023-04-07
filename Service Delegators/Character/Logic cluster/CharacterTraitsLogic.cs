@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8604 // Possible null reference argument.
+
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
 
@@ -54,5 +55,6 @@ internal class CharacterTraitsLogic
     }
     #endregion
 }
+
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8604 // Possible null reference argument.

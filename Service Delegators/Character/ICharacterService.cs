@@ -15,7 +15,7 @@ public interface ICharacterService
     Character EquipCharacterItem(CharacterEquip equip, string playerId);
     Character UnequipCharacterItem(CharacterEquip unequip, string playerId);
 
+    List<HeroicTrait> GetHeroicTraits();   
     Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId);
 
-    List<HeroicTrait> GetHeroicTraits();   
 }

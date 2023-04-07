@@ -1,14 +1,16 @@
 ﻿using Data_Mapping_Containers.Dtos;
 
-namespace Persistance_Manager
+namespace Persistance_Manager;
+
+public interface IDatabaseManager
 {
-    public interface IDatabaseManager
-    {
-        MetadataManager Metadata { get; set; }
-        DatabaseSnapshot Snapshot { get; set; }
+    MetadataManager Metadata { get; set; }
+    DatabaseSnapshot Snapshot { get; set; }
 
-        void Persist();
+    void Persist();
 
-        void PersistPlayer(Player player, bool toRemove = false);
-    }
+    void PersistPlayer(Player player);
+    void RemovePlayer(Player player);
+
+    bool OverwriteDatabase(DatabaseOverwrite overwrite);
 }
