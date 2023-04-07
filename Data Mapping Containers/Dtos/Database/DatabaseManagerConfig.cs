@@ -10,6 +10,6 @@ public class DatabaseManagerConfig
 
     public string Key { get; set; }
 
-    public string AppEmail { get; set; }
-    public string AppPassword { get; set; }
+    public string AvelraanEmail { get; set; }
+    public string AvelraanPassword { get; set; }
 }
