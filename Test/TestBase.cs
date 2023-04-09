@@ -26,7 +26,9 @@ public class TestBase
             DbPath = dbTestPath,
             LogPath = logsPath,
             DbPlayersPath = dbPlayersPath,
-            DbTraitsPath = dbTraitsPath
+            DbTraitsPath = dbTraitsPath,
+            AvelraanEmail = "example@gmail.com",
+            AvelraanPassword = "password",
         };
 
         dbm = new DatabaseManager(dbmConfig);
