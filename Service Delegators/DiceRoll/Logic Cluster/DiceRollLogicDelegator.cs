@@ -47,21 +47,21 @@ internal class DiceRollLogicDelegator
         return random.Next(1, upperLimit + 1);
     }
 
-    internal DiceRoll GenerateRollFor(string tradition, int bonus = 0)
+    internal DiceRoll GenerateRollFor(string heritage, int bonus = 0)
     {
         var dice = new List<int>();
 
         int roll;
-        if      (IsDanarian(tradition))     roll = Rolld20WithList(dice, bonus);
-        else if (IsCalvinian(tradition))    roll = Rolld100WithList(dice, bonus);
+        if      (IsTraditional(heritage))   roll = Rolld20WithList(dice, bonus);
+        else if (IsMartial(heritage))       roll = Rolld100WithList(dice, bonus);
         else  /*(none)*/                    roll = Rolld20WithList(dice, bonus);
 
         return new DiceRoll
         {
             Roll = roll,
-            Grade = CalculateGradeFor(tradition, roll),
+            Grade = CalculateGradeFor(heritage, roll),
             Dice = dice,
-            Crits = CalculateCritsFor(tradition, dice)
+            Crits = CalculateCritsFor(heritage, dice)
         };
     }
 
@@ -94,20 +94,20 @@ internal class DiceRollLogicDelegator
         return roll;
     }
 
-    private static int CalculateGradeFor(string tradition, int roll)
+    private static int CalculateGradeFor(string heritage, int roll)
     {
-        if      (IsDanarian(tradition))     return (int)Math.Ceiling(roll / 4.00M);
-        else if (IsCalvinian(tradition))    return (int)Math.Ceiling(roll / 20.00M);
+        if      (IsTraditional(heritage))   return (int)Math.Ceiling(roll / 4.00M);
+        else if (IsMartial(heritage))       return (int)Math.Ceiling(roll / 20.00M);
         else  /*(none)*/                    return (int)Math.Ceiling(roll / 4.00M);
     }
 
-    private static int CalculateCritsFor(string tradition, List<int> dice)
+    private static int CalculateCritsFor(string heritage, List<int> dice)
     {
-        if      (IsDanarian(tradition))     return CritsByDiceCount(dice);
-        else if (IsCalvinian(tradition))    return CritsByDiceCount(dice);
+        if      (IsTraditional(heritage))   return CritsByDiceCount(dice);
+        else if (IsMartial(heritage))       return CritsByDiceCount(dice);
         else  /*(none)*/                    return CritsByDiceCount(dice);
 
-        // other tradition styles influenced by crits from 19 or 18 will return a greater number of crits dice
+        // other heritage styles influenced by crits from 19 or 18 will return a greater number of crits dice
 
     }
 
@@ -116,14 +116,14 @@ internal class DiceRollLogicDelegator
         return dice.Count - 1;
     }
 
-    private static bool IsDanarian(string tradition)
+    private static bool IsTraditional(string heritage)
     {
-        return tradition == CharactersLore.Traditions.Ravanon;
+        return heritage == CharactersLore.Heritage.Traditional;
     }
 
-    private static bool IsCalvinian(string tradition)
+    private static bool IsMartial(string heritage)
     {
-        return tradition == CharactersLore.Traditions.Endarii;
+        return heritage == CharactersLore.Heritage.Martial;
     }
     #endregion
 }

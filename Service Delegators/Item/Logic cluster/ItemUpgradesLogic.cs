@@ -352,6 +352,7 @@ internal class ItemUpgradesLogic
         item.Sheet.Harm *= 2;
         item.Sheet.Defense *= 2;
         item.Sheet.Purge *= 2;
+        item.Sheet.Spot *= 2;
         item.Sheet.Health *= 2;
         item.Sheet.Mana *= 2;
     }

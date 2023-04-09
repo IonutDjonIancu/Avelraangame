@@ -151,7 +151,7 @@ internal class CharacterCreateLogic
 
             Race = origins.Race,
             Culture = origins.Culture,
-            Tradition = origins.Tradition,
+            Heritage = origins.Heritage,
             Class = origins.Class,
 
             DateOfBirth = DateTime.Now.ToShortDateString(),

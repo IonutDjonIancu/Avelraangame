@@ -71,6 +71,7 @@ internal class CharacterSheetLogic
         if (info.Culture == CharactersLore.Cultures.Elf.Highborn)
         {
             charsheet.Arcane += 40;
+            charsheet.Spot += 100;
             charsheet.Mana += 50;
             charsheet.Willpower += 10;
             charsheet.Travel -= 100;
