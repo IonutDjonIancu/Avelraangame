@@ -44,7 +44,7 @@ internal class ItemEnchantsLogic
     private void Strengthen(Item item)
     {
         if      (item.Type == ItemsLore.Types.Weapon)       item.Sheet.Harm += dice.Roll_d20(true) * item.Level;
-        else if (item.Type == ItemsLore.Types.Protection)   item.Sheet.Armour += dice.Roll_dX(6) * item.Level;
+        else if (item.Type == ItemsLore.Types.Protection)   item.Sheet.Defense += dice.Roll_dX(6) * item.Level;
         else  /*(item.Type == ItemsLore.Types.Wealth)*/     item.Value *= item.Level;
 
         if(item.Level >= 3) item.Sheet.Purge += dice.Roll_d20(true);
@@ -64,7 +64,7 @@ internal class ItemEnchantsLogic
         else if (item.Type == ItemsLore.Types.Protection)
         {
             var bonus = dice.Roll_dX(6) + 3;
-            item.Sheet.Armour += bonus;
+            item.Sheet.Defense += bonus;
             item.Value += bonus * 10;
         }
         else /* Wealth */
@@ -88,7 +88,7 @@ internal class ItemEnchantsLogic
         else if (item.Type == ItemsLore.Types.Protection)
         {
             var bonus = dice.Roll_d20() + 5;
-            item.Sheet.Armour += bonus;
+            item.Sheet.Defense += bonus;
             item.Value += bonus * 10;
         }
         else /* Wealth */
@@ -112,7 +112,7 @@ internal class ItemEnchantsLogic
         else if (item.Type == ItemsLore.Types.Protection)
         {
             var bonus = dice.Roll_d20() + 10;
-            item.Sheet.Armour += bonus;
+            item.Sheet.Defense += bonus;
             item.Value += bonus * 10;
         }
         else /* Wealth */
@@ -140,9 +140,9 @@ internal class ItemEnchantsLogic
         var skillIndex = dice.Roll_dX(CharactersLore.Assets.All.Count) - 1;
         var chosenAsset = CharactersLore.Assets.All[skillIndex];
 
-        if      (chosenAsset == CharactersLore.Assets.Stamina)  item.Sheet.Stamina += amount;
+        if      (chosenAsset == CharactersLore.Assets.Stamina)  item.Sheet.Endurance += amount;
         else if (chosenAsset == CharactersLore.Assets.Harm)     item.Sheet.Harm += amount;
-        else if (chosenAsset == CharactersLore.Assets.Armour)   item.Sheet.Armour += amount;
+        else if (chosenAsset == CharactersLore.Assets.Armour)   item.Sheet.Defense += amount;
         else if (chosenAsset == CharactersLore.Assets.Purge)    item.Sheet.Purge += amount;
         else if (chosenAsset == CharactersLore.Assets.Health)   item.Sheet.Health += amount;
         else  /*(chosenAsset == CharactersLore.Assets.Mana)*/   item.Sheet.Mana += amount;

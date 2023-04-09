@@ -98,7 +98,7 @@ internal class CharacterSheetLogic
         if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain)
         {
             charsheet.Combat += 30;
-            charsheet.Armour += 10;
+            charsheet.Defense += 10;
             charsheet.Purge += 10;
             charsheet.Harm += 20;
             charsheet.Hide -= 40;

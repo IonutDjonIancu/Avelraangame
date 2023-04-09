@@ -62,12 +62,12 @@ internal class ItemUpgradesLogic
             {
                 item.Sheet.Abstract += 100;
                 item.Sheet.Mana += 100;
-                item.Sheet.Armour += 20;
+                item.Sheet.Defense += 20;
             }
             else
             {
                 item.Sheet.Purge += 20;
-                item.Sheet.Armour += 10;
+                item.Sheet.Defense += 10;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -95,11 +95,11 @@ internal class ItemUpgradesLogic
             if (item.HasTaint)
             {
                 item.Sheet.Mana += 800;
-                item.Sheet.Armour += 50;
+                item.Sheet.Defense += 50;
             }
             else
             {
-                item.Sheet.Armour += 50;
+                item.Sheet.Defense += 50;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -121,7 +121,7 @@ internal class ItemUpgradesLogic
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
-            item.Sheet.Armour += 25;
+            item.Sheet.Defense += 25;
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
         {
@@ -147,11 +147,11 @@ internal class ItemUpgradesLogic
             if (item.HasTaint)
             {
                 item.Sheet.Mana += 500;
-                item.Sheet.Armour += 10;
+                item.Sheet.Defense += 10;
             }
             else
             {
-                item.Sheet.Armour += 15;
+                item.Sheet.Defense += 15;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -178,11 +178,11 @@ internal class ItemUpgradesLogic
             if (item.HasTaint)
             {
                 item.Sheet.Mana += 750;
-                item.Sheet.Armour += 50;
+                item.Sheet.Defense += 50;
             }
             else
             {
-                item.Sheet.Armour += 55;
+                item.Sheet.Defense += 55;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -210,11 +210,11 @@ internal class ItemUpgradesLogic
             if (item.HasTaint)
             {
                 item.Sheet.Mana += 50;
-                item.Sheet.Armour += 75;
+                item.Sheet.Defense += 75;
             }
             else
             {
-                item.Sheet.Armour += 90;
+                item.Sheet.Defense += 90;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -348,9 +348,9 @@ internal class ItemUpgradesLogic
     }
     private static void DoubleAssets(Item item)
     {
-        item.Sheet.Stamina *= 2;
+        item.Sheet.Endurance *= 2;
         item.Sheet.Harm *= 2;
-        item.Sheet.Armour *= 2;
+        item.Sheet.Defense *= 2;
         item.Sheet.Purge *= 2;
         item.Sheet.Health *= 2;
         item.Sheet.Mana *= 2;
