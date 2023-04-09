@@ -71,6 +71,7 @@ internal class CharacterSheetLogic
         if (info.Culture == CharactersLore.Cultures.Elf.Highborn)
         {
             charsheet.Arcane += 40;
+            charsheet.Spot += 100;
             charsheet.Mana += 50;
             charsheet.Willpower += 10;
             charsheet.Travel -= 100;
@@ -98,7 +99,7 @@ internal class CharacterSheetLogic
         if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain)
         {
             charsheet.Combat += 30;
-            charsheet.Armour += 10;
+            charsheet.Defense += 10;
             charsheet.Purge += 10;
             charsheet.Harm += 20;
             charsheet.Hide -= 40;

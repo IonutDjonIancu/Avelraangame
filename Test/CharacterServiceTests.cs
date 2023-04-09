@@ -45,7 +45,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Tradition = CharactersLore.Traditions.Ravanon,
+            Heritage = CharactersLore.Heritage.Traditional,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -63,7 +63,7 @@ public class CharacterServiceTests : TestBase
         character.Info.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         character.Info.Race.Should().Be(origins.Race);
         character.Info.Culture.Should().Be(origins.Culture);
-        character.Info.Tradition.Should().Be(origins.Tradition);
+        character.Info.Heritage.Should().Be(origins.Heritage);
         character.Info.Class.Should().Be(origins.Class);
         character.Info.Fame.Should().NotBeNullOrWhiteSpace();
         character.Info.Wealth.Should().BeGreaterThanOrEqualTo(1);
@@ -98,7 +98,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Tradition = CharactersLore.Traditions.Ravanon,
+            Heritage = CharactersLore.Heritage.Traditional,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -125,7 +125,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Tradition = CharactersLore.Traditions.Ravanon,
+            Heritage = CharactersLore.Heritage.Traditional,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -133,7 +133,7 @@ public class CharacterServiceTests : TestBase
 
         charService.DeleteCharacter(character.Identity.Id, playerId);
 
-        var characters = charService.GetCharacters(playerName);
+        var characters = charService.GetCharacters(playerId);
 
         characters.CharactersList.Should().NotContain(character);
         characters.Count.Should().Be(0);
@@ -152,7 +152,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Tradition = CharactersLore.Traditions.Ravanon,
+            Heritage = CharactersLore.Heritage.Traditional,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -181,7 +181,7 @@ public class CharacterServiceTests : TestBase
         var character = CreateCharacter(
             CharactersLore.Races.Human,
             CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Heritage.Traditional,
             CharactersLore.Classes.Warrior,
             playerId);
 
@@ -205,7 +205,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Tradition = CharactersLore.Traditions.Ravanon,
+            Heritage = CharactersLore.Heritage.Traditional,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -234,7 +234,7 @@ public class CharacterServiceTests : TestBase
         var character = CreateCharacter(
             CharactersLore.Races.Human,
             CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Heritage.Traditional,
             CharactersLore.Classes.Warrior,
             playerId);
 
@@ -255,7 +255,7 @@ public class CharacterServiceTests : TestBase
         var character = CreateCharacter(
             CharactersLore.Races.Human,
             CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Heritage.Traditional,
             CharactersLore.Classes.Warrior,
             playerId);
 
@@ -299,7 +299,7 @@ public class CharacterServiceTests : TestBase
         var character = CreateCharacter(
             CharactersLore.Races.Human,
             CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Heritage.Traditional,
             CharactersLore.Classes.Warrior,
             playerId);
 
@@ -345,7 +345,7 @@ public class CharacterServiceTests : TestBase
         var character = CreateCharacter(
             CharactersLore.Races.Human,
             CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Heritage.Traditional,
             CharactersLore.Classes.Warrior,
             playerId);
         character.LevelUp.DeedsPoints = 100;
@@ -382,7 +382,7 @@ public class CharacterServiceTests : TestBase
         var character = CreateCharacter(
             CharactersLore.Races.Human,
             CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Traditions.Ravanon,
+            CharactersLore.Heritage.Traditional,
             CharactersLore.Classes.Warrior,
             playerId);
         character.LevelUp.DeedsPoints = 1000;
@@ -481,7 +481,7 @@ public class CharacterServiceTests : TestBase
         return dbm.Snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
     }
 
-    private Character CreateCharacter(string race, string culture, string tradition, string classes, string playerId)
+    private Character CreateCharacter(string race, string culture, string heritage, string classes, string playerId)
     {
         dbm.Snapshot.CharacterStubs.Clear();
 
@@ -491,7 +491,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = race,
             Culture = culture,
-            Tradition = tradition,
+            Heritage = heritage,
             Class = classes
         };
 

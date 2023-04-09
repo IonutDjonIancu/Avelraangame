@@ -40,18 +40,18 @@ public class DiceRollService : IDiceRollService
         return logic.Roll1dNnoReroll(x);
     }
 
-    public DiceRoll Roll_d20_Traditionless(int bonus = 0)
+    public DiceRoll Roll_d20_NoHeritage(int bonus = 0)
     {
-        return logic.GenerateRollFor(CharactersLore.Traditions.None, bonus);
+        return logic.GenerateRollFor(CharactersLore.Heritage.None, bonus);
     }
 
-    public DiceRoll Roll_d20_Danarian(int bonus = 0)
+    public DiceRoll Roll_d20_Traditional(int bonus = 0)
     {
-        return logic.GenerateRollFor(CharactersLore.Traditions.Ravanon, bonus);
+        return logic.GenerateRollFor(CharactersLore.Heritage.Traditional, bonus);
     }
 
-    public DiceRoll Roll_d20_Calvinian(int bonus = 0)
+    public DiceRoll Roll_d20_Martial(int bonus = 0)
     {
-        return logic.GenerateRollFor(CharactersLore.Traditions.Endarii, bonus);
+        return logic.GenerateRollFor(CharactersLore.Heritage.Martial, bonus);
     }
 }

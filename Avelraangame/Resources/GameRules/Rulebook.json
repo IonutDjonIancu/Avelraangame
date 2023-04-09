@@ -1,0 +1,31 @@
+﻿{
+  "stats": {
+    "(str) strength": "str",
+    "(con) constitution": "cns",
+    "(agl) agility": "agl",
+    "(wil) willpower": "wil",
+    "(per) perception": "per",
+    "(abs) abstract": "abs"
+  },
+  "assets": {
+    "(end) endurance": "str + 2con + agl + 2wil",
+    "(har) harm": "2str + agl + per",
+    "(def) defense": "(2con + agl + per) / 10",
+    "(pur) purge": "(2wil + con + per) / 10)",
+    "(spo) spot": "3per + agl",
+    "(hea) health": "2con + str + wil",
+    "(man) mana": "(3con + 2abs) / 10"
+  },
+  "skills": {
+    "(com) combat": "str + con + agl",
+    "(arc) arcane": "abs + wil + con",
+    "(psi) psionics": "2con + wil",
+    "(hid) hide": "agl + per + abs",
+    "(tra) traps": "2abs + per",
+    "(tac) tactics": "3abs",
+    "(soc) social": "per + abs + wil",
+    "(apo) apothecary": "abs + per + con",
+    "(trv) travel": "2con + agl + wil - str",
+    "(sai) sail": "2con + abs"
+  }
+}
