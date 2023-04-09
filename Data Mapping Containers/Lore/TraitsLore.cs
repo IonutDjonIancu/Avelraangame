@@ -25,6 +25,14 @@ public class TraitsLore
         };
     }
 
+    public static class Category
+    {
+        public const string stats = "Stats";
+        public const string assets = "Assets";
+        public const string skills = "Skills";
+        public const string rolls = "Rolls";
+    }
+
     public static class ActiveTraits
     {
         // 1
@@ -45,6 +53,7 @@ public class TraitsLore
                 Lore = metachaosDaemonology_lore,
                 Type = Type.active,
                 Subtype = Subtype.unique,
+                Category = Category.rolls,
                 DeedsCost = 100
             }
         };
@@ -70,6 +79,7 @@ public class TraitsLore
                 Lore = fatePoint_lore,
                 Type = Type.passive,
                 Subtype = Subtype.unique,
+                Category = Category.rolls,
                 DeedsCost = 50
             }
         };
@@ -99,6 +109,7 @@ public class TraitsLore
                 Lore = skillful_lore,
                 Type = Type.bonus,
                 Subtype = Subtype.unique,
+                Category = Category.skills,
                 DeedsCost = 5
             },
             new HeroicTrait
@@ -112,6 +123,7 @@ public class TraitsLore
                 Lore = swordsman_lore,
                 Type = Type.bonus,
                 Subtype = Subtype.common,
+                Category = Category.skills,
                 DeedsCost = 1
             }
         };

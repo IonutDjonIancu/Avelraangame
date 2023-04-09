@@ -50,7 +50,7 @@ public class CharacterValidator : ValidatorBase
 
         ValidateRace(origins.Race);
         ValidateCulture(origins.Culture);
-        ValidateTradition(origins.Tradition);
+        ValidateHeritage(origins.Heritage);
         ValidateClass(origins.Class);
 
         ValidateRaceCultureCombination(origins);
@@ -236,10 +236,10 @@ public class CharacterValidator : ValidatorBase
         if (!CharactersLore.Classes.All.Contains(classes)) Throw($"Invalid class {classes}.");
     }
 
-    private void ValidateTradition(string tradition)
+    private void ValidateHeritage(string heritage)
     {
-        ValidateString(tradition, "Invalid tradition.");
-        if (!CharactersLore.Traditions.All.Contains(tradition)) Throw($"Invalid tradition {tradition}.");
+        ValidateString(heritage, "Invalid heritage.");
+        if (!CharactersLore.Heritage.All.Contains(heritage)) Throw($"Invalid heritage: {heritage}.");
     }
 
     private void ValidateCulture(string culture)

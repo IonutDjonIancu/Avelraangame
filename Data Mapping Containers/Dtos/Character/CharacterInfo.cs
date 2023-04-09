@@ -6,7 +6,7 @@ public class CharacterInfo
 
     public string Race { get; set; }
     public string Culture { get; set; }
-    public string Tradition { get; set; }
+    public string Heritage { get; set; }
     public string Class { get; set; }
 
     public string? Fame { get; set; }

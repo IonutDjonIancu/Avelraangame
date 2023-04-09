@@ -4,9 +4,9 @@ public class CharactersLore
 {
     public static class Races
     {
-        public static readonly string Human = "Human";
-        public static readonly string Elf = "Elf";
-        public static readonly string Dwarf = "Dwarf";
+        public const string Human = "Human";
+        public const string Elf = "Elf";
+        public const string Dwarf = "Dwarf";
 
         public static readonly List<string> All = new()
         {
@@ -18,11 +18,11 @@ public class CharactersLore
     {
         public static class Human
         {
-            public static readonly string Danarian = "Danarian";
-            public static readonly string Midheim = "Midheim";
-            public static readonly string Ravanian = "Ravanian";
-            public static readonly string Endarian = "Endarian";
-            public static readonly string Calvinian = "Calvinian";
+            public const string Danarian = "Danarian";
+            public const string Midheim = "Midheim";
+            public const string Ravanian = "Ravanian";
+            public const string Endarian = "Endarian";
+            public const string Calvinian = "Calvinian";
 
             public static readonly List<string> All = new()
             {
@@ -32,7 +32,7 @@ public class CharactersLore
 
         public static class Elf
         {
-            public static readonly string Highborn = "Highborn";
+            public const string Highborn = "Highborn";
 
             public static readonly List<string> All = new()
             {
@@ -42,7 +42,7 @@ public class CharactersLore
 
         public static class Dwarf
         {
-            public static readonly string Undermountain = "Undermountain";
+            public const string Undermountain = "Undermountain";
 
             public static readonly List<string> All = new()
             {
@@ -64,23 +64,23 @@ public class CharactersLore
         };
     }
 
-    public static class Traditions
+    public static class Heritage
     {
-        public static readonly string None = "None";
-        public static readonly string Ravanon = "Ravanon";
-        public static readonly string Endarii = "Endarii";
+        public const string None = "None";
+        public const string Traditional = "Traditional";
+        public const string Martial = "Martial";
 
         public static readonly List<string> All = new()
         {
-            Ravanon, Endarii
+            Traditional, Martial
         };
     }
 
     public static class Classes
     {
-        public static readonly string Warrior = "Warrior";
-        public static readonly string Spellcaster = "Spellcaster";
-        public static readonly string Hunter = "Hunter";
+        public const string Warrior = "Warrior";
+        public const string Spellcaster = "Spellcaster";
+        public const string Hunter = "Hunter";
         //public static readonly string Ranger = "Ranger";
         //public static readonly string Merchant = "Merchant";
         //public static readonly string Adventurer = "Adventurer";
@@ -95,12 +95,12 @@ public class CharactersLore
 
     public static class Stats
     {
-        public static readonly string Strength = "Strength";
-        public static readonly string Constitution = "Constitution";
-        public static readonly string Agility = "Agility";
-        public static readonly string Willpower = "Willpower";
-        public static readonly string Perception = "Perception";
-        public static readonly string Abstract = "Abstract";
+        public const string Strength = "Strength";
+        public const string Constitution = "Constitution";
+        public const string Agility = "Agility";
+        public const string Willpower = "Willpower";
+        public const string Perception = "Perception";
+        public const string Abstract = "Abstract";
 
         public static readonly List<string> All = new()
         {
@@ -110,31 +110,32 @@ public class CharactersLore
 
     public static class Assets
     {
-        public static readonly string Stamina = "Stamina";
-        public static readonly string Harm = "Harm";
-        public static readonly string Armour = "Armour";
-        public static readonly string Purge = "Purge";
-        public static readonly string Health = "Health";
-        public static readonly string Mana = "Mana";
+        public const string Endurance = "Endurance";
+        public const string Harm = "Harm";
+        public const string Defense = "Defense";
+        public const string Purge = "Purge";
+        public const string Spot = "Spot";
+        public const string Health = "Health";
+        public const string Mana = "Mana";
 
         public static readonly List<string> All = new()
         {
-            Stamina, Harm, Armour, Purge, Health, Mana
+            Endurance, Harm, Defense, Purge, Spot, Health, Mana
         };
     }
 
     public static class Skills
     {
-        public static readonly string Combat = "Combat";
-        public static readonly string Arcane = "Arcane";
-        public static readonly string Psionics = "Psionics";
-        public static readonly string Hide = "Hide";
-        public static readonly string Traps = "Traps";
-        public static readonly string Tactics = "Tactics";
-        public static readonly string Social = "Social";
-        public static readonly string Apothecary = "Apothecary";
-        public static readonly string Travel = "Travel";
-        public static readonly string Sail = "Sail";
+        public const string Combat = "Combat";
+        public const string Arcane = "Arcane";
+        public const string Psionics = "Psionics";
+        public const string Hide = "Hide";
+        public const string Traps = "Traps";
+        public const string Tactics = "Tactics";
+        public const string Social = "Social";
+        public const string Apothecary = "Apothecary";
+        public const string Travel = "Travel";
+        public const string Sail = "Sail";
 
         public static readonly List<string> All = new()
         {

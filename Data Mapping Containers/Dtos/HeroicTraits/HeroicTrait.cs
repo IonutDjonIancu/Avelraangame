@@ -9,6 +9,7 @@ public class HeroicTrait
     
     public string Type { get; set; }
     public string Subtype { get; set; }
+    public string Category { get; set; }
 
     public int DeedsCost { get; set; }
 }
