@@ -79,6 +79,12 @@ internal class ItemLogicDelegator
             {
                 Id = Guid.NewGuid().ToString(),
                 CharacterId = "",
+            },
+            Sheet = new CharacterSheet
+            {
+                Stats = new CharacterStats(),
+                Assets = new CharacterAssets(),
+                Skills = new CharacterSkills()
             }
         };
     }

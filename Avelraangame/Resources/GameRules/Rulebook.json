@@ -27,5 +27,65 @@
     "(apo) apothecary": "abs + per + con",
     "(trv) travel": "2con + agl + wil - str",
     "(sai) sail": "2con + abs"
+  },
+  "races": {
+    "will multiply by entity level, minimum is": 1,
+    "human": {
+      "str": 5,
+      "con": 5,
+      "agl": 5,
+      "wil": 5,
+      "per": 5,
+      "abs": 5
+    },
+    "elf": {
+      "str": 2,
+      "con": 7,
+      "agl": 15,
+      "wil": 7,
+      "per": 10,
+      "abs": 10
+    },
+    "dwarf": {
+      "str": 15,
+      "con": 10,
+      "agl": 2,
+      "wil": 10,
+      "per": 2,
+      "abs": 10
+    }
+  },
+  "cultures": {
+    "these are bonuses applied to each culture": 1,
+    "human": {
+      "danarian": {
+        "com": 20,
+        "tra": 10,
+        "hid": -10,
+        "sai": -30
+      }
+    },
+    "elven": {
+      "highborn": {
+        "wil": 10,
+        "spo": 50,
+        "man": 50,
+        "arc": 40,
+        "tra": -100
+      }
+    },
+    "dwarven": {
+      "undermountain": {
+        "str": 10,
+        "def": 10,
+        "pur": 10,
+        "har": 20,
+        "com": 30,
+        "hid": -40,
+        "soc": -20,
+        "tra": -50,
+        "sai": -200
+      }
+    }
   }
 }

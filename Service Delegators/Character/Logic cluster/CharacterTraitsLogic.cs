@@ -39,15 +39,15 @@ internal class CharacterTraitsLogic
     {
         if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.swordsman)
         {
-            var value = 10 + (int)Math.Ceiling(character.Sheet.Combat /*character PaperDoll*/ * 0.01); // TODO: should calculate the PaperDoll amount as stated in the HT's description
-            character.Sheet.Combat += value;
+            var value = 10 + (int)Math.Ceiling(character.Sheet.Skills.Combat /*character PaperDoll*/ * 0.01); // TODO: should calculate the PaperDoll amount as stated in the HT's description
+            character.Sheet.Skills.Combat += value;
         }
         else if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.skillful)
         {
             if (trait.Skill == CharactersLore.Skills.Combat)
             {
-                var value = (int)Math.Ceiling(character.Sheet.Combat * 0.2);
-                character.Sheet.Combat += value;
+                var value = (int)Math.Ceiling(character.Sheet.Skills.Combat * 0.2);
+                character.Sheet.Skills.Combat += value;
             }
 
             // cater for all the other skills as well

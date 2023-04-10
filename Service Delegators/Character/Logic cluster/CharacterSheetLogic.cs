@@ -1,4 +1,6 @@
-﻿using Data_Mapping_Containers.Dtos;
+﻿#pragma warning disable CS8629 // Nullable value type may be null.
+
+using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
@@ -21,24 +23,29 @@ internal class CharacterSheetLogic
 
     internal CharacterSheet SetCharacterSheetForHuman(CharacterInfo info, int statPoints, int skillPoints)
     {
-        var lvl = (int)info.EntityLevel!;
+        var lvl = (int)info.EntityLevel;
 
         var charsheet = new CharacterSheet
         {
-            Strength = 5 * lvl,
-            Constitution = 5 * lvl,
-            Agility = 5 * lvl,
-            Willpower = 5 * lvl,
-            Perception = 5 * lvl,
-            Abstract = 5 * lvl
+            Stats = new CharacterStats
+            {
+                Strength = 5 * lvl,
+                Constitution = 5 * lvl,
+                Agility = 5 * lvl,
+                Willpower = 5 * lvl,
+                Perception = 5 * lvl,
+                Abstract = 5 * lvl
+            },
+            Assets = new CharacterAssets(),
+            Skills = new CharacterSkills()
         };
 
         if (info.Culture == CharactersLore.Cultures.Human.Danarian)
         {
-            charsheet.Combat += 20;
-            charsheet.Travel += 10;
-            charsheet.Hide -= 10;
-            charsheet.Sail -= 30;
+            charsheet.Skills.Combat += 20;
+            charsheet.Skills.Travel += 10;
+            charsheet.Skills.Hide -= 10;
+            charsheet.Skills.Sail -= 30;
 
             //var itemsRoll = dice.Roll_dX(6);
 
@@ -60,21 +67,26 @@ internal class CharacterSheetLogic
 
         var charsheet = new CharacterSheet
         {
-            Strength = 2 * lvl,
-            Constitution = 7 * lvl,
-            Agility = 15 * lvl,
-            Willpower = 6 * lvl,
-            Perception = 10 * lvl,
-            Abstract = 10 * lvl
+            Stats = new CharacterStats
+            {
+                Strength = 2 * lvl,
+                Constitution = 7 * lvl,
+                Agility = 15 * lvl,
+                Willpower = 7 * lvl,
+                Perception = 10 * lvl,
+                Abstract = 10 * lvl
+            },
+            Assets = new CharacterAssets(),
+            Skills = new CharacterSkills()
         };
 
         if (info.Culture == CharactersLore.Cultures.Elf.Highborn)
         {
-            charsheet.Arcane += 40;
-            charsheet.Spot += 100;
-            charsheet.Mana += 50;
-            charsheet.Willpower += 10;
-            charsheet.Travel -= 100;
+            charsheet.Stats.Willpower += 10;
+            charsheet.Assets.Spot += 50;
+            charsheet.Assets.Mana += 50;
+            charsheet.Skills.Arcane += 40;
+            charsheet.Skills.Travel -= 100;
         }
 
         charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
@@ -88,24 +100,30 @@ internal class CharacterSheetLogic
 
         var charsheet = new CharacterSheet
         {
-            Strength = 15 * lvl,
-            Constitution = 10 * lvl,
-            Agility = 2 * lvl,
-            Willpower = 10 * lvl,
-            Perception = 2 * lvl,
-            Abstract = 10 * lvl
+            Stats = new CharacterStats
+            {
+                Strength = 15 * lvl,
+                Constitution = 10 * lvl,
+                Agility = 2 * lvl,
+                Willpower = 10 * lvl,
+                Perception = 2 * lvl,
+                Abstract = 10 * lvl
+            },
+            Assets = new CharacterAssets(),
+            Skills = new CharacterSkills()
         };
 
         if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain)
         {
-            charsheet.Combat += 30;
-            charsheet.Defense += 10;
-            charsheet.Purge += 10;
-            charsheet.Harm += 20;
-            charsheet.Hide -= 40;
-            charsheet.Social -= 20;
-            charsheet.Travel -= 50;
-            charsheet.Sail -= 200;
+            charsheet.Stats.Strength += 10;
+            charsheet.Assets.Defense += 10;
+            charsheet.Assets.Purge += 10;
+            charsheet.Assets.Harm += 20;
+            charsheet.Skills.Combat += 30;
+            charsheet.Skills.Hide -= 40;
+            charsheet.Skills.Social -= 20;
+            charsheet.Skills.Travel -= 50;
+            charsheet.Skills.Sail -= 200;
         }
 
         charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
@@ -163,17 +181,17 @@ internal class CharacterSheetLogic
 
             if (chosenStat == CharactersLore.Stats.Agility)
             {
-                sheet.Agility++;
+                sheet.Stats.Agility++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Perception)
             {
-                sheet.Perception++;
+                sheet.Stats.Perception++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Constitution)
             {
-                sheet.Constitution++;
+                sheet.Stats.Constitution++;
                 statPoints--;
             }
         }
@@ -196,22 +214,22 @@ internal class CharacterSheetLogic
 
             if (chosenSkill == CharactersLore.Skills.Hide)
             {
-                sheet.Hide++;
+                sheet.Skills.Hide++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Traps)
             {
-                sheet.Traps++;
+                sheet.Skills.Traps++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Combat)
             {
-                sheet.Combat++;
+                sheet.Skills.Combat++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Travel)
             {
-                sheet.Travel++;
+                sheet.Skills.Travel++;
                 skillPoints--;
             }
         }
@@ -263,27 +281,27 @@ internal class CharacterSheetLogic
 
             if (chosenStat == CharactersLore.Stats.Abstract)
             {
-                sheet.Abstract++;
+                sheet.Stats.Abstract++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Constitution)
             {
-                sheet.Constitution++;
+                sheet.Stats.Constitution++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Willpower)
             {
-                sheet.Willpower++;
+                sheet.Stats.Willpower++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Agility)
             {
-                sheet.Agility++;
+                sheet.Stats.Agility++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Perception)
             {
-                sheet.Perception++;
+                sheet.Stats.Perception++;
                 statPoints--;
             }
         }
@@ -306,34 +324,33 @@ internal class CharacterSheetLogic
 
             if (chosenSkill == CharactersLore.Skills.Arcane)
             {
-                sheet.Arcane++;
+                sheet.Skills.Arcane++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Social)
             {
-                sheet.Social++;
+                sheet.Skills.Social++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Apothecary)
             {
-                sheet.Apothecary++;
+                sheet.Skills.Apothecary++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Combat)
             {
-                sheet.Combat++;
+                sheet.Skills.Combat++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Tactics)
             {
-                sheet.Tactics++;
+                sheet.Skills.Tactics++;
                 skillPoints--;
             }
         }
 
         return sheet;
     }
-
 
     internal CharacterSheet SetClassForWarrior(CharacterSheet sheet, int statPoints, int skillPoints)
     {
@@ -377,27 +394,27 @@ internal class CharacterSheetLogic
 
             if (chosenStat == CharactersLore.Stats.Strength)
             {
-                sheet.Strength++;
+                sheet.Stats.Strength++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Constitution)
             {
-                sheet.Constitution++;
+                sheet.Stats.Constitution++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Agility)
             {
-                sheet.Agility++;
+                sheet.Stats.Agility++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Willpower)
             {
-                sheet.Willpower++;
+                sheet.Stats.Willpower++;
                 statPoints--;
             }
             else if (chosenStat == CharactersLore.Stats.Perception)
             {
-                sheet.Perception++;
+                sheet.Stats.Perception++;
                 statPoints--;
             }
         }
@@ -420,17 +437,17 @@ internal class CharacterSheetLogic
 
             if (chosenSkill == CharactersLore.Skills.Combat)
             {
-                sheet.Combat++;
+                sheet.Skills.Combat++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Tactics)
             {
-                sheet.Tactics++;
+                sheet.Skills.Tactics++;
                 skillPoints--;
             }
             else if (chosenSkill == CharactersLore.Skills.Travel)
             {
-                sheet.Travel++;
+                sheet.Skills.Travel++;
                 skillPoints--;
             }
         }
@@ -438,3 +455,5 @@ internal class CharacterSheetLogic
         return sheet;
     }
 }
+
+#pragma warning restore CS8629 // Nullable value type may be null.

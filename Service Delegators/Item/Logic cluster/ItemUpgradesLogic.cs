@@ -46,28 +46,28 @@ internal class ItemUpgradesLogic
         {
             if (item.HasTaint)
             {
-                item.Sheet.Abstract += 100;
-                item.Sheet.Mana += 100;
-                item.Sheet.Harm *= 3;
+                item.Sheet.Stats.Abstract += 100;
+                item.Sheet.Assets.Mana += 100;
+                item.Sheet.Assets.Harm *= 3;
             }
             else
             {
-                item.Sheet.Purge += 10;
-                item.Sheet.Harm += 150;
+                item.Sheet.Assets.Purge += 10;
+                item.Sheet.Assets.Harm += 150;
             }
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
             if (item.HasTaint)
             {
-                item.Sheet.Abstract += 100;
-                item.Sheet.Mana += 100;
-                item.Sheet.Defense += 20;
+                item.Sheet.Stats.Abstract += 100;
+                item.Sheet.Assets.Mana += 100;
+                item.Sheet.Assets.Defense += 20;
             }
             else
             {
-                item.Sheet.Purge += 20;
-                item.Sheet.Defense += 10;
+                item.Sheet.Assets.Purge += 20;
+                item.Sheet.Assets.Defense += 10;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -81,25 +81,25 @@ internal class ItemUpgradesLogic
         {
             if (item.HasTaint)
             {
-                item.Sheet.Abstract += 150;
-                item.Sheet.Mana += 1000;
-                item.Sheet.Harm *= 3;
+                item.Sheet.Stats.Abstract += 150;
+                item.Sheet.Assets.Mana += 1000;
+                item.Sheet.Assets.Harm *= 3;
             }
             else
             {
-                item.Sheet.Harm += 350;
+                item.Sheet.Assets.Harm += 350;
             }
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 800;
-                item.Sheet.Defense += 50;
+                item.Sheet.Assets.Mana += 800;
+                item.Sheet.Assets.Defense += 50;
             }
             else
             {
-                item.Sheet.Defense += 50;
+                item.Sheet.Assets.Defense += 50;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -110,18 +110,18 @@ internal class ItemUpgradesLogic
     private static void UpgradeItemToGalvron(Item item)
     {
         item.HasTaint = false;
-        item.Sheet.Willpower += 200;
-        item.Sheet.Purge *= 2;
-        item.Sheet.Mana -= 1000;
+        item.Sheet.Stats.Willpower += 200;
+        item.Sheet.Assets.Purge *= 2;
+        item.Sheet.Assets.Mana -= 1000;
 
         if (item.Type == ItemsLore.Types.Weapon)
         {
-            item.Sheet.Harm *= 3;
-            item.Sheet.Harm += 350;
+            item.Sheet.Assets.Harm *= 3;
+            item.Sheet.Assets.Harm += 350;
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
-            item.Sheet.Defense += 25;
+            item.Sheet.Assets.Defense += 25;
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
         {
@@ -134,24 +134,24 @@ internal class ItemUpgradesLogic
         {
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 500;
-                item.Sheet.Harm *= 2;
+                item.Sheet.Assets.Mana += 500;
+                item.Sheet.Assets.Harm *= 2;
             }
             else
             {
-                item.Sheet.Harm += 150;
+                item.Sheet.Assets.Harm += 150;
             }
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 500;
-                item.Sheet.Defense += 10;
+                item.Sheet.Assets.Mana += 500;
+                item.Sheet.Assets.Defense += 10;
             }
             else
             {
-                item.Sheet.Defense += 15;
+                item.Sheet.Assets.Defense += 15;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -165,24 +165,24 @@ internal class ItemUpgradesLogic
         {
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 250;
-                item.Sheet.Harm *= 2;
+                item.Sheet.Assets.Mana += 250;
+                item.Sheet.Assets.Harm *= 2;
             }
             else
             {
-                item.Sheet.Harm += 250;
+                item.Sheet.Assets.Harm += 250;
             }
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 750;
-                item.Sheet.Defense += 50;
+                item.Sheet.Assets.Mana += 750;
+                item.Sheet.Assets.Defense += 50;
             }
             else
             {
-                item.Sheet.Defense += 55;
+                item.Sheet.Assets.Defense += 55;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -194,27 +194,27 @@ internal class ItemUpgradesLogic
     {
         if (item.Type == ItemsLore.Types.Weapon)
         {
-            item.Sheet.Harm *= 5;
+            item.Sheet.Assets.Harm *= 5;
 
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 50;
+                item.Sheet.Assets.Mana += 50;
             }
             else
             {
-                item.Sheet.Harm += 250;
+                item.Sheet.Assets.Harm += 250;
             }
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
             if (item.HasTaint)
             {
-                item.Sheet.Mana += 50;
-                item.Sheet.Defense += 75;
+                item.Sheet.Assets.Mana += 50;
+                item.Sheet.Assets.Defense += 75;
             }
             else
             {
-                item.Sheet.Defense += 90;
+                item.Sheet.Assets.Defense += 90;
             }
         }
         else /*(item.Type == ItemsLore.Types.Wealth)*/
@@ -250,11 +250,11 @@ internal class ItemUpgradesLogic
         item.Category = "Crystal daggers";
         item.HasTaint = true;
 
-        item.Sheet.Harm += 150;
-        item.Sheet.Harm *= 3;
-        item.Sheet.Mana += 3000;
-        item.Sheet.Abstract *= 5;
-        item.Sheet.Purge -= 100;
+        item.Sheet.Assets.Harm += 150;
+        item.Sheet.Assets.Harm *= 3;
+        item.Sheet.Assets.Mana += 3000;
+        item.Sheet.Stats.Abstract *= 5;
+        item.Sheet.Assets.Purge -= 100;
 
         // HEROIC TRAITS
         // damage absorption
@@ -271,13 +271,12 @@ internal class ItemUpgradesLogic
         item.Category = "Maul hammer";
         item.HasTaint = false;
 
-        item.Sheet.Harm += 550;
-        item.Sheet.Harm *= 2;
-        item.Sheet.Purge *= 2;
+        item.Sheet.Assets.Harm += 550;
+        item.Sheet.Assets.Harm *= 2;
+        item.Sheet.Assets.Purge *= 2;
 
         // HEROIC TRAITS
         // damage absorption
-        // damage explosion
 
         // NEGATIVE PERKS
         // reduces spellcast around it
@@ -312,10 +311,10 @@ internal class ItemUpgradesLogic
         item.Category = "Metalic wooden rod";
         item.HasTaint = true;
 
-        item.Sheet.Harm *= 10;
-        item.Sheet.Mana += 5000;
-        item.Sheet.Abstract *= 10;
-        item.Sheet.Abstract += 250;
+        item.Sheet.Assets.Harm *= 10;
+        item.Sheet.Assets.Mana += 5000;
+        item.Sheet.Stats.Abstract *= 10;
+        item.Sheet.Stats.Abstract += 250;
 
         // HEROIC TRAITS
         // all awareness rolls are successful
@@ -329,8 +328,8 @@ internal class ItemUpgradesLogic
         item.Category = "Longsword";
         item.HasTaint = true;
 
-        item.Sheet.Harm += 1000;
-        item.Sheet.Mana += 1000;
+        item.Sheet.Assets.Harm += 1000;
+        item.Sheet.Assets.Mana += 1000;
 
         // HEROIC TRAITS
         // ignores 50% of armour
@@ -339,35 +338,35 @@ internal class ItemUpgradesLogic
 
     private static void DoubleStats(Item item)
     {
-        item.Sheet.Strength *= 2;
-        item.Sheet.Constitution *= 2;
-        item.Sheet.Willpower *= 2;
-        item.Sheet.Agility *= 2;
-        item.Sheet.Perception *= 2;
-        item.Sheet.Abstract *= 2;
+        item.Sheet.Stats.Strength *= 2;
+        item.Sheet.Stats.Constitution *= 2;
+        item.Sheet.Stats.Willpower *= 2;
+        item.Sheet.Stats.Agility *= 2;
+        item.Sheet.Stats.Perception *= 2;
+        item.Sheet.Stats.Abstract *= 2;
     }
     private static void DoubleAssets(Item item)
     {
-        item.Sheet.Endurance *= 2;
-        item.Sheet.Harm *= 2;
-        item.Sheet.Defense *= 2;
-        item.Sheet.Purge *= 2;
-        item.Sheet.Spot *= 2;
-        item.Sheet.Health *= 2;
-        item.Sheet.Mana *= 2;
+        item.Sheet.Assets.Endurance *= 2;
+        item.Sheet.Assets.Harm *= 2;
+        item.Sheet.Assets.Defense *= 2;
+        item.Sheet.Assets.Purge *= 2;
+        item.Sheet.Assets.Spot *= 2;
+        item.Sheet.Assets.Health *= 2;
+        item.Sheet.Assets.Mana *= 2;
     }
     private static void DoubleSkills(Item item)
     {
-        item.Sheet.Combat *= 2;
-        item.Sheet.Arcane *= 2;
-        item.Sheet.Psionics *= 2;
-        item.Sheet.Hide *= 2;
-        item.Sheet.Traps *= 2;
-        item.Sheet.Tactics *= 2;
-        item.Sheet.Social *= 2;
-        item.Sheet.Apothecary *= 2;
-        item.Sheet.Travel *= 2;
-        item.Sheet.Sail *= 2;
+        item.Sheet.Skills.Combat *= 2;
+        item.Sheet.Skills.Arcane *= 2;
+        item.Sheet.Skills.Psionics *= 2;
+        item.Sheet.Skills.Hide *= 2;
+        item.Sheet.Skills.Traps *= 2;
+        item.Sheet.Skills.Tactics *= 2;
+        item.Sheet.Skills.Social *= 2;
+        item.Sheet.Skills.Apothecary *= 2;
+        item.Sheet.Skills.Travel *= 2;
+        item.Sheet.Skills.Sail *= 2;
     }
     #endregion
 }

@@ -74,7 +74,7 @@ public class CharacterServiceTests : TestBase
         character.LevelUp.SkillPoints.Should().Be(0);
 
         character.Sheet.Should().NotBeNull();
-        character.Sheet.Strength.Should().BeGreaterThanOrEqualTo(1);
+        character.Sheet.Stats.Strength.Should().BeGreaterThanOrEqualTo(1);
 
         character.Inventory.Should().NotBeNull();
 
@@ -158,7 +158,7 @@ public class CharacterServiceTests : TestBase
 
         var character = charService.SaveCharacterStub(origins, playerId);
 
-        var currentStr = character.Sheet.Strength;
+        var currentStr = character.Sheet.Stats.Strength;
 
         dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.StatPoints = 1;
 
@@ -168,7 +168,7 @@ public class CharacterServiceTests : TestBase
             Stat = CharactersLore.Stats.Strength
         }, playerId);
 
-        character.Sheet.Strength.Should().Be(currentStr + 1);
+        character.Sheet.Stats.Strength.Should().Be(currentStr + 1);
     }
 
     [Theory]
@@ -211,7 +211,7 @@ public class CharacterServiceTests : TestBase
 
         var character = charService.SaveCharacterStub(origins, playerId);
 
-        var currentCombat = character.Sheet.Combat;
+        var currentCombat = character.Sheet.Skills.Combat;
 
         dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.SkillPoints = 1;
 
@@ -221,7 +221,7 @@ public class CharacterServiceTests : TestBase
             Skill = CharactersLore.Skills.Combat
         }, playerId);
 
-        character.Sheet.Combat.Should().Be(currentCombat + 1);
+        character.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
     }
 
     [Theory]
@@ -360,14 +360,14 @@ public class CharacterServiceTests : TestBase
             HeroicTraitId = swordsman.Identity.Id,
         };
 
-        var combatBeforeTrait = character.Sheet.Combat;
+        var combatBeforeTrait = character.Sheet.Skills.Combat;
         charService.LearnHeroicTrait(trait, playerId);
-        var combatIncreasedOnce = character.Sheet.Combat;
+        var combatIncreasedOnce = character.Sheet.Skills.Combat;
 
         combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
 
         charService.LearnHeroicTrait(trait, playerId);
-        var combatIncreasedTwice = character.Sheet.Combat;
+        var combatIncreasedTwice = character.Sheet.Skills.Combat;
 
         combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
     }

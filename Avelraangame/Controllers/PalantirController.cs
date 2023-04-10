@@ -338,6 +338,25 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // GET: /api/palantir/Character/GetCharacterPaperdoll
+    [HttpGet("Character/GetCharacterPaperdoll")]
+    public IActionResult GetCharacterPaperdoll([FromQuery] Request request, string characterId)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.GetCharacterPaperdoll(characterId, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region HeroicTraits
