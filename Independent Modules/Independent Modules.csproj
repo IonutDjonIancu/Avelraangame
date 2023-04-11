@@ -11,4 +11,8 @@
     <PackageReference Include="GoogleAuthenticator" Version="3.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
+  </ItemGroup>
+
 </Project>

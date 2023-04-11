@@ -1,4 +1,4 @@
-﻿namespace Data_Mapping_Containers.ApiDtos;
+﻿namespace Data_Mapping_Containers;
 
 public class Request
 {

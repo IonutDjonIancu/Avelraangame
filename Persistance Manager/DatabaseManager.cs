@@ -48,6 +48,9 @@ public class DatabaseManager : IDatabaseManager
         validator.ValidateString(dbmconfig.DbTraitsPath);
         info.DbTraitsPath = $"{currentDir}{dbmconfig.DbTraitsPath}";
 
+        validator.ValidateString(dbmconfig.DbRulebookPath);
+        info.DbRulebookPath = $"{currentDir}{dbmconfig.DbRulebookPath}";
+
         validator.ValidateString(dbmconfig.LogPath);
         info.LogPath = $"{currentDir}{dbmconfig.LogPath}";
 
@@ -151,13 +154,24 @@ public class DatabaseManager : IDatabaseManager
         var snapshot = new DatabaseSnapshot()
         {
             DbDate = DateTime.Now,
+
+            Rulebook = ReadRulebookFile(dbmInfo.DbRulebookPath),
             Players = ReadPlayerFiles(dbmInfo.PlayerFilePaths),
+            Traits = CreateListOfTraitsAndPersist(dbmInfo.DbTraitsPath),
+            
             CharacterStubs = new List<CharacterStub>(),
-            Items = new List<Item>(),
-            Traits = CreateListOfTraitsAndPersist(dbmInfo.DbTraitsPath)
+            Items = new List<Item>()
         };
 
         return snapshot;
+    }
+
+    private static Rulebook ReadRulebookFile(string path)
+    {
+        var text = File.ReadAllText(path);
+        var rulebook = JsonConvert.DeserializeObject<Rulebook>(text);
+
+        return rulebook;
     }
 
     private static List<Player> ReadPlayerFiles(List<string> paths)
