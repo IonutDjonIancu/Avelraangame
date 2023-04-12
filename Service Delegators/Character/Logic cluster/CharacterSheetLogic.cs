@@ -1,16 +1,21 @@
 ﻿#pragma warning disable CS8629 // Nullable value type may be null.
 
 using Data_Mapping_Containers.Dtos;
+using Persistance_Manager;
 
 namespace Service_Delegators;
 
 internal class CharacterSheetLogic
 {
     private readonly IDiceRollService dice;
+    private readonly IDatabaseManager dbm;
 
-    internal CharacterSheetLogic(IDiceRollService dice)
+    internal CharacterSheetLogic(
+        IDatabaseManager databaseManager,
+        IDiceRollService dice)
     {
         this.dice = dice;
+        dbm = databaseManager;
     }
 
     internal CharacterSheet SetCharacterSheet(CharacterInfo info, int statPoints, int skillPoints)
@@ -29,12 +34,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength = 5 * lvl,
-                Constitution = 5 * lvl,
-                Agility = 5 * lvl,
-                Willpower = 5 * lvl,
-                Perception = 5 * lvl,
-                Abstract = 5 * lvl
+                Strength        = lvl * dbm.Snapshot.Rulebook.Races.Human.Str,
+                Constitution    = lvl * dbm.Snapshot.Rulebook.Races.Human.Con,
+                Agility         = lvl * dbm.Snapshot.Rulebook.Races.Human.Agl,
+                Willpower       = lvl * dbm.Snapshot.Rulebook.Races.Human.Wil,
+                Perception      = lvl * dbm.Snapshot.Rulebook.Races.Human.Per,
+                Abstract        = lvl * dbm.Snapshot.Rulebook.Races.Human.Abs
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -42,10 +47,32 @@ internal class CharacterSheetLogic
 
         if (info.Culture == CharactersLore.Cultures.Human.Danarian)
         {
-            charsheet.Skills.Combat += 20;
-            charsheet.Skills.Travel += 10;
-            charsheet.Skills.Hide -= 10;
-            charsheet.Skills.Sail -= 30;
+            //stats
+            charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Str;
+            charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Con;
+            charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Agi;
+            charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Wil;
+            charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Per;
+            charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Abs;
+            //assets
+            charsheet.Assets.Endurance  += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.End;
+            charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Har;
+            charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Def;
+            charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Pur;
+            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Spo;
+            charsheet.Assets.Health     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Hea;
+            charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Man;
+            //skills
+            charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Com;
+            charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Arc;
+            charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Psi;
+            charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Hid;
+            charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Tra;
+            charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Tac;
+            charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Soc;
+            charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Apo;
+            charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Tra;
+            charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Sai;
 
             //var itemsRoll = dice.Roll_dX(6);
 
@@ -69,12 +96,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength = 2 * lvl,
-                Constitution = 7 * lvl,
-                Agility = 15 * lvl,
-                Willpower = 7 * lvl,
-                Perception = 10 * lvl,
-                Abstract = 10 * lvl
+                Strength        = lvl * dbm.Snapshot.Rulebook.Races.Elf.Str,
+                Constitution    = lvl * dbm.Snapshot.Rulebook.Races.Elf.Con,
+                Agility         = lvl * dbm.Snapshot.Rulebook.Races.Elf.Agl,
+                Willpower       = lvl * dbm.Snapshot.Rulebook.Races.Elf.Wil,
+                Perception      = lvl * dbm.Snapshot.Rulebook.Races.Elf.Per,
+                Abstract        = lvl * dbm.Snapshot.Rulebook.Races.Elf.Abs
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -82,11 +109,32 @@ internal class CharacterSheetLogic
 
         if (info.Culture == CharactersLore.Cultures.Elf.Highborn)
         {
-            charsheet.Stats.Willpower += 10;
-            charsheet.Assets.Spot += 50;
-            charsheet.Assets.Mana += 50;
-            charsheet.Skills.Arcane += 40;
-            charsheet.Skills.Travel -= 100;
+            //stats
+            charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Str;
+            charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Con;
+            charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Agi;
+            charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Wil;
+            charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Per;
+            charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Abs;
+            //assets
+            charsheet.Assets.Endurance  += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.End;
+            charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Har;
+            charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Def;
+            charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Pur;
+            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Spo;
+            charsheet.Assets.Health     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Hea;
+            charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Man;
+            //skills
+            charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Com;
+            charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Arc;
+            charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Psi;
+            charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Hid;
+            charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Tra;
+            charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Tac;
+            charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Soc;
+            charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Apo;
+            charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Tra;
+            charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Sai;
         }
 
         charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
@@ -102,12 +150,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength = 15 * lvl,
-                Constitution = 10 * lvl,
-                Agility = 2 * lvl,
-                Willpower = 10 * lvl,
-                Perception = 2 * lvl,
-                Abstract = 10 * lvl
+                Strength        = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Str,
+                Constitution    = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Con,
+                Agility         = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Agl,
+                Willpower       = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Wil,
+                Perception      = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Per,
+                Abstract        = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Abs
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -115,15 +163,32 @@ internal class CharacterSheetLogic
 
         if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain)
         {
-            charsheet.Stats.Strength += 10;
-            charsheet.Assets.Defense += 10;
-            charsheet.Assets.Purge += 10;
-            charsheet.Assets.Harm += 20;
-            charsheet.Skills.Combat += 30;
-            charsheet.Skills.Hide -= 40;
-            charsheet.Skills.Social -= 20;
-            charsheet.Skills.Travel -= 50;
-            charsheet.Skills.Sail -= 200;
+            //stats
+            charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Str;
+            charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Con;
+            charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Agi;
+            charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Wil;
+            charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Per;
+            charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Abs;
+            //assets
+            charsheet.Assets.Endurance  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.End;
+            charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Har;
+            charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Def;
+            charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Pur;
+            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Spo;
+            charsheet.Assets.Health     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Hea;
+            charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Man;
+            //skills
+            charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Com;
+            charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Arc;
+            charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Psi;
+            charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Hid;
+            charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Tra;
+            charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Tac;
+            charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Soc;
+            charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Apo;
+            charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Tra;
+            charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Sai;
         }
 
         charsheet = DistributeClassStatsAndSkills(charsheet, info.Class, statPoints, skillPoints);
@@ -133,7 +198,7 @@ internal class CharacterSheetLogic
 
     internal CharacterSheet DistributeClassStatsAndSkills(CharacterSheet sheet, string classes, int statPoints, int skillPoints)
     {
-        if (classes == CharactersLore.Classes.Warrior) return SetClassForWarrior(sheet, statPoints, skillPoints);
+        if      (classes == CharactersLore.Classes.Warrior) return SetClassForWarrior(sheet, statPoints, skillPoints);
         else if (classes == CharactersLore.Classes.Spellcaster) return SetClassForSpellcaster(sheet, statPoints, skillPoints);
         else if (classes == CharactersLore.Classes.Hunter) return SetClassForHunter(sheet, statPoints, skillPoints);
         else throw new NotImplementedException();

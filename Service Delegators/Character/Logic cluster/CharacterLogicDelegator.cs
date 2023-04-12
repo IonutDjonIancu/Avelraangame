@@ -29,7 +29,7 @@ internal class CharacterLogicDelegator
         dbm = databaseManager;
         dice = diceRollService;
 
-        charSheet = new CharacterSheetLogic(dice);
+        charSheet = new CharacterSheetLogic(dbm, dice);
         charTraits = new CharacterTraitsLogic(dbm, charMetadata);
         charLevelup = new CharacterLevelupLogic(dbm, charMetadata);
         charItems = new CharacterItemsLogic(dbm, charMetadata);

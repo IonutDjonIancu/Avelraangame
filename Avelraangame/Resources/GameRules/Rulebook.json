@@ -1,10 +1,145 @@
 ﻿{
-  "Stats": {
-    "Strength": "str",
-    "Constitution": "cns",
-    "Agility": "agl",
-    "Willpower": "wil",
-    "Perception": "per",
-    "Abstract": "abs"
+  "Acronyms": {
+    "Description": "Acronyms used throughout this Rulebook.",
+    "Stats": {
+      "Strength": "Str",
+      "Constitution": "Con",
+      "Agility": "Agi",
+      "Willpower": "Wil",
+      "Perception": "Per",
+      "Abstract": "Abs"
+    },
+    "Assets": {
+      "Endurance": "End",
+      "Harm": "Har",
+      "Defense": "Def",
+      "Purge": "Pur",
+      "Spot": "Spo",
+      "Health": "Hea",
+      "Mana": "Man"
+    },
+    "Skills": {
+      "Combat": "Com",
+      "Arcane": "Arc",
+      "Psionics": "Psi",
+      "Hide": "Hid",
+      "Traps": "Tra",
+      "Tactics": "Tac",
+      "Social": "Soc",
+      "Apothecary": "Apo",
+      "Travel": "Trv",
+      "Sail": "Sai"
+    }
+  },
+  "Races": {
+    "Description": "Races stats in the Rulebook will multiply by the entity level, the minimum entity level is 1.",
+    "Human": {
+      "Str": 5,
+      "Con": 5,
+      "Agi": 5,
+      "Wil": 5,
+      "Per": 5,
+      "Abs": 5
+    },
+    "Elf": {
+      "Str": 2,
+      "Con": 7,
+      "Agi": 15,
+      "Wil": 7,
+      "Per": 10,
+      "Abs": 10
+    },
+    "Dwarf": {
+      "Str": 12,
+      "Con": 10,
+      "Agi": 2,
+      "Wil": 10,
+      "Per": 3,
+      "Abs": 10
+    }
+  },
+  "Cultures": {
+    "Description": "Cultures will influence a number of stats, assets or skills. Health starts from 10. All skills start from 10.",
+    "Humans": {
+      "Danarian": {
+        "Str": 0,
+        "Con": 0,
+        "Agi": 0,
+        "Wil": 0,
+        "Per": 0,
+        "Abs": 0,
+        "End": 0,
+        "Har": 0,
+        "Def": 0,
+        "Pur": 0,
+        "Spo": 0,
+        "Hea": 10,
+        "Man": 0,
+        "Com": 10,
+        "Arc": 0,
+        "Psi": 0,
+        "Hid": -10,
+        "Tra": 0,
+        "Tac": 10,
+        "Soc": 10,
+        "Apo": 10,
+        "Trv": 10,
+        "Sai": -30
+      }
+    },
+    "Elves": {
+      "Highborn": {
+        "Str": 0,
+        "Con": 0,
+        "Agi": 0,
+        "Wil": 10,
+        "Per": 0,
+        "Abs": 0,
+        "End": 0,
+        "Har": 0,
+        "Def": 0,
+        "Pur": 0,
+        "Spo": 50,
+        "Hea": 10,
+        "Man": 50,
+        "Com": 10,
+        "Arc": 40,
+        "Psi": 10,
+        "Hid": 10,
+        "Tra": 10,
+        "Tac": 10,
+        "Soc": 10,
+        "Apo": 10,
+        "Trv": -50,
+        "Sai": 10
+      }
+    },
+    "Dwarves": {
+      "Undermountain": {
+        "Str": 10,
+        "Con": 0,
+        "Agi": 0,
+        "Wil": 0,
+        "Per": 0,
+        "Abs": 0,
+        "End": 0,
+        "Har": 20,
+        "Def": 10,
+        "Pur": 10,
+        "Spo": 0,
+        "Hea": 10,
+        "Man": 0,
+        "Com": 30,
+        "Arc": 10,
+        "Psi": 10,
+        "Hid": -40,
+        "Tra": 10,
+        "Tac": 10,
+        "Soc": -20,
+        "Apo": 10,
+        "Trv": -20,
+        "Sai": -200
+      }
+    }
   }
 }
