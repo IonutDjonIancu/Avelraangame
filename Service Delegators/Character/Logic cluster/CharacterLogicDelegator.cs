@@ -9,7 +9,6 @@ namespace Service_Delegators;
 internal class CharacterLogicDelegator
 {
     private readonly IDatabaseManager dbm;
-    private readonly IDiceRollService dice;
 
     private readonly CharacterSheetLogic charSheet;
     private readonly CharacterTraitsLogic charTraits;
@@ -17,24 +16,24 @@ internal class CharacterLogicDelegator
     private readonly CharacterItemsLogic charItems;
     private readonly CharacterCreateLogic charCreate;
     private readonly CharacterIdentityLogic charIdentity;
+    private readonly CharacterPaperdollLogic charPaperdoll;
 
     private CharacterLogicDelegator() { }
 
     internal CharacterLogicDelegator(
         IDatabaseManager databaseManager,
         IDiceRollService diceRollService,
-        IItemService itemService,
-        CharacterMetadata charMetadata)
+        IItemService itemService)
     {
         dbm = databaseManager;
-        dice = diceRollService;
 
-        charSheet = new CharacterSheetLogic(dbm, dice);
-        charTraits = new CharacterTraitsLogic(dbm, charMetadata);
-        charLevelup = new CharacterLevelupLogic(dbm, charMetadata);
-        charItems = new CharacterItemsLogic(dbm, charMetadata);
-        charCreate = new CharacterCreateLogic(dbm, dice, itemService, charSheet);
-        charIdentity = new CharacterIdentityLogic(dbm, charMetadata);
+        charSheet = new CharacterSheetLogic(databaseManager, diceRollService);
+        charTraits = new CharacterTraitsLogic(databaseManager);
+        charLevelup = new CharacterLevelupLogic(databaseManager);
+        charItems = new CharacterItemsLogic(databaseManager);
+        charCreate = new CharacterCreateLogic(databaseManager, diceRollService, itemService, charSheet);
+        charIdentity = new CharacterIdentityLogic(databaseManager);
+        charPaperdoll = new CharacterPaperdollLogic(databaseManager);
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -87,6 +86,10 @@ internal class CharacterLogicDelegator
         return charTraits.ApplyHeroicTrait(trait, playerId);
     }
 
+    internal CharacterPaperdoll CalculatePaperdoll(string characterId, string playerId)
+    {
+        return charPaperdoll.CalculatePaperdoll(characterId, playerId);
+    }
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

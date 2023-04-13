@@ -1,6 +1,4 @@
-﻿using Data_Mapping_Containers.Dtos;
-
-namespace Data_Mapping_Containers;
+﻿namespace Data_Mapping_Containers.Dtos;
 
 public class CharacterPaperdoll
 {

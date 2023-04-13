@@ -10,21 +10,21 @@ internal class CharacterCreateLogic
 {
     private readonly IDatabaseManager dbm;
     private readonly IDiceRollService dice;
-    private readonly IItemService itemService;
+    private readonly IItemService items;
 
-    private readonly CharacterSheetLogic sheetOps;
+    private readonly CharacterSheetLogic charSheet;
 
     public CharacterCreateLogic(
         IDatabaseManager databaseManager,
         IDiceRollService rollService,
         IItemService itemService,
-        CharacterSheetLogic characterSheetOperations)
+        CharacterSheetLogic characterSheetLogic)
     {
         dbm = databaseManager;
         dice = rollService;
-        this.itemService = itemService;
+        items = itemService;
 
-        sheetOps = characterSheetOperations;
+        charSheet = characterSheetLogic;
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -64,7 +64,7 @@ internal class CharacterCreateLogic
 
             LevelUp = new CharacterLevelUp(),
 
-            Sheet = sheetOps.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
+            Sheet = charSheet.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
 
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
@@ -119,7 +119,7 @@ internal class CharacterCreateLogic
 
         for (int i = 0; i < roll; i++)
         {
-            var item = itemService.GenerateRandomItem();
+            var item = items.GenerateRandomItem();
             supplies.Add(item);
         }
 

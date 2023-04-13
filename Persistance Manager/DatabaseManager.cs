@@ -25,7 +25,7 @@ public class DatabaseManager : IDatabaseManager
 
         Banned = new()
         {
-            "JaneDoe@gmail.com"
+            "JaneDoe"
         }
     };
 

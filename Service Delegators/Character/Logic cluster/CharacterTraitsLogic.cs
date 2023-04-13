@@ -9,19 +9,15 @@ namespace Service_Delegators;
 internal class CharacterTraitsLogic
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterMetadata charMetadata;
 
-    public CharacterTraitsLogic(
-        IDatabaseManager databaseManager,
-        CharacterMetadata charMetadata) 
+    public CharacterTraitsLogic(IDatabaseManager databaseManager) 
     {
-        this.charMetadata = charMetadata;
         dbm = databaseManager;
     }
 
     internal Character ApplyHeroicTrait(CharacterHeroicTrait trait, string playerId)
     {
-        var character = charMetadata.GetCharacter(trait.CharacterId, playerId);
+        var character = dbm.Metadata.GetCharacterById(trait.CharacterId, playerId);
         var heroicTrait = dbm.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId);
 
         character.HeroicTraits.Add(heroicTrait);

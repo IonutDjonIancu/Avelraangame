@@ -21,9 +21,8 @@ public class CharacterService : ICharacterService
     {
         dbm = manager;
 
-        var charMetadata = new CharacterMetadata(dbm);
-        validator = new CharacterValidator(dbm, charMetadata);
-        logic = new CharacterLogicDelegator(dbm, diceRollService, itemService, charMetadata);
+        validator = new CharacterValidator(dbm);
+        logic = new CharacterLogicDelegator(dbm, diceRollService, itemService);
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
@@ -96,7 +95,9 @@ public class CharacterService : ICharacterService
 
     public CharacterPaperdoll GetCharacterPaperdoll(string characterId, string playerId)
     {
-        return new CharacterPaperdoll();
+        validator.ValidateCharacterPlayerCombination(characterId, playerId);
+
+        return logic.CalculatePaperdoll(characterId, playerId);
     }
 
     #region private methods

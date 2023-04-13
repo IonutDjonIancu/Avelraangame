@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8604 // Possible null reference argument.
 
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
@@ -9,19 +8,15 @@ namespace Service_Delegators;
 internal class CharacterLevelupLogic
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterMetadata charMetadata;
 
-    public CharacterLevelupLogic(
-        IDatabaseManager databaseManager,
-        CharacterMetadata charMetadata)
+    public CharacterLevelupLogic(IDatabaseManager databaseManager)
     {
-        this.charMetadata = charMetadata;
         dbm = databaseManager;
     }
 
     internal Character IncreaseSkills(CharacterUpdate charUpdate, string playerId)
     {
-        var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+        var storedChar = dbm.Metadata.GetCharacterById(charUpdate.CharacterId, playerId);
 
         if      (charUpdate.Skill == CharactersLore.Skills.Combat) storedChar.Sheet.Skills.Combat++;
         else if (charUpdate.Skill == CharactersLore.Skills.Arcane) storedChar.Sheet.Skills.Arcane++;
@@ -46,7 +41,7 @@ internal class CharacterLevelupLogic
 
     internal Character IncreaseStats(CharacterUpdate charUpdate, string playerId)
     {
-        var storedChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+        var storedChar = dbm.Metadata.GetCharacterById(charUpdate.CharacterId, playerId);
 
         if      (charUpdate.Stat == CharactersLore.Stats.Strength) storedChar.Sheet.Stats.Strength++;
         else if (charUpdate.Stat == CharactersLore.Stats.Constitution) storedChar.Sheet.Stats.Constitution++;
@@ -67,4 +62,3 @@ internal class CharacterLevelupLogic
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8604 // Possible null reference argument.
