@@ -17,25 +17,57 @@ internal class CharacterPaperdollLogic
     internal CharacterPaperdoll CalculatePaperdoll(string characterId, string playerId)
     {
         var character = dbm.Metadata.GetCharacterById(characterId, playerId);
-
         var items = character.Inventory.GetAllEquipedItems();
+        var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
 
-        int strBonus = 0;
+
+        #region apply bonuses from items to stats
+        var itemStrBonus = 0;
+        var itemConBonus = 0;
+        var itemAgiBonus = 0;
+        var itemWilBonus = 0;
+        var itemPerBonus = 0;
+        var itemAbsBonus = 0;
         
         if (items.Count > 0)
         {
-            strBonus = items.Sum(s => s.Sheet.Stats.Strength);
+            itemStrBonus = items.Sum(s => s.Sheet.Stats.Strength);
+            itemConBonus = items.Sum(s => s.Sheet.Stats.Constitution);
+            itemAgiBonus = items.Sum(s => s.Sheet.Stats.Agility);
+            itemWilBonus = items.Sum(s => s.Sheet.Stats.Willpower);
+            itemPerBonus = items.Sum(s => s.Sheet.Stats.Perception);
+            itemAbsBonus = items.Sum(s => s.Sheet.Stats.Abstract);
         }
-
-
-
-        var paperdoll = new CharacterPaperdoll
+        
+        paperdoll.Stats = new CharacterStats
         {
-            Stats = new CharacterStats
-            {
-                Strength = character.Sheet.Stats.Strength + strBonus,
-            }
+            Strength        = character.Sheet.Stats.Strength + itemStrBonus,
+            Constitution    = character.Sheet.Stats.Constitution + itemConBonus,
+            Agility         = character.Sheet.Stats.Agility + itemAgiBonus,
+            Willpower       = character.Sheet.Stats.Willpower + itemWilBonus,
+            Perception      = character.Sheet.Stats.Perception + itemPerBonus,
+            Abstract        = character.Sheet.Stats.Abstract + itemAbsBonus
         };
+        #endregion
+
+        #region calculate assets
+        paperdoll.Assets = new CharacterAssets
+        {
+            Endurance   = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.EnduranceFormula),
+            Harm        = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.HarmFormula),
+            Defense     = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.DefenseFormula),
+            Purge       = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.PurgeFormula),
+            Spot        = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.SpotFormula),
+            Health      = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.HealthFormula),
+            Mana        = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.ManaFormula)
+        };
+        #endregion
+
+        // apply bonuses from items to assets
+        // calculate skills
+        // apply bonuses from items to skills
+
+        // cater in for HT which modify stats, skills or assets
 
         return paperdoll;
     }

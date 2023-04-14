@@ -1,6 +1,6 @@
 ﻿{
   "Acronyms": {
-    "Description": "Acronyms used throughout this Rulebook.",
+    "Description": "Acronyms used in this Rulebook.",
     "Stats": {
       "Strength": "Str",
       "Constitution": "Con",
@@ -141,5 +141,14 @@
         "Sai": -200
       }
     }
+  },
+  "Assets": {
+    "EnduranceFormula": "Str + 2*Con + Agi + 2*Wil",
+    "HarmFormula": "2*Str + Agi + Per",
+    "DefenseFormula": "(2*Con + Agi + Per) / 10",
+    "PurgeFormula": "(2*Wil + Con + Per) / 10",
+    "SpotFormula": "3*Per + Agi",
+    "HealthFormula": "2*Con + Str + Wil",
+    "ManaFormula": "(3*Con + 2*Abs) / 10"
   }
 }
