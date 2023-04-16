@@ -25,14 +25,6 @@ public class AppSettingsConfigManager : IAppSettingsConfigManager
         }
     }
 
-    public string DbTraitsPath
-    {
-        get
-        {
-            return _configuration["AppSettings:DbTraitsPath"];
-        }
-    }
-
     public string DbRulebookPath
     {
         get

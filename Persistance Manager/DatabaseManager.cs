@@ -45,9 +45,6 @@ public class DatabaseManager : IDatabaseManager
         info.DbPlayersPath = $"{currentDir}{dbmconfig.DbPlayersPath}";
         info.PlayerFilePaths = UploadPlayerFilePaths(info.DbPlayersPath);
 
-        validator.ValidateString(dbmconfig.DbTraitsPath);
-        info.DbTraitsPath = $"{currentDir}{dbmconfig.DbTraitsPath}";
-
         validator.ValidateString(dbmconfig.DbRulebookPath);
         info.DbRulebookPath = $"{currentDir}{dbmconfig.DbRulebookPath}";
 
@@ -157,7 +154,7 @@ public class DatabaseManager : IDatabaseManager
 
             Rulebook = ReadRulebookFile(dbmInfo.DbRulebookPath),
             Players = ReadPlayerFiles(dbmInfo.PlayerFilePaths),
-            Traits = CreateListOfTraitsAndPersist(dbmInfo.DbTraitsPath),
+            Traits = CreateListOfTraitsAndPersist(),
             
             CharacterStubs = new List<CharacterStub>(),
             Items = new List<Item>()
@@ -188,7 +185,7 @@ public class DatabaseManager : IDatabaseManager
         return list;
     }
 
-    private static List<HeroicTrait> CreateListOfTraitsAndPersist(string path)
+    private static List<HeroicTrait> CreateListOfTraitsAndPersist()
     {
         var listOfTraits = new List<HeroicTrait>();
 
@@ -204,9 +201,6 @@ public class DatabaseManager : IDatabaseManager
         {
             listOfTraits.Add(item);
         }
-
-        var traitsJson = JsonConvert.SerializeObject(listOfTraits);
-        File.WriteAllText(path, traitsJson);
 
         return listOfTraits;
     }
