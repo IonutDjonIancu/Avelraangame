@@ -12,9 +12,9 @@ public class CharacterPaperdoll
         this.acronyms = acronyms;
     }
 
-    public CharacterStats Stats { get; set; }
-    public CharacterAssets Assets { get; set; }
-    public CharacterSkills Skills { get; set; }
+    public CharacterStats Stats { get; set; } = new();
+    public CharacterAssets Assets { get; set; } = new();
+    public CharacterSkills Skills { get; set; } = new();
 
     // these are the activate Heroic Traits which can be used during combat
     public List<HeroicTrait> SpecialSkills { get; set; }

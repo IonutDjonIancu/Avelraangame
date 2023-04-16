@@ -138,12 +138,24 @@
       }
     }
   },
-  "Assets": {
+  "AssetsFormulas": {
     "ResolveFormula": "2*Str + 3*Con + Agi + 2*Wil + Per + Abs",
     "HarmFormula": "2*Str + Agi + Per",
     "SpotFormula": "3*Per + Agi",
     "DefenseFormula": "(2*Con + Agi + Per) / 10",
     "PurgeFormula": "(2*Wil + Con + Per) / 10",
     "ManaFormula": "(3*Con + 2*Abs) / 10"
+  },
+  "SkillsFormulas": {
+    "Combat": "Str + Con + Agi",
+    "Arcane": "Abs + Wil + Con",
+    "Psionics": "2*Wil + Con",
+    "Hide": "Agi + Per + Abs",
+    "Traps": "2*Abs + Per",
+    "Tactics": "3*Abs",
+    "Social": "Per + Abs + Wil",
+    "Apothecary": "Abs + Per + Con",
+    "Travel": "2*Con + Agi + Wil - Str",
+    "Sail": "2*Con + Abs"
   }
 }

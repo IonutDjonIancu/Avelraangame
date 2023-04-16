@@ -169,7 +169,7 @@ internal class CharacterSheetLogic
             charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Per;
             charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Abs;
             //assets
-            charsheet.Assets.Resolve  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Res;
+            charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Res;
             charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Har;
             charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Spo;
             charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Def;
