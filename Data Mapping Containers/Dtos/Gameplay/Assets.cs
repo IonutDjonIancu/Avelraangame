@@ -2,7 +2,7 @@
 
 public class Assets
 {
-    public string EnduranceFormula { get; set; }
+    public string ResolveFormula { get; set; }
     public string HarmFormula { get; set; }
     public string DefenseFormula { get; set; }
     public string PurgeFormula { get; set; }

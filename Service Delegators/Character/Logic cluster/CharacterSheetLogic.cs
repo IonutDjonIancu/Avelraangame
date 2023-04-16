@@ -55,12 +55,11 @@ internal class CharacterSheetLogic
             charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Per;
             charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Abs;
             //assets
-            charsheet.Assets.Endurance  += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.End;
+            charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Res;
             charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Har;
+            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Spo;
             charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Def;
             charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Pur;
-            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Spo;
-            charsheet.Assets.Health     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Hea;
             charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Man;
             //skills
             charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Com;
@@ -117,12 +116,11 @@ internal class CharacterSheetLogic
             charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Per;
             charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Abs;
             //assets
-            charsheet.Assets.Endurance  += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.End;
+            charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Res;
             charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Har;
+            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Spo;
             charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Def;
             charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Pur;
-            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Spo;
-            charsheet.Assets.Health     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Hea;
             charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Man;
             //skills
             charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Com;
@@ -171,12 +169,11 @@ internal class CharacterSheetLogic
             charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Per;
             charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Abs;
             //assets
-            charsheet.Assets.Endurance  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.End;
+            charsheet.Assets.Resolve  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Res;
             charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Har;
+            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Spo;
             charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Def;
             charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Pur;
-            charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Spo;
-            charsheet.Assets.Health     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Hea;
             charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Man;
             //skills
             charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Com;

@@ -9,12 +9,11 @@ public class Undermountain
     public int Per { get; set; }
     public int Abs { get; set; }
 
-    public int End { get; set; }
+    public int Res { get; set; }
     public int Har { get; set; }
+    public int Spo { get; set; }
     public int Def { get; set; }
     public int Pur { get; set; }
-    public int Spo { get; set; }
-    public int Hea { get; set; }
     public int Man { get; set; }
 
     public int Com { get; set; }

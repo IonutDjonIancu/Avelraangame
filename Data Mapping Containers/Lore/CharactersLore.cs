@@ -110,17 +110,16 @@ public class CharactersLore
 
     public static class Assets
     {
-        public const string Endurance = "Endurance";
+        public const string Resolve = "Resolve";
         public const string Harm = "Harm";
+        public const string Spot = "Spot";
         public const string Defense = "Defense";
         public const string Purge = "Purge";
-        public const string Spot = "Spot";
-        public const string Health = "Health";
         public const string Mana = "Mana";
 
         public static readonly List<string> All = new()
         {
-            Endurance, Harm, Defense, Purge, Spot, Health, Mana
+            Resolve, Harm, Spot, Defense, Purge, Mana
         };
     }
 

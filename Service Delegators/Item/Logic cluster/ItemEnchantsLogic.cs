@@ -140,12 +140,11 @@ internal class ItemEnchantsLogic
         var skillIndex = dice.Roll_dX(CharactersLore.Assets.All.Count) - 1;
         var chosenAsset = CharactersLore.Assets.All[skillIndex];
 
-        if      (chosenAsset == CharactersLore.Assets.Endurance)    item.Sheet.Assets.Endurance += amount;
+        if      (chosenAsset == CharactersLore.Assets.Resolve)    item.Sheet.Assets.Resolve += amount;
         else if (chosenAsset == CharactersLore.Assets.Harm)         item.Sheet.Assets.Harm += amount;
+        else if (chosenAsset == CharactersLore.Assets.Spot)         item.Sheet.Assets.Spot += amount;
         else if (chosenAsset == CharactersLore.Assets.Defense)      item.Sheet.Assets.Defense += amount;
         else if (chosenAsset == CharactersLore.Assets.Purge)        item.Sheet.Assets.Purge += amount;
-        else if (chosenAsset == CharactersLore.Assets.Spot)         item.Sheet.Assets.Spot += amount;
-        else if (chosenAsset == CharactersLore.Assets.Health)       item.Sheet.Assets.Health += amount;
         else  /*(chosenAsset == CharactersLore.Assets.Mana)*/       item.Sheet.Assets.Mana += amount;
     }
 

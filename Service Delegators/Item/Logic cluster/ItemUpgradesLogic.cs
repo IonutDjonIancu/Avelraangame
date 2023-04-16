@@ -347,12 +347,11 @@ internal class ItemUpgradesLogic
     }
     private static void DoubleAssets(Item item)
     {
-        item.Sheet.Assets.Endurance *= 2;
+        item.Sheet.Assets.Resolve *= 2;
         item.Sheet.Assets.Harm *= 2;
+        item.Sheet.Assets.Spot *= 2;
         item.Sheet.Assets.Defense *= 2;
         item.Sheet.Assets.Purge *= 2;
-        item.Sheet.Assets.Spot *= 2;
-        item.Sheet.Assets.Health *= 2;
         item.Sheet.Assets.Mana *= 2;
     }
     private static void DoubleSkills(Item item)

@@ -20,7 +20,6 @@ internal class CharacterPaperdollLogic
         var items = character.Inventory.GetAllEquipedItems();
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
 
-
         #region apply bonuses from items to stats
         var itemStrBonus = 0;
         var itemConBonus = 0;
@@ -53,17 +52,24 @@ internal class CharacterPaperdollLogic
         #region calculate assets
         paperdoll.Assets = new CharacterAssets
         {
-            Endurance   = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.EnduranceFormula),
+            Resolve   = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.ResolveFormula),
             Harm        = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.HarmFormula),
             Defense     = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.DefenseFormula),
             Purge       = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.PurgeFormula),
             Spot        = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.SpotFormula),
-            Health      = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.HealthFormula),
             Mana        = paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.Assets.ManaFormula)
         };
         #endregion
 
-        // apply bonuses from items to assets
+        #region apply bonuses from items to assets
+        var itemEndBonus = 0;
+        var itemHarBonus = 0;
+        var itemDefBonus = 0;
+        var itemPurBonus = 0;
+        var itemSpoBonus = 0;
+        var itemHeaBonus = 0;
+        var itemManBonus = 0;
+        #endregion
         // calculate skills
         // apply bonuses from items to skills
 

@@ -75,7 +75,6 @@ public class CharacterServiceTests : TestBase
 
         character.Sheet.Should().NotBeNull();
         character.Sheet.Stats.Strength.Should().BeGreaterThanOrEqualTo(1);
-        character.Sheet.Assets.Health.Should().BeGreaterThanOrEqualTo(1);
         character.Sheet.Skills.Combat.Should().BeGreaterThanOrEqualTo(1);
 
         character.Inventory.Should().NotBeNull();
