@@ -5,7 +5,7 @@ public class TraitsLore
     public static class Type
     {
         public const string passive = "Passive"; // it will always apply and has its own logic
-        public const string active = "Active"; // you have to activate it during combat or otherwise
+        public const string active = "Active"; // you have to activate it during combat or otherwise, also known as SpecialSkills for Paperdoll
         public const string bonus = "Bonus"; // increases a stat, skill or asset based on trait's logic
 
         public static readonly List<string> All = new() 
@@ -16,7 +16,7 @@ public class TraitsLore
 
     public static class Subtype
     {
-        public const string common = "Common"; // can be chosen multiple times
+        public const string common = "Common"; // can be chosen multiple times (only Bonus type HT can be Common)
         public const string unique = "Unique"; // can only be chosen once
 
         public static readonly List<string> All = new()
@@ -66,6 +66,21 @@ public class TraitsLore
         public const string fatePoint_description = "Your critical hits start from 19 out of a d20 die.";
         public const string fatePoint_lore = "Any adventurer whose hands hold the marks of a sword hilt or the burns of spellcraft will eventually develop this ability. It marks its bearer as one who has travelled roads seen by a few.";
 
+        // 2
+        public const string theStrengthOfMany = "The Strength of Many";
+        public const string theStrengthOfMany_description = "Increases Paperdoll stat Strength by 10%.";
+        public const string theStrengthOfMany_lore = "At one point in your life, you have developed an almost unnatural ability to bend steel.";
+
+        // 3
+        public const string lifeInThePits = "Life in the Pits";
+        public const string lifeInThePits_description = "Increases Paperdoll asset Resolve by 50.";
+        public const string lifeInThePits_lore = "You've spent three months in fighting pits as wall decorator.";
+
+        // 4
+        public const string candlelight = "Candlelight";
+        public const string candlelight_description = "Increases Paperdoll skill Arcane by 20.";
+        public const string candlelight_lore = "Your candlelight studies have finally proven effective... somewhat.";
+
         public static readonly List<HeroicTrait> All = new()
         {
             new HeroicTrait
@@ -81,6 +96,48 @@ public class TraitsLore
                 Subtype = Subtype.unique,
                 Category = Category.rolls,
                 DeedsCost = 50
+            },
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "782d8a39-b6cc-46bb-8f6a-622525bfcba1",
+                    Name = theStrengthOfMany,
+                },
+                Description = theStrengthOfMany_description,
+                Lore = theStrengthOfMany_lore,
+                Type = Type.passive,
+                Subtype = Subtype.unique,
+                Category = Category.stats,
+                DeedsCost = 10
+            },
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "bda31453-f71e-4055-941e-eade048d57bf",
+                    Name = lifeInThePits,
+                },
+                Description = lifeInThePits_description,
+                Lore = lifeInThePits_lore,
+                Type = Type.passive,
+                Subtype = Subtype.unique,
+                Category = Category.assets,
+                DeedsCost = 3
+            },
+            new HeroicTrait
+            {
+                Identity = new HeroicTraitIdentity
+                {
+                    Id = "e0fe3f49-16c2-4ed2-8273-8e3036402508",
+                    Name = candlelight,
+                },
+                Description = candlelight_description,
+                Lore = candlelight_lore,
+                Type = Type.passive,
+                Subtype = Subtype.unique,
+                Category = Category.skills,
+                DeedsCost = 2
             }
         };
     }

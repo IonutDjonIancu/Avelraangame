@@ -18,8 +18,8 @@ internal class CharacterPaperdollLogic
     {
         var character = dbm.Metadata.GetCharacterById(characterId, playerId);
         var items = character.Inventory.GetAllEquipedItems();
+        var traits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
-        // cater in for HT which passively increase stats, skills or assets
 
 
         #region calculate stats & apply bonuses from items to stats
@@ -40,14 +40,20 @@ internal class CharacterPaperdollLogic
             itemAbsBonus = items.Sum(i => i.Sheet.Stats.Abstract);
         }
 
-        // TODO: ++ passive HT that increase stats
-
         paperdoll.Stats.Strength    = character.Sheet.Stats.Strength + itemStrBonus; 
         paperdoll.Stats.Constitution= character.Sheet.Stats.Constitution + itemConBonus;
         paperdoll.Stats.Agility     = character.Sheet.Stats.Agility + itemAgiBonus;
         paperdoll.Stats.Willpower   = character.Sheet.Stats.Willpower + itemWilBonus;
         paperdoll.Stats.Perception  = character.Sheet.Stats.Perception + itemPerBonus;
         paperdoll.Stats.Abstract    = character.Sheet.Stats.Abstract + itemAbsBonus;
+        
+        if (traits.Count > 0)
+        {
+            if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany))
+            {
+                paperdoll.Stats.Strength += (int)Math.Floor(paperdoll.Stats.Strength * 0.1);
+            } 
+        }
         #endregion
 
         #region calculate assets & apply bonuses from items to assets
@@ -68,14 +74,20 @@ internal class CharacterPaperdollLogic
             itemManBonus = items.Sum(i => i.Sheet.Assets.Mana);
         }
 
-        // TODO: ++ passive HT that increase assets
-
         paperdoll.Assets.Resolve= character.Sheet.Assets.Resolve+ paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ResolveFormula) + itemResBonus;
         paperdoll.Assets.Harm   = character.Sheet.Assets.Harm   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.HarmFormula) + itemHarBonus;
         paperdoll.Assets.Spot   = character.Sheet.Assets.Spot   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.SpotFormula) + itemSpoBonus;
         paperdoll.Assets.Defense= character.Sheet.Assets.Defense+ paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.DefenseFormula) + itemDefBonus;
         paperdoll.Assets.Purge  = character.Sheet.Assets.Purge  + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.PurgeFormula) + itemPurBonus;
         paperdoll.Assets.Mana   = character.Sheet.Assets.Mana   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ManaFormula) + itemManBonus;
+
+        if (traits.Count > 0)
+        {
+            if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.lifeInThePits))
+            {
+                paperdoll.Assets.Resolve += 50;
+            }
+        }
         #endregion
 
         #region calculate assets & apply bonuses from items to assets
@@ -104,8 +116,6 @@ internal class CharacterPaperdollLogic
             itemSaiBonus = items.Sum(i => i.Sheet.Skills.Sail);
         }
 
-        // TODO: ++ passive HT that increase skills
-
         paperdoll.Skills.Combat     = character.Sheet.Skills.Combat     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Combat) + itemComBonus;
         paperdoll.Skills.Arcane     = character.Sheet.Skills.Arcane     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Arcane) + itemArcBonus;
         paperdoll.Skills.Psionics   = character.Sheet.Skills.Psionics   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Psionics) + itemPsiBonus;
@@ -116,9 +126,15 @@ internal class CharacterPaperdollLogic
         paperdoll.Skills.Apothecary = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Apothecary) + itemApoBonus;
         paperdoll.Skills.Travel     = character.Sheet.Skills.Travel     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Travel) + itemTraBonus;
         paperdoll.Skills.Sail       = character.Sheet.Skills.Sail       + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Sail) + itemSaiBonus;
-        #endregion
-
         
+        if (traits.Count > 0)
+        {
+            if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight))
+            {
+                paperdoll.Skills.Arcane += 20;
+            }
+        }
+        #endregion
 
         return paperdoll;
     }
