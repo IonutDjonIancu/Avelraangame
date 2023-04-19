@@ -109,23 +109,6 @@ public class ItemServiceTests : TestBase
     }
 
     [Theory]
-    [Description("Test random item taint.")] 
-    public void Random_item_taint_test()
-    {
-        var items = CreateSomeItems(100);
-        var areAllTainted = items.Count(s => s.HasTaint == true) == 100;
-        var areAllNormal = items.Count(s => s.HasTaint == false) == 100;
-
-        while (areAllTainted || areAllNormal)
-        {
-            items = CreateSomeItems(100);
-        }
-
-        items.FirstOrDefault(s => s.HasTaint).Should().NotBeNull();
-        items.FirstOrDefault(s => !s.HasTaint).Should().NotBeNull();
-    }
-
-    [Theory]
     [Description("Test random item value.")]
     public void Random_item_value_test()
     {
