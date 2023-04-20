@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CA1822 // Mark members as static
 
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
@@ -29,7 +30,7 @@ internal class CharacterPaperdollLogic
     }
 
     #region private methods
-    private static void CalculatePaperdollStats(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    private void CalculatePaperdollStats(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
     {
         var itemStrBonus = 0;
         var itemConBonus = 0;
@@ -158,3 +159,4 @@ internal class CharacterPaperdollLogic
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CA1822 // Mark members as static
