@@ -19,18 +19,19 @@ internal class CharacterPaperdollLogic
     {
         var character = dbm.Metadata.GetCharacterById(characterId, playerId);
         var items = character.Inventory.GetAllEquipedItems();
-        var traits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
+        var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
 
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
-        CalculatePaperdollStats(character, items, traits, paperdoll);
-        CalculatePaperdollAssets(character, items, traits, paperdoll);
-        CalculatePaperdollSkills(character, items, traits, paperdoll);
+        SetPaperdollStats(character, items, paperdoll);
+        SetPaperdollAssets(character, items, paperdoll);
+        SetPaperdollSkills(character, items, paperdoll);
+        SetPaperdollSpecialSkills(character, items, paperdoll);
 
         return paperdoll;
     }
 
     #region private methods
-    private void CalculatePaperdollStats(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    private void SetPaperdollStats(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemStrBonus = 0;
         var itemConBonus = 0;
@@ -58,17 +59,9 @@ internal class CharacterPaperdollLogic
             Perception  = character.Sheet.Stats.Perception + itemPerBonus,
             Abstract    = character.Sheet.Stats.Abstract + itemAbsBonus
         };
-
-        if (traits.Count > 0)
-        {
-            if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany))
-            {
-                paperdoll.Stats.Strength += (int)Math.Floor(paperdoll.Stats.Strength * 0.1);
-            }
-        }
     }
 
-    private void CalculatePaperdollAssets(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    private void SetPaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemResBonus = 0;
         var itemHarBonus = 0;
@@ -96,17 +89,9 @@ internal class CharacterPaperdollLogic
             Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.PurgeFormula) + itemPurBonus,
             Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ManaFormula) + itemManBonus
         };
-
-        if (traits.Count > 0)
-        {
-            if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.lifeInThePits))
-            {
-                paperdoll.Assets.Resolve += 50;
-            }
-        }
     }
 
-    private void CalculatePaperdollSkills(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    private void SetPaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemComBonus = 0;
         var itemArcBonus = 0;
@@ -146,13 +131,30 @@ internal class CharacterPaperdollLogic
             Travel      = character.Sheet.Skills.Travel + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Travel) + itemTraBonus,
             Sail        = character.Sheet.Skills.Sail + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Sail) + itemSaiBonus
         };
+    }
 
-        if (traits.Count > 0)
+    private void SetPaperdollSpecialSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    {
+        paperdoll.SpecialSkills = new List<HeroicTrait>();
+
+        // some items may contain heroic traits!!
+
+        if (character.HeroicTraits.Count < 0) return;
+        paperdoll.SpecialSkills = character.HeroicTraits.Where(ht => ht.Type == TraitsLore.Type.active).ToList();
+
+        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany))
         {
-            if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight))
-            {
-                paperdoll.Skills.Arcane += 20;
-            }
+            paperdoll.Stats.Strength += (int)Math.Floor(paperdoll.Stats.Strength * 0.1);
+        }
+
+        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.lifeInThePits))
+        {
+            paperdoll.Assets.Resolve += 50;
+        }
+
+        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight))
+        {
+            paperdoll.Skills.Arcane += 20;
         }
     }
     #endregion

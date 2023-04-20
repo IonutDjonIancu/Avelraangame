@@ -403,6 +403,53 @@ public class CharacterServiceTests : TestBase
         Assert.Throws<Exception>(() => charService.LearnHeroicTrait(trait, playerId));
     }
 
+    [Theory]
+    [Description("Get character paperdoll.")]
+    public void Generate_character_paperdoll_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Heritage.Traditional,
+            CharactersLore.Classes.Warrior,
+            playerId);
+        character.LevelUp.DeedsPoints = 1000;
+
+        var listOfTraits = charService.GetHeroicTraits();
+
+        var candlelight = listOfTraits.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight);
+        var metachaos = listOfTraits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology);
+
+        var candlelightTrait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = candlelight.Identity.Id,
+        };
+        var metachaosTrait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = metachaos.Identity.Id,
+        };
+        charService.LearnHeroicTrait(candlelightTrait, playerId);
+        charService.LearnHeroicTrait(metachaosTrait, playerId);
+
+        var paperdoll = charService.GetCharacterPaperdoll(character.Identity.Id, playerId);
+
+        paperdoll.Should().NotBeNull();
+        paperdoll.Stats.Should().NotBeNull();
+        paperdoll.Assets.Should().NotBeNull();
+        paperdoll.Skills.Should().NotBeNull();
+        paperdoll.SpecialSkills.Should().NotBeNull();
+
+        paperdoll.Stats.Strength.Should().BeGreaterThanOrEqualTo(character.Sheet.Stats.Strength);
+        paperdoll.Assets.Resolve.Should().BeGreaterThan(10);
+        paperdoll.Skills.Arcane.Should().BeGreaterThan(20);
+        paperdoll.SpecialSkills.Count.Should().Be(1);
+        paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
+    }
 
     #region private methods
     private string GetItemLocation(Character character)
