@@ -63,7 +63,7 @@ internal class ItemLogicDelegator
     #region private methods
     private void TaintItem(Item item)
     {
-        item.HasTaint = dice.Roll_d20() % 2 == 0;
+        item.HasTaint = item.Level >= 3 && dice.Roll_d20() % 2 == 0;
     }
 
     private static void NameItem(Item item)
@@ -79,6 +79,12 @@ internal class ItemLogicDelegator
             {
                 Id = Guid.NewGuid().ToString(),
                 CharacterId = "",
+            },
+            Sheet = new CharacterSheet
+            {
+                Stats = new CharacterStats(),
+                Assets = new CharacterAssets(),
+                Skills = new CharacterSkills()
             }
         };
     }

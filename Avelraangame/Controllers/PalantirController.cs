@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
-using Serilog;
+﻿using Serilog;
 using Avelraangame.Factories;
-using Avelraangame.Controllers.Validators;
-using Data_Mapping_Containers.ApiDtos;
+using Data_Mapping_Containers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
+using Avelraangame.Controllers.Validators;
 
 namespace Avelraangame.Controllers;
 
@@ -329,6 +329,25 @@ public class PalantirController : ControllerBase
             var playerId = MatchTokensForPlayer(request);
 
             var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait, playerId);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // GET: /api/palantir/Character/GetCharacterPaperdoll
+    [HttpGet("Character/GetCharacterPaperdoll")]
+    public IActionResult GetCharacterPaperdoll([FromQuery] Request request, string characterId)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var character = factory.ServiceFactory.CharacterService.GetCharacterPaperdoll(characterId, playerId);
 
             return Ok(character);
         }

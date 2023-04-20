@@ -1,4 +1,4 @@
-﻿namespace Data_Mapping_Containers.Dtos.ApiDtos;
+﻿namespace Data_Mapping_Containers.Dtos;
 
 public class Authenticator
 {

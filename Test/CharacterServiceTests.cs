@@ -74,7 +74,8 @@ public class CharacterServiceTests : TestBase
         character.LevelUp.SkillPoints.Should().Be(0);
 
         character.Sheet.Should().NotBeNull();
-        character.Sheet.Strength.Should().BeGreaterThanOrEqualTo(1);
+        character.Sheet.Stats.Strength.Should().BeGreaterThanOrEqualTo(1);
+        character.Sheet.Skills.Combat.Should().BeGreaterThanOrEqualTo(1);
 
         character.Inventory.Should().NotBeNull();
 
@@ -158,7 +159,7 @@ public class CharacterServiceTests : TestBase
 
         var character = charService.SaveCharacterStub(origins, playerId);
 
-        var currentStr = character.Sheet.Strength;
+        var currentStr = character.Sheet.Stats.Strength;
 
         dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.StatPoints = 1;
 
@@ -168,7 +169,7 @@ public class CharacterServiceTests : TestBase
             Stat = CharactersLore.Stats.Strength
         }, playerId);
 
-        character.Sheet.Strength.Should().Be(currentStr + 1);
+        character.Sheet.Stats.Strength.Should().Be(currentStr + 1);
     }
 
     [Theory]
@@ -211,7 +212,7 @@ public class CharacterServiceTests : TestBase
 
         var character = charService.SaveCharacterStub(origins, playerId);
 
-        var currentCombat = character.Sheet.Combat;
+        var currentCombat = character.Sheet.Skills.Combat;
 
         dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.SkillPoints = 1;
 
@@ -221,7 +222,7 @@ public class CharacterServiceTests : TestBase
             Skill = CharactersLore.Skills.Combat
         }, playerId);
 
-        character.Sheet.Combat.Should().Be(currentCombat + 1);
+        character.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
     }
 
     [Theory]
@@ -360,14 +361,14 @@ public class CharacterServiceTests : TestBase
             HeroicTraitId = swordsman.Identity.Id,
         };
 
-        var combatBeforeTrait = character.Sheet.Combat;
+        var combatBeforeTrait = character.Sheet.Skills.Combat;
         charService.LearnHeroicTrait(trait, playerId);
-        var combatIncreasedOnce = character.Sheet.Combat;
+        var combatIncreasedOnce = character.Sheet.Skills.Combat;
 
         combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
 
         charService.LearnHeroicTrait(trait, playerId);
-        var combatIncreasedTwice = character.Sheet.Combat;
+        var combatIncreasedTwice = character.Sheet.Skills.Combat;
 
         combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
     }
@@ -402,6 +403,53 @@ public class CharacterServiceTests : TestBase
         Assert.Throws<Exception>(() => charService.LearnHeroicTrait(trait, playerId));
     }
 
+    [Theory]
+    [Description("Get character paperdoll.")]
+    public void Generate_character_paperdoll_test()
+    {
+        var playerId = CreatePlayer();
+        dbm.Snapshot.CharacterStubs.Clear();
+
+        var character = CreateCharacter(
+            CharactersLore.Races.Human,
+            CharactersLore.Cultures.Human.Danarian,
+            CharactersLore.Heritage.Traditional,
+            CharactersLore.Classes.Warrior,
+            playerId);
+        character.LevelUp.DeedsPoints = 1000;
+
+        var listOfTraits = charService.GetHeroicTraits();
+
+        var candlelight = listOfTraits.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight);
+        var metachaos = listOfTraits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology);
+
+        var candlelightTrait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = candlelight.Identity.Id,
+        };
+        var metachaosTrait = new CharacterHeroicTrait
+        {
+            CharacterId = character.Identity.Id,
+            HeroicTraitId = metachaos.Identity.Id,
+        };
+        charService.LearnHeroicTrait(candlelightTrait, playerId);
+        charService.LearnHeroicTrait(metachaosTrait, playerId);
+
+        var paperdoll = charService.GetCharacterPaperdoll(character.Identity.Id, playerId);
+
+        paperdoll.Should().NotBeNull();
+        paperdoll.Stats.Should().NotBeNull();
+        paperdoll.Assets.Should().NotBeNull();
+        paperdoll.Skills.Should().NotBeNull();
+        paperdoll.SpecialSkills.Should().NotBeNull();
+
+        paperdoll.Stats.Strength.Should().BeGreaterThanOrEqualTo(character.Sheet.Stats.Strength);
+        paperdoll.Assets.Resolve.Should().BeGreaterThan(10);
+        paperdoll.Skills.Arcane.Should().BeGreaterThan(20);
+        paperdoll.SpecialSkills.Count.Should().Be(1);
+        paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
+    }
 
     #region private methods
     private string GetItemLocation(Character character)

@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
 
 using Data_Mapping_Containers.Dtos;
 using Independent_Modules;
@@ -25,19 +26,27 @@ public class MetadataManager
     }
 
     #region players
-    public Player? GetPlayerById(string id)
+    public Player GetPlayerById(string id)
     {
-        return dbm.Snapshot.Players.Find(p => p.Identity.Id == id);
+        var player = dbm.Snapshot.Players.Find(p => p.Identity.Id == id);
+
+        validator.ValidateObject(player, "Player is null");
+
+        return player;
     }
 
-    public Player? GetPlayerByName(string name)
+    public Player GetPlayerByName(string name)
     {
-        return dbm.Snapshot.Players.Find(p => p.Identity.Name == name);
+        var player = dbm.Snapshot.Players.Find(p => p.Identity.Name == name);
+
+        validator.ValidateObject(player, "Player is null");
+
+        return player;
     }
 
-    public bool IsPlayerBanned(string playerEmail)
+    public bool IsPlayerBanned(string playerName)
     {
-        return dbm.info.Banned.Contains(playerEmail);
+        return dbm.info.Banned.Contains(playerName);
     }
 
     public bool IsPlayerAdmin(string playerName)
@@ -47,11 +56,20 @@ public class MetadataManager
     #endregion
 
     #region characters
-    public Character? GetCharacterById(string characterId, string playerId)
+    public Character GetCharacterById(string characterId, string playerId)
     {
         var player = GetPlayerById(playerId);
+        var character = player.Characters.Find(c => c.Identity.Id == characterId);
+        
+        validator.ValidateObject(character, "Character is null");
 
-        return player.Characters.Find(c => c.Identity.Id == characterId);
+        return character;
+    }
+
+    public bool DoesCharacterExist(string characterId, string playerId)
+    {
+        var player = GetPlayerById(playerId);
+        return player.Characters.Exists(c => c.Identity.Id == characterId);
     }
     #endregion
 
@@ -146,3 +164,4 @@ public class MetadataManager
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8603 // Possible null reference return.

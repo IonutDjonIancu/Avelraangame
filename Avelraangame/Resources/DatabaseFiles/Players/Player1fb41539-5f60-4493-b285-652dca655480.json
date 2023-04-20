@@ -1,1 +1,293 @@
-{"Identity":{"Id":"1fb41539-5f60-4493-b285-652dca655480","Name":"djon","Token":"9b798fe8-9629-4ae6-a42b-3a503f7cac0d"},"LastAction":"1/21/2023","IsAdmin":true,"Characters":[{"Identity":{"Id":"73fb8d18-b976-45d2-9eff-0dc21e17649d","PlayerId":"1fb41539-5f60-4493-b285-652dca655480","Name":"The danarian"},"Info":{"EntityLevel":1,"Race":"Human","Culture":"Danarian","Heritage":"Traditional","Class":"Warrior","Fame":"Known as the Danarian warrior","Wealth":38,"DateOfBirth":"4/9/2023"},"LevelUp":{"StatPoints":0,"SkillPoints":0,"DeedsPoints":0},"Sheet":{"Strength":14,"Constitution":9,"Agility":11,"Willpower":7,"Perception":10,"Abstract":5,"Endurance":0,"Harm":0,"Defense":0,"Purge":0,"Spot":0,"Health":0,"Mana":0,"Combat":26,"Arcane":0,"Psionics":0,"Hide":-10,"Traps":0,"Tactics":2,"Social":0,"Apothecary":0,"Travel":13,"Sail":-30},"Inventory":{"Head":null,"Body":null,"Shield":null,"Mainhand":null,"Offhand":null,"Ranged":null,"Heraldry":[]},"Supplies":[{"Identity":{"Id":"88be3d6f-9ce2-4cbd-bf0a-220b5ef1d7f0","CharacterId":""},"Name":"Stolen-improvised esthenn","Level":1,"LevelName":"Common","Type":"Weapon","Subtype":"Dagger","Quality":"Stolen-improvised","Category":"Esthenn","InventoryLocations":["Mainhand","Offhand","Ranged"],"Description":"A short, curved dagger with a hollow blade, typically of elven origin. These daggers are sometimes made of crystal, although this is a tradition of Three Seas elven origin.","Lore":"Not much can be said about this item.","HasTaint":true,"Sheet":{"Strength":0,"Constitution":0,"Agility":0,"Willpower":0,"Perception":0,"Abstract":19,"Endurance":0,"Harm":9,"Defense":19,"Purge":-15,"Spot":0,"Health":0,"Mana":0,"Combat":0,"Arcane":0,"Psionics":-13,"Hide":0,"Traps":0,"Tactics":12,"Social":0,"Apothecary":0,"Travel":0,"Sail":0},"Value":18},{"Identity":{"Id":"862e9b72-5187-4ce2-9bd3-c7ab5954982f","CharacterId":""},"Name":"Improvised euvston","Level":1,"LevelName":"Common","Type":"Weapon","Subtype":"Pike","Quality":"Improvised","Category":"Euvston","InventoryLocations":["Mainhand"],"Description":"A type of spear composed of a very long wood staff and two pointed iron spear heads. The spear shaft measures 3 m and it is almost always made of cornel wood. The middle of the spear is thinner than the outer edges, giving the spear the impression of a concave shape. This type of spear is widely used by the Endari people, and made its way South into Calvinia where it has become the standard for their foot soldiers.","Lore":"Not much can be said about this item.","HasTaint":false,"Sheet":{"Strength":0,"Constitution":0,"Agility":0,"Willpower":0,"Perception":0,"Abstract":0,"Endurance":0,"Harm":29,"Defense":0,"Purge":0,"Spot":0,"Health":0,"Mana":0,"Combat":0,"Arcane":0,"Psionics":0,"Hide":0,"Traps":0,"Tactics":0,"Social":0,"Apothecary":0,"Travel":0,"Sail":0},"Value":22},{"Identity":{"Id":"882f153e-f965-428d-b002-45722da6d2a4","CharacterId":""},"Name":"Old and broken round shield","Level":1,"LevelName":"Common","Type":"Protection","Subtype":"Shield","Quality":"Old and broken","Category":"Round shield","InventoryLocations":["Shield"],"Description":"A shield used by infantry troops. More specifically, this is a concave shield fitted with enarmes on the inside, one adjustable by a buckle, to be attached to the forearm, and the other fixed as a grip for the left hand. Somewhere between 45 to 55 cm, this shield is made from two very thin layers of flat wooden boards, with the grain of each layer at right angles to the other. They are fixed together with small wooden pegs, forming plywood. The front is covered with a tough cowhide, which is often decorated with embossed stylish patterns. This is fixed to the wood with many brass, or in some cases, silver, nails, as occasionally brass plates are also fixed to the face for strength and decoration. Round shields generally have center bosses of brass.","Lore":"Not much can be said about this item.","HasTaint":true,"Sheet":{"Strength":0,"Constitution":0,"Agility":0,"Willpower":0,"Perception":18,"Abstract":0,"Endurance":0,"Harm":0,"Defense":9,"Purge":-7,"Spot":0,"Health":0,"Mana":0,"Combat":0,"Arcane":5,"Psionics":-4,"Hide":0,"Traps":0,"Tactics":0,"Social":0,"Apothecary":0,"Travel":0,"Sail":0},"Value":90},{"Identity":{"Id":"dd545c2c-36a5-42eb-9bb9-010833914cb1","CharacterId":""},"Name":"Poorly crafted commodities","Level":1,"LevelName":"Common","Type":"Wealth","Subtype":"Goods","Quality":"Poorly crafted","Category":"Commodities","InventoryLocations":[],"Description":"Commodities are found in the majority of goods that end up in the hands of merchants, including spice, tea, meats, liquor, and clothing. Other most common commodities include copper, oils, wheat, coffee beans, and semi-precious stones.","Lore":"Not much can be said about this item.","HasTaint":true,"Sheet":{"Strength":0,"Constitution":0,"Agility":8,"Willpower":0,"Perception":0,"Abstract":0,"Endurance":0,"Harm":0,"Defense":0,"Purge":-15,"Spot":0,"Health":0,"Mana":19,"Combat":0,"Arcane":0,"Psionics":-7,"Hide":0,"Traps":0,"Tactics":0,"Social":0,"Apothecary":9,"Travel":0,"Sail":0},"Value":12},{"Identity":{"Id":"90a01532-5bd7-49f0-bfb1-9460f29e4c44","CharacterId":""},"Name":"Raw ornaments","Level":1,"LevelName":"Common","Type":"Wealth","Subtype":"Valuables","Quality":"Raw","Category":"Ornaments","InventoryLocations":["Heraldry"],"Description":"Items often worn to embellish, enhance, or distinguish the wearer, and to define cultural, social, or religious status within a specific community.","Lore":"Not much can be said about this item.","HasTaint":true,"Sheet":{"Strength":0,"Constitution":4,"Agility":0,"Willpower":0,"Perception":0,"Abstract":0,"Endurance":0,"Harm":0,"Defense":0,"Purge":-3,"Spot":0,"Health":17,"Mana":0,"Combat":0,"Arcane":0,"Psionics":-13,"Hide":0,"Traps":0,"Tactics":15,"Social":0,"Apothecary":0,"Travel":0,"Sail":0},"Value":23},{"Identity":{"Id":"bb9ec038-b232-44aa-a00a-a94d43fb5e80","CharacterId":""},"Name":"Incomplete pavise","Level":1,"LevelName":"Common","Type":"Protection","Subtype":"Shield","Quality":"Incomplete","Category":"Pavise","InventoryLocations":["Shield"],"Description":"A very large oblong shield, often large enough to cover the entire body. The pavise is characterized by its prominent central ridge with a spike attached to the bottom.","Lore":"Not much can be said about this item.","HasTaint":true,"Sheet":{"Strength":0,"Constitution":16,"Agility":0,"Willpower":0,"Perception":0,"Abstract":0,"Endurance":0,"Harm":16,"Defense":7,"Purge":-11,"Spot":0,"Health":0,"Mana":0,"Combat":2,"Arcane":0,"Psionics":-1,"Hide":0,"Traps":0,"Tactics":0,"Social":0,"Apothecary":0,"Travel":0,"Sail":0},"Value":70}],"HeroicTraits":[],"IsAlive":true}]}
+{
+  "Identity": {
+    "Id": "1fb41539-5f60-4493-b285-652dca655480",
+    "Name": "djon",
+    "Token": "9b798fe8-9629-4ae6-a42b-3a503f7cac0d"
+  },
+  "LastAction": "1/21/2023",
+  "IsAdmin": true,
+  "Characters": [
+    {
+      "Identity": {
+        "Id": "dfaff291-6cfd-4980-ac18-b15b231df819",
+        "PlayerId": "1fb41539-5f60-4493-b285-652dca655480",
+        "Name": "The undermountain"
+      },
+      "Info": {
+        "EntityLevel": 2,
+        "Race": "Dwarf",
+        "Culture": "Undermountain",
+        "Heritage": "Traditional",
+        "Class": "Warrior",
+        "Fame": "Known as the Undermountain warrior",
+        "Wealth": 383,
+        "DateOfBirth": "4/16/2023"
+      },
+      "LevelUp": {
+        "StatPoints": 0,
+        "SkillPoints": 0,
+        "DeedsPoints": 990
+      },
+      "Sheet": {
+        "Stats": {
+          "Strength": 27,
+          "Constitution": 16,
+          "Agility": 8,
+          "Willpower": 17,
+          "Perception": 5,
+          "Abstract": 10
+        },
+        "Assets": {
+          "Resolve": 20,
+          "Harm": 20,
+          "Spot": 0,
+          "Defense": 10,
+          "Purge": 10,
+          "Mana": 0
+        },
+        "Skills": {
+          "Combat": 39,
+          "Arcane": 10,
+          "Psionics": 10,
+          "Hide": -40,
+          "Traps": 10,
+          "Tactics": 10,
+          "Social": -20,
+          "Apothecary": 10,
+          "Travel": 11,
+          "Sail": -200
+        }
+      },
+      "Inventory": {
+        "Head": null,
+        "Body": null,
+        "Shield": null,
+        "Mainhand": {
+          "Identity": {
+            "Id": "087f2b39-552f-4189-9293-e7766ba37d42",
+            "CharacterId": ""
+          },
+          "Name": "Ordinary flail",
+          "Level": 1,
+          "LevelName": "Common",
+          "Type": "Weapon",
+          "Subtype": "Mace",
+          "Quality": "Ordinary",
+          "Category": "Flail",
+          "InventoryLocations": [
+            "Mainhand",
+            "Offhand"
+          ],
+          "Description": "A short weapon consisting of a wooden haft connected by a chain, rope, or leather to one or more striking ends. Despite being very common in the East, around the Three Seas continent, most military commanders of the western armies doubt the utility of such a weapon in actual practice, due to the hazard the weapon poses to its wielder.",
+          "Lore": "Not much can be said about this item.",
+          "HasTaint": true,
+          "Sheet": {
+            "Stats": {
+              "Strength": 0,
+              "Constitution": 16,
+              "Agility": 0,
+              "Willpower": 0,
+              "Perception": 0,
+              "Abstract": 0
+            },
+            "Assets": {
+              "Resolve": 0,
+              "Harm": 13,
+              "Spot": 3,
+              "Defense": 0,
+              "Purge": -11,
+              "Mana": 0
+            },
+            "Skills": {
+              "Combat": 0,
+              "Arcane": 0,
+              "Psionics": -5,
+              "Hide": 0,
+              "Traps": 0,
+              "Tactics": 0,
+              "Social": 0,
+              "Apothecary": 0,
+              "Travel": 15,
+              "Sail": 0
+            }
+          },
+          "Value": 26
+        },
+        "Offhand": null,
+        "Ranged": null,
+        "Heraldry": [
+        ]
+      },
+      "Supplies": [
+        {
+          "Identity": {
+            "Id": "7d48cc87-09f8-42d3-8476-88c790c5c5be",
+            "CharacterId": ""
+          },
+          "Name": "Poorly crafted spear",
+          "Level": 1,
+          "LevelName": "Common",
+          "Type": "Weapon",
+          "Subtype": "Spear",
+          "Quality": "Poorly crafted",
+          "Category": "Spear",
+          "InventoryLocations": [
+            "Mainhand",
+            "Ranged"
+          ],
+          "Description": "A pole weapon consisting of a shaft, usually of wood, with a pointed head. The most common design for hunting or combat spears since ancient times has incorporated a metal spearhead shaped like a triangle, lozenge, or leaf. Some heads of spears feature barbs or serrated edges.",
+          "Lore": "Not much can be said about this item.",
+          "HasTaint": false,
+          "Sheet": {
+            "Stats": {
+              "Strength": 0,
+              "Constitution": 0,
+              "Agility": 0,
+              "Willpower": 0,
+              "Perception": 0,
+              "Abstract": 0
+            },
+            "Assets": {
+              "Resolve": 0,
+              "Harm": 9,
+              "Spot": 0,
+              "Defense": 0,
+              "Purge": 0,
+              "Mana": 0
+            },
+            "Skills": {
+              "Combat": 0,
+              "Arcane": 0,
+              "Psionics": 0,
+              "Hide": 0,
+              "Traps": 0,
+              "Tactics": 0,
+              "Social": 0,
+              "Apothecary": 0,
+              "Travel": 0,
+              "Sail": 0
+            }
+          },
+          "Value": 10
+        },
+        {
+          "Identity": {
+            "Id": "261b3610-3cfb-4543-aebc-c9f98b0dec85",
+            "CharacterId": ""
+          },
+          "Name": "Old and broken boar spear",
+          "Level": 1,
+          "LevelName": "Common",
+          "Type": "Weapon",
+          "Subtype": "Spear",
+          "Quality": "Old and broken",
+          "Category": "Boar spear",
+          "InventoryLocations": [
+            "Mainhand",
+            "Ranged"
+          ],
+          "Description": "A relatively short and heavy spear which has two lugs or wings on the spearsocket behind the blade, these act as a barrier to prevent the spear from penetrating too deeply into the target where it might get stuck or break, and to stop an injured and furious enemy from working its way up the shaft of the spear to attack.",
+          "Lore": "Not much can be said about this item.",
+          "HasTaint": false,
+          "Sheet": {
+            "Stats": {
+              "Strength": 0,
+              "Constitution": 0,
+              "Agility": 0,
+              "Willpower": 0,
+              "Perception": 0,
+              "Abstract": 0
+            },
+            "Assets": {
+              "Resolve": 0,
+              "Harm": 31,
+              "Spot": 0,
+              "Defense": 0,
+              "Purge": 0,
+              "Mana": 0
+            },
+            "Skills": {
+              "Combat": 0,
+              "Arcane": 0,
+              "Psionics": 0,
+              "Hide": 0,
+              "Traps": 0,
+              "Tactics": 0,
+              "Social": 0,
+              "Apothecary": 0,
+              "Travel": 0,
+              "Sail": 0
+            }
+          },
+          "Value": 34
+        },
+        {
+          "Identity": {
+            "Id": "c37edd6d-cc15-40f0-b459-39dbf0cf9136",
+            "CharacterId": ""
+          },
+          "Name": "Low quality spear",
+          "Level": 1,
+          "LevelName": "Common",
+          "Type": "Weapon",
+          "Subtype": "Spear",
+          "Quality": "Low quality",
+          "Category": "Spear",
+          "InventoryLocations": [
+            "Mainhand",
+            "Ranged"
+          ],
+          "Description": "A pole weapon consisting of a shaft, usually of wood, with a pointed head. The most common design for hunting or combat spears since ancient times has incorporated a metal spearhead shaped like a triangle, lozenge, or leaf. Some heads of spears feature barbs or serrated edges.",
+          "Lore": "Not much can be said about this item.",
+          "HasTaint": false,
+          "Sheet": {
+            "Stats": {
+              "Strength": 0,
+              "Constitution": 0,
+              "Agility": 0,
+              "Willpower": 0,
+              "Perception": 0,
+              "Abstract": 0
+            },
+            "Assets": {
+              "Resolve": 0,
+              "Harm": 26,
+              "Spot": 0,
+              "Defense": 0,
+              "Purge": 0,
+              "Mana": 0
+            },
+            "Skills": {
+              "Combat": 0,
+              "Arcane": 0,
+              "Psionics": 0,
+              "Hide": 0,
+              "Traps": 0,
+              "Tactics": 0,
+              "Social": 0,
+              "Apothecary": 0,
+              "Travel": 0,
+              "Sail": 0
+            }
+          },
+          "Value": 28
+        }
+      ],
+      "HeroicTraits": [
+        {
+          "Identity": {
+            "Id": "782d8a39-b6cc-46bb-8f6a-622525bfcba1",
+            "Name": "The Strength of Many"
+          },
+          "Description": "Increases Paperdoll stat Strength by 10%.",
+          "Lore": "At one point in your life, you have developed an almost unnatural ability to bend steel.",
+          "Type": "Passive",
+          "Subtype": "Unique",
+          "Category": "Stats",
+          "DeedsCost": 10
+        }
+      ],
+      "IsAlive": true
+    }
+  ]
+}
