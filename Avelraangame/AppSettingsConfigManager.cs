@@ -17,7 +17,7 @@ public class AppSettingsConfigManager : IAppSettingsConfigManager
         }
     }
 
-    public string DbPlayers
+    public string DbPlayersPath
     {
         get
         {
@@ -25,11 +25,11 @@ public class AppSettingsConfigManager : IAppSettingsConfigManager
         }
     }
 
-    public string DbTraits
+    public string DbRulebookPath
     {
         get
         {
-            return _configuration["AppSettings:DbTraitsPath"];
+            return _configuration["AppSettings:DbRulebookPath"];
         }
     }
 

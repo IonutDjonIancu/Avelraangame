@@ -9,7 +9,7 @@ public class ValidatorBase
 
     public void ValidateObject(object? obj, string message = "")
     {
-        if (obj == null) Throw(message.Length > 0 ? message : "Object found null.");
+        if (obj == null) Throw(message.Length > 0 ? message : $"Object found null.");
     }
 
     public void ValidateNumber(int num, string message = "")

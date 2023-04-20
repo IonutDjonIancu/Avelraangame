@@ -3,8 +3,8 @@
 public interface IAppSettingsConfigManager
 {
     string DbPath { get; }
-    string DbPlayers { get; }
-    string DbTraits { get; }
+    string DbPlayersPath { get; }
+    string DbRulebookPath { get; }
 
     string DbTestPath { get; }
 

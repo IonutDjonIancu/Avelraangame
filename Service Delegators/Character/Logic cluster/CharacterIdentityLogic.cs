@@ -9,19 +9,16 @@ namespace Service_Delegators;
 internal class CharacterIdentityLogic
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterMetadata charMetadata;
 
     public CharacterIdentityLogic(
-        IDatabaseManager databaseManager,
-        CharacterMetadata characterMetadata)
+        IDatabaseManager databaseManager)
     {
-        charMetadata = characterMetadata;
         dbm = databaseManager;
     }
 
     internal Character ChangeName(CharacterUpdate charUpdate, string playerId)
     {
-        var oldChar = charMetadata.GetCharacter(charUpdate.CharacterId, playerId);
+        var oldChar = dbm.Metadata.GetCharacterById(charUpdate.CharacterId, playerId);
 
         oldChar.Identity.Name = charUpdate.Name;
 

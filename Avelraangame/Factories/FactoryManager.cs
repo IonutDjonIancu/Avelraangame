@@ -16,8 +16,8 @@ public class FactoryManager : IFactoryManager
         var config = new DatabaseManagerConfig()
         {
             DbPath = configManager.DbPath,
-            DbPlayersPath = configManager.DbPlayers,
-            DbTraitsPath = configManager.DbTraits,
+            DbPlayersPath = configManager.DbPlayersPath,
+            DbRulebookPath = configManager.DbRulebookPath,
 
             LogPath = configManager.LogPath,
 

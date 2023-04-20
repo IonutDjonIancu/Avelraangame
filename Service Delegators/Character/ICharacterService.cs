@@ -1,4 +1,5 @@
-﻿using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers;
+using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
@@ -14,6 +15,8 @@ public interface ICharacterService
 
     Character EquipCharacterItem(CharacterEquip equip, string playerId);
     Character UnequipCharacterItem(CharacterEquip unequip, string playerId);
+
+    CharacterPaperdoll GetCharacterPaperdoll(string characterId, string playerId);
 
     List<HeroicTrait> GetHeroicTraits();   
     Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId);

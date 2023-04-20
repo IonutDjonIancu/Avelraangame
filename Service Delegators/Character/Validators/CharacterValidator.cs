@@ -9,19 +9,15 @@ namespace Service_Delegators.Validators;
 public class CharacterValidator : ValidatorBase
 {
     private readonly IDatabaseManager dbm;
-    private readonly CharacterMetadata charMetadata;
 
-    public CharacterValidator(
-        IDatabaseManager manager,
-        CharacterMetadata charMetadata)
+    public CharacterValidator(IDatabaseManager manager)
     {
         dbm = manager;
-        this.charMetadata = charMetadata;
     }
 
     public void ValidateSkillsToDistribute(string charId, string skill, string playerId)
     {
-        var skillPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.SkillPoints;
+        var skillPoints = dbm.Metadata.GetCharacterById(charId, playerId).LevelUp.SkillPoints;
 
         if (skillPoints <= 0) Throw("No skill points to distribute.");
         if (!CharactersLore.Skills.All.Contains(skill)) Throw($"Unable to determine skill name: {skill}.");
@@ -29,7 +25,7 @@ public class CharacterValidator : ValidatorBase
 
     public void ValidateStatsToDistribute(string charId, string stat, string playerId)
     {
-        var statPoints = charMetadata.GetCharacter(charId, playerId).LevelUp.StatPoints;
+        var statPoints = dbm.Metadata.GetCharacterById(charId, playerId).LevelUp.StatPoints;
 
         if (statPoints <= 0) Throw("No stat points to distribute.");
         if (!CharactersLore.Stats.All.Contains(stat)) Throw($"Unable to determine stat name: {stat}.");
@@ -60,7 +56,7 @@ public class CharacterValidator : ValidatorBase
     {
         ValidateObject(charUpdate);
         ValidateGuid(charUpdate.CharacterId);
-        ValidateIfCharacterExists(playerId, charUpdate.CharacterId);
+        ValidateCharacterPlayerCombination(charUpdate.CharacterId, playerId);
         ValidateName(charUpdate.Name);
     }
 
@@ -68,13 +64,13 @@ public class CharacterValidator : ValidatorBase
     {
         ValidateGuid(characterId);
 
-        ValidateIfCharacterExists(playerId, characterId);
+        ValidateCharacterPlayerCombination(characterId, playerId);
     }
 
     public void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait, string playerId)
     {
         ValidateGuid(trait.CharacterId);
-        ValidateIfCharacterExists(playerId, trait.CharacterId);
+        ValidateCharacterPlayerCombination(trait.CharacterId, playerId);
         var character = dbm.Snapshot.Players.First(p => p.Identity.Id == playerId).Characters!.First(c => c.Identity.Id == trait.CharacterId);
 
         ValidateGuid(trait.HeroicTraitId);
@@ -97,14 +93,14 @@ public class CharacterValidator : ValidatorBase
         ValidateObject(equip);
         ValidateGuid(equip.CharacterId);
         ValidateGuid(equip.ItemId);
-        ValidateIfCharacterExists(playerId, equip.CharacterId);
+        ValidateCharacterPlayerCombination(equip.CharacterId, playerId);
         ValidateString(equip.InventoryLocation);
         if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) Throw("Equipment location does not fit any possible slot in inventory.");
 
         if (!toEquip) return;
         
-        var chr = charMetadata.GetCharacter(equip.CharacterId, playerId);
-        var itemSubtype = chr.Supplies.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
+        var character = dbm.Metadata.GetCharacterById(equip.CharacterId, playerId);
+        var itemSubtype = character.Supplies.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
         if (itemSubtype == null) Throw("No such item found on this character.");
 
         bool isItemAtCorrectLocation;
@@ -193,7 +189,7 @@ public class CharacterValidator : ValidatorBase
             isItemAtCorrectLocation =
                equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry;
 
-            if (chr.Inventory.Heraldry.Count >= 5)
+            if (character.Inventory.Heraldry.Count >= 5)
             {
                 Throw("Heraldry is full, unequip some of the items first.");
             }
@@ -206,12 +202,12 @@ public class CharacterValidator : ValidatorBase
         if (!isItemAtCorrectLocation) Throw("Unable to equip the item at said location.");
     }
 
-    #region private methods
-    private void ValidateIfCharacterExists(string playerId, string characterId)
+    public void ValidateCharacterPlayerCombination(string characterId, string playerId)
     {
-        if (!charMetadata.DoesCharacterExist(playerId, characterId)) Throw("Character not found.");
+        if (!dbm.Metadata.DoesCharacterExist(characterId, playerId)) Throw("Character not found.");
     }
 
+    #region private methods
     private void ValidateRaceCultureCombination(CharacterOrigins sublore)
     {
         string message = "Invalid race culture combination";
