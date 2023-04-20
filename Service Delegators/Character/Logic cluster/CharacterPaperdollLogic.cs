@@ -19,17 +19,25 @@ internal class CharacterPaperdollLogic
         var character = dbm.Metadata.GetCharacterById(characterId, playerId);
         var items = character.Inventory.GetAllEquipedItems();
         var traits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
+
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
+        CalculatePaperdollStats(character, items, traits, paperdoll);
+        CalculatePaperdollAssets(character, items, traits, paperdoll);
+        CalculatePaperdollSkills(character, items, traits, paperdoll);
 
+        return paperdoll;
+    }
 
-        #region calculate stats & apply bonuses from items to stats
+    #region private methods
+    private static void CalculatePaperdollStats(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    {
         var itemStrBonus = 0;
         var itemConBonus = 0;
         var itemAgiBonus = 0;
         var itemWilBonus = 0;
         var itemPerBonus = 0;
         var itemAbsBonus = 0;
-        
+
         if (items.Count > 0)
         {
             itemStrBonus = items.Sum(i => i.Sheet.Stats.Strength);
@@ -40,23 +48,27 @@ internal class CharacterPaperdollLogic
             itemAbsBonus = items.Sum(i => i.Sheet.Stats.Abstract);
         }
 
-        paperdoll.Stats.Strength    = character.Sheet.Stats.Strength + itemStrBonus; 
-        paperdoll.Stats.Constitution= character.Sheet.Stats.Constitution + itemConBonus;
-        paperdoll.Stats.Agility     = character.Sheet.Stats.Agility + itemAgiBonus;
-        paperdoll.Stats.Willpower   = character.Sheet.Stats.Willpower + itemWilBonus;
-        paperdoll.Stats.Perception  = character.Sheet.Stats.Perception + itemPerBonus;
-        paperdoll.Stats.Abstract    = character.Sheet.Stats.Abstract + itemAbsBonus;
-        
+        paperdoll.Stats = new CharacterStats
+        {
+            Strength    = character.Sheet.Stats.Strength + itemStrBonus,
+            Constitution= character.Sheet.Stats.Constitution + itemConBonus,
+            Agility     = character.Sheet.Stats.Agility + itemAgiBonus,
+            Willpower   = character.Sheet.Stats.Willpower + itemWilBonus,
+            Perception  = character.Sheet.Stats.Perception + itemPerBonus,
+            Abstract    = character.Sheet.Stats.Abstract + itemAbsBonus
+        };
+
         if (traits.Count > 0)
         {
             if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany))
             {
                 paperdoll.Stats.Strength += (int)Math.Floor(paperdoll.Stats.Strength * 0.1);
-            } 
+            }
         }
-        #endregion
+    }
 
-        #region calculate assets & apply bonuses from items to assets
+    private void CalculatePaperdollAssets(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    {
         var itemResBonus = 0;
         var itemHarBonus = 0;
         var itemSpoBonus = 0;
@@ -74,12 +86,15 @@ internal class CharacterPaperdollLogic
             itemManBonus = items.Sum(i => i.Sheet.Assets.Mana);
         }
 
-        paperdoll.Assets.Resolve= character.Sheet.Assets.Resolve+ paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ResolveFormula) + itemResBonus;
-        paperdoll.Assets.Harm   = character.Sheet.Assets.Harm   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.HarmFormula) + itemHarBonus;
-        paperdoll.Assets.Spot   = character.Sheet.Assets.Spot   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.SpotFormula) + itemSpoBonus;
-        paperdoll.Assets.Defense= character.Sheet.Assets.Defense+ paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.DefenseFormula) + itemDefBonus;
-        paperdoll.Assets.Purge  = character.Sheet.Assets.Purge  + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.PurgeFormula) + itemPurBonus;
-        paperdoll.Assets.Mana   = character.Sheet.Assets.Mana   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ManaFormula) + itemManBonus;
+        paperdoll.Assets = new CharacterAssets
+        {
+            Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ResolveFormula) + itemResBonus) * character.Info.EntityLevel.GetValueOrDefault(),
+            Harm    = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.HarmFormula) + itemHarBonus,
+            Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.SpotFormula) + itemSpoBonus,
+            Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.DefenseFormula) + itemDefBonus,
+            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.PurgeFormula) + itemPurBonus,
+            Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.ManaFormula) + itemManBonus
+        };
 
         if (traits.Count > 0)
         {
@@ -88,9 +103,10 @@ internal class CharacterPaperdollLogic
                 paperdoll.Assets.Resolve += 50;
             }
         }
-        #endregion
+    }
 
-        #region calculate assets & apply bonuses from items to assets
+    private void CalculatePaperdollSkills(Character character, List<Item> items, List<HeroicTrait> traits, CharacterPaperdoll paperdoll)
+    {
         var itemComBonus = 0;
         var itemArcBonus = 0;
         var itemPsiBonus = 0;
@@ -116,17 +132,20 @@ internal class CharacterPaperdollLogic
             itemSaiBonus = items.Sum(i => i.Sheet.Skills.Sail);
         }
 
-        paperdoll.Skills.Combat     = character.Sheet.Skills.Combat     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Combat) + itemComBonus;
-        paperdoll.Skills.Arcane     = character.Sheet.Skills.Arcane     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Arcane) + itemArcBonus;
-        paperdoll.Skills.Psionics   = character.Sheet.Skills.Psionics   + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Psionics) + itemPsiBonus;
-        paperdoll.Skills.Hide       = character.Sheet.Skills.Hide       + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Hide) + itemHidBonus;
-        paperdoll.Skills.Traps      = character.Sheet.Skills.Traps      + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Traps) + itemTraBonus;
-        paperdoll.Skills.Tactics    = character.Sheet.Skills.Tactics    + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Tactics) + itemTacBonus;
-        paperdoll.Skills.Social     = character.Sheet.Skills.Social     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Social) + itemSocBonus;
-        paperdoll.Skills.Apothecary = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Apothecary) + itemApoBonus;
-        paperdoll.Skills.Travel     = character.Sheet.Skills.Travel     + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Travel) + itemTraBonus;
-        paperdoll.Skills.Sail       = character.Sheet.Skills.Sail       + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Sail) + itemSaiBonus;
-        
+        paperdoll.Skills = new CharacterSkills
+        {
+            Combat      = character.Sheet.Skills.Combat + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Combat) + itemComBonus,
+            Arcane      = character.Sheet.Skills.Arcane + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Arcane) + itemArcBonus,
+            Psionics    = character.Sheet.Skills.Psionics + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Psionics) + itemPsiBonus,
+            Hide        = character.Sheet.Skills.Hide + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Hide) + itemHidBonus,
+            Traps       = character.Sheet.Skills.Traps + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Traps) + itemTraBonus,
+            Tactics     = character.Sheet.Skills.Tactics + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Tactics) + itemTacBonus,
+            Social      = character.Sheet.Skills.Social + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Social) + itemSocBonus,
+            Apothecary  = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Apothecary) + itemApoBonus,
+            Travel      = character.Sheet.Skills.Travel + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Travel) + itemTraBonus,
+            Sail        = character.Sheet.Skills.Sail + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.SkillsFormulas.Sail) + itemSaiBonus
+        };
+
         if (traits.Count > 0)
         {
             if (traits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight))
@@ -134,10 +153,8 @@ internal class CharacterPaperdollLogic
                 paperdoll.Skills.Arcane += 20;
             }
         }
-        #endregion
-
-        return paperdoll;
     }
+    #endregion
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

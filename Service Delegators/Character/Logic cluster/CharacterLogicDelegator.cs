@@ -10,13 +10,13 @@ internal class CharacterLogicDelegator
 {
     private readonly IDatabaseManager dbm;
 
-    private readonly CharacterSheetLogic charSheet;
-    private readonly CharacterTraitsLogic charTraits;
-    private readonly CharacterLevelupLogic charLevelup;
-    private readonly CharacterItemsLogic charItems;
-    private readonly CharacterCreateLogic charCreate;
-    private readonly CharacterIdentityLogic charIdentity;
-    private readonly CharacterPaperdollLogic charPaperdoll;
+    private readonly CharacterSheetLogic charSheetLogic;
+    private readonly CharacterTraitsLogic charTraitsLogic;
+    private readonly CharacterLevelupLogic charLevelupLogic;
+    private readonly CharacterItemsLogic charItemsLogic;
+    private readonly CharacterCreateLogic charCreateLogic;
+    private readonly CharacterIdentityLogic charIdentityLogic;
+    private readonly CharacterPaperdollLogic charPaperdollLogic;
 
     private CharacterLogicDelegator() { }
 
@@ -27,38 +27,38 @@ internal class CharacterLogicDelegator
     {
         dbm = databaseManager;
 
-        charSheet = new CharacterSheetLogic(databaseManager, diceRollService);
-        charTraits = new CharacterTraitsLogic(databaseManager);
-        charLevelup = new CharacterLevelupLogic(databaseManager);
-        charItems = new CharacterItemsLogic(databaseManager);
-        charCreate = new CharacterCreateLogic(databaseManager, diceRollService, itemService, charSheet);
-        charIdentity = new CharacterIdentityLogic(databaseManager);
-        charPaperdoll = new CharacterPaperdollLogic(databaseManager);
+        charSheetLogic = new CharacterSheetLogic(databaseManager, diceRollService);
+        charTraitsLogic = new CharacterTraitsLogic(databaseManager);
+        charLevelupLogic = new CharacterLevelupLogic(databaseManager);
+        charItemsLogic = new CharacterItemsLogic(databaseManager);
+        charCreateLogic = new CharacterCreateLogic(databaseManager, diceRollService, itemService, charSheetLogic);
+        charIdentityLogic = new CharacterIdentityLogic(databaseManager);
+        charPaperdollLogic = new CharacterPaperdollLogic(databaseManager);
     }
 
     internal CharacterStub CreateStub(string playerId)
     {
-        return charCreate.CreateStub(playerId);
+        return charCreateLogic.CreateStub(playerId);
     }
 
     internal Character SaveStub(CharacterOrigins origins, string playerId)
     {
-        return charCreate.SaveStub(origins, playerId);
+        return charCreateLogic.SaveStub(origins, playerId);
     }
 
     internal Character ChangeName(CharacterUpdate charUpdate, string playerId)
     {
-       return charIdentity.ChangeName(charUpdate, playerId);
+       return charIdentityLogic.ChangeName(charUpdate, playerId);
     }
 
     internal Character IncreaseStats(CharacterUpdate charUpdate, string playerId)
     {
-        return charLevelup.IncreaseStats(charUpdate, playerId);
+        return charLevelupLogic.IncreaseStats(charUpdate, playerId);
     }
 
     internal Character IncreaseSkills(CharacterUpdate charUpdate, string playerId)
     {
-       return charLevelup.IncreaseSkills(charUpdate, playerId);
+       return charLevelupLogic.IncreaseSkills(charUpdate, playerId);
     }
 
     internal void DeleteCharacter(string characterId, string playerId)
@@ -73,22 +73,22 @@ internal class CharacterLogicDelegator
 
     internal Character EquipItem(CharacterEquip equip, string playerId)
     { 
-        return charItems.EquipItem(equip, playerId);
+        return charItemsLogic.EquipItem(equip, playerId);
     }
 
     internal Character UnequipItem(CharacterEquip unequip, string playerId)
     {
-        return charItems.UnequipItem(unequip, playerId);
+        return charItemsLogic.UnequipItem(unequip, playerId);
     }
 
     internal Character ApplyHeroicTrait(CharacterHeroicTrait trait, string playerId)
     {
-        return charTraits.ApplyHeroicTrait(trait, playerId);
+        return charTraitsLogic.ApplyHeroicTrait(trait, playerId);
     }
 
     internal CharacterPaperdoll CalculatePaperdoll(string characterId, string playerId)
     {
-        return charPaperdoll.CalculatePaperdoll(characterId, playerId);
+        return charPaperdollLogic.CalculatePaperdoll(characterId, playerId);
     }
 }
 
