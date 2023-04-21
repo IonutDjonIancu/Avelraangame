@@ -79,8 +79,8 @@ public class CharacterValidator : ValidatorBase
 
         if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) Throw("Character does not have enough Deeds points to aquire said Heroic Trait.");
 
-        if (heroicTrait.Subtype == TraitsLore.Subtype.unique
-            && character.HeroicTraits.Exists(t => t.Identity.Id == heroicTrait.Identity.Id)) Throw("Character already has that Heroic Trait and it is unique.");
+        if (heroicTrait.Subtype == TraitsLore.Subtype.onetime
+            && character.HeroicTraits.Exists(t => t.Identity.Id == heroicTrait.Identity.Id)) Throw("Character already has that Heroic Trait and it can only be learned once.");
 
         if (!string.IsNullOrWhiteSpace(trait.Skill))
         {

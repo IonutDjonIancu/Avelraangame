@@ -27,13 +27,13 @@ internal class CharacterLogicDelegator
     {
         dbm = databaseManager;
 
-        charSheetLogic = new CharacterSheetLogic(databaseManager, diceRollService);
-        charTraitsLogic = new CharacterTraitsLogic(databaseManager);
+        charPaperdollLogic = new CharacterPaperdollLogic(databaseManager);
         charLevelupLogic = new CharacterLevelupLogic(databaseManager);
         charItemsLogic = new CharacterItemsLogic(databaseManager);
-        charCreateLogic = new CharacterCreateLogic(databaseManager, diceRollService, itemService, charSheetLogic);
         charIdentityLogic = new CharacterIdentityLogic(databaseManager);
-        charPaperdollLogic = new CharacterPaperdollLogic(databaseManager);
+        charTraitsLogic = new CharacterTraitsLogic(databaseManager, charPaperdollLogic);
+        charSheetLogic = new CharacterSheetLogic(databaseManager, diceRollService);
+        charCreateLogic = new CharacterCreateLogic(databaseManager, diceRollService, itemService, charSheetLogic);
     }
 
     internal CharacterStub CreateStub(string playerId)
