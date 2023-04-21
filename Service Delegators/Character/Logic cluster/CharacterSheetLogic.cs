@@ -35,12 +35,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = lvl * dbm.Snapshot.Rulebook.Races.Human.Str,
-                Constitution= lvl * dbm.Snapshot.Rulebook.Races.Human.Con,
-                Agility     = lvl * dbm.Snapshot.Rulebook.Races.Human.Agl,
-                Willpower   = lvl * dbm.Snapshot.Rulebook.Races.Human.Wil,
-                Perception  = lvl * dbm.Snapshot.Rulebook.Races.Human.Per,
-                Abstract    = lvl * dbm.Snapshot.Rulebook.Races.Human.Abs
+                Strength    = lvl * dbm.Snapshot.Rulebook.Races.Human.Strength,
+                Constitution= lvl * dbm.Snapshot.Rulebook.Races.Human.Constitution,
+                Agility     = lvl * dbm.Snapshot.Rulebook.Races.Human.Agility,
+                Willpower   = lvl * dbm.Snapshot.Rulebook.Races.Human.Willpower,
+                Perception  = lvl * dbm.Snapshot.Rulebook.Races.Human.Perception,
+                Abstract    = lvl * dbm.Snapshot.Rulebook.Races.Human.Abstract
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -62,12 +62,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = lvl * dbm.Snapshot.Rulebook.Races.Elf.Str,
-                Constitution= lvl * dbm.Snapshot.Rulebook.Races.Elf.Con,
-                Agility     = lvl * dbm.Snapshot.Rulebook.Races.Elf.Agl,
-                Willpower   = lvl * dbm.Snapshot.Rulebook.Races.Elf.Wil,
-                Perception  = lvl * dbm.Snapshot.Rulebook.Races.Elf.Per,
-                Abstract    = lvl * dbm.Snapshot.Rulebook.Races.Elf.Abs
+                Strength    = lvl * dbm.Snapshot.Rulebook.Races.Elf.Strength,
+                Constitution= lvl * dbm.Snapshot.Rulebook.Races.Elf.Constitution,
+                Agility     = lvl * dbm.Snapshot.Rulebook.Races.Elf.Agility,
+                Willpower   = lvl * dbm.Snapshot.Rulebook.Races.Elf.Willpower,
+                Perception  = lvl * dbm.Snapshot.Rulebook.Races.Elf.Perception,
+                Abstract    = lvl * dbm.Snapshot.Rulebook.Races.Elf.Abstract
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -89,12 +89,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Str,
-                Constitution= lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Con,
-                Agility     = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Agl,
-                Willpower   = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Wil,
-                Perception  = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Per,
-                Abstract    = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Abs
+                Strength    = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Strength,
+                Constitution= lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Constitution,
+                Agility     = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Agility,
+                Willpower   = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Willpower,
+                Perception  = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Perception,
+                Abstract    = lvl * dbm.Snapshot.Rulebook.Races.Dwarf.Abstract
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -111,30 +111,30 @@ internal class CharacterSheetLogic
     private void SetSheetForDanarian(CharacterSheet charsheet)
     {
         //stats
-        charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Str;
-        charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Con;
-        charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Agi;
-        charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Wil;
-        charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Per;
-        charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Abs;
+        charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Stats.Strength;
+        charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Stats.Constitution;
+        charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Stats.Agility;
+        charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Stats.Willpower;
+        charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Stats.Perception;
+        charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Stats.Abstract;
         //assets
-        charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Res;
-        charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Har;
-        charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Spo;
-        charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Def;
-        charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Pur;
-        charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Man;
+        charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Assets.Resolve;
+        charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Assets.Harm;
+        charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Assets.Spot;
+        charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Assets.Defense;
+        charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Assets.Purge;
+        charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Assets.Mana;
         //skills
-        charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Com;
-        charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Arc;
-        charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Psi;
-        charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Hid;
-        charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Tra;
-        charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Tac;
-        charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Soc;
-        charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Apo;
-        charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Tra;
-        charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Sai;
+        charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Combat;
+        charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Arcane;
+        charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Psionics;
+        charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Hide;
+        charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Traps;
+        charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Tactics;
+        charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Social;
+        charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Apothecary;
+        charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Travel;
+        charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Humans.Danarian.Skills.Sail;
 
         // danarias should start with a weapon, armour and helm
     }
@@ -142,30 +142,30 @@ internal class CharacterSheetLogic
     private void SetSheetForHighborn(CharacterSheet charsheet)
     {
         //stats
-        charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Str;
-        charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Con;
-        charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Agi;
-        charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Wil;
-        charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Per;
-        charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Abs;
+        charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Stats.Strength;
+        charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Stats.Constitution;
+        charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Stats.Agility;
+        charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Stats.Willpower;
+        charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Stats.Perception;
+        charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Stats.Abstract;
         //assets
-        charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Res;
-        charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Har;
-        charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Spo;
-        charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Def;
-        charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Pur;
-        charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Man;
+        charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Assets.Resolve;
+        charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Assets.Harm;
+        charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Assets.Spot;
+        charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Assets.Defense;
+        charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Assets.Purge;
+        charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Assets.Mana;
         //skills
-        charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Com;
-        charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Arc;
-        charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Psi;
-        charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Hid;
-        charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Tra;
-        charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Tac;
-        charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Soc;
-        charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Apo;
-        charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Tra;
-        charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Sai;
+        charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Combat;
+        charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Arcane;
+        charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Psionics;
+        charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Hide;
+        charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Traps;
+        charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Tactics;
+        charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Social;
+        charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Apothecary;
+        charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Travel;
+        charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Elves.Highborn.Skills.Sail;
 
         // highborn should have a HT with no fear rolls
     }
@@ -173,30 +173,30 @@ internal class CharacterSheetLogic
     private void SetSheetForUndermoutain(CharacterSheet charsheet)
     {
         //stats
-        charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Str;
-        charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Con;
-        charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Agi;
-        charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Wil;
-        charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Per;
-        charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Abs;
+        charsheet.Stats.Strength    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Stats.Strength;
+        charsheet.Stats.Constitution+= dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Stats.Constitution;
+        charsheet.Stats.Agility     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Stats.Agility;
+        charsheet.Stats.Willpower   += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Stats.Willpower;
+        charsheet.Stats.Perception  += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Stats.Perception;
+        charsheet.Stats.Abstract    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Stats.Abstract;
         //assets
-        charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Res;
-        charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Har;
-        charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Spo;
-        charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Def;
-        charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Pur;
-        charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Man;
+        charsheet.Assets.Resolve    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Assets.Resolve;
+        charsheet.Assets.Harm       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Assets.Harm;
+        charsheet.Assets.Spot       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Assets.Spot;
+        charsheet.Assets.Defense    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Assets.Defense;
+        charsheet.Assets.Purge      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Assets.Purge;
+        charsheet.Assets.Mana       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Assets.Mana;
         //skills
-        charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Com;
-        charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Arc;
-        charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Psi;
-        charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Hid;
-        charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Tra;
-        charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Tac;
-        charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Soc;
-        charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Apo;
-        charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Tra;
-        charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Sai;
+        charsheet.Skills.Combat     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Combat;
+        charsheet.Skills.Arcane     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Arcane;
+        charsheet.Skills.Psionics   += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Psionics;
+        charsheet.Skills.Hide       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Hide;
+        charsheet.Skills.Traps      += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Traps;
+        charsheet.Skills.Tactics    += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Tactics;
+        charsheet.Skills.Social     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Social;
+        charsheet.Skills.Apothecary += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Apothecary;
+        charsheet.Skills.Travel     += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Travel;
+        charsheet.Skills.Sail       += dbm.Snapshot.Rulebook.Cultures.Dwarves.Undermountain.Skills.Sail;
 
         // should start with heavy armour
     }

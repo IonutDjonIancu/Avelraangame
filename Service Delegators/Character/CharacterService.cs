@@ -87,16 +87,21 @@ public class CharacterService : ICharacterService
         return logic.ApplyHeroicTrait(trait, playerId);
     }
 
-    public List<HeroicTrait> GetHeroicTraits()
-    {
-        return dbm.Snapshot.Traits;
-    }
-
     public CharacterPaperdoll GetCharacterPaperdoll(string characterId, string playerId)
     {
         validator.ValidateCharacterPlayerCombination(characterId, playerId);
 
         return logic.CalculatePaperdoll(characterId, playerId);
+    }
+    
+    public List<HeroicTrait> GetHeroicTraits()
+    {
+        return dbm.Snapshot.Traits;
+    }
+
+    public Rulebook GetRulebook()
+    {
+        return dbm.Snapshot.Rulebook;
     }
 
     #region private methods

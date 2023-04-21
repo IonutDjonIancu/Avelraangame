@@ -2,15 +2,15 @@
 
 public class Classes
 {
-    public ClassesLikelyAttributes Warrior { get; set; }
-    public ClassesLikelyAttributes Mage { get; set; }
-    public ClassesLikelyAttributes Hunter { get; set; }
-    public ClassesLikelyAttributes Swashbuckler { get; set; }
-    public ClassesLikelyAttributes Sorcerer { get; set; }
+    public Subclass Warrior { get; set; }
+    public Subclass Mage { get; set; }
+    public Subclass Hunter { get; set; }
+    public Subclass Swashbuckler { get; set; }
+    public Subclass Sorcerer { get; set; }
 
-    public List<ClassesLikelyAttributes> All()
+    public List<Subclass> All()
     {
-        return new List<ClassesLikelyAttributes>()
+        return new List<Subclass>()
         {
             Warrior,
             Mage,

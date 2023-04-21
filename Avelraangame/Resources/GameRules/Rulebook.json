@@ -2,193 +2,211 @@
   "Acronyms": {
     "Description": "Acronyms used in this Rulebook.",
     "Stats": {
-      "Strength": "Str",
+      "Strength":     "Str",
       "Constitution": "Con",
-      "Agility": "Agi",
-      "Willpower": "Wil",
-      "Perception": "Per",
-      "Abstract": "Abs"
+      "Agility":      "Agi",
+      "Willpower":    "Wil",
+      "Perception":   "Per",
+      "Abstract":     "Abs"
     },
     "Assets": {
-      "Resolve": "Res",
-      "Harm": "Har",
-      "Spot": "Spo",
-      "Defense": "Def",
-      "Purge": "Pur",
-      "Mana": "Man"
+      "Resolve":      "Res",
+      "Harm":         "Har",
+      "Spot":         "Spo",
+      "Defense":      "Def",
+      "Purge":        "Pur",
+      "Mana":         "Man"
     },
     "Skills": {
-      "Combat": "Com",
-      "Arcane": "Arc",
-      "Psionics": "Psi",
-      "Hide": "Hid",
-      "Traps": "Tra",
-      "Tactics": "Tac",
-      "Social": "Soc",
-      "Apothecary": "Apo",
-      "Travel": "Trv",
-      "Sail": "Sai"
+      "Combat":       "Com",
+      "Arcane":       "Arc",
+      "Psionics":     "Psi",
+      "Hide":         "Hid",
+      "Traps":        "Tra",
+      "Tactics":      "Tac",
+      "Social":       "Soc",
+      "Apothecary":   "Apo",
+      "Travel":       "Trv",
+      "Sail":         "Sai"
     }
   },
   "Races": {
     "Description": "Races stats in the Rulebook will multiply by the entity level, the minimum entity level is 1.",
     "Human": {
-      "Str": 5,
-      "Con": 5,
-      "Agi": 5,
-      "Wil": 5,
-      "Per": 5,
-      "Abs": 5
+      "Strength":      5,
+      "Constitution":  5,
+      "Agility":       5,
+      "Willpower":     5,
+      "Perception":    5,
+      "Abstract":      5
     },
     "Elf": {
-      "Str": 2,
-      "Con": 7,
-      "Agi": 15,
-      "Wil": 7,
-      "Per": 10,
-      "Abs": 10
+      "Strength":      2,
+      "Constitution":  7,
+      "Agility":      15,
+      "Willpower":     7,
+      "Perception":   10,
+      "Abstract":     10
     },
     "Dwarf": {
-      "Str": 12,
-      "Con": 10,
-      "Agi": 2,
-      "Wil": 10,
-      "Per": 3,
-      "Abs": 10
+      "Strength":     12,
+      "Constitution": 10,
+      "Agility":       2,
+      "Willpower":    10,
+      "Perception":    3,
+      "Abstract":     10
     }
   },
   "Cultures": {
     "Description": "Cultures will influence a number of stats, assets or skills. Health starts from 10. All skills start from 10.",
     "Humans": {
       "Danarian": {
-        "Str": 0,
-        "Con": 0,
-        "Agi": 0,
-        "Wil": 0,
-        "Per": 0,
-        "Abs": 0,
-        "Res": 5,
-        "Har": 0,
-        "Spo": 0,
-        "Def": 0,
-        "Pur": 0,
-        "Man": 0,
-        "Com": 10,
-        "Arc": 0,
-        "Psi": 0,
-        "Hid": -10,
-        "Tra": 0,
-        "Tac": 10,
-        "Soc": 10,
-        "Apo": 10,
-        "Trv": 10,
-        "Sai": -30
+        "Stats": {
+          "Strength":      0,
+          "Constitution":  0,
+          "Agility":       0,
+          "Willpower":     0,
+          "Perception":    0,
+          "Abstract":      0
+        },
+        "Assets": {
+          "Resolve":       5,
+          "Harm":          0,
+          "Spot":          0,
+          "Defense":       0,
+          "Purge":         0,
+          "Mana":          0
+        },
+        "Skills": {
+          "Combat":       40,
+          "Arcane":       10,
+          "Psionics":     10,
+          "Hide":        -10,
+          "Traps":        10,
+          "Tactics":      10,
+          "Social":       20,
+          "Apothecary":   10,
+          "Travel":       20,
+          "Sail":         10
+        }
       }
     },
     "Elves": {
       "Highborn": {
-        "Str": 0,
-        "Con": 0,
-        "Agi": 0,
-        "Wil": 10,
-        "Per": 0,
-        "Abs": 0,
-        "Res": 10,
-        "Har": 0,
-        "Spo": 50,
-        "Def": 0,
-        "Pur": 0,
-        "Man": 50,
-        "Com": 10,
-        "Arc": 40,
-        "Psi": 10,
-        "Hid": 10,
-        "Tra": 10,
-        "Tac": 10,
-        "Soc": 10,
-        "Apo": 10,
-        "Trv": -50,
-        "Sai": 10
+        "Stats": {
+          "Strength":      0,
+          "Constitution":  0,
+          "Agility":       0,
+          "Willpower":    10,
+          "Perception":    0,
+          "Abstract":      0
+        },
+        "Assets": {
+          "Resolve":      10,
+          "Harm":          0,
+          "Spot":         50,
+          "Defense":       0,
+          "Purge":         0,
+          "Mana":          0
+        },
+        "Skills": {
+          "Combat":       20,
+          "Arcane":       40,
+          "Psionics":      5,
+          "Hide":         10,
+          "Traps":        10,
+          "Tactics":      10,
+          "Social":       20,
+          "Apothecary":   10,
+          "Travel":      -40,
+          "Sail":        -10
+        }
       }
     },
     "Dwarves": {
       "Undermountain": {
-        "Str": 10,
-        "Con": 0,
-        "Agi": 0,
-        "Wil": 0,
-        "Per": 0,
-        "Abs": 0,
-        "Res": 20,
-        "Har": 20,
-        "Spo": 0,
-        "Def": 10,
-        "Pur": 10,
-        "Man": 0,
-        "Com": 30,
-        "Arc": 10,
-        "Psi": 10,
-        "Hid": -40,
-        "Tra": 10,
-        "Tac": 10,
-        "Soc": -20,
-        "Apo": 10,
-        "Trv": -20,
-        "Sai": -200
+        "Stats": {
+          "Strength":     10,
+          "Constitution": 10,
+          "Agility":       0,
+          "Willpower":     0,
+          "Perception":    0,
+          "Abstract":      0
+        },
+        "Assets": {
+          "Resolve":      20,
+          "Harm":         10,
+          "Spot":          0,
+          "Defense":      10,
+          "Purge":        10,
+          "Mana":          0
+        },
+        "Skills": {
+          "Combat":       30,
+          "Arcane":        0,
+          "Psionics":     10,
+          "Hide":        -20,
+          "Traps":        10,
+          "Tactics":      10,
+          "Social":       -5,
+          "Apothecary":    0,
+          "Travel":      -20,
+          "Sail":       -100
+        }
       }
     }
   },
   "Classes": {
     "Warrior": {
-      "LikelyStats": [ "Str", "Con" ],
-      "UnlikelyStats": [ "Wil", "Per", "Agi" ],
-      "LikelySkills": [ "Com" ],
+      "LikelyStats":    [ "Str", "Con" ],
+      "UnlikelyStats":  [ "Wil", "Per", "Agi" ],
+      "LikelySkills":   [ "Com" ],
       "UnlikelySkills": [ "Tra", "Trv", "Apo" ]
     },
     "Mage": {
-      "LikelyStats": [ "Abs", "Con" ],
-      "UnlikelyStats": [ "Wil", "Agi", "Per" ],
-      "LikelySkills": [ "Arc" ],
+      "LikelyStats":    [ "Abs", "Con" ],
+      "UnlikelyStats":  [ "Wil", "Agi", "Per" ],
+      "LikelySkills":   [ "Arc" ],
       "UnlikelySkills": [ "Soc", "Apo", "Com", "Tac" ]
     },
     "Hunter": {
-      "LikelyStats": [ "Agi", "Per" ],
-      "UnlikelyStats": [ "Agi", "Con", "Per" ],
-      "LikelySkills": [ "Hid", "Tra" ],
+      "LikelyStats":    [ "Agi", "Per" ],
+      "UnlikelyStats":  [ "Agi", "Con", "Per" ],
+      "LikelySkills":   [ "Hid", "Tra" ],
       "UnlikelySkills": [ "Com", "Trv" ]
     },
-    "Swashbuckler ": {
-      "LikelyStats": [ "Str", "Agi" ],
-      "UnlikelyStats": [ "Agi", "Con", "Per", "Wil" ],
-      "LikelySkills": [ "Com", "Arc", "Soc" ],
+    "Swashbuckler": {
+      "LikelyStats":    [ "Str", "Agi" ],
+      "UnlikelyStats":  [ "Agi", "Con", "Per", "Wil" ],
+      "LikelySkills":   [ "Com", "Arc", "Soc" ],
       "UnlikelySkills": [ "Tra", "Trv", "Sai" ]
     },
-    "Sorcerer ": {
-      "LikelyStats": [ "Abs" ],
-      "UnlikelyStats": [ "Abs", "Con" ],
-      "LikelySkills": [ "Arc" ],
+    "Sorcerer": {
+      "LikelyStats":    [ "Abs" ],
+      "UnlikelyStats":  [ "Abs", "Con" ],
+      "LikelySkills":   [ "Arc" ],
       "UnlikelySkills": [ "Trv", "Arc" ]
     }
   },
   "AssetsFormulas": {
     "Description": "Resolve is multiplied by the Entity Level of your character.",
-    "ResolveFormula": "2*Str + 3*Con + Agi + 2*Wil + Per + Abs",
-    "HarmFormula": "2*Str + Agi + Per",
-    "SpotFormula": "3*Per + Agi",
-    "DefenseFormula": "(2*Con + Agi + Per) / 10",
-    "PurgeFormula": "(2*Wil + Con + Per) / 10",
-    "ManaFormula": "(2*Con + 3*Abs) / 5"
+    "Resolve":  "2*Str + 3*Con + Agi + 2*Wil + Per + Abs",
+    "Harm":     "2*Str + Agi + Per",
+    "Spot":     "3*Per + Agi",
+    "Defense":  "(2*Con + Agi + Per) / 10",
+    "Purge":    "(2*Wil + Con + Per) / 10",
+    "Mana":     "(2*Con + 3*Abs) / 5"
   },
   "SkillsFormulas": {
-    "Combat": "Str + Con + Agi",
-    "Arcane": "Abs + Wil + Con",
-    "Psionics": "2*Wil + Con",
-    "Hide": "Agi + Per + Abs",
-    "Traps": "2*Abs + Per",
-    "Tactics": "3*Abs",
-    "Social": "Per + Abs + Wil",
+    "Combat":     "Str + Con + Agi",
+    "Arcane":     "Abs + Wil + Con",
+    "Psionics":   "2*Wil + Con",
+    "Hide":       "Agi + Per + Abs",
+    "Traps":      "2*Abs + Per",
+    "Tactics":    "3*Abs",
+    "Social":     "Per + Abs + Wil",
     "Apothecary": "Abs + Per + Con",
-    "Travel": "2*Con + Agi + Wil - Str",
-    "Sail": "2*Con + Abs"
-  },
+    "Travel":     "2*Con + Agi + Wil - Str",
+    "Sail":       "2*Con + Abs"
+  }
 }

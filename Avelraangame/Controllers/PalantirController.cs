@@ -378,6 +378,25 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
+    #region Rulebook
+    // GET: /api/palantir/Rulebook/GetRulebook
+    [HttpGet("Rulebook/GetRulebook")]
+    public IActionResult GetRulebook()
+    {
+        try
+        {
+            var stub = factory.ServiceFactory.CharacterService.GetRulebook();
+
+            return Ok(stub);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+    #endregion
+
     #region private methods
     private string MatchTokensForPlayer(Request request)
     {
