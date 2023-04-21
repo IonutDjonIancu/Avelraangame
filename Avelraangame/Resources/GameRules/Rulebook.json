@@ -138,6 +138,38 @@
       }
     }
   },
+  "Classes": {
+    "Warrior": {
+      "LikelyStats": [ "Str", "Con" ],
+      "UnlikelyStats": [ "Wil", "Per", "Agi" ],
+      "LikelySkills": [ "Com" ],
+      "UnlikelySkills": [ "Tra", "Trv", "Apo" ]
+    },
+    "Mage": {
+      "LikelyStats": [ "Abs", "Con" ],
+      "UnlikelyStats": [ "Wil", "Agi", "Per" ],
+      "LikelySkills": [ "Arc" ],
+      "UnlikelySkills": [ "Soc", "Apo", "Com", "Tac" ]
+    },
+    "Hunter": {
+      "LikelyStats": [ "Agi", "Per" ],
+      "UnlikelyStats": [ "Agi", "Con", "Per" ],
+      "LikelySkills": [ "Hid", "Tra" ],
+      "UnlikelySkills": [ "Com", "Trv" ]
+    },
+    "Swashbuckler ": {
+      "LikelyStats": [ "Str", "Agi" ],
+      "UnlikelyStats": [ "Agi", "Con", "Per", "Wil" ],
+      "LikelySkills": [ "Com", "Arc", "Soc" ],
+      "UnlikelySkills": [ "Tra", "Trv", "Sai" ]
+    },
+    "Sorcerer ": {
+      "LikelyStats": [ "Abs" ],
+      "UnlikelyStats": [ "Abs", "Con" ],
+      "LikelySkills": [ "Arc" ],
+      "UnlikelySkills": [ "Trv", "Arc" ]
+    }
+  },
   "AssetsFormulas": {
     "Description": "Resolve is multiplied by the Entity Level of your character.",
     "ResolveFormula": "2*Str + 3*Con + Agi + 2*Wil + Per + Abs",
@@ -145,7 +177,7 @@
     "SpotFormula": "3*Per + Agi",
     "DefenseFormula": "(2*Con + Agi + Per) / 10",
     "PurgeFormula": "(2*Wil + Con + Per) / 10",
-    "ManaFormula": "(3*Con + 2*Abs) / 5"
+    "ManaFormula": "(2*Con + 3*Abs) / 5"
   },
   "SkillsFormulas": {
     "Combat": "Str + Con + Agi",
@@ -158,5 +190,5 @@
     "Apothecary": "Abs + Per + Con",
     "Travel": "2*Con + Agi + Wil - Str",
     "Sail": "2*Con + Abs"
-  }
+  },
 }

@@ -2,6 +2,7 @@
 
 public class Assets
 {
+    public string Description { get; set; }
     public string ResolveFormula { get; set; }
     public string HarmFormula { get; set; }
     public string DefenseFormula { get; set; }
