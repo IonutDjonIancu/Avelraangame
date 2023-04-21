@@ -16,12 +16,12 @@ public class TraitsLore
 
     public static class Subtype
     {
-        public const string common = "Common"; // can be chosen multiple times (only Bonus type HT can be Common)
-        public const string unique = "Unique"; // can only be chosen once
+        public const string multiple = "Multiple"; // can be chosen multiple times (only Bonus type HT can be Common)
+        public const string onetime = "Onetime"; // can only be chosen once
 
         public static readonly List<string> All = new()
         {
-            common, unique
+            multiple, onetime
         };
     }
 
@@ -52,7 +52,7 @@ public class TraitsLore
                 Description = metachaosDaemonology_description,
                 Lore = metachaosDaemonology_lore,
                 Type = Type.active,
-                Subtype = Subtype.unique,
+                Subtype = Subtype.onetime,
                 Category = Category.rolls,
                 DeedsCost = 100
             }
@@ -93,7 +93,7 @@ public class TraitsLore
                 Description = fatePoint_description,
                 Lore = fatePoint_lore,
                 Type = Type.passive,
-                Subtype = Subtype.unique,
+                Subtype = Subtype.onetime,
                 Category = Category.rolls,
                 DeedsCost = 50
             },
@@ -107,7 +107,7 @@ public class TraitsLore
                 Description = theStrengthOfMany_description,
                 Lore = theStrengthOfMany_lore,
                 Type = Type.passive,
-                Subtype = Subtype.unique,
+                Subtype = Subtype.onetime,
                 Category = Category.stats,
                 DeedsCost = 10
             },
@@ -121,7 +121,7 @@ public class TraitsLore
                 Description = lifeInThePits_description,
                 Lore = lifeInThePits_lore,
                 Type = Type.passive,
-                Subtype = Subtype.unique,
+                Subtype = Subtype.onetime,
                 Category = Category.assets,
                 DeedsCost = 3
             },
@@ -135,7 +135,7 @@ public class TraitsLore
                 Description = candlelight_description,
                 Lore = candlelight_lore,
                 Type = Type.passive,
-                Subtype = Subtype.unique,
+                Subtype = Subtype.onetime,
                 Category = Category.skills,
                 DeedsCost = 2
             }
@@ -146,7 +146,7 @@ public class TraitsLore
     {
         // 1
         public const string swordsman = "Swordsman";
-        public const string swordsman_description = "Increases the base Combat skill by 10 plus another 1% of its Paperdoll amount.";
+        public const string swordsman_description = "Increases the base Combat skill by 5 plus another 1% of its Paperdoll amount.";
         public const string swordsman_lore = "Steady arm and stout shield are the best teachers you have ever known.";
         // 2
         public const string skillful = "Skillful";
@@ -165,7 +165,7 @@ public class TraitsLore
                 Description = skillful_description,
                 Lore = skillful_lore,
                 Type = Type.bonus,
-                Subtype = Subtype.unique,
+                Subtype = Subtype.onetime,
                 Category = Category.skills,
                 DeedsCost = 5
             },
@@ -179,7 +179,7 @@ public class TraitsLore
                 Description = swordsman_description,
                 Lore = swordsman_lore,
                 Type = Type.bonus,
-                Subtype = Subtype.common,
+                Subtype = Subtype.multiple,
                 Category = Category.skills,
                 DeedsCost = 1
             }
