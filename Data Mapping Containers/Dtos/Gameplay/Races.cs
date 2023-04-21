@@ -3,8 +3,8 @@
 public class Races
 {
     public string Description { get; set; }
-    public Human Human { get; set; }
-    public Elf Elf { get; set; }
-    public Dwarf Dwarf { get; set; }
+    public CharacterStats Human { get; set; }
+    public CharacterStats Elf { get; set; }
+    public CharacterStats Dwarf { get; set; }
     
 }

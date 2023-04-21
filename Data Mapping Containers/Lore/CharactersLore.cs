@@ -1,4 +1,6 @@
-﻿namespace Data_Mapping_Containers.Dtos;
+﻿using System;
+
+namespace Data_Mapping_Containers.Dtos;
 
 public class CharactersLore
 {
@@ -79,17 +81,14 @@ public class CharactersLore
     public static class Classes
     {
         public const string Warrior = "Warrior";
-        public const string Spellcaster = "Spellcaster";
+        public const string Mage = "Mage";
         public const string Hunter = "Hunter";
-        //public static readonly string Ranger = "Ranger";
-        //public static readonly string Merchant = "Merchant";
-        //public static readonly string Adventurer = "Adventurer";
-        //public static readonly string Apothecary = "Apothecary";
-        //public static readonly string Psionics = "Psionics";
+        public const string Swashbuckler = "Swashbuckler";
+        public const string Sorcerer = "Sorcerer";
 
         public static readonly List<string> All = new()
         {
-            Warrior, Spellcaster, Hunter, /*Merchant, Adventurer, Apothecary, Psionics*/
+            Warrior, Mage, Hunter, Swashbuckler, Sorcerer
         };
     }
 
