@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CS8604 // Possible null reference argument.
 
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
@@ -19,7 +20,21 @@ internal class CharacterPaperdollLogic
     {
         var character = dbm.Metadata.GetCharacterById(characterId, playerId);
         var items = character.Inventory.GetAllEquipedItems();
-        var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
+        var passiveTraits = character.HeroicTraits?.Where(t => t.Type == TraitsLore.Type.passive).ToList();
+
+        var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
+        SetPaperdollStats(character, items, paperdoll);
+        SetPaperdollAssets(character, items, paperdoll);
+        SetPaperdollSkills(character, items, paperdoll);
+        SetPaperdollSpecialSkills(character, items, paperdoll);
+
+        return paperdoll;
+    }
+
+    internal CharacterPaperdoll CalculatePaperdollForNpc(Character character)
+    {
+        var items = character.Inventory.GetAllEquipedItems();
+        var passiveTraits = character.HeroicTraits?.Where(t => t.Type == TraitsLore.Type.passive).ToList();
 
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
         SetPaperdollStats(character, items, paperdoll);
@@ -40,7 +55,7 @@ internal class CharacterPaperdollLogic
         var itemPerBonus = 0;
         var itemAbsBonus = 0;
 
-        if (items.Count > 0)
+        if (items?.Count > 0)
         {
             itemStrBonus = items.Sum(i => i.Sheet.Stats.Strength);
             itemConBonus = items.Sum(i => i.Sheet.Stats.Constitution);
@@ -70,7 +85,7 @@ internal class CharacterPaperdollLogic
         var itemPurBonus = 0;
         var itemManBonus = 0;
 
-        if (items.Count > 0)
+        if (items?.Count > 0)    
         {
             itemResBonus = items.Sum(i => i.Sheet.Assets.Resolve);
             itemHarBonus = items.Sum(i => i.Sheet.Assets.Harm);
@@ -104,7 +119,7 @@ internal class CharacterPaperdollLogic
         var itemTrvBonus = 0;
         var itemSaiBonus = 0;
 
-        if (items.Count > 0)
+        if (items?.Count > 0)
         {
             itemComBonus = items.Sum(i => i.Sheet.Skills.Combat);
             itemArcBonus = items.Sum(i => i.Sheet.Skills.Arcane);
@@ -135,11 +150,14 @@ internal class CharacterPaperdollLogic
 
     private void SetPaperdollSpecialSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
+        if (character.HeroicTraits == null) return;
+
         paperdoll.SpecialSkills = new List<HeroicTrait>();
 
         // some items may contain heroic traits!!
 
-        if (character.HeroicTraits.Count < 0) return;
+        if (character.HeroicTraits?.Count < 0) return;
+
         paperdoll.SpecialSkills = character.HeroicTraits.Where(ht => ht.Type == TraitsLore.Type.active).ToList();
 
         if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany))
@@ -162,3 +180,4 @@ internal class CharacterPaperdollLogic
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CA1822 // Mark members as static
+#pragma warning restore CS8604 // Possible null reference argument.

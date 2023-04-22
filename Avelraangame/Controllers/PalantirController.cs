@@ -347,7 +347,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.GetCharacterPaperdoll(characterId, playerId);
+            var character = factory.ServiceFactory.CharacterService.CalculateCharacterPaperdoll(characterId, playerId);
 
             return Ok(character);
         }
@@ -388,6 +388,25 @@ public class PalantirController : ControllerBase
             var stub = factory.ServiceFactory.CharacterService.GetRulebook();
 
             return Ok(stub);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+    #endregion
+
+    #region Npcs
+    // GET: /api/palantir/Character/GenerateNPC
+    [HttpGet("NPC/GenerateNPC")]
+    public IActionResult GenerateNPC()
+    {
+        try
+        {
+            var character = factory.ServiceFactory.NpcService.GenerateNpc();
+
+            return Ok(character);
         }
         catch (Exception ex)
         {

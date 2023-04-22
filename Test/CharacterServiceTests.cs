@@ -436,7 +436,7 @@ public class CharacterServiceTests : TestBase
         charService.LearnHeroicTrait(candlelightTrait, playerId);
         charService.LearnHeroicTrait(metachaosTrait, playerId);
 
-        var paperdoll = charService.GetCharacterPaperdoll(character.Identity.Id, playerId);
+        var paperdoll = charService.CalculateCharacterPaperdoll(character.Identity.Id, playerId);
 
         paperdoll.Should().NotBeNull();
         paperdoll.Stats.Should().NotBeNull();
@@ -491,7 +491,7 @@ public class CharacterServiceTests : TestBase
         {
             switch (item.Subtype)
             {
-                case ItemsLore.Subtypes.Protections.Helmet:
+                case ItemsLore.Subtypes.Protections.Helm:
                     location = ItemsLore.InventoryLocation.Head;
                     break;
                 case ItemsLore.Subtypes.Protections.Armour:
