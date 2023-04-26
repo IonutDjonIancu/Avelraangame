@@ -398,13 +398,13 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Npcs
-    // GET: /api/palantir/Character/GenerateNPC
-    [HttpGet("NPC/GenerateNPC")]
-    public IActionResult GenerateNPC()
+    // POST: /api/palantir/NPC/GenerateNPC
+    [HttpPost("NPC/GenerateNPC")]
+    public IActionResult GenerateNPC([FromBody] NpcInfo info)
     {
         try
         {
-            var character = factory.ServiceFactory.NpcService.GenerateNpc();
+            var character = factory.ServiceFactory.NpcService.GenerateNpc(info);
 
             return Ok(character);
         }

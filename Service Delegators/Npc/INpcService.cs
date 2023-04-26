@@ -1,9 +1,8 @@
 ﻿using Data_Mapping_Containers.Dtos;
 
-namespace Service_Delegators
+namespace Service_Delegators;
+
+public interface INpcService
 {
-    public interface INpcService
-    {
-        CharacterPaperdoll GenerateNpc();
-    }
+    NpcPaperdoll GenerateNpc(NpcInfo info);
 }

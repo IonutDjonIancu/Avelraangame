@@ -33,27 +33,27 @@
   "Races": {
     "Description": "Races stats in the Rulebook will multiply by the entity level, the minimum entity level is 1.",
     "Human": {
-      "Strength":      5,
-      "Constitution":  5,
-      "Agility":       5,
-      "Willpower":     5,
-      "Perception":    5,
-      "Abstract":      5
+      "Strength":     5,
+      "Constitution": 5,
+      "Agility":      5,
+      "Willpower":    5,
+      "Perception":   5,
+      "Abstract":     5
     },
     "Elf": {
-      "Strength":      2,
-      "Constitution":  7,
+      "Strength":     2,
+      "Constitution": 7,
       "Agility":      15,
-      "Willpower":     7,
+      "Willpower":    7,
       "Perception":   10,
       "Abstract":     10
     },
     "Dwarf": {
       "Strength":     12,
       "Constitution": 10,
-      "Agility":       2,
+      "Agility":      2,
       "Willpower":    10,
-      "Perception":    3,
+      "Perception":   3,
       "Abstract":     10
     }
   },
@@ -62,26 +62,26 @@
     "Humans": {
       "Danarian": {
         "Stats": {
-          "Strength":      0,
-          "Constitution":  0,
-          "Agility":       0,
-          "Willpower":     0,
-          "Perception":    0,
-          "Abstract":      0
+          "Strength":     0,
+          "Constitution": 0,
+          "Agility":      0,
+          "Willpower":    0,
+          "Perception":   0,
+          "Abstract":     0
         },
         "Assets": {
-          "Resolve":       5,
-          "Harm":          0,
-          "Spot":          0,
-          "Defense":       0,
-          "Purge":         0,
-          "Mana":          0
+          "Resolve":      5,
+          "Harm":         0,
+          "Spot":         0,
+          "Defense":      0,
+          "Purge":        0,
+          "Mana":         0
         },
         "Skills": {
           "Combat":       40,
           "Arcane":       10,
           "Psionics":     10,
-          "Hide":        -10,
+          "Hide":         -10,
           "Traps":        10,
           "Tactics":      10,
           "Social":       20,
@@ -94,32 +94,32 @@
     "Elves": {
       "Highborn": {
         "Stats": {
-          "Strength":      0,
-          "Constitution":  0,
-          "Agility":       0,
+          "Strength":     0,
+          "Constitution": 0,
+          "Agility":      0,
           "Willpower":    10,
-          "Perception":    0,
-          "Abstract":      0
+          "Perception":   0,
+          "Abstract":     0
         },
         "Assets": {
           "Resolve":      10,
-          "Harm":          0,
+          "Harm":         0,
           "Spot":         50,
-          "Defense":       0,
-          "Purge":         0,
-          "Mana":          0
+          "Defense":      0,
+          "Purge":        0,
+          "Mana":         0
         },
         "Skills": {
           "Combat":       20,
           "Arcane":       40,
-          "Psionics":      5,
+          "Psionics":     5,
           "Hide":         10,
           "Traps":        10,
           "Tactics":      10,
           "Social":       20,
           "Apothecary":   10,
-          "Travel":      -40,
-          "Sail":        -10
+          "Travel":       -40,
+          "Sail":         -10
         }
       }
     },
@@ -128,30 +128,30 @@
         "Stats": {
           "Strength":     10,
           "Constitution": 10,
-          "Agility":       0,
-          "Willpower":     0,
-          "Perception":    0,
-          "Abstract":      0
+          "Agility":      0,
+          "Willpower":    0,
+          "Perception":   0,
+          "Abstract":     0
         },
         "Assets": {
           "Resolve":      20,
           "Harm":         10,
-          "Spot":          0,
+          "Spot":         0,
           "Defense":      10,
           "Purge":        10,
-          "Mana":          0
+          "Mana":         0
         },
         "Skills": {
           "Combat":       30,
-          "Arcane":        0,
+          "Arcane":       0,
           "Psionics":     10,
-          "Hide":        -20,
+          "Hide":         -20,
           "Traps":        10,
           "Tactics":      10,
           "Social":       -5,
-          "Apothecary":    0,
-          "Travel":      -20,
-          "Sail":       -100
+          "Apothecary":   0,
+          "Travel":       -20,
+          "Sail":         -100
         }
       }
     }
@@ -208,5 +208,13 @@
     "Apothecary": "Abs + Per + Con",
     "Travel":     "2*Con + Agi + Wil - Str",
     "Sail":       "2*Con + Abs"
+  },
+  "Npcs": {
+    "StatsDifficultyFactor":  30,
+    "AssetsDifficultyFactor": 20,
+    "SkillsDifficultyFactor": 40
+  },
+  "Quests": {
+    "DifficultyLevels": ["Easy", "Medium", "Normal", "Hard"]
   }
 }

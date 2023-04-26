@@ -28,7 +28,7 @@ internal class ItemLogicDelegator
         
         ClassifyItem(item);
         TaintItem(item);
-        EnchantItem(item);
+        ReforgeItem(item);
         UpgradeItem(item);
         NameItem(item);
 
@@ -48,7 +48,7 @@ internal class ItemLogicDelegator
         {
             itemClassif.SetItemCategoryAndDescription(item);
             TaintItem(item);
-            EnchantItem(item);
+            ReforgeItem(item);
             UpgradeItem(item);
             NameItem(item);
 
@@ -96,7 +96,7 @@ internal class ItemLogicDelegator
         itemClassif.SetItemCategoryAndDescription(item);
     }
 
-    private void EnchantItem(Item item)
+    private void ReforgeItem(Item item)
     {
         itemEnchants.SetItemBonuses(item);
         itemEnchants.StrengthenOrImbue(item);
