@@ -212,7 +212,7 @@
   "Npcs": {
     "StatsDifficultyFactor":  30,
     "AssetsDifficultyFactor": 20,
-    "SkillsDifficultyFactor": 40
+    "SkillsDifficultyFactor": 10
   },
   "Quests": {
     "DifficultyLevels": ["Easy", "Medium", "Normal", "Hard"]

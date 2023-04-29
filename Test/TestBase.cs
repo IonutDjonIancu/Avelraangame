@@ -5,10 +5,10 @@ namespace Tests;
 public class TestBase
 {
     private static readonly string testSecret = "BQxevwF37aNAznk";
-    private static readonly string dbTestPath = "\\Resources\\DatabaseFiles\\AvelraanTestDb.json";
-    private static readonly string dbPlayersPath = "\\Resources\\DatabaseFiles\\Players";
-    private static readonly string dbRulebookPath = "\\Resources\\GameRules\\Rulebook.json";
-    private static readonly string logsPath = "\\Resources\\LogFiles\\Logs.txt";
+    private static readonly string dbTestPath = "\\Resources\\Database files\\AvelraanTestDb.json";
+    private static readonly string dbPlayersPath = "\\Resources\\Database files\\Players";
+    private static readonly string dbRulebookPath = "\\Resources\\Game rules\\Rulebook.json";
+    private static readonly string logsPath = "\\Resources\\Log files\\Logs.txt";
 
     protected readonly IDatabaseManager dbm;
     protected readonly IDiceRollService diceService;

@@ -3,6 +3,8 @@
 public class NpcInfo
 {
     public string Difficulty { get; set; }
+    public string Heritage { get; set; }
+    public string NpcType { get; set; }
 
     public CharacterStats StatsMin { get; set; }
     public CharacterStats StatsMax { get; set; }

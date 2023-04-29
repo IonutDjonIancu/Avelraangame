@@ -92,11 +92,11 @@ internal class CharacterCreateLogic
     {
         var roll = dice.Roll_d20(true);
 
-        if (roll >= 100) return 6;
-        else if (roll >= 80) return 5;
-        else if (roll >= 60) return 4;
-        else if (roll >= 40) return 3;
-        else if (roll >= 20) return 2;
+        if      (roll >= 100)   return 6;
+        else if (roll >= 80)    return 5;
+        else if (roll >= 60)    return 4;
+        else if (roll >= 40)    return 3;
+        else if (roll >= 20)    return 2;
         else  /*(roll >= 1)*/   return 1;
     }
 

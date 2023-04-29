@@ -94,7 +94,7 @@ public class CharacterService : ICharacterService
         return logic.CalculatePaperdoll(characterId, playerId);
     }
 
-    public CharacterPaperdoll CalculateCharacterPaperdollForNpc(Character character)
+    public CharacterPaperdoll CalculateCharacterPaperdoll(Character character)
     {
         return logic.CalculatePaperdollForNpc(character);
     }

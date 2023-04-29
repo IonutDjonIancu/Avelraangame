@@ -23,10 +23,10 @@ internal class CharacterPaperdollLogic
         var passiveTraits = character.HeroicTraits?.Where(t => t.Type == TraitsLore.Type.passive).ToList();
 
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
-        SetPaperdollStats(character, items, paperdoll);
-        SetPaperdollAssets(character, items, paperdoll);
-        SetPaperdollSkills(character, items, paperdoll);
-        SetPaperdollSpecialSkills(character, items, paperdoll);
+        CalculatePaperdollStats(character, items, paperdoll);
+        CalculatePaperdollAssets(character, items, paperdoll);
+        CalculatePaperdollSkills(character, items, paperdoll);
+        CalculatePaperdollSpecialSkills(character, items, paperdoll);
 
         return paperdoll;
     }
@@ -37,16 +37,16 @@ internal class CharacterPaperdollLogic
         var passiveTraits = character.HeroicTraits?.Where(t => t.Type == TraitsLore.Type.passive).ToList();
 
         var paperdoll = new CharacterPaperdoll(dbm.Snapshot.Rulebook.Acronyms);
-        SetPaperdollStats(character, items, paperdoll);
-        SetPaperdollAssets(character, items, paperdoll);
-        SetPaperdollSkills(character, items, paperdoll);
-        SetPaperdollSpecialSkills(character, items, paperdoll);
+        CalculatePaperdollStats(character, items, paperdoll);
+        CalculatePaperdollAssets(character, items, paperdoll);
+        CalculatePaperdollSkills(character, items, paperdoll);
+        CalculatePaperdollSpecialSkills(character, items, paperdoll);
 
         return paperdoll;
     }
 
     #region private methods
-    private void SetPaperdollStats(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private void CalculatePaperdollStats(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemStrBonus = 0;
         var itemConBonus = 0;
@@ -76,7 +76,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private void SetPaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private void CalculatePaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemResBonus = 0;
         var itemHarBonus = 0;
@@ -97,16 +97,28 @@ internal class CharacterPaperdollLogic
 
         paperdoll.Assets = new CharacterAssets
         {
+            // RES is the only asset increased by entity level
             Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Resolve) + itemResBonus) * character.Info.EntityLevel.GetValueOrDefault(),
-            Harm    = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Harm) + itemHarBonus,
+
+            // HAR cannot be greater than 90, so that to avoid making characters immune to all dmg
+            Harm = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Harm) + itemHarBonus >= 90
+                        ? 90
+                        : character.Sheet.Assets.Harm + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Harm) + itemHarBonus,
+
             Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Spot) + itemSpoBonus,
+
             Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Defense) + itemDefBonus,
-            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Purge) + itemPurBonus,
+
+            // PUR should not extend beyond 100, so that it does not influence magical immunity/absorption
+            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Purge) + itemPurBonus >= 100
+                        ? 100
+                        : character.Sheet.Assets.Purge + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Purge) + itemPurBonus,
+
             Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(dbm.Snapshot.Rulebook.AssetsFormulas.Mana) + itemManBonus
         };
     }
 
-    private void SetPaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private void CalculatePaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemComBonus = 0;
         var itemArcBonus = 0;
@@ -148,7 +160,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private void SetPaperdollSpecialSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private void CalculatePaperdollSpecialSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         if (character.HeroicTraits == null) return;
 
