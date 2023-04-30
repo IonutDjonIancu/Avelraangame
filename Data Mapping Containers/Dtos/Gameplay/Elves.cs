@@ -2,5 +2,5 @@
 
 public class Elves
 {
-    public Subculture Highborn { get; set; }
+    public Subcultures Highborn { get; set; }
 }

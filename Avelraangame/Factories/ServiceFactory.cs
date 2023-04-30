@@ -10,6 +10,7 @@ public class ServiceFactory : IServiceFactory
     public IPlayerService PlayerService { get; init; }
     public IItemService ItemService { get; init; }
     public ICharacterService CharacterService { get; init; }
+    public INpcService NpcService { get; init; }
 
     private ServiceFactory() { }
 
@@ -20,5 +21,6 @@ public class ServiceFactory : IServiceFactory
         PlayerService = new PlayerService(dbm);
         ItemService = new ItemService(DicerollService);
         CharacterService = new CharacterService(dbm, DicerollService, ItemService);
+        NpcService = new NpcService(dbm, DicerollService, ItemService, CharacterService);
     }
 }

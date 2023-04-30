@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class Subclass
+public class Subclasses
 {
     public List<string> LikelyStats { get; set; }
     public List<string> UnlikelyStats { get; set; }

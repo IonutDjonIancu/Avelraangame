@@ -48,7 +48,7 @@ internal class ItemClassificationLogic
         var listOfLocations = new List<string>();
 
         // protection
-        if (subtype == ItemsLore.Subtypes.Protections.Helmet)
+        if (subtype == ItemsLore.Subtypes.Protections.Helm)
         {
             listOfLocations.Add(ItemsLore.InventoryLocation.Head);
         }
@@ -146,7 +146,7 @@ internal class ItemClassificationLogic
         var roll = dice.Roll_d20();
 
         if      (roll >= 15)    item.Subtype = ItemsLore.Subtypes.Protections.Armour;
-        else if (roll >= 8)     item.Subtype = ItemsLore.Subtypes.Protections.Helmet;
+        else if (roll >= 8)     item.Subtype = ItemsLore.Subtypes.Protections.Helm;
         else  /*(roll >=  1)*/  item.Subtype = ItemsLore.Subtypes.Protections.Shield;
     }
 

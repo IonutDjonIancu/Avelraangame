@@ -2,5 +2,5 @@
 
 public class Dwarves
 {
-    public Subculture Undermountain { get; set; }
+    public Subcultures Undermountain { get; set; }
 }

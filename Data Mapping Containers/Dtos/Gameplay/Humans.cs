@@ -2,5 +2,5 @@
 
 public class Humans
 {
-    public Subculture Danarian { get; set; }
+    public Subcultures Danarian { get; set; }
 }

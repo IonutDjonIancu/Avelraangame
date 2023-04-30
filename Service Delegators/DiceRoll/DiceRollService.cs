@@ -37,7 +37,12 @@ public class DiceRollService : IDiceRollService
 
     public int Roll_dX(int x)
     {
-        return logic.Roll1dNnoReroll(x);
+        return logic.Roll1dXnoReroll(x);
+    }
+
+    public int Roll_dXY(int x, int y)
+    {
+        return logic.RollXdYnoReroll(x, y);
     }
 
     public DiceRoll Roll_d20_NoHeritage(int bonus = 0)

@@ -42,9 +42,14 @@ internal class DiceRollLogicDelegator
         return random.Next(1, 101);
     }
 
-    internal int Roll1dNnoReroll(int upperLimit)
+    internal int Roll1dXnoReroll(int upperLimit)
     {
         return random.Next(1, upperLimit + 1);
+    }
+
+    internal int RollXdYnoReroll(int lowerLimit, int upperLimit)
+    {
+        return random.Next(lowerLimit, upperLimit + 1);
     }
 
     internal DiceRoll GenerateRollFor(string heritage, int bonus = 0)
