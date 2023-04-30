@@ -15,7 +15,8 @@ public interface ICharacterService
     Character EquipCharacterItem(CharacterEquip equip, string playerId);
     Character UnequipCharacterItem(CharacterEquip unequip, string playerId);
 
-    CharacterPaperdoll GetCharacterPaperdoll(string characterId, string playerId);
+    CharacterPaperdoll CalculateCharacterPaperdoll(string characterId, string playerId);
+    CharacterPaperdoll CalculateCharacterPaperdoll(Character character);
 
     Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId);
     List<HeroicTrait> GetHeroicTraits();   

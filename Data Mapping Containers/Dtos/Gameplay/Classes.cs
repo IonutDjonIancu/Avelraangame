@@ -2,15 +2,15 @@
 
 public class Classes
 {
-    public Subclass Warrior { get; set; }
-    public Subclass Mage { get; set; }
-    public Subclass Hunter { get; set; }
-    public Subclass Swashbuckler { get; set; }
-    public Subclass Sorcerer { get; set; }
+    public Subclasses Warrior { get; set; }
+    public Subclasses Mage { get; set; }
+    public Subclasses Hunter { get; set; }
+    public Subclasses Swashbuckler { get; set; }
+    public Subclasses Sorcerer { get; set; }
 
-    public List<Subclass> All()
+    public List<Subclasses> All()
     {
-        return new List<Subclass>()
+        return new List<Subclasses>()
         {
             Warrior,
             Mage,

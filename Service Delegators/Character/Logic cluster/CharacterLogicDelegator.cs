@@ -90,6 +90,11 @@ internal class CharacterLogicDelegator
     {
         return charPaperdollLogic.CalculatePaperdoll(characterId, playerId);
     }
+
+    internal CharacterPaperdoll CalculatePaperdollForNpc(Character character)
+    {
+        return charPaperdollLogic.CalculatePaperdollForNpc(character);
+    }
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

@@ -8,4 +8,7 @@ public class Rulebook
     public Classes Classes { get; set; }
     public Assets AssetsFormulas { get; set; }
     public Skills SkillsFormulas { get; set; }
+    public Npcs Npcs { get; set; }
+    public Quests Quests { get; set; }
+
 }

@@ -14,11 +14,11 @@ public class CharacterService : ICharacterService
     private readonly CharacterLogicDelegator logic;
 
     public CharacterService(
-        IDatabaseManager manager,
+        IDatabaseManager databaseManager,
         IDiceRollService diceRollService,
         IItemService itemService)
     {
-        dbm = manager;
+        dbm = databaseManager;
 
         validator = new CharacterValidator(dbm);
         logic = new CharacterLogicDelegator(dbm, diceRollService, itemService);
@@ -87,13 +87,18 @@ public class CharacterService : ICharacterService
         return logic.ApplyHeroicTrait(trait, playerId);
     }
 
-    public CharacterPaperdoll GetCharacterPaperdoll(string characterId, string playerId)
+    public CharacterPaperdoll CalculateCharacterPaperdoll(string characterId, string playerId)
     {
         validator.ValidateCharacterPlayerCombination(characterId, playerId);
 
         return logic.CalculatePaperdoll(characterId, playerId);
     }
-    
+
+    public CharacterPaperdoll CalculateCharacterPaperdoll(Character character)
+    {
+        return logic.CalculatePaperdollForNpc(character);
+    }
+
     public List<HeroicTrait> GetHeroicTraits()
     {
         return dbm.Snapshot.Traits;

@@ -87,7 +87,7 @@ internal class ItemEnchantsLogic
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
-            var bonus = dice.Roll_d20() + 5;
+            var bonus = dice.Roll_dX(6) + dice.Roll_dX(6);
             item.Sheet.Assets.Defense += bonus;
             item.Value += bonus * 10;
         }
@@ -111,7 +111,7 @@ internal class ItemEnchantsLogic
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
-            var bonus = dice.Roll_d20() + 10;
+            var bonus = dice.Roll_d20() + dice.Roll_dX(6);
             item.Sheet.Assets.Defense += bonus;
             item.Value += bonus * 10;
         }

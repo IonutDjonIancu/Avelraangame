@@ -106,7 +106,7 @@ public class CharacterValidator : ValidatorBase
         bool isItemAtCorrectLocation;
 
         // protection
-        if (itemSubtype == ItemsLore.Subtypes.Protections.Helmet)
+        if (itemSubtype == ItemsLore.Subtypes.Protections.Helm)
         {
             isItemAtCorrectLocation =
                 equip.InventoryLocation == ItemsLore.InventoryLocation.Head;

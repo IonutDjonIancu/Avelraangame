@@ -121,17 +121,17 @@ public class ItemServiceTests : TestBase
     [Description("Create specific items.")]
     public void Create_specific_items_test()
     {
-        var helmet = itemService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helmet);
+        var helm = itemService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
         var sword = itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
 
-        ItemsLore.Protections.Helmets.Keys.Should().Contain(helmet.Category);
-        ItemsLore.Protections.Helmets.Values.Should().Contain(helmet.Description);
+        ItemsLore.Protections.Helms.Keys.Should().Contain(helm.Category);
+        ItemsLore.Protections.Helms.Values.Should().Contain(helm.Description);
 
         ItemsLore.Weapons.Swords.Keys.Should().Contain(sword.Category);
         ItemsLore.Weapons.Swords.Values.Should().Contain(sword.Description);
 
-        helmet.InventoryLocations.Count.Should().Be(1);
-        helmet.InventoryLocations.Should().Contain(ItemsLore.InventoryLocation.Head);
+        helm.InventoryLocations.Count.Should().Be(1);
+        helm.InventoryLocations.Should().Contain(ItemsLore.InventoryLocation.Head);
 
         sword.InventoryLocations.Count.Should().Be(2);
         sword.InventoryLocations.Should().Contain(ItemsLore.InventoryLocation.Mainhand).And.Subject.Should().Contain(ItemsLore.InventoryLocation.Offhand);
