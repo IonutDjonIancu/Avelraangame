@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Data_Mapping_Containers.Dtos;
+﻿namespace Data_Mapping_Containers.Dtos;
 
 public class CharactersLore
 {

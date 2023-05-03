@@ -17,7 +17,7 @@ public class TestBase
     protected readonly ICharacterService characterService;
     protected readonly INpcService npcService;
 
-    protected readonly DatabaseSnapshot snapshot;
+    protected readonly Snapshot snapshot;
 
     protected TestBase()
 	{

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Persistance Manager\Persistance Manager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Party\Logic cluster\" />
+  </ItemGroup>
+
 </Project>

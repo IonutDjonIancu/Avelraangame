@@ -29,7 +29,7 @@ public class DatabaseManager : IDatabaseManager
         }
     };
 
-    public DatabaseSnapshot Snapshot { get; set; }
+    public Snapshot Snapshot { get; set; }
     public MetadataManager Metadata { get; set; }
 
     public DatabaseManager(DatabaseManagerConfig dbmconfig)
@@ -57,7 +57,7 @@ public class DatabaseManager : IDatabaseManager
         validator.ValidateString(dbmconfig.AvelraanPassword);
         info.AvelraanPassword = dbmconfig.AvelraanPassword;
 
-        Snapshot = CreateDatabaseSnapshot(info);
+        Snapshot = CreateSnapshot(info);
         Metadata = new MetadataManager(this);
     }
 
@@ -65,9 +65,9 @@ public class DatabaseManager : IDatabaseManager
     /// Call this method each time the snapshot db object is modified.
     /// </summary>
     /// <returns></returns>
-    public async void Persist()
+    public async void PersistDatabase()
     {
-        await SaveDatabaseSnapshot();
+        await PersistDatabaseFromSnapshot();
     }
 
     public async void PersistPlayer(Player player)
@@ -75,14 +75,14 @@ public class DatabaseManager : IDatabaseManager
         if (player == null) throw new Exception("Player object cannot be null.");
 
         Thread.Sleep(100);
-        await SavePlayerSnapshot(player);
+        await PersistPlayerFromSnapshot(player);
     }
 
     public void RemovePlayer(Player player)
     {
         if (player == null) throw new Exception("Player object cannot be null.");
 
-        RemovePlayerSnapshot(player.Identity.Id);
+        RemovePlayerPersistance(player.Identity.Id);
     }
 
     #region private methods
@@ -91,7 +91,7 @@ public class DatabaseManager : IDatabaseManager
         return Directory.GetFiles(dbPlayersPath).ToList();
     }
 
-    private void RemovePlayerSnapshot(string playerId, int tries = 0)
+    private void RemovePlayerPersistance(string playerId, int tries = 0)
     {
         validator.TriesLimit(tries);
 
@@ -110,7 +110,7 @@ public class DatabaseManager : IDatabaseManager
         }
     }
 
-    private async Task SavePlayerSnapshot(Player player, int tries = 0)
+    private async Task PersistPlayerFromSnapshot(Player player, int tries = 0)
     {
         var playerJson = JsonConvert.SerializeObject(Snapshot.Players.Find(p => p.Identity.Id == player.Identity.Id)) ?? throw new Exception("Could not serialize player object from snapshot.");
         
@@ -123,11 +123,11 @@ public class DatabaseManager : IDatabaseManager
         catch (Exception)
         {
             Thread.Sleep(300);
-            await SavePlayerSnapshot(player, tries);
+            await PersistPlayerFromSnapshot(player, tries);
         }
     }
 
-    private async Task SaveDatabaseSnapshot(int tries = 0)
+    private async Task PersistDatabaseFromSnapshot(int tries = 0)
     {
         validator.TriesLimit(tries);
 
@@ -142,22 +142,26 @@ public class DatabaseManager : IDatabaseManager
         catch (Exception)
         {
             Thread.Sleep(300);
-            await SaveDatabaseSnapshot(tries);
+            await PersistDatabaseFromSnapshot(tries);
         }
     }
 
-    private static DatabaseSnapshot CreateDatabaseSnapshot(DatabaseManagerInfo dbmInfo)
+    private static Snapshot CreateSnapshot(DatabaseManagerInfo dbmInfo)
     {
-        var snapshot = new DatabaseSnapshot()
+        var avelraanDbFile = File.ReadAllText(dbmInfo.DbPath);
+        var avDb = JsonConvert.DeserializeObject<Database>(avelraanDbFile);
+
+        var snapshot = new Snapshot()
         {
-            DbDate = DateTime.Now,
+            DbDate = avDb.DbDate,
 
             Rulebook = ReadRulebookFile(dbmInfo.DbRulebookPath),
             Players = ReadPlayerFiles(dbmInfo.PlayerFilePaths),
-            Traits = CreateListOfTraitsAndPersist(),
+            Traits = LoadTraitsFromLore(),
             
-            CharacterStubs = new List<CharacterStub>(),
-            Items = new List<Item>()
+            CharacterStubs = avDb.CharacterStubs,
+            Items = avDb.Items,
+            Parties = avDb.Parties
         };
 
         return snapshot;
@@ -185,7 +189,7 @@ public class DatabaseManager : IDatabaseManager
         return list;
     }
 
-    private static List<HeroicTrait> CreateListOfTraitsAndPersist()
+    private static List<HeroicTrait> LoadTraitsFromLore()
     {
         var listOfTraits = new List<HeroicTrait>();
 

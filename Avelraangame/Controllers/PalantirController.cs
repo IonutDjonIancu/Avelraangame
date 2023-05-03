@@ -378,6 +378,12 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
+    #region Quests
+
+
+
+    #endregion
+
     #region Rulebook
     // GET: /api/palantir/Rulebook/GetRulebook
     [HttpGet("Rulebook/GetRulebook")]

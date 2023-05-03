@@ -5,9 +5,9 @@ namespace Persistance_Manager;
 public interface IDatabaseManager
 {
     MetadataManager Metadata { get; set; }
-    DatabaseSnapshot Snapshot { get; set; }
+    Snapshot Snapshot { get; set; }
 
-    void Persist();
+    void PersistDatabase();
 
     void PersistPlayer(Player player);
     void RemovePlayer(Player player);

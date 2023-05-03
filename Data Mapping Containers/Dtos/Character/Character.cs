@@ -17,4 +17,5 @@ public class Character
     public List<HeroicTrait> HeroicTraits { get; set; }
 
     public bool IsAlive { get; set; }
+    public bool IsInParty { get; set; }
 }

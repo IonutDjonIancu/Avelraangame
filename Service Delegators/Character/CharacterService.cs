@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
 
 using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
@@ -138,4 +137,3 @@ public class CharacterService : ICharacterService
 }
 
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8603 // Possible null reference return.
