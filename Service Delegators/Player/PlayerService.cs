@@ -1,45 +1,41 @@
-﻿using Persistance_Manager;
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 using Service_Delegators.Validators;
 
 namespace Service_Delegators;
 
 public class PlayerService : IPlayerService
 {
-    private readonly IDatabaseManager dbm;
-    private readonly PlayerLogicDelegator logic;
     private readonly PlayerValidator validator;
+    private readonly PlayerLogicDelegator logic;
 
-    public PlayerService(IDatabaseManager manager)
+    public PlayerService(IDatabaseService databaseService)
     {
-        dbm = manager;
-        validator = new PlayerValidator(dbm);
-        logic = new PlayerLogicDelegator(dbm);
-
+        validator = new PlayerValidator(databaseService);
+        logic = new PlayerLogicDelegator(databaseService);
     }
 
     public Authenticator CreatePlayer(string playerName)
     {
         validator.ValidatePlayerOnCreate(playerName);
 
-        return logic.AddPlayer(playerName);
+        return logic.AuthenticatePlayer(playerName);
     }
 
     public string LoginPlayer(PlayerLogin login)
     {
         validator.ValidatePlayerOnLogin(login);
 
-        var token = logic.LoginPlayer(login);
+        var token = logic.AuthorizePlayer(login);
+
         validator.ValidatePlayerCanLogin(token);
 
         return token!;
     }
 
-    public bool DeletePlayer(string playerId)
+    public void DeletePlayer(string playerId)
     {
-        var name = dbm.Metadata.GetPlayerById(playerId)!.Identity.Name;
-        validator.ValidatePlayerExistsByName(name);
-
-        return logic.RemovePlayer(playerId);
+        validator.ValidatePlayerExists(playerId);
+        
+        logic.RemovePlayer(playerId);
     }
 }

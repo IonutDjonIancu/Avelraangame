@@ -66,7 +66,6 @@ public class CharactersLore
 
     public static class Heritage
     {
-        public const string None = "None";
         public const string Traditional = "Traditional";
         public const string Martial = "Martial";
 

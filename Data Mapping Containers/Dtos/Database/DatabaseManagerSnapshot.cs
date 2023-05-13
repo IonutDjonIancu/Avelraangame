@@ -1,8 +1,10 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class Snapshot
+public class DatabaseManagerSnapshot
 {
     public DateTime DbDate { get; set; }
+    public List<string> Admins { get; set; }
+    public List<string> Banned { get; set; }
     public List<CharacterStub> CharacterStubs { get; set; }
     public List<Party> Parties { get; set; }
 

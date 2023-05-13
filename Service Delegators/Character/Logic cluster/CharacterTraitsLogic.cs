@@ -1,55 +1,52 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable CA1822 // Mark members as static
-
-using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
 internal class CharacterTraitsLogic
 {
-    private readonly IDatabaseManager dbm;
+    private readonly IDatabaseService dbs;
     private readonly CharacterPaperdollLogic paperdollLogic;
 
-    public CharacterTraitsLogic(
-        IDatabaseManager databaseManager,
-        CharacterPaperdollLogic paperdollLogic) 
+    private CharacterTraitsLogic() { }
+    internal CharacterTraitsLogic(
+        IDatabaseService databaseService,
+        CharacterPaperdollLogic characterPaperdollLogic) 
     {
-        dbm = databaseManager;
-        this.paperdollLogic = paperdollLogic;
+        dbs = databaseService;
+        paperdollLogic = characterPaperdollLogic;
     }
 
-    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait)
     {
-        var character = dbm.Metadata.GetCharacterById(trait.CharacterId, playerId);
-        var heroicTrait = dbm.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId);
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == trait.PlayerId)!;
+        var character = player.Characters.Find(c => c.Identity.Id == trait.CharacterId)!;
+        var heroicTrait = dbs.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId)!;
 
         character.HeroicTraits.Add(heroicTrait);
         character.LevelUp.DeedsPoints -= heroicTrait.DeedsCost;
 
-        if (heroicTrait.Type == TraitsLore.Type.bonus) ApplyBonusHeroicTraits(character, heroicTrait, trait);
+        if (heroicTrait.Type == TraitsLore.Type.bonus) ApplyBonusHeroicTraits(character, heroicTrait.Identity.Name, trait.Skill);
 
-        dbm.PersistPlayer(dbm.Metadata.GetPlayerById(playerId));
+        dbs.PersistPlayer(player.Identity.Id);
 
         return character;
     }
 
     #region private methods
-    private void ApplyBonusHeroicTraits(Character character, HeroicTrait heroicTrait, CharacterHeroicTrait trait)
+    private void ApplyBonusHeroicTraits(Character character, string heroicTraitName, string skill = "")
     {
-        if      (heroicTrait.Identity.Name == TraitsLore.BonusTraits.swordsman) RunSwordsmanLogic(character);
-        else if (heroicTrait.Identity.Name == TraitsLore.BonusTraits.skillful) RunSkillfulLogic(character, trait.Skill);
+        if      (heroicTraitName == TraitsLore.BonusTraits.swordsman) RunSwordsmanLogic(character);
+        else if (heroicTraitName == TraitsLore.BonusTraits.skillful) RunSkillfulLogic(character, skill);
     }
 
     private void RunSwordsmanLogic(Character character)
     {
-        var paperdollCombatValue = paperdollLogic.CalculatePaperdoll(character.Identity.Id, character.Identity.PlayerId).Skills.Combat;
+        var paperdollCombatValue = paperdollLogic.CalculatePaperdoll(character).Skills.Combat;
         var value = 5 + (int)Math.Floor(paperdollCombatValue * 0.01);
         character.Sheet.Skills.Combat += value;
     }
 
-    private void RunSkillfulLogic(Character character, string skill)
+    private static void RunSkillfulLogic(Character character, string skill)
     {
         if (skill == CharactersLore.Skills.Combat)
         {
@@ -101,15 +98,6 @@ internal class CharacterTraitsLogic
             var value = (int)Math.Floor(character.Sheet.Skills.Sail * 0.2);
             character.Sheet.Skills.Sail += value;
         }
-        else
-        {
-            throw new Exception("Unable to apply heroic trait to said skill, skill not found.");
-        }
     }
-
     #endregion
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8604 // Possible null reference argument.
-#pragma warning restore CA1822 // Mark members as static

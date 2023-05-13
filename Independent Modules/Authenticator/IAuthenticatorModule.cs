@@ -1,8 +1,8 @@
-﻿namespace Independent_Modules
+﻿namespace Independent_Modules;
+
+public interface IAuthenticatorModule
 {
-    public interface IAuthenticatorModule
-    {
-        (string imageUrl, string code) GenerateSetupCode(string playerId, string playerName);
-        bool ValidateTfApin(string playerId, string playerName, string code);
-    }
+    (string imageUrl, string code) GenerateSetupCode(string playerId, string playerName);
+
+    bool ValidateTfAPin(string playerId, string playerName, string code);
 }

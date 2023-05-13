@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
     <ProjectReference Include="..\Independent Modules\Independent Modules.csproj" />
-    <ProjectReference Include="..\Persistance Manager\Persistance Manager.csproj" />
+    <ProjectReference Include="..\Persistance Manager\Persistence Manager.csproj" />
   </ItemGroup>
 
   <ItemGroup>

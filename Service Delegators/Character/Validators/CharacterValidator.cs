@@ -1,48 +1,29 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
+﻿using Data_Mapping_Containers.Dtos;
 
-using Data_Mapping_Containers.Dtos;
-using Data_Mapping_Containers.Validators;
-using Persistance_Manager;
+namespace Service_Delegators;
 
-namespace Service_Delegators.Validators;
-
-public class CharacterValidator : ValidatorBase
+internal class CharacterValidator : ValidatorBase
 {
-    private readonly IDatabaseManager dbm;
+    private readonly IDatabaseService dbs;
 
-    public CharacterValidator(IDatabaseManager manager)
+    private CharacterValidator() { }
+    internal CharacterValidator(IDatabaseService databaseService)
     {
-        dbm = manager;
+        dbs = databaseService;
     }
 
-    public void ValidateSkillsToDistribute(string charId, string skill, string playerId)
+    internal void ValidateMaxNumberOfCharacters(string playerId)
     {
-        var skillPoints = dbm.Metadata.GetCharacterById(charId, playerId).LevelUp.SkillPoints;
-
-        if (skillPoints <= 0) Throw("No skill points to distribute.");
-        if (!CharactersLore.Skills.All.Contains(skill)) Throw($"Unable to determine skill name: {skill}.");
-    }
-
-    public void ValidateStatsToDistribute(string charId, string stat, string playerId)
-    {
-        var statPoints = dbm.Metadata.GetCharacterById(charId, playerId).LevelUp.StatPoints;
-
-        if (statPoints <= 0) Throw("No stat points to distribute.");
-        if (!CharactersLore.Stats.All.Contains(stat)) Throw($"Unable to determine stat name: {stat}.");
-    }
-
-    public void ValidateMaxNumberOfCharacters(string playerId)
-    {
-        var playerCharsCount = dbm.Metadata.GetPlayerById(playerId).Characters.Count;
+        var playerCharsCount = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters!.Count;
 
         if (playerCharsCount >= 5) Throw("Max number of characters reached (5 characters allowed per player)");
     }
 
-    public void ValidateOriginsOnSaveCharacter(CharacterOrigins origins, string playerId)
+    internal void ValidateOriginsOnSaveCharacter(CharacterOrigins origins, string playerId)
     {
         ValidateObject(origins);
         
-        if (!dbm.Snapshot.CharacterStubs!.Exists(s => s.PlayerId == playerId)) Throw("No stub templates found for this player.");
+        if (!dbs.Snapshot.CharacterStubs!.Exists(s => s.PlayerId == playerId)) Throw("No stub templates found for this player.");
 
         ValidateRace(origins.Race);
         ValidateCulture(origins.Culture);
@@ -52,55 +33,37 @@ public class CharacterValidator : ValidatorBase
         ValidateRaceCultureCombination(origins);
     }
 
-    public void ValidateCharacterOnNameUpdate(CharacterUpdate charUpdate, string playerId)
+    internal void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait)
     {
-        ValidateObject(charUpdate);
-        ValidateGuid(charUpdate.CharacterId);
-        ValidateCharacterPlayerCombination(charUpdate.CharacterId, playerId);
-        ValidateName(charUpdate.Name);
-    }
-
-    public void ValidateCharacterOnDelete(string characterId, string playerId)
-    {
-        ValidateGuid(characterId);
-
-        ValidateCharacterPlayerCombination(characterId, playerId);
-    }
-
-    public void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait, string playerId)
-    {
-        ValidateGuid(trait.CharacterId);
-        ValidateCharacterPlayerCombination(trait.CharacterId, playerId);
-        var character = dbm.Snapshot.Players.First(p => p.Identity.Id == playerId).Characters!.First(c => c.Identity.Id == trait.CharacterId);
-
+        ValidateCharacterPlayerCombination(new CharacterIdentity() { Id = trait.CharacterId, PlayerId = trait.PlayerId });
         ValidateGuid(trait.HeroicTraitId);
-        var heroicTrait = dbm.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId);
-        if (heroicTrait == null) Throw("No such Heroic Trait found with the provided id.");
+        ValidateString(trait.Skill);
+
+        var character = dbs.Snapshot.Players.First(p => p.Identity.Id == trait.PlayerId).Characters.First(c => c.Identity.Id == trait.CharacterId);
+        var heroicTrait = dbs.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
 
         if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) Throw("Character does not have enough Deeds points to aquire said Heroic Trait.");
 
         if (heroicTrait.Subtype == TraitsLore.Subtype.onetime
             && character.HeroicTraits.Exists(t => t.Identity.Id == heroicTrait.Identity.Id)) Throw("Character already has that Heroic Trait and it can only be learned once.");
 
-        if (!string.IsNullOrWhiteSpace(trait.Skill))
-        {
-            if (!CharactersLore.Skills.All.Contains(trait.Skill)) Throw("No such Skill was found with the indicated skill name.");
-        }
+        if (!CharactersLore.Skills.All.Contains(trait.Skill)) Throw("No such Skill was found with the indicated skill name.");
     }
 
-    public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, string playerId, bool toEquip)
+    internal void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
     {
         ValidateObject(equip);
         ValidateGuid(equip.CharacterId);
         ValidateGuid(equip.ItemId);
-        ValidateCharacterPlayerCombination(equip.CharacterId, playerId);
+        ValidateCharacterPlayerCombination(new CharacterIdentity() { Id = equip.CharacterId, PlayerId = equip.PlayerId });
         ValidateString(equip.InventoryLocation);
         if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) Throw("Equipment location does not fit any possible slot in inventory.");
 
         if (!toEquip) return;
-        
-        var character = dbm.Metadata.GetCharacterById(equip.CharacterId, playerId);
-        var itemSubtype = character.Supplies.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
+
+        var player = dbs.Snapshot.Players.Find(s => s.Identity.Id == equip.PlayerId);
+        var character = player!.Characters.Find(s => s.Identity!.Id == equip.CharacterId);
+        var itemSubtype = character!.Supplies!.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
         if (itemSubtype == null) Throw("No such item found on this character.");
 
         bool isItemAtCorrectLocation;
@@ -119,7 +82,8 @@ public class CharacterValidator : ValidatorBase
         else if (itemSubtype == ItemsLore.Subtypes.Protections.Shield)
         {
             isItemAtCorrectLocation =
-                equip.InventoryLocation == ItemsLore.InventoryLocation.Shield;
+                 equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand;
         }
         //weapons
         else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
@@ -189,7 +153,7 @@ public class CharacterValidator : ValidatorBase
             isItemAtCorrectLocation =
                equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry;
 
-            if (character.Inventory.Heraldry.Count >= 5)
+            if (character.Inventory!.Heraldry!.Count >= 5)
             {
                 Throw("Heraldry is full, unequip some of the items first.");
             }
@@ -199,64 +163,79 @@ public class CharacterValidator : ValidatorBase
             isItemAtCorrectLocation = false;
         }
 
-        if (!isItemAtCorrectLocation) Throw("Unable to equip the item at said location.");
+        if (!isItemAtCorrectLocation) Throw("Item is being equipped at incorrect location.");
     }
 
-    public void ValidateCharacterPlayerCombination(string characterId, string playerId)
+    internal void ValidateCharacterPlayerCombination(CharacterIdentity identity)
     {
-        if (!dbm.Metadata.DoesCharacterExist(characterId, playerId)) Throw("Character not found.");
+        ValidateGuid(identity.Id);
+        ValidateGuid(identity.PlayerId);
+
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId)!;
+
+        if (!player.Characters.Exists(c => c.Identity!.Id == identity.Id)) Throw("Character not found.");
+    }
+
+    internal void ValidateStatExists(string stat)
+    {
+        ValidateString(stat);
+        if (!CharactersLore.Stats.All.Contains(stat)) Throw($"Stat {stat} does not math any possible character stats.");
+    }
+
+    internal void ValidateSkillExists(string skill)
+    {
+        ValidateString(skill);
+        if (!CharactersLore.Skills.All.Contains(skill)) Throw($"Skill {skill} does not math any possible character skills.");
+    }
+
+    internal void ValidateCharacterName(string name)
+    {
+        ValidateString(name, "Invalid string for name.");
+        if (name.Length < 3) Throw("Character name is too short, minimum of 3 letters allowed.");
+        if (name.Length > 30) Throw("Character name is too long, maximum of 30 letters allowed.");
     }
 
     #region private methods
-    private void ValidateRaceCultureCombination(CharacterOrigins sublore)
+    private static void ValidateRaceCultureCombination(CharacterOrigins origins)
     {
         string message = "Invalid race culture combination";
 
-        if (sublore.Race == CharactersLore.Races.Human)
+        if (origins.Race == CharactersLore.Races.Human)
         {
-            if (!CharactersLore.Cultures.Human.All.Contains(sublore.Culture)) Throw(message);
+            if (!CharactersLore.Cultures.Human.All.Contains(origins.Culture)) Throw(message);
         }
-        else if (sublore.Race == CharactersLore.Races.Elf)
+        else if (origins.Race == CharactersLore.Races.Elf)
         {
-            if (!CharactersLore.Cultures.Elf.All.Contains(sublore.Culture)) Throw(message);
+            if (!CharactersLore.Cultures.Elf.All.Contains(origins.Culture)) Throw(message);
         }
-        else if (sublore.Race == CharactersLore.Races.Dwarf)
+        else if (origins.Race == CharactersLore.Races.Dwarf)
         {
-            if (!CharactersLore.Cultures.Dwarf.All.Contains(sublore.Culture)) Throw(message);
+            if (!CharactersLore.Cultures.Dwarf.All.Contains(origins.Culture)) Throw(message);
         }
     }
 
     private void ValidateClass(string classes)
     {
-        ValidateString(classes, "Invalid class.");
-        if (!CharactersLore.Classes.All.Contains(classes)) Throw($"Invalid class {classes}.");
+        ValidateString(classes, "Invalid class string.");
+        if (!CharactersLore.Classes.All.Contains(classes)) Throw($"Class {classes} not found.");
     }
 
     private void ValidateHeritage(string heritage)
     {
-        ValidateString(heritage, "Invalid heritage.");
-        if (!CharactersLore.Heritage.All.Contains(heritage)) Throw($"Invalid heritage: {heritage}.");
+        ValidateString(heritage, "Invalid heritage string.");
+        if (!CharactersLore.Heritage.All.Contains(heritage)) Throw($"Heritage {heritage} not found..");
     }
 
     private void ValidateCulture(string culture)
     {
-        ValidateString(culture, "Invalid culture.");
-        if (!CharactersLore.Cultures.All.Contains(culture)) Throw($"Invalid culture {culture}");
+        ValidateString(culture, "Invalid culture string.");
+        if (!CharactersLore.Cultures.All.Contains(culture)) Throw($"Culture {culture} not found.");
     }
 
     private void ValidateRace(string race)
     {
-        ValidateString(race, "Invalid race.");
-        if (!CharactersLore.Races.All.Contains(race)) Throw($"Invalid race {race}");
-    }
-
-    private void ValidateName(string name)
-    {
-        ValidateString(name, "Invalid name.");
-        if (name.Length < 3) Throw("Character name is too short, minimum of 3 letters allowed.");
-        if (name.Length > 30) Throw("Character name is too long, maximum of 30 letters allowed.");
+        ValidateString(race, "Invalid race string.");
+        if (!CharactersLore.Races.All.Contains(race)) Throw($"Race {race} not found.");
     }
     #endregion
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.

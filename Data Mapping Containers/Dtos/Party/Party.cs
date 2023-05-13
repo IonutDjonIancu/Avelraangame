@@ -3,6 +3,5 @@
 public class Party
 {
     public string Id { get; set; }
-    public List<Character> Characters { get; set; }
-
+    public List<string> CharacterIds { get; set; }
 }

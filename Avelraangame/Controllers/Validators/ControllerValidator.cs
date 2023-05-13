@@ -1,29 +1,32 @@
-﻿using Data_Mapping_Containers.Validators;
-using Persistance_Manager;
+﻿using Service_Delegators;
+using Data_Mapping_Containers;
 
 namespace Avelraangame.Controllers.Validators;
 
-public class ControllerValidator : ValidatorBase
+public class ControllerValidator
 {
-    private readonly IDatabaseManager dbm;
+    private readonly IDatabaseService dbs;
 
-    public ControllerValidator(IDatabaseManager manager)
+    public ControllerValidator(IDatabaseService manager)
     {
-        dbm = manager;
+        dbs = manager;
     }
 
-    public void ValidateIfPlayerIsBanned(string name)
+    public void ValidateRequestObject(Request request)
     {
-        ValidateString(name);
-
-        if (dbm.Metadata.IsPlayerBanned(name)) Throw($"Player {name} is banned");
+        if (request == null) throw new Exception("Request object found null.");
+        if (string.IsNullOrWhiteSpace(request.PlayerName)) throw new Exception("Player name is missing or invalid.");
+        if (!Guid.TryParse(request.Token, out var _)) throw new Exception("Request token is invalid.");
     }
 
-    public void MatchingTokens(string token1, string token2)
+    public string ValidateRequesterAndReturnId(Request request)
     {
-        ValidateString(token1);
-        ValidateString(token2);
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Name == request.PlayerName) ?? throw new Exception("Player not found.");
 
-        if (token1 != token2) Throw("Token mismatch");
+        if (dbs.Snapshot.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
+
+        if (request.Token != player.Identity.Token) throw new Exception("Token mismatch");
+
+        return player.Identity.Id;
     }
 }

@@ -8,8 +8,7 @@ public class DatabaseManagerConfig
 
     public string LogPath { get; set; }
 
-    public string Key { get; set; }
-
     public string AvelraanEmail { get; set; }
     public string AvelraanPassword { get; set; }
+    public string AveelraanSecretKey { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Avelraangame.Factories;
 
 public class ServiceFactory : IServiceFactory
 {
-    private readonly IDatabaseManager dbm;
+    public IDatabaseService DatabaseService { get; set; } // must remain set instead of init to modify the cache(snapshot)
     public IDiceRollService DicerollService { get; init; }
     public IPlayerService PlayerService { get; init; }
     public IItemService ItemService { get; init; }
@@ -16,11 +16,11 @@ public class ServiceFactory : IServiceFactory
 
     public ServiceFactory(IDatabaseManager databaseManager)
     {
-        dbm = databaseManager;
-        DicerollService = new DiceRollService();
-        PlayerService = new PlayerService(dbm);
-        ItemService = new ItemService(DicerollService);
-        CharacterService = new CharacterService(dbm, DicerollService, ItemService);
-        NpcService = new NpcService(dbm, DicerollService, ItemService, CharacterService);
+        DatabaseService     = new DatabaseService(databaseManager);
+        DicerollService     = new DiceRollService();
+        PlayerService       = new PlayerService(DatabaseService);
+        ItemService         = new ItemService(DicerollService);
+        CharacterService    = new CharacterService(DatabaseService, DicerollService, ItemService);
+        NpcService          = new NpcService(DatabaseService, DicerollService, ItemService, CharacterService);
     }
 }

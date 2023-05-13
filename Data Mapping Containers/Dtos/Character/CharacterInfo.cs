@@ -2,15 +2,20 @@
 
 public class CharacterInfo
 {
-    public int? EntityLevel { get; set; }
+    public string Name { get; set; }
+
+    public int EntityLevel { get; set; }
 
     public string Race { get; set; }
     public string Culture { get; set; }
     public string Heritage { get; set; }
     public string Class { get; set; }
 
-    public string? Fame { get; set; }
-    public int? Wealth { get; set; }
+    public string Fame { get; set; }
+    public int Wealth { get; set; }
 
-    public string? DateOfBirth { get; set; }
+    public string DateOfBirth { get; set; }
+
+    public bool IsAlive { get; set; }
+    public bool IsInParty { get; set; }
 }

@@ -1,35 +1,33 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Pocos;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
 internal class CharacterCreateLogic
 {
-    private readonly IDatabaseManager dbm;
+    private readonly IDatabaseService dbs;
     private readonly IDiceRollService dice;
     private readonly IItemService items;
 
-    private readonly CharacterSheetLogic charSheet;
+    private readonly CharacterSheetLogic sheetLogic;
 
-    public CharacterCreateLogic(
-        IDatabaseManager databaseManager,
-        IDiceRollService rollService,
+    private CharacterCreateLogic() { }
+    internal CharacterCreateLogic(
+        IDatabaseService databaseService,
+        IDiceRollService diceService,
         IItemService itemService,
         CharacterSheetLogic characterSheetLogic)
     {
-        dbm = databaseManager;
-        dice = rollService;
+        dbs = databaseService;
+        dice = diceService;
         items = itemService;
 
-        charSheet = characterSheetLogic;
+        sheetLogic = characterSheetLogic;
     }
 
     internal CharacterStub CreateStub(string playerId)
     {
-        dbm.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
+        dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
 
         var entityLevel = RandomizeEntityLevel();
 
@@ -41,14 +39,14 @@ internal class CharacterCreateLogic
             SkillPoints = RandomizeSkillPoints(entityLevel),
         };
 
-        dbm.Snapshot.CharacterStubs.Add(stub);
+        dbs.Snapshot.CharacterStubs.Add(stub);
 
         return stub;
     }
 
     internal Character SaveStub(CharacterOrigins origins, string playerId)
     {
-        var stub = dbm.Snapshot.CharacterStubs!.Find(s => s.PlayerId == playerId)!;
+        var stub = dbs.Snapshot.CharacterStubs!.Find(s => s.PlayerId == playerId)!;
         var info = CreateCharacterInfo(origins, stub);
 
         Character character = new()
@@ -57,32 +55,30 @@ internal class CharacterCreateLogic
             {
                 Id = Guid.NewGuid().ToString(),
                 PlayerId = playerId,
-                Name = $"The {origins.Culture.ToLower()}"
             },
 
             Info = info,
 
             LevelUp = new CharacterLevelUp(),
 
-            Sheet = charSheet.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
+            Sheet = sheetLogic.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
 
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
 
             HeroicTraits = new List<HeroicTrait>(),
-            IsAlive = true,
         };
 
         character.Info.Wealth = SetWealth();
 
         // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
 
-        dbm.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
+        dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
 
-        var player = dbm.Metadata.GetPlayerById(playerId);
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!;
         player.Characters!.Add(character);
 
-        dbm.PersistPlayer(player);
+        dbs.PersistPlayer(playerId);
 
         return character;
     }
@@ -147,6 +143,8 @@ internal class CharacterCreateLogic
     {
         return new CharacterInfo
         {
+            Name = $"The {origins.Culture.ToLower()}",
+
             EntityLevel = stub!.EntityLevel,
 
             Race = origins.Race,
@@ -157,9 +155,9 @@ internal class CharacterCreateLogic
             DateOfBirth = DateTime.Now.ToShortDateString(),
 
             Fame = SetFame(origins.Culture, origins.Class),
+            IsAlive = true,
+            IsInParty = false
         };
     }
     #endregion
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.

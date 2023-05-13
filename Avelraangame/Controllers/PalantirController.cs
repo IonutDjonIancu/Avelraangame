@@ -15,9 +15,10 @@ public class PalantirController : ControllerBase
 {
     private readonly IFactoryManager factory;
     private readonly ControllerValidator validator;
+
     public PalantirController(IFactoryManager factory)
     {
-        validator = new ControllerValidator(factory.Dbm);
+        validator = new ControllerValidator(factory.ServiceFactory.DatabaseService);
         this.factory = factory;
     }
 
@@ -39,20 +40,15 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var isDbExported = factory.Dbm.Metadata.ExportDatabase(playerId);
+            factory.ServiceFactory.DatabaseService.ExportDatabase(playerId);
 
-            if (isDbExported)
-            {
-                return Ok("Database exported successfully.");
-            }
+            return Ok("Database exported successfully.");
         }
         catch (Exception ex)
         {
             Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
-
-        return Conflict("Could not export db.");
     }
 
     // PUT: /api/palantir/Database/ExportLogs
@@ -63,17 +59,15 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var areLogsExported = factory.Dbm.Metadata.ExportLogs(days, playerId);
+            factory.ServiceFactory.DatabaseService.ExportLogs(days, playerId);
 
-            if (areLogsExported) return Ok("Logs exported successfully.");
+            return Ok("Logs exported successfully.");
         }
         catch (Exception ex)
         {
             Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
-
-        return Conflict("Unable to export logs.");
     }
     #endregion
 
@@ -84,20 +78,17 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var player = factory.ServiceFactory.PlayerService.CreatePlayer(playerName);
+            var autheticatorSetupInfo = factory.ServiceFactory.PlayerService.CreatePlayer(playerName);
 
-            if (player != null)
-            {
-                return Ok(player);
-            }
+            if (autheticatorSetupInfo == null) return Conflict("Unable to create player."); 
+            
+            return Ok(autheticatorSetupInfo);
         }
         catch (Exception ex)
         {
             Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
-
-        return Conflict("Unable to create player.");
     }
 
     // PUT: /api/palantir/Player/LoginPlayer
@@ -123,19 +114,17 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request);
 
-            var isPlayerRemoved = factory.ServiceFactory.PlayerService.DeletePlayer(request.PlayerName);
+            factory.ServiceFactory.PlayerService.DeletePlayer(playerId);
 
-            if (isPlayerRemoved) return Ok("Player deleted successfully.");
+            return Ok("Player deleted successfully.");
         }
         catch (Exception ex)
         {
             Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
-
-        return Conflict("Unable to remove player.");
     }
     #endregion
 
@@ -244,15 +233,15 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Character/UpdateCharacter
-    [HttpPut("Character/UpdateCharacter")]
-    public IActionResult UpdateCharacter([FromQuery] Request request, [FromBody] CharacterUpdate charUpdate)
+    // PUT: /api/palantir/Character/UpdateCharacterName
+    [HttpPut("Character/UpdateCharacterName")]
+    public IActionResult UpdateCharacterName([FromQuery] Request request, string name, string characterId)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UpdateCharacter(charUpdate, playerId);
+            var character = factory.ServiceFactory.CharacterService.UpdateCharacterName(name, new CharacterIdentity() { Id = characterId, PlayerId = playerId});
 
             return Ok(character);
         }
@@ -265,13 +254,13 @@ public class PalantirController : ControllerBase
 
     // DELETE: /api/palantir/Character/DeleteCharacter
     [HttpDelete("Character/DeleteCharacter")]
-    public IActionResult DeleteCharacter([FromQuery] Request request, [FromBody] string characterId)
+    public IActionResult DeleteCharacter([FromQuery] Request request, string characterId)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            factory.ServiceFactory.CharacterService.DeleteCharacter(characterId, playerId);
+            factory.ServiceFactory.CharacterService.DeleteCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
             return Ok("Character deleted");
         }
@@ -288,9 +277,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            equip.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip, playerId);
+            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip);
 
             return Ok(character);
         }
@@ -307,9 +296,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            unequip.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip, playerId);
+            var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip);
 
             return Ok(character);
         }
@@ -326,9 +315,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            trait.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait, playerId);
+            var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait);
 
             return Ok(character);
         }
@@ -347,7 +336,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.CalculateCharacterPaperdoll(characterId, playerId);
+            var character = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
             return Ok(character);
         }
@@ -425,18 +414,9 @@ public class PalantirController : ControllerBase
     #region private methods
     private string MatchTokensForPlayer(Request request)
     {
-        validator.ValidateObject(request);
-        validator.ValidateString(request.PlayerName);
-        validator.ValidateGuid(request.Token);
+        validator.ValidateRequestObject(request);
 
-        var player = factory.Dbm.Snapshot.Players?.Find(p => p.Identity.Name == request.PlayerName);
-
-        validator.ValidateObject(player, "Player not found.");
-        validator.ValidateIfPlayerIsBanned(player!.Identity.Name);
-        validator.MatchingTokens(request.Token, player.Identity.Token);
-
-        return player.Identity.Id;
+        return validator.ValidateRequesterAndReturnId(request);
     }
     #endregion
 }
-

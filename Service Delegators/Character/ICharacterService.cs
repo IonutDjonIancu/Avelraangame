@@ -7,19 +7,30 @@ public interface ICharacterService
     CharacterStub CreateCharacterStub(string playerId);
     Character SaveCharacterStub(CharacterOrigins origins, string playerId);
 
-    Character UpdateCharacter(CharacterUpdate charUpdate, string playerId);
-    void DeleteCharacter(string characterId, string playerId);
+    Character UpdateCharacterName(string name, CharacterIdentity identity);
+    Character UpdateCharacterFame(string fame, CharacterIdentity identity);
+    Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
+    Character UpdateCharacterStats(string stat, CharacterIdentity identity);
+    Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
+    
+    void KillCharacter(CharacterIdentity identity);
+    void DeleteCharacter(CharacterIdentity identity);
 
     Characters GetCharacters(string playerId);   
 
-    Character EquipCharacterItem(CharacterEquip equip, string playerId);
-    Character UnequipCharacterItem(CharacterEquip unequip, string playerId);
+    Character EquipCharacterItem(CharacterEquip equip);
+    Character UnequipCharacterItem(CharacterEquip unequip);
 
-    CharacterPaperdoll CalculateCharacterPaperdoll(string characterId, string playerId);
-    CharacterPaperdoll CalculateCharacterPaperdoll(Character character);
+    CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity);
+    CharacterPaperdoll CalculatePaperdoll(Character character);
 
-    Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId);
+    Character LearnHeroicTrait(CharacterHeroicTrait trait);
+
+
+
+
+
+    // has to be removed from here there should be DatabaseService
     List<HeroicTrait> GetHeroicTraits();   
 
-    Rulebook GetRulebook();
 }
