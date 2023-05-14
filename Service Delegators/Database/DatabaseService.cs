@@ -62,4 +62,47 @@ public class DatabaseService : IDatabaseService
         logic.ExportLogs(days);
     }
     #endregion
+
+    #region gets
+    public List<Party> GetParties()
+    {
+        return Snapshot.Parties;
+    }
+
+    public Players GetPlayers()
+    {
+        var playersList = Snapshot.Players;
+        var players = new Players
+        {
+            Count = playersList.Count
+        };
+
+        foreach (var player in playersList)
+        {
+            players.PlayerNames.Add(player.Identity.Name);
+        }
+
+        return players;
+    }
+
+    public List<HeroicTrait> GetHeroicTraits()
+    {
+        return Snapshot.Traits.ToList();
+    }
+
+    public List<string> GetRaces()
+    {
+        return CharactersLore.Races.All;
+    }
+
+    public List<string> GetCultures()
+    {
+        return CharactersLore.Cultures.All;
+    }
+
+    public List<string> GetClasses()
+    {
+        return CharactersLore.Classes.All;
+    }
+    #endregion
 }

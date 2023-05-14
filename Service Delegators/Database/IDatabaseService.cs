@@ -21,4 +21,13 @@ public interface IDatabaseService
     #region logs
     void ExportLogs(int days, string playerId);
     #endregion
+
+    #region gets
+    List<string> GetRaces();
+    List<string> GetCultures();
+    List<string> GetClasses();
+    List<HeroicTrait> GetHeroicTraits();
+    Players GetPlayers();
+    List<Party> GetParties();
+    #endregion
 }

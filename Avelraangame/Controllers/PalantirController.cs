@@ -31,7 +31,67 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
-    #region Database
+    #region Database gets
+    // technically these could be moved to a different api
+    // technically these could be moved to a different api
+    // technically these could be moved to a different api
+
+    // GET: /api/palantir/Database/GetParties
+    [HttpGet("Database/GetParties")]
+    public IActionResult GetParties()
+    {
+        var response = factory.ServiceFactory.DatabaseService.GetParties();
+
+        return Ok(response);
+    }
+
+    // GET: /api/palantir/Database/GetPlayers
+    [HttpGet("Database/GetPlayers")]
+    public IActionResult GetPlayers()
+    {
+        var response = factory.ServiceFactory.DatabaseService.GetPlayers();
+
+        return Ok(response);
+    }
+
+    // GET: /api/palantir/Database/GetHeroicTraits
+    [HttpGet("Database/GetHeroicTraits")]
+    public IActionResult GetHeroicTraits()
+    {
+        var response = factory.ServiceFactory.DatabaseService.GetHeroicTraits();
+
+        return Ok(response);
+    }
+
+    // GET: /api/palantir/Database/GetRaces
+    [HttpGet("Database/GetRaces")]
+    public IActionResult GetRaces()
+    {
+        var response = factory.ServiceFactory.DatabaseService.GetRaces();
+
+        return Ok(response);
+    }
+
+    // GET: /api/palantir/Database/GetCultures
+    [HttpGet("Database/GetCultures")]
+    public IActionResult GetCultures()
+    {
+        var response = factory.ServiceFactory.DatabaseService.GetCultures();
+
+        return Ok(response);
+    }
+
+    // GET: /api/palantir/Database/GetClasses
+    [HttpGet("Database/GetClasses")]
+    public IActionResult GetClasses()
+    {
+        var response = factory.ServiceFactory.DatabaseService.GetClasses();
+
+        return Ok(response);
+    }
+    #endregion
+
+    #region Database ops
     // PUT: /api/palantir/Database/ExportDatabase
     [HttpPut("Database/ExportDatabase")]
     public IActionResult ExportDatabase([FromQuery] Request request)
@@ -60,6 +120,44 @@ public class PalantirController : ControllerBase
             var playerId = MatchTokensForPlayer(request);
 
             factory.ServiceFactory.DatabaseService.ExportLogs(days, playerId);
+
+            return Ok("Logs exported successfully.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Database/ImportDatabase
+    [HttpPut("Database/ImportDatabase")]
+    public IActionResult ImportDatabase([FromQuery] Request request, [FromBody] string databaseJsonString)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            throw new NotImplementedException();
+
+            return Ok("Logs exported successfully.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Database/ImportPlayer
+    [HttpPut("Database/ImportPlayer")]
+    public IActionResult ImportPlayer([FromQuery] Request request, [FromBody] string playerJsonString)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            throw new NotImplementedException();
 
             return Ok("Logs exported successfully.");
         }
@@ -339,25 +437,6 @@ public class PalantirController : ControllerBase
             var character = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
             return Ok(character);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-    #endregion
-
-    #region HeroicTraits
-    // GET: /api/palantir/HeroicTraits/GetHeroicTraits
-    [HttpGet("HeroicTraits/GetHeroicTraits")]
-    public IActionResult GetHeroicTraits()
-    {
-        try
-        {
-            var traits = factory.ServiceFactory.CharacterService.GetHeroicTraits();
-
-            return Ok(traits);
         }
         catch (Exception ex)
         {

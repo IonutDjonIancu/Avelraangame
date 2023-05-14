@@ -25,12 +25,4 @@ public interface ICharacterService
     CharacterPaperdoll CalculatePaperdoll(Character character);
 
     Character LearnHeroicTrait(CharacterHeroicTrait trait);
-
-
-
-
-
-    // has to be removed from here there should be DatabaseService
-    List<HeroicTrait> GetHeroicTraits();   
-
 }
