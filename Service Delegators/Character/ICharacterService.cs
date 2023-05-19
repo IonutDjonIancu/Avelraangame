@@ -10,6 +10,8 @@ public interface ICharacterService
     Character UpdateCharacterName(string name, CharacterIdentity identity);
     Character UpdateCharacterFame(string fame, CharacterIdentity identity);
     Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
+    Character UpdateCharacterParty(string partyId, CharacterIdentity identity);
+
     Character UpdateCharacterStats(string stat, CharacterIdentity identity);
     Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
     

@@ -24,7 +24,7 @@ internal class CharacterPaperdollLogic
         var items = character.Inventory.GetAllEquipedItems();
         var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
 
-        var paperdoll = new CharacterPaperdoll(dbs.Snapshot.Rulebook.Acronyms);
+        var paperdoll = new CharacterPaperdoll();
         CalculatePaperdollStats(character, items, paperdoll);
         CalculatePaperdollAssets(character, items, paperdoll);
         CalculatePaperdollSkills(character, items, paperdoll);
@@ -86,17 +86,17 @@ internal class CharacterPaperdollLogic
         paperdoll.Assets = new CharacterAssets
         {
             // RES is the only asset increased by entity level
-            Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Resolve) + itemResBonus) * character.Info.EntityLevel,
+            Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Res) + itemResBonus) * character.Info.EntityLevel,
 
             // DEF cannot be greater than 90, so that to avoid making characters immune to all dmg
-            Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Defense) + itemDefBonus >= 90
+            Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Def) + itemDefBonus >= 90
                         ? 90
-                        : character.Sheet.Assets.Defense + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Defense) + itemDefBonus,
+                        : character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Def) + itemDefBonus,
 
-            Harm = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Harm) + itemHarBonus,
-            Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Spot) + itemSpoBonus,
-            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Purge) + itemPurBonus,
-            Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.AssetsFormulas.Mana) + itemManBonus
+            Harm    = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Har) + itemHarBonus,
+            Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Spo) + itemSpoBonus,
+            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Pur) + itemPurBonus,
+            Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Man) + itemManBonus
         };
     }
 
@@ -129,16 +129,16 @@ internal class CharacterPaperdollLogic
 
         paperdoll.Skills = new CharacterSkills
         {
-            Combat      = character.Sheet.Skills.Combat + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Combat) + itemComBonus,
-            Arcane      = character.Sheet.Skills.Arcane + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Arcane) + itemArcBonus,
-            Psionics    = character.Sheet.Skills.Psionics + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Psionics) + itemPsiBonus,
-            Hide        = character.Sheet.Skills.Hide + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Hide) + itemHidBonus,
-            Traps       = character.Sheet.Skills.Traps + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Traps) + itemTraBonus,
-            Tactics     = character.Sheet.Skills.Tactics + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Tactics) + itemTacBonus,
-            Social      = character.Sheet.Skills.Social + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Social) + itemSocBonus,
-            Apothecary  = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Apothecary) + itemApoBonus,
-            Travel      = character.Sheet.Skills.Travel + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Travel) + itemTraBonus,
-            Sail        = character.Sheet.Skills.Sail + paperdoll.InterpretFormula(dbs.Snapshot.Rulebook.SkillsFormulas.Sail) + itemSaiBonus
+            Combat      = character.Sheet.Skills.Combat     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Com) + itemComBonus,
+            Arcane      = character.Sheet.Skills.Arcane     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Arc) + itemArcBonus,
+            Psionics    = character.Sheet.Skills.Psionics   + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Psi) + itemPsiBonus,
+            Hide        = character.Sheet.Skills.Hide       + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Hid) + itemHidBonus,
+            Traps       = character.Sheet.Skills.Traps      + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Tra) + itemTraBonus,
+            Tactics     = character.Sheet.Skills.Tactics    + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Tac) + itemTacBonus,
+            Social      = character.Sheet.Skills.Social     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Soc) + itemSocBonus,
+            Apothecary  = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Apo) + itemApoBonus,
+            Travel      = character.Sheet.Skills.Travel     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Trv) + itemTrvBonus,
+            Sail        = character.Sheet.Skills.Sail       + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Sai) + itemSaiBonus
         };
     }
 

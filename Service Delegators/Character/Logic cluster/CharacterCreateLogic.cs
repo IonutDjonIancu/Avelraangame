@@ -147,10 +147,13 @@ internal class CharacterCreateLogic
 
             EntityLevel = stub!.EntityLevel,
 
-            Race = origins.Race,
-            Culture = origins.Culture,
-            Heritage = origins.Heritage,
-            Class = origins.Class,
+            Origins = new CharacterOrigins
+            {
+                Race = origins.Race,
+                Culture = origins.Culture,
+                Heritage = origins.Heritage,
+                Class = origins.Class,
+            },
 
             DateOfBirth = DateTime.Now.ToShortDateString(),
 

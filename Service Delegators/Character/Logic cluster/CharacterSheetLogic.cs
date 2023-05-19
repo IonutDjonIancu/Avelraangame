@@ -14,9 +14,9 @@ internal class CharacterSheetLogic
 
     internal CharacterSheet SetCharacterSheet(CharacterInfo info, int statPoints, int skillPoints)
     {
-        if      (info.Race == CharactersLore.Races.Human) return SetCharacterSheetForHuman(info, statPoints, skillPoints);
-        else if (info.Race == CharactersLore.Races.Elf) return SetCharacterSheetForElf(info, statPoints, skillPoints);
-        else if (info.Race == CharactersLore.Races.Dwarf) return SetCharacterSheetForDwarf(info, statPoints, skillPoints);
+        if      (info.Origins.Race == CharactersLore.Races.Human) return SetCharacterSheetForHuman(info, statPoints, skillPoints);
+        else if (info.Origins.Race == CharactersLore.Races.Elf) return SetCharacterSheetForElf(info, statPoints, skillPoints);
+        else if (info.Origins.Race == CharactersLore.Races.Dwarf) return SetCharacterSheetForDwarf(info, statPoints, skillPoints);
         throw new NotImplementedException();
     }
 
@@ -38,9 +38,9 @@ internal class CharacterSheetLogic
             Skills = new CharacterSkills()
         };
 
-        if (info.Culture == CharactersLore.Cultures.Human.Danarian) SetSheetForDanarian(charsheet);
+        if (info.Origins.Culture == CharactersLore.Cultures.Human.Danarian) SetSheetForDanarian(charsheet);
 
-        DistributeClassAttributes(charsheet, info.Class!, statPoints, skillPoints);
+        DistributeClassAttributes(charsheet, info.Origins.Class!, statPoints, skillPoints);
 
         return charsheet;
     }
@@ -62,10 +62,10 @@ internal class CharacterSheetLogic
             Skills = new CharacterSkills()
         };
 
-        if (info.Culture == CharactersLore.Cultures.Elf.Highborn) SetSheetForHighborn(charsheet);
+        if (info.Origins.Culture == CharactersLore.Cultures.Elf.Highborn) SetSheetForHighborn(charsheet);
         else throw new Exception("Character culture not found.");
 
-        DistributeClassAttributes(charsheet, info.Class!, statPoints, skillPoints);
+        DistributeClassAttributes(charsheet, info.Origins.Class!, statPoints, skillPoints);
 
         return charsheet;
     }
@@ -87,10 +87,10 @@ internal class CharacterSheetLogic
             Skills = new CharacterSkills()
         };
 
-        if (info.Culture == CharactersLore.Cultures.Dwarf.Undermountain) SetSheetForUndermoutain(charsheet);
+        if (info.Origins.Culture == CharactersLore.Cultures.Dwarf.Undermountain) SetSheetForUndermoutain(charsheet);
         else throw new Exception("Character culture not found.");
 
-        DistributeClassAttributes(charsheet, info.Class!, statPoints, skillPoints);
+        DistributeClassAttributes(charsheet, info.Origins.Class!, statPoints, skillPoints);
 
         return charsheet;
     }

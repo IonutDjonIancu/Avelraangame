@@ -166,6 +166,13 @@ internal class CharacterValidator : ValidatorBase
         if (!isItemAtCorrectLocation) Throw("Item is being equipped at incorrect location.");
     }
 
+    internal void ValidatePartyOnJoin(string partyId)
+    {
+        ValidateGuid(partyId);
+
+        if (!dbs.Snapshot.Parties.Exists(p => p.Id == partyId)) Throw("This party does not exist.");
+    }
+
     internal void ValidateCharacterPlayerCombination(CharacterIdentity identity)
     {
         ValidateGuid(identity.Id);

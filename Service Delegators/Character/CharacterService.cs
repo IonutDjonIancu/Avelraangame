@@ -48,6 +48,14 @@ public class CharacterService : ICharacterService
         return logic.AddFame(fame, identity);
     }
 
+    public Character UpdateCharacterParty(string partyId, CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidatePartyOnJoin(partyId);
+
+        return logic.SetParty(identity);
+    }
+
     public Character UpdateCharacterWealth(int wealth, CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
