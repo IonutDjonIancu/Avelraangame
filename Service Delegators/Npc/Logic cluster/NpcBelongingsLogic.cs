@@ -5,29 +5,80 @@ namespace Service_Delegators;
 
 internal class NpcBelongingsLogic
 {
-    private readonly IItemService itemService;
+    private readonly IDiceRollService dice;
+    private readonly IItemService itemsService;
 
-    internal NpcBelongingsLogic(IItemService itemService)
+    private NpcBelongingsLogic() { }
+    internal NpcBelongingsLogic(
+        IDiceRollService diceService,
+        IItemService itemService)
     {
-        this.itemService = itemService;
+        dice = diceService;
+        itemsService = itemService;
     }
 
-    internal void SetNpcInventory(NpcInfo npcInfo, CharacterInventory inventory)
+    internal void SetNpcInventory(Character npc)
     {
-        //TODO: this needs to be refactored to make more sense, i.e: fiends should only have tainted items, but not necessarily enchanted items
-        //TODO: monsters depending on the difficulty factor have from no up to 5 items, animals have no items, humanoids have items depending on location, demon have no weapons, elemental have no weapons - but think of other ways of getting loot from these
+        if (npc.Info.Origins.Race == RulebookLore.Npcs.Races.Animal
+            || npc.Info.Origins.Race == RulebookLore.Npcs.Races.Elemental) return;
 
-        if (npcInfo.NpcType == QuestsLore.NpcType.Animal) return;
-        if (npcInfo.NpcType == QuestsLore.NpcType.Elemental) return;
+        npc.Inventory.Mainhand = HasItem() ? SetMainhandItem() : null;
+        if (npc.Info.Origins.Race == RulebookLore.Npcs.Races.Undead) return;
 
-        inventory.Mainhand = itemService.GenerateSpecificItem("weapon", "sword");
-        if (npcInfo.NpcType == QuestsLore.NpcType.Monster) return;
+        npc.Inventory.Head = HasItem() ? itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm) : null;
+        npc.Inventory.Body = HasItem() ? itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour) : null;
+        if (npc.Info.Origins.Race == RulebookLore.Npcs.Races.Fiend) return;
 
-        inventory.Head = itemService.GenerateSpecificItem("protection", "helm");
-        inventory.Body = itemService.GenerateSpecificItem("protection", "armour");
-        if (npcInfo.NpcType == QuestsLore.NpcType.Fiend) return;
-
-        inventory.Shield = itemService.GenerateSpecificItem("protection", "shield");
-        inventory.Ranged = itemService.GenerateSpecificItem("weapon", "bow");
+        npc.Inventory.Offhand = HasItem() ? SetOffhandItem(npc) : null;
+        npc.Inventory.Ranged = HasItem() ? SetRangedItem() : null;
     }
+
+    #region private methods
+    private Item SetRangedItem()
+    {
+        var item = GetAWeapon();
+
+        return item.Subcategory != ItemsLore.Subcategories.Ranged
+            || item.Subtype != ItemsLore.Subtypes.Weapons.Spear
+            || item.Subtype != ItemsLore.Subtypes.Weapons.Axe
+            ? SetRangedItem() : item;
+    }
+
+    private Item SetOffhandItem(Character npc)
+    {
+        if (npc.Inventory.Mainhand?.Subcategory == ItemsLore.Subcategories.Twohanded) return null!;
+
+        return HasItem() ? GetNonTwoHandedWeapon() : itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+    }
+
+    private Item GetNonTwoHandedWeapon()
+    {
+        var item = GetAWeapon();
+
+        return item.Subcategory == ItemsLore.Subcategories.Twohanded 
+            || item.Subcategory == ItemsLore.Subcategories.Ranged 
+            ? GetNonTwoHandedWeapon() : item; 
+    }
+
+    private Item SetMainhandItem()
+    {
+        var item = GetAWeapon();
+
+        return item.Subcategory == ItemsLore.Subcategories.Ranged ? SetMainhandItem() : item;
+    }
+
+
+    private Item GetAWeapon()
+    {
+        var index = dice.Roll_XdY(0, ItemsLore.Subtypes.Weapons.All.Count - 1);
+        var itemSubtype = ItemsLore.Subtypes.Weapons.All[index];
+
+        return itemsService.GenerateSpecificItem("Weapon", itemSubtype);
+    } 
+    
+    private bool HasItem()
+    {
+        return dice.FlipCoin();
+    }
+    #endregion
 }

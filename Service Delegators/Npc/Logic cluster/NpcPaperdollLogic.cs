@@ -1,30 +1,25 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
 internal class NpcPaperdollLogic
 {
-    private readonly IDiceRollService diceService;
     private readonly ICharacterService characterService;
 
-    internal NpcPaperdollLogic(
-        IDiceRollService diceService,
-        ICharacterService characterService)
+    private NpcPaperdollLogic() { }
+    internal NpcPaperdollLogic(ICharacterService characterService)
     {
-        this.diceService = diceService;
         this.characterService = characterService;
     }
 
-    internal NpcPaperdoll GetNpcPaperdoll(NpcInfo npcInfo, Character npcCharacter)
+    internal NpcPaperdoll CalculateNpcPaperdoll(NpcInfo npcInfo, Character npcCharacter)
     {
-        var npcPaperdoll = new NpcPaperdoll();
-
-        _ = npcInfo.NpcType != QuestsLore.NpcType.Humanoid ? npcPaperdoll.Money = 0 : npcPaperdoll.Money = diceService.Roll_d100(true);
-
-        npcPaperdoll.Items = npcCharacter.Inventory.GetAllEquipedItems();
-        npcPaperdoll.Paperdoll = characterService.CalculateCharacterPaperdoll(npcCharacter);
+        var npcPaperdoll = new NpcPaperdoll
+        {
+            Items = npcCharacter.Inventory.GetAllEquipedItems(),
+            Paperdoll = characterService.CalculatePaperdoll(npcCharacter),
+            Wealth = npcCharacter.Info.Wealth
+        };
 
         ApplyDifficultyFactor(npcInfo, npcPaperdoll);
 
@@ -34,10 +29,10 @@ internal class NpcPaperdollLogic
     #region private methods
     private static void ApplyDifficultyFactor(NpcInfo info, NpcPaperdoll npc)
     {
-        var factor = 1.0m;
-        if (info.Difficulty == QuestsLore.Difficulty.Easy) factor = 0.25m;
-        if (info.Difficulty == QuestsLore.Difficulty.Medium) factor = 0.5m;
-        if (info.Difficulty == QuestsLore.Difficulty.Hard) factor = 2.0m;
+        var factor = 1.0m; // set to Normal
+        if (info.Difficulty == RulebookLore.Quests.Difficulty.Easy) factor = 0.25m;
+        if (info.Difficulty == RulebookLore.Quests.Difficulty.Medium) factor = 0.5m;
+        if (info.Difficulty == RulebookLore.Quests.Difficulty.Hard) factor = 2.0m;
 
         // stats
         npc.Paperdoll.Stats.Strength = (int)Math.Floor(npc.Paperdoll.Stats.Strength * factor);
@@ -52,7 +47,7 @@ internal class NpcPaperdollLogic
         npc.Paperdoll.Assets.Harm = (int)Math.Floor(npc.Paperdoll.Assets.Harm * factor);
         npc.Paperdoll.Assets.Spot = (int)Math.Floor(npc.Paperdoll.Assets.Spot * factor);
         npc.Paperdoll.Assets.Defense = (int)Math.Floor(npc.Paperdoll.Assets.Defense * factor) >= 90 ? 90 : (int)Math.Floor(npc.Paperdoll.Assets.Defense * factor);
-        npc.Paperdoll.Assets.Purge = (int)Math.Floor(npc.Paperdoll.Assets.Purge * factor) >= 100 ? 100 : npc.Paperdoll.Assets.Purge = (int)Math.Floor(npc.Paperdoll.Assets.Purge * factor);
+        npc.Paperdoll.Assets.Purge = (int)Math.Floor(npc.Paperdoll.Assets.Purge * factor);
         npc.Paperdoll.Assets.Mana = (int)Math.Floor(npc.Paperdoll.Assets.Mana * factor);
 
         // skills
@@ -68,9 +63,7 @@ internal class NpcPaperdollLogic
         npc.Paperdoll.Skills.Sail = (int)Math.Floor(npc.Paperdoll.Skills.Sail * factor);
 
         // money
-        npc.Money = (int)Math.Floor(npc.Money * factor);
+        npc.Wealth = (int)Math.Floor(npc.Wealth * factor);
     }
     #endregion
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.

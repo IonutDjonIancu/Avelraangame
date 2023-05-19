@@ -158,7 +158,7 @@ internal class ItemClassificationLogic
     private void SetCategoryAndDescriptionFor(Dictionary<string, string> category, Item item)
     {
         var count = category.Keys.Count;
-        var position = dice.Roll_dX(count);
+        var position = dice.Roll_1dX(count);
         var element = category.ElementAt(position - 1);
 
         item.Category = element.Key;

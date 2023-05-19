@@ -226,12 +226,12 @@ internal class CharacterSheetLogic
 
             if (roll <= 70)
             {
-                var rollForStat = dice.Roll_dX(likelyStats.Count);
+                var rollForStat = dice.Roll_1dX(likelyStats.Count);
                 chosenStat = likelyStats[rollForStat - 1];
             }
             else
             {
-                var rollForStat = dice.Roll_dX(unlikelyStats.Count);
+                var rollForStat = dice.Roll_1dX(unlikelyStats.Count);
                 chosenStat = unlikelyStats[rollForStat - 1];
             }
 
@@ -255,12 +255,12 @@ internal class CharacterSheetLogic
 
             if (roll <= 70)
             {
-                var rollForStat = dice.Roll_dX(likeySkills.Count);
+                var rollForStat = dice.Roll_1dX(likeySkills.Count);
                 chosenSkill = likeySkills[rollForStat - 1];
             }
             else
             {
-                var rollForStat = dice.Roll_dX(unlikeySkills.Count);
+                var rollForStat = dice.Roll_1dX(unlikeySkills.Count);
                 chosenSkill = unlikeySkills[rollForStat - 1];
             }
 

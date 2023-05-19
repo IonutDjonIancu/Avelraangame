@@ -6,6 +6,11 @@ internal class DiceRollLogicDelegator
 {
     private readonly Random random = new();
     
+    internal bool FlipCoin()
+    {
+        return random.Next(1, 3) == 1;
+    }
+
     internal int Roll1d20NoReroll()
     {
         return random.Next(1, 21);

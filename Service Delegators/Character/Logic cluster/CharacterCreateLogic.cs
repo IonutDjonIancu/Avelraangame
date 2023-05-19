@@ -110,7 +110,7 @@ internal class CharacterCreateLogic
 
     private List<Item> SetSupplies()
     {
-        var roll = dice.Roll_dX(6);
+        var roll = dice.Roll_1dX(6);
         var supplies = new List<Item>();
 
         for (int i = 0; i < roll; i++)
@@ -129,11 +129,11 @@ internal class CharacterCreateLogic
 
     private int SetWealth()
     {
-        var rollTimes = dice.Roll_dX(6);
+        var rollTimes = dice.Roll_1dX(6);
         var total = 10;
         for (int i = 0; i < rollTimes; i++)
         {
-            total += dice.Roll_dX(100);
+            total += dice.Roll_1dX(100);
         }
 
         return total;

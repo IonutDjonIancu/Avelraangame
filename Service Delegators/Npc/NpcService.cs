@@ -9,13 +9,12 @@ public class NpcService : INpcService
     private readonly NpcLogicDelegator logic;
 
     public NpcService(
-        IDatabaseService databaseService,
         IDiceRollService diceRollService,
         IItemService itemService,
         ICharacterService characterService)
     {
         validator = new NpcValidator();
-        logic = new NpcLogicDelegator(databaseService, diceRollService, itemService, characterService);
+        logic = new NpcLogicDelegator(diceRollService, itemService, characterService);
     }
 
     public NpcPaperdoll GenerateNpc(NpcInfo npcInfo)
