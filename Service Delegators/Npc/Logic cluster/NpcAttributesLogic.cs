@@ -8,6 +8,7 @@ internal class NpcAttributesLogic
     private readonly IDatabaseService dbs;
     private readonly IDiceRollService dice;
 
+    private NpcAttributesLogic() { }
     internal NpcAttributesLogic(
         IDatabaseService databaseService,
         IDiceRollService diceService)
@@ -18,25 +19,10 @@ internal class NpcAttributesLogic
 
     internal void SetNpcCharacterSheet(NpcInfo npcInfo, Character npcChar)
     {
-        // will have to account for all other races and cultures as well
-        npcChar.Info.IsAlive = true;
-        npcChar.Info.Name = $"Npc-Humanoid-{DateTime.Now.Millisecond}";
+        npcChar.Identity.Id = Guid.NewGuid().ToString();
+        npcChar.Identity.PlayerId = Guid.Empty.ToString();
 
-        npcChar.Identity = new CharacterIdentity
-        {
-            Id = Guid.NewGuid().ToString(),
-            PlayerId = Guid.Empty.ToString()
-        };
-
-        npcChar.Info = new CharacterInfo
-        {
-            EntityLevel = RandomizeEntityLevel(dice),
-
-            Race = npcInfo.NpcType,
-            Culture = CharactersLore.Cultures.Human.Danarian, // this should be dynamically generated
-            Class = CharactersLore.Classes.Warrior,
-            Heritage = npcInfo.Heritage
-        };
+        SetNpcCharacterInfo(npcInfo, npcChar);
 
         npcChar.Sheet = new CharacterSheet()
         {
@@ -49,6 +35,164 @@ internal class NpcAttributesLogic
     }
 
     #region private methods
+    private void SetNpcCharacterInfo(NpcInfo npcInfo, Character npcChar)
+    {
+        npcChar.Info.EntityLevel = RandomizeEntityLevel(dice);
+        npcChar.Info.DateOfBirth = DateTime.Now.ToShortDateString();
+        npcChar.Info.IsAlive = true;
+        npcChar.Info.IsInParty = false;
+        npcChar.Info.Name = $"Npc-Humanoid-{DateTime.Now.Millisecond}";
+        npcChar.Info.Fame = "Not much is know about this one.";
+        npcChar.Info.Wealth = dice.Roll_d100(true);
+        npcChar.Info.Origins = GetOriginsByRegion(npcInfo);
+    }
+
+    private CharacterOrigins GetOriginsByRegion(NpcInfo info)
+    {
+        var origins = new CharacterOrigins
+        {
+            Culture = "npc culture",
+            Heritage = RulebookLore.Regions.Eastern.Contains(info.Region) ? CharactersLore.Heritage.Traditional : CharactersLore.Heritage.Martial,
+            Race = SetNpcRace(info)
+        };
+
+        origins.Class = SetNpcClass(origins.Race);
+
+        return origins;
+    }
+
+    private string SetNpcRace(NpcInfo info)
+    {
+        var animalsFoundIn = new List<string>
+        {
+            RulebookLore.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Regions.WestDragonmaw.Southeim,
+
+            RulebookLore.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Regions.EastDragonmaw.Farlindor,
+            
+            RulebookLore.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Regions.Hyperborea.Brimland,
+            
+            RulebookLore.Regions.ThreeSeas.Endar,
+            RulebookLore.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Regions.ThreeSeas.Calvinia
+        };
+
+        var monstersFoundIn = new List<string>
+        {
+            RulebookLore.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Regions.WestDragonmaw.Southeim,
+
+            RulebookLore.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Regions.EastDragonmaw.PelRavan,
+            
+            RulebookLore.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Regions.Hyperborea.Brimland,
+            RulebookLore.Regions.Hyperborea.Ryxos,
+            
+            RulebookLore.Regions.ThreeSeas.Endar,
+            RulebookLore.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Regions.ThreeSeas.Calvinia,
+
+            RulebookLore.Regions.Eversun.AjJahra
+        };
+
+        var humanoidsFoundIn = new List<string>
+        {
+            RulebookLore.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Regions.WestDragonmaw.Southeim,
+
+            RulebookLore.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Regions.EastDragonmaw.PelRavan,
+
+            RulebookLore.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Regions.Hyperborea.Brimland,
+            RulebookLore.Regions.Hyperborea.Ryxos,
+
+            RulebookLore.Regions.ThreeSeas.Endar,
+            RulebookLore.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Regions.ThreeSeas.Calvinia,
+
+            RulebookLore.Regions.Eversun.AjJahra,
+            RulebookLore.Regions.Eversun.ShiftingPlanes,
+        };
+
+        var undeadsFoundIn = new List<string>
+        {
+            RulebookLore.Regions.WestDragonmaw.Northeim,
+
+            RulebookLore.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Regions.EastDragonmaw.PelRavan,
+
+            RulebookLore.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Regions.Hyperborea.Ryxos,
+
+            RulebookLore.Regions.Eversun.AjJahra,
+            RulebookLore.Regions.Eversun.ShiftingPlanes,
+        };
+
+        var fiendsFoundIn = new List<string>
+        {
+            RulebookLore.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Regions.WestDragonmaw.Midheim,
+
+            RulebookLore.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Regions.EastDragonmaw.PelRavan,
+
+            RulebookLore.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Regions.Hyperborea.Ryxos,
+
+            RulebookLore.Regions.ThreeSeas.Endar,
+            RulebookLore.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Regions.ThreeSeas.Calvinia,
+
+            RulebookLore.Regions.Eversun.AjJahra,
+            RulebookLore.Regions.Eversun.ShiftingPlanes,
+            RulebookLore.Regions.Eversun.Peradin
+        };
+
+        var elementalFoundIn = new List<string>
+        {
+            RulebookLore.Regions.Hyperborea.Ryxos,
+
+            RulebookLore.Regions.Eversun.ShiftingPlanes,
+            RulebookLore.Regions.Eversun.Peradin
+        };
+
+        List<string> possibleRaces = new();
+
+        if (animalsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Animal);
+        if (monstersFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Monster);
+        if (humanoidsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Humanoid);
+        if (undeadsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Undead);
+        if (fiendsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Fiend);
+        if (elementalFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Elemental);
+
+        var index = dice.Roll_dXY(0, possibleRaces.Count - 1);
+        return possibleRaces[index];
+    }
+
+    private string SetNpcClass(string race)
+    {
+
+    }
+
+
     private CharacterSkills CalculateNpcSkills(NpcInfo npcInfo)
     {
         var skills = new CharacterSkills();
@@ -173,5 +317,4 @@ internal class NpcAttributesLogic
         else  /*(roll >= 1)*/   return 1;
     }
     #endregion
-
 }

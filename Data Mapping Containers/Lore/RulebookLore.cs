@@ -340,14 +340,14 @@ public class RulebookLore
         public const int AssetsDifferenceFactor = 20;
         public const int SkillsDifferenceFactor = 10;
 
-        public static class NpcTypes
+        public static class Races
         {
-            public const string Monster = "Monster";
-            public const string Undead = "Undead";
-            public const string Animal = "Animal";
-            public const string Humanoid = "Humanoid";
-            public const string Fiend = "Fiend";
-            public const string Elemental = "Elemental";
+            public const string Animal      = "Animal";
+            public const string Monster     = "Monster";
+            public const string Humanoid    = "Humanoid";
+            public const string Undead      = "Undead";
+            public const string Fiend       = "Fiend";
+            public const string Elemental   = "Elemental";
 
             public static readonly List<string> All = new()
             {
@@ -368,7 +368,7 @@ public class RulebookLore
         public static class EastDragonmaw
         {
             public const string VargasStand = "Varga's Stand";
-            public const string Stormbork = "Stormbork";
+            public const string Longshore = "Longshore";
             public const string Farlindor = "Farlindor";
             public const string PelRavan = "Pel'ravan";
         }
@@ -384,6 +384,7 @@ public class RulebookLore
         {
             public const string Endar = "Endar";
             public const string TwinVines = "Twin Vines";
+            public const string Stormbork = "Stormbork";
             public const string Calvinia = "Calvinia";
         }
 
@@ -394,6 +395,34 @@ public class RulebookLore
             public const string Peradin = "Peradin";
         }
 
+        public static readonly List<string> Eastern = new()
+        {
+            WestDragonmaw.Northeim,
+            WestDragonmaw.Midheim,
+            WestDragonmaw.Southeim,
+
+            EastDragonmaw.VargasStand,
+            EastDragonmaw.Longshore,
+            EastDragonmaw.Farlindor,
+            EastDragonmaw.PelRavan
+        };
+
+        public static readonly List<string> Western = new()
+        {
+            Hyperborea.FrozenWastes,
+            Hyperborea.Brimland,
+            Hyperborea.Ryxos,
+
+            ThreeSeas.Endar,
+            ThreeSeas.TwinVines,
+            ThreeSeas.Stormbork,
+            ThreeSeas.Calvinia,
+
+            Eversun.AjJahra,
+            Eversun.ShiftingPlanes,
+            Eversun.Peradin
+        };
+
         public static readonly List<string> All = new()
         {
             WestDragonmaw.Northeim,
@@ -401,7 +430,7 @@ public class RulebookLore
             WestDragonmaw.Southeim,
 
             EastDragonmaw.VargasStand,
-            EastDragonmaw.Stormbork,
+            EastDragonmaw.Longshore,
             EastDragonmaw.Farlindor,
             EastDragonmaw.PelRavan,
 
@@ -411,6 +440,7 @@ public class RulebookLore
 
             ThreeSeas.Endar,
             ThreeSeas.TwinVines,
+            ThreeSeas.Stormbork,
             ThreeSeas.Calvinia,
 
             Eversun.AjJahra,

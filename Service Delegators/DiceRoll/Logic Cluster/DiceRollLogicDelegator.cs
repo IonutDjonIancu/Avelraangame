@@ -55,8 +55,8 @@ internal class DiceRollLogicDelegator
     internal DiceRoll GenerateRollFor(string heritage, int bonus = 0)
     {
         var dice = new List<int>();
-
         int roll;
+
         if      (IsTraditional(heritage))   roll = Rolld20WithList(dice, bonus);
         else if (IsMartial(heritage))       roll = Rolld100WithList(dice, bonus);
         else  /*(none)*/                    roll = Rolld20WithList(dice, bonus);
