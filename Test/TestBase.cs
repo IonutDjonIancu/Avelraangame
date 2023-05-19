@@ -7,7 +7,6 @@ public class TestBase
     private static readonly string testSecret = "BQxevwF37aNAznk";
     private static readonly string dbTestPath = "\\Resources\\Database files\\AvelraanTestDb.json";
     private static readonly string dbPlayersPath = "\\Resources\\Database files\\Players";
-    private static readonly string dbRulebookPath = "\\Resources\\Game rules\\Rulebook.json";
     private static readonly string logsPath = "\\Resources\\Log files\\Logs.txt";
 
     protected readonly IDatabaseManager dbm;
@@ -27,7 +26,6 @@ public class TestBase
             DbPath = dbTestPath,
             LogPath = logsPath,
             DbPlayersPath = dbPlayersPath,
-            DbRulebookPath = dbRulebookPath,
             AvelraanEmail = "example@gmail.com",
             AvelraanPassword = "password",
         };

@@ -1,23 +1,18 @@
-﻿using Data_Mapping_Containers.Dtos;
-using Data_Mapping_Containers.Validators;
-using Persistance_Manager;
+﻿#pragma warning disable CA1822 // Mark members as static
+
+using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators.Validators;
 
-public class NpcValidator : ValidatorBase
+internal class NpcValidator : ValidatorBase
 {
-    private readonly IDatabaseManager dbm;
-
-    public NpcValidator(IDatabaseManager manager)
-    {
-        dbm = manager;
-    }
-
     public void ValidateNpcOnGenerate(NpcInfo npcInfo)
     {
-        if (!QuestsLore.Difficulty.All.Contains(npcInfo.Difficulty)) Throw("Difficulty not found or in wrong format.");
+        ValidateObject(npcInfo);
+
+        if (!RulebookLore.Quests.Difficulty.All.Contains(npcInfo.Difficulty)) Throw("Difficulty not found or in wrong format.");
         if (!CharactersLore.Heritage.All.Contains(npcInfo.Heritage)) Throw("Heritage not found or in wrong format.");
-        if (!QuestsLore.NpcType.All.Contains(npcInfo.NpcType)) Throw("Wrong npc type or in wrong format.");
+        if (!RulebookLore.Regions.All.Contains(npcInfo.Region)) Throw("Wrong npc region or in wrong format.");
 
         ValidateObject(npcInfo.StatsMin);
         ValidateObject(npcInfo.StatsMax);
@@ -27,3 +22,5 @@ public class NpcValidator : ValidatorBase
         ValidateObject(npcInfo.SkillsMax);
     }
 }
+
+#pragma warning restore CA1822 // Mark members as static

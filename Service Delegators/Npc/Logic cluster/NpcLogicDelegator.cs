@@ -1,7 +1,4 @@
-﻿#pragma warning disable CS8604 // Possible null reference argument.
-
-using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
@@ -12,14 +9,13 @@ internal class NpcLogicDelegator
     private readonly NpcPaperdollLogic paperdollLogic;
 
     private NpcLogicDelegator() { }
-
     internal NpcLogicDelegator(
-        IDatabaseManager databaseManager,
+        IDatabaseService databaseService,
         IDiceRollService diceService,
         IItemService itemService,
         ICharacterService characterService)
     {
-        attributesLogic = new NpcAttributesLogic(databaseManager, diceService);
+        attributesLogic = new NpcAttributesLogic(databaseService, diceService);
         belongingsLogic = new NpcBelongingsLogic(itemService);
         paperdollLogic = new NpcPaperdollLogic(diceService, characterService);
     }
@@ -37,4 +33,3 @@ internal class NpcLogicDelegator
     }
 }
 
-#pragma warning restore CS8604 // Possible null reference argument.

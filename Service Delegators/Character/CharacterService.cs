@@ -87,7 +87,7 @@ public class CharacterService : ICharacterService
         logic.DeleteChar(identity);
     }
 
-    public Characters GetCharacters(string playerId)
+    public Characters GetCharactersByPlayerId(string playerId)
     {
         var characters = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters;
 

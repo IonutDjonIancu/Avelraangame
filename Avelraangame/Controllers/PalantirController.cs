@@ -140,7 +140,7 @@ public class PalantirController : ControllerBase
 
             throw new NotImplementedException();
 
-            return Ok("Logs exported successfully.");
+            //return Ok("Logs exported successfully.");
         }
         catch (Exception ex)
         {
@@ -159,7 +159,7 @@ public class PalantirController : ControllerBase
 
             throw new NotImplementedException();
 
-            return Ok("Logs exported successfully.");
+            //return Ok("Logs exported successfully.");
         }
         catch (Exception ex)
         {
@@ -263,7 +263,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var characters = factory.ServiceFactory.CharacterService.GetCharacters(playerId);
+            var characters = factory.ServiceFactory.CharacterService.GetCharactersByPlayerId(playerId);
 
             return Ok(characters);
         }
@@ -282,7 +282,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.GetCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
+            var character = factory.ServiceFactory.CharacterService.GetCharactersByPlayerId(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
 
             return Ok(character);
         }
@@ -450,25 +450,6 @@ public class PalantirController : ControllerBase
 
 
 
-    #endregion
-
-    #region Rulebook
-    // GET: /api/palantir/Rulebook/GetRulebook
-    [HttpGet("Rulebook/GetRulebook")]
-    public IActionResult GetRulebook()
-    {
-        try
-        {
-            var stub = factory.ServiceFactory.CharacterService.GetRulebook();
-
-            return Ok(stub);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
     #endregion
 
     #region Npcs

@@ -8,13 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
-    <ProjectReference Include="..\Independent Modules\Independent Modules.csproj" />
-    <ProjectReference Include="..\Persistance Manager\Persistence Manager.csproj" />
+    <Compile Remove="Party\Logic cluster\**" />
+    <EmbeddedResource Remove="Party\Logic cluster\**" />
+    <None Remove="Party\Logic cluster\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Party\Logic cluster\" />
+    <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
+    <ProjectReference Include="..\Independent Modules\Independent Modules.csproj" />
+    <ProjectReference Include="..\Persistance Manager\Persistence Manager.csproj" />
   </ItemGroup>
 
 </Project>

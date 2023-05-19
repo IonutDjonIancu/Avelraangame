@@ -134,7 +134,7 @@ public class CharacterServiceTests : TestBase
 
         characterService.DeleteCharacter(character.Identity.Id, playerId);
 
-        var characters = characterService.GetCharacters(playerId);
+        var characters = characterService.GetCharactersByPlayerId(playerId);
 
         characters.CharactersList.Should().NotContain(character);
         characters.Count.Should().Be(0);

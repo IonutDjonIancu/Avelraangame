@@ -5,7 +5,6 @@ public interface IAppSettingsConfigManager
     string DbPath { get; }
     string DbTestPath { get; }
     string DbPlayersPath { get; }
-    string DbRulebookPath { get; }
 
     string LogPath { get; }
 

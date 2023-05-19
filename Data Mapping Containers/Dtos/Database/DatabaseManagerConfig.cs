@@ -4,7 +4,6 @@ public class DatabaseManagerConfig
 {
     public string DbPath { get; set; }
     public string DbPlayersPath { get; set; }
-    public string DbRulebookPath { get; set; }
 
     public string LogPath { get; set; }
 

@@ -16,7 +16,6 @@ public class FactoryManager : IFactoryManager
         {
             DbPath = config.DbPath,
             DbPlayersPath = config.DbPlayersPath,
-            DbRulebookPath = config.DbRulebookPath,
 
             LogPath = config.LogPath,
 

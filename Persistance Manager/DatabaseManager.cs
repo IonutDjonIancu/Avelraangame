@@ -34,7 +34,6 @@ public class DatabaseManager : IDatabaseManager
         {
             DbPath = $"{currentDir}{config.DbPath}",
             DbPlayersPath = $"{currentDir}{config.DbPlayersPath}",
-            DbRulebookPath = $"{currentDir}{config.DbRulebookPath}",
             LogPath = $"{currentDir}{config.LogPath}",
 
             AvelraanEmail = config.AvelraanEmail,
@@ -58,17 +57,7 @@ public class DatabaseManager : IDatabaseManager
             Players = ReadPlayerFiles(info.PlayerFilePaths),
             Items = avDatabase.Items,
             Traits = LoadTraitsFromLore(),
-
-            Rulebook = ReadRulebookFile(info.DbRulebookPath),
         };
-    }
-
-    private static Rulebook ReadRulebookFile(string path)
-    {
-        var text = File.ReadAllText(path);
-        var rulebook = JsonConvert.DeserializeObject<Rulebook>(text);
-
-        return rulebook;
     }
 
     private static List<Player> ReadPlayerFiles(List<string> paths)

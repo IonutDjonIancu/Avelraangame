@@ -16,7 +16,7 @@ public interface ICharacterService
     void KillCharacter(CharacterIdentity identity);
     void DeleteCharacter(CharacterIdentity identity);
 
-    Characters GetCharacters(string playerId);   
+    Characters GetCharactersByPlayerId(string playerId);   
 
     Character EquipCharacterItem(CharacterEquip equip);
     Character UnequipCharacterItem(CharacterEquip unequip);

@@ -3,5 +3,6 @@
 public class Party
 {
     public string Id { get; set; }
+    public string PartyLeadId { get; set; }
     public List<string> CharacterIds { get; set; }
 }

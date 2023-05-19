@@ -14,7 +14,7 @@ public class NpcService : INpcService
         IItemService itemService,
         ICharacterService characterService)
     {
-        validator = new NpcValidator(databaseService);
+        validator = new NpcValidator();
         logic = new NpcLogicDelegator(databaseService, diceRollService, itemService, characterService);
     }
 

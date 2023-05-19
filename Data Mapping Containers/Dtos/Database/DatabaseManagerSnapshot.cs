@@ -12,7 +12,4 @@ public class DatabaseManagerSnapshot
     public List<Player> Players { get; set; }
     public List<Item> Items { get; set; }
     public List<HeroicTrait> Traits { get; set; }
-
-
-    public Rulebook Rulebook { get; set; }
 }

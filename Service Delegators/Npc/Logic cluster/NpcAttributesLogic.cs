@@ -1,31 +1,30 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Pocos;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
 internal class NpcAttributesLogic
 {
-    private readonly IDatabaseManager dbm;
+    private readonly IDatabaseService dbs;
     private readonly IDiceRollService dice;
 
     internal NpcAttributesLogic(
-        IDatabaseManager databaseManager,
-        IDiceRollService dice)
+        IDatabaseService databaseService,
+        IDiceRollService diceService)
     {
-        dbm = databaseManager;
-        this.dice = dice;
+        dbs = databaseService;
+        dice = diceService;
     }
 
     internal void SetNpcCharacterSheet(NpcInfo npcInfo, Character npcChar)
     {
         // will have to account for all other races and cultures as well
-        npcChar.IsAlive = true;
+        npcChar.Info.IsAlive = true;
+        npcChar.Info.Name = $"Npc-Humanoid-{DateTime.Now.Millisecond}";
 
         npcChar.Identity = new CharacterIdentity
         {
             Id = Guid.NewGuid().ToString(),
-            Name = $"Npc-Humanoid-{DateTime.Now.Millisecond}",
             PlayerId = Guid.Empty.ToString()
         };
 
@@ -34,7 +33,7 @@ internal class NpcAttributesLogic
             EntityLevel = RandomizeEntityLevel(dice),
 
             Race = npcInfo.NpcType,
-            Culture = CharactersLore.Cultures.Human.Danarian,
+            Culture = CharactersLore.Cultures.Human.Danarian, // this should be dynamically generated
             Class = CharactersLore.Classes.Warrior,
             Heritage = npcInfo.Heritage
         };

@@ -18,12 +18,12 @@ internal class CharacterLogicDelegator
         IDiceRollService diceRollService,
         IItemService itemService)
     {
+        charSheetLogic = new CharacterSheetLogic(diceRollService);
         charInfoLogic = new CharacterInfoLogic(databaseService);
         charItemsLogic = new CharacterItemsLogic(databaseService);
         charLevelupLogic = new CharacterLevelupLogic(databaseService);
         charPaperdollLogic = new CharacterPaperdollLogic(databaseService);
         charTraitsLogic = new CharacterTraitsLogic(databaseService, charPaperdollLogic);
-        charSheetLogic = new CharacterSheetLogic(databaseService, diceRollService);
         charCreateLogic = new CharacterCreateLogic(databaseService, diceRollService, itemService, charSheetLogic);
     }
 
