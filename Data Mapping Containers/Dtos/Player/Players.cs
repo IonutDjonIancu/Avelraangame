@@ -3,5 +3,5 @@
 public class Players
 {
     public int Count { get; set; }
-    public List<string> PlayerNames { get; set; }
+    public List<string> PlayerNames { get; set; } = new();
 }
