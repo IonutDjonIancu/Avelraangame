@@ -58,7 +58,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Database/GetHeroicTraits")]
     public IActionResult GetHeroicTraits()
     {
-        var response = factory.ServiceFactory.DatabaseService.GetHeroicTraits();
+        var response = factory.ServiceFactory.DatabaseService.Snapshot.Traits;
 
         return Ok(response);
     }
@@ -67,7 +67,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Database/GetRaces")]
     public IActionResult GetRaces()
     {
-        var response = factory.ServiceFactory.DatabaseService.GetRaces();
+        var response = CharactersLore.Races.All;
 
         return Ok(response);
     }
@@ -76,7 +76,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Database/GetCultures")]
     public IActionResult GetCultures()
     {
-        var response = factory.ServiceFactory.DatabaseService.GetCultures();
+        var response = CharactersLore.Cultures.All;
 
         return Ok(response);
     }
@@ -85,7 +85,16 @@ public class PalantirController : ControllerBase
     [HttpGet("Database/GetClasses")]
     public IActionResult GetClasses()
     {
-        var response = factory.ServiceFactory.DatabaseService.GetClasses();
+        var response = CharactersLore.Classes.All;
+
+        return Ok(response);
+    }
+
+    // GET: /api/palantir/Database/GetRegions
+    [HttpGet("Database/GetRegions")]
+    public IActionResult GetRegions()
+    {
+        var response = RulebookLore.Regions.All;
 
         return Ok(response);
     }

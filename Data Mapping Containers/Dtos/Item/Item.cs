@@ -13,7 +13,7 @@ public class Item
     public string Quality { get; set; }
     public string Category { get; set; }
     public string Subcategory { get; set; }
-    public List<string> InventoryLocations { get; set; }
+    public List<string> InventoryLocations { get; set; } = new();
     public string Description { get; set; }
     public string Lore { get; set; }
     public bool HasTaint { get; set; }

@@ -39,7 +39,7 @@ internal class PlayerValidator : ValidatorBase
 
     internal void ValidatePlayersCount()
     {
-        if (dbs.Snapshot.Players!.Count >= 30) Throw("Player limit reached, please contact admins.");
+        if (dbs.Snapshot.Players!.Count >= 20) Throw("Player limit reached, please contact admins.");
     }
 
     internal void ValidatePlayerOnCreate(string playerName)

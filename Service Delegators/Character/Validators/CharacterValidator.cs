@@ -37,7 +37,11 @@ internal class CharacterValidator : ValidatorBase
     {
         ValidateCharacterPlayerCombination(new CharacterIdentity() { Id = trait.CharacterId, PlayerId = trait.PlayerId });
         ValidateGuid(trait.HeroicTraitId);
-        ValidateString(trait.Skill);
+        if (trait.Skill != null)
+        {
+            ValidateString(trait.Skill);
+            if (!CharactersLore.Skills.All.Contains(trait.Skill)) Throw("No such Skill was found with the indicated skill name.");
+        }
 
         var character = dbs.Snapshot.Players.First(p => p.Identity.Id == trait.PlayerId).Characters.First(c => c.Identity.Id == trait.CharacterId);
         var heroicTrait = dbs.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
@@ -46,8 +50,6 @@ internal class CharacterValidator : ValidatorBase
 
         if (heroicTrait.Subtype == TraitsLore.Subtype.onetime
             && character.HeroicTraits.Exists(t => t.Identity.Id == heroicTrait.Identity.Id)) Throw("Character already has that Heroic Trait and it can only be learned once.");
-
-        if (!CharactersLore.Skills.All.Contains(trait.Skill)) Throw("No such Skill was found with the indicated skill name.");
     }
 
     internal void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
@@ -187,6 +189,20 @@ internal class CharacterValidator : ValidatorBase
     {
         ValidateString(stat);
         if (!CharactersLore.Stats.All.Contains(stat)) Throw($"Stat {stat} does not math any possible character stats.");
+    }
+
+    internal void ValidateCharacterHasStatsPoints(CharacterIdentity chr)
+    {
+        var hasPoints = dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.StatPoints > 0;
+
+        if (!hasPoints) Throw($"Character does not have any stat points to distribute.");
+    }
+
+    internal void ValidateCharacterHasSkillsPoints(CharacterIdentity chr)
+    {
+        var hasPoints = dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.SkillPoints > 0;
+
+        if (!hasPoints) Throw($"Character does not have any skill points to distribute.");
     }
 
     internal void ValidateSkillExists(string skill)

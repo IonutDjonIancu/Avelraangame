@@ -12,9 +12,9 @@ internal class CharacterPaperdollLogic
         dbs = databaseService;
     }
 
-    internal CharacterPaperdoll CalculatePaperdollForCharacter(CharacterIdentity identity)
+    internal CharacterPaperdoll CalculatePaperdollForCharacter(CharacterIdentity charIdentity)
     {
-        var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == identity.Id)!.Characters.Find(c => c.Identity.Id == identity.Id)!;
+        var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
 
         return CalculatePaperdoll(character);
     }

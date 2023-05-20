@@ -54,14 +54,16 @@ public class DatabaseManager : IDatabaseManager
             CharacterStubs = avDatabase.CharacterStubs,
             Parties = avDatabase.Parties,
 
-            Players = ReadPlayerFiles(info.PlayerFilePaths),
+            Players = ReadPlayerFiles(info.DbPlayersPath),
             Items = avDatabase.Items,
             Traits = LoadTraitsFromLore(),
         };
     }
 
-    private static List<Player> ReadPlayerFiles(List<string> paths)
+    private static List<Player> ReadPlayerFiles(string playersPath)
     {
+        var paths = Directory.GetFiles(playersPath);
+
         var list = new List<Player>();
 
         foreach (var path in paths)

@@ -69,6 +69,7 @@ public class CharacterService : ICharacterService
     {
         validator.ValidateCharacterPlayerCombination(identity);
         validator.ValidateStatExists(stat);
+        validator.ValidateCharacterHasStatsPoints(identity);
 
         return logic.IncreaseStats(stat, identity);
     }
@@ -77,6 +78,7 @@ public class CharacterService : ICharacterService
     {
         validator.ValidateCharacterPlayerCombination(identity);
         validator.ValidateSkillExists(skill);
+        validator.ValidateCharacterHasSkillsPoints(identity);
 
         return logic.IncreaseSkills(skill, identity);
     }

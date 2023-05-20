@@ -449,6 +449,12 @@ public class RulebookLore
         };
     }
 
+    public static class Heritage
+    {
+        public const string Traditional = CharactersLore.Heritage.Traditional;
+        public const string Martial = CharactersLore.Heritage.Martial;
+    }
+
     public static class Quests
     {
         public static class Difficulty

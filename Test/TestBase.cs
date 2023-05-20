@@ -4,12 +4,12 @@ namespace Tests;
 
 public class TestBase
 {
-    private static readonly string testSecret = "BQxevwF37aNAznk";
     private static readonly string dbTestPath = "\\Resources\\Database files\\AvelraanTestDb.json";
     private static readonly string dbPlayersPath = "\\Resources\\Database files\\Players";
     private static readonly string logsPath = "\\Resources\\Log files\\Logs.txt";
 
-    protected readonly IDatabaseManager dbm;
+    private readonly IDatabaseManager dbm;
+    protected readonly IDatabaseService dbs;
     protected readonly IDiceRollService diceService;
     protected readonly IPlayerService playerService;
     protected readonly IItemService itemService;
@@ -22,7 +22,6 @@ public class TestBase
 	{
         var dbmConfig = new DatabaseManagerConfig
         {
-            Key = testSecret,
             DbPath = dbTestPath,
             LogPath = logsPath,
             DbPlayersPath = dbPlayersPath,
@@ -31,19 +30,20 @@ public class TestBase
         };
 
         dbm = new DatabaseManager(dbmConfig);
+        dbs = new DatabaseService(dbm);
 
         diceService = new DiceRollService();
-        playerService = new PlayerService(dbm);
+        playerService = new PlayerService(dbs);
         itemService = new ItemService(diceService);
-        characterService = new CharacterService(dbm, diceService, itemService);
-        npcService = new NpcService(dbm, diceService, itemService, characterService);
+        characterService = new CharacterService(dbs, diceService, itemService);
+        npcService = new NpcService(diceService, itemService, characterService);
     }
 
     protected string CreatePlayer(string playerName)
     {
-        dbm.Snapshot.Players!.Clear();
+        dbs.Snapshot.Players!.Clear();
         playerService.CreatePlayer(playerName);
 
-        return dbm.Snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
+        return dbs.Snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
     }
 }

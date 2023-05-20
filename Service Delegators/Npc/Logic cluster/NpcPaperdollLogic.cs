@@ -16,6 +16,7 @@ internal class NpcPaperdollLogic
     {
         var npcPaperdoll = new NpcPaperdoll
         {
+            Origins = npcCharacter.Info.Origins,
             Items = npcCharacter.Inventory.GetAllEquipedItems(),
             Paperdoll = characterService.CalculatePaperdoll(npcCharacter),
             Wealth = npcCharacter.Info.Wealth
