@@ -44,7 +44,7 @@ internal class CharacterItemsLogic
         }
         else
         {
-            item = character.Inventory!.Heraldry!.Find(i => i.Identity.Id == unequip.CharacterId)!;
+            item = character.Inventory!.Heraldry!.Find(i => i.Identity.Id == unequip.ItemId)!;
             character.Inventory.Heraldry.Remove(item);
         }
 

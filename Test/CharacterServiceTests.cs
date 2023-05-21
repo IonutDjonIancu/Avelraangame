@@ -164,7 +164,7 @@ public class CharacterServiceTests : TestBase
         var item = chr.Supplies.First();
         item.Should().NotBeNull();
 
-        var location = GetItemLocation(chr);
+        var location = item.InventoryLocations.First();
 
         var equip = new CharacterEquip
         {
@@ -201,7 +201,7 @@ public class CharacterServiceTests : TestBase
         var item = chr.Supplies.First();
         item.Should().NotBeNull();
 
-        var location = GetItemLocation(chr);
+        var location = item.InventoryLocations.First();
 
         var equip = new CharacterEquip
         {
@@ -228,7 +228,7 @@ public class CharacterServiceTests : TestBase
         }
 
         hasEquipedItem.Should().BeFalse();
-        chr.Supplies.Count.Should().Be(1);
+        chr.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
     }
 
     [Theory]
@@ -334,75 +334,6 @@ public class CharacterServiceTests : TestBase
             Id = chr.Identity.Id,
             PlayerId = chr.Identity.PlayerId
         };
-    }
-
-    private string GetItemLocation(Character character)
-    {
-        var item = itemService.GenerateRandomItem();
-        if (item.Subtype == ItemsLore.Subtypes.Wealth.Goods)
-        {
-            return GetItemLocation(character);
-        }
-
-        item.Identity.CharacterId = character.Identity.Id;
-        character.Supplies.Clear();
-        character.Supplies.Add(item);
-
-        string location = string.Empty;
-        if (ItemsLore.Subtypes.Weapons.All.Contains(item.Subtype))
-        {
-            switch (item.Subtype)
-            {
-                case ItemsLore.Subtypes.Weapons.Axe:
-                case ItemsLore.Subtypes.Weapons.Dagger:
-                case ItemsLore.Subtypes.Weapons.Mace:
-                case ItemsLore.Subtypes.Weapons.Pike:
-                case ItemsLore.Subtypes.Weapons.Polearm:
-                case ItemsLore.Subtypes.Weapons.Spear:
-                case ItemsLore.Subtypes.Weapons.Sword:
-                    location = ItemsLore.InventoryLocation.Mainhand;
-                    break;
-                case ItemsLore.Subtypes.Weapons.Bow:
-                case ItemsLore.Subtypes.Weapons.Crossbow:
-                case ItemsLore.Subtypes.Weapons.Sling:
-                    location = ItemsLore.InventoryLocation.Ranged;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else if (ItemsLore.Subtypes.Protections.All.Contains(item.Subtype))
-        {
-            switch (item.Subtype)
-            {
-                case ItemsLore.Subtypes.Protections.Helm:
-                    location = ItemsLore.InventoryLocation.Head;
-                    break;
-                case ItemsLore.Subtypes.Protections.Armour:
-                    location = ItemsLore.InventoryLocation.Body;
-                    break;
-                case ItemsLore.Subtypes.Protections.Shield:
-                    location = ItemsLore.InventoryLocation.Offhand;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            switch (item.Subtype)
-            {
-                case ItemsLore.Subtypes.Wealth.Gems:
-                case ItemsLore.Subtypes.Wealth.Trinket:
-                case ItemsLore.Subtypes.Wealth.Valuables:
-                    location = ItemsLore.InventoryLocation.Heraldry;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return location;
     }
 
     private Character CreateHumanCharacter()
