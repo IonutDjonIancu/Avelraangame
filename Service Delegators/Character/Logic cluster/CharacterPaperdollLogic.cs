@@ -154,17 +154,17 @@ internal class CharacterPaperdollLogic
         if (character.HeroicTraits?.Count < 0) return;
         paperdoll.SpecialSkills = character.HeroicTraits!.Where(ht => ht.Type == TraitsLore.Type.active).ToList();
 
-        if (character.HeroicTraits!.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany))
+        if (character.HeroicTraits!.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.theStrengthOfMany.Identity.Name))
         {
             paperdoll.Stats.Strength += (int)Math.Floor(paperdoll.Stats.Strength * 0.1);
         }
 
-        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.lifeInThePits))
+        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.lifeInThePits.Identity.Name))
         {
             paperdoll.Assets.Resolve += 50;
         }
 
-        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight))
+        if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight.Identity.Name))
         {
             paperdoll.Skills.Arcane += 20;
         }

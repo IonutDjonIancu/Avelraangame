@@ -20,7 +20,7 @@ internal class CharacterTraitsLogic
     {
         var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == trait.PlayerId)!;
         var character = player.Characters.Find(c => c.Identity.Id == trait.CharacterId)!;
-        var heroicTrait = dbs.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId)!;
+        var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId)!;
 
         character.HeroicTraits.Add(heroicTrait);
         character.LevelUp.DeedsPoints -= heroicTrait.DeedsCost;
@@ -35,8 +35,8 @@ internal class CharacterTraitsLogic
     #region private methods
     private void ApplyBonusHeroicTraits(Character character, string heroicTraitName, string skill = "")
     {
-        if      (heroicTraitName == TraitsLore.BonusTraits.swordsman) RunSwordsmanLogic(character);
-        else if (heroicTraitName == TraitsLore.BonusTraits.skillful) RunSkillfulLogic(character, skill);
+        if      (heroicTraitName == TraitsLore.BonusTraits.swordsman.Identity.Name) RunSwordsmanLogic(character);
+        else if (heroicTraitName == TraitsLore.BonusTraits.skillful.Identity.Name) RunSkillfulLogic(character, skill);
     }
 
     private void RunSwordsmanLogic(Character character)

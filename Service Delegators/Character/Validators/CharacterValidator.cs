@@ -44,7 +44,7 @@ internal class CharacterValidator : ValidatorBase
         }
 
         var character = dbs.Snapshot.Players.First(p => p.Identity.Id == trait.PlayerId).Characters.First(c => c.Identity.Id == trait.CharacterId);
-        var heroicTrait = dbs.Snapshot.Traits.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
+        var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
 
         if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) Throw("Character does not have enough Deeds points to aquire said Heroic Trait.");
 

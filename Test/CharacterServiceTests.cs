@@ -238,7 +238,7 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter();
         chr.LevelUp.DeedsPoints = 100;
 
-        var swordsman = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman)!;
+        var swordsman = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman.Identity.Name)!;
 
         var trait = new CharacterHeroicTrait
         {
@@ -266,7 +266,7 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter();
         chr.LevelUp.DeedsPoints = 1000;
 
-        var metachaos = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology)!;
+        var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
 
         var trait = new CharacterHeroicTrait
         {
@@ -287,8 +287,8 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter();
         chr.LevelUp.DeedsPoints = 1000;
 
-        var candlelight = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight)!;
-        var metachaos = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology)!;
+        var candlelight = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight.Identity.Name)!;
+        var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
 
         var candlelightTrait = new CharacterHeroicTrait
         {

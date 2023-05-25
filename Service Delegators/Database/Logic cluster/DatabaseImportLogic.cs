@@ -18,7 +18,6 @@ internal class DatabaseImportLogic
         dbm.Snapshot.DbDate = database.DbDate;
         dbm.Snapshot.CharacterStubs = database.CharacterStubs;
         dbm.Snapshot.Items = database.Items;
-        dbm.Snapshot.Traits = database.Traits;
         dbm.Snapshot.Parties = database.Parties;
     }
 
