@@ -62,27 +62,4 @@ public class DatabaseService : IDatabaseService
         logic.ExportLogs(days);
     }
     #endregion
-
-    #region gets
-    public List<Party> GetParties()
-    {
-        return Snapshot.Parties;
-    }
-
-    public Players GetPlayers()
-    {
-        var playersList = Snapshot.Players;
-        var players = new Players
-        {
-            Count = playersList.Count
-        };
-
-        foreach (var player in playersList)
-        {
-            players.PlayerNames.Add(player.Identity.Name);
-        }
-
-        return players;
-    }
-    #endregion
 }

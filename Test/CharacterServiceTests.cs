@@ -266,7 +266,7 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter();
         chr.LevelUp.DeedsPoints = 1000;
 
-        var metachaos = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology)!;
+        var metachaos = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology)!;
 
         var trait = new CharacterHeroicTrait
         {
@@ -288,7 +288,7 @@ public class CharacterServiceTests : TestBase
         chr.LevelUp.DeedsPoints = 1000;
 
         var candlelight = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight)!;
-        var metachaos = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology)!;
+        var metachaos = dbs.Snapshot.Traits.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology)!;
 
         var candlelightTrait = new CharacterHeroicTrait
         {

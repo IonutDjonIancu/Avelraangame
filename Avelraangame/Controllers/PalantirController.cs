@@ -31,49 +31,45 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
-    #region Database gets
-    // technically these could be moved to a different api
-    // technically these could be moved to a different api
-    // technically these could be moved to a different api
-
-    // GET: /api/palantir/Database/GetParties
-    [HttpGet("Database/GetParties")]
+    #region Metadata
+    // GET: /api/palantir/Metadata/GetParties
+    [HttpGet("Metadata/GetParties")]
     public IActionResult GetParties()
     {
-        var response = factory.ServiceFactory.DatabaseService.GetParties();
+        var response = factory.ServiceFactory.Metadata.GetParties();
 
         return Ok(response);
     }
 
-    // GET: /api/palantir/Database/GetPlayers
-    [HttpGet("Database/GetPlayers")]
+    // GET: /api/palantir/Metadata/GetPlayers
+    [HttpGet("Metadata/GetPlayers")]
     public IActionResult GetPlayers()
     {
-        var response = factory.ServiceFactory.DatabaseService.GetPlayers();
+        var response = factory.ServiceFactory.Metadata.GetPlayers();
 
         return Ok(response);
     }
 
-    // GET: /api/palantir/Database/GetHeroicTraits
-    [HttpGet("Database/GetHeroicTraits")]
+    // GET: /api/palantir/Metadata/GetHeroicTraits
+    [HttpGet("Metadata/GetHeroicTraits")]
     public IActionResult GetHeroicTraits()
     {
-        var response = factory.ServiceFactory.DatabaseService.Snapshot.Traits;
+        var response = factory.ServiceFactory.Metadata.GetHeroicTraits();
 
         return Ok(response);
     }
 
-    // GET: /api/palantir/Database/GetRaces
-    [HttpGet("Database/GetRaces")]
+    // GET: /api/palantir/Metadata/GetRaces
+    [HttpGet("Metadata/GetRaces")]
     public IActionResult GetRaces()
     {
-        var response = CharactersLore.Races.All;
+        var response = factory.ServiceFactory.Metadata.GetRaces();
 
         return Ok(response);
     }
 
-    // GET: /api/palantir/Database/GetCultures
-    [HttpGet("Database/GetCultures")]
+    // GET: /api/palantir/Metadata/GetCultures
+    [HttpGet("Metadata/GetCultures")]
     public IActionResult GetCultures()
     {
         var response = CharactersLore.Cultures.All;
@@ -81,8 +77,8 @@ public class PalantirController : ControllerBase
         return Ok(response);
     }
 
-    // GET: /api/palantir/Database/GetClasses
-    [HttpGet("Database/GetClasses")]
+    // GET: /api/palantir/Metadata/GetClasses
+    [HttpGet("Metadata/GetClasses")]
     public IActionResult GetClasses()
     {
         var response = CharactersLore.Classes.All;
@@ -90,9 +86,9 @@ public class PalantirController : ControllerBase
         return Ok(response);
     }
 
-    // GET: /api/palantir/Database/GetRegions
-    [HttpGet("Database/GetRegions")]
-    public IActionResult GetRegions()
+    // GET: /api/palantir/Metadata/GetAvelraanRegions
+    [HttpGet("Metadata/GetAvelraanRegions")]
+    public IActionResult GetAvelraanRegions()
     {
         var response = RulebookLore.Regions.All;
 
@@ -100,7 +96,7 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
-    #region Database ops
+    #region Database
     // PUT: /api/palantir/Database/ExportDatabase
     [HttpPut("Database/ExportDatabase")]
     public IActionResult ExportDatabase([FromQuery] Request request)
@@ -455,12 +451,6 @@ public class PalantirController : ControllerBase
     }
     #endregion
 
-    #region Quests
-
-
-
-    #endregion
-
     #region Npcs
     // POST: /api/palantir/NPC/GenerateNPC
     [HttpPost("NPC/GenerateNPC")]
@@ -471,6 +461,25 @@ public class PalantirController : ControllerBase
             var character = factory.ServiceFactory.NpcService.GenerateNpc(info);
 
             return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+    #endregion
+
+    #region Gameplay
+    // GET: /api/palantir/Gameplay/CreateParty
+    [HttpGet("Gameplay/CreateParty")]
+    public IActionResult CreateParty()
+    {
+        try
+        {
+            var party = factory.ServiceFactory.GameplayService.CreateParty();
+
+            return Ok(party);
         }
         catch (Exception ex)
         {

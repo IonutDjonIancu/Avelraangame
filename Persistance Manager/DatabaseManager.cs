@@ -55,8 +55,7 @@ public class DatabaseManager : IDatabaseManager
             Parties = avDatabase.Parties,
 
             Players = ReadPlayerFiles(info.DbPlayersPath),
-            Items = avDatabase.Items,
-            Traits = LoadTraitsFromLore(),
+            Items = avDatabase.Items
         };
     }
 
@@ -74,26 +73,6 @@ public class DatabaseManager : IDatabaseManager
         }
 
         return list;
-    }
-
-    private static List<HeroicTrait> LoadTraitsFromLore()
-    {
-        var listOfTraits = new List<HeroicTrait>();
-
-        foreach (var item in TraitsLore.PassiveTraits.All)
-        {
-            listOfTraits.Add(item);
-        }
-        foreach (var item in TraitsLore.ActiveTraits.All)
-        {
-            listOfTraits.Add(item);
-        }
-        foreach (var item in TraitsLore.BonusTraits.All)
-        {
-            listOfTraits.Add(item);
-        }
-
-        return listOfTraits;
     }
     #endregion
 }

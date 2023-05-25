@@ -21,9 +21,4 @@ public interface IDatabaseService
     #region logs
     void ExportLogs(int days, string playerId);
     #endregion
-
-    #region gets
-    Players GetPlayers();
-    List<Party> GetParties();
-    #endregion
 }

@@ -8,8 +8,6 @@ public class DatabaseManagerSnapshot
     public List<CharacterStub> CharacterStubs { get; set; }
     public List<Party> Parties { get; set; }
 
-
     public List<Player> Players { get; set; }
     public List<Item> Items { get; set; }
-    public List<HeroicTrait> Traits { get; set; }
 }
