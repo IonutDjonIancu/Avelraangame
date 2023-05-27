@@ -20,6 +20,9 @@ internal class DatabasePersistenceLogic
         var dbJson = JsonConvert.SerializeObject(dbm.Snapshot);
         var dbPath = dbm.Info.DbPath;
 
+        // remove players or all other non-essential information when saving snapshot to disk
+        // create another object before saving to disk from snapshot
+
         await SaveToFileOnDisk(dbJson, dbPath);
     }
 

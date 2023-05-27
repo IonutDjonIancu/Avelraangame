@@ -24,6 +24,8 @@ internal class GameplayLogicDelegator
             CreationDate = DateTime.Now.ToShortDateString(),
         };
 
+        dbs.Snapshot.Parties.Add(party);
+
         dbs.PersistDatabase();
 
         return party;

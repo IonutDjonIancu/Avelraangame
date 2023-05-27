@@ -24,7 +24,6 @@ public class DatabaseManager : IDatabaseManager
     {
         Info = SetUpInfo(dbmconfig);
         Snapshot = SetUpSnaphot(Info);
-
     }
 
     #region private methods

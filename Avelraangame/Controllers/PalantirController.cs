@@ -72,7 +72,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetCultures")]
     public IActionResult GetCultures()
     {
-        var response = CharactersLore.Cultures.All;
+        var response = factory.ServiceFactory.Metadata.GetCultures();
 
         return Ok(response);
     }
@@ -81,7 +81,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetClasses")]
     public IActionResult GetClasses()
     {
-        var response = CharactersLore.Classes.All;
+        var response = factory.ServiceFactory.Metadata.GetClasses();
 
         return Ok(response);
     }
@@ -90,7 +90,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetAvelraanRegions")]
     public IActionResult GetAvelraanRegions()
     {
-        var response = RulebookLore.Regions.All;
+        var response = factory.ServiceFactory.Metadata.GetAvelraanRegions();
 
         return Ok(response);
     }

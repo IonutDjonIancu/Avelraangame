@@ -18,37 +18,37 @@ public class CharacterPaperdoll
         var strCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = RulebookLore.Acronyms.Stats.Str,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Str,
             DefaultValue = Stats.Strength
         };
         var conCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = RulebookLore.Acronyms.Stats.Con,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Con,
             DefaultValue = Stats.Constitution
         };
         var agiCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = RulebookLore.Acronyms.Stats.Agi,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Agi,
             DefaultValue = Stats.Agility
         };
         var wilCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = RulebookLore.Acronyms.Stats.Wil,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Wil,
             DefaultValue = Stats.Willpower
         };
         var perCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = RulebookLore.Acronyms.Stats.Per,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Per,
             DefaultValue = Stats.Perception
         };
         var absCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = RulebookLore.Acronyms.Stats.Abs,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Abs,
             DefaultValue = Stats.Abstract
         };
 

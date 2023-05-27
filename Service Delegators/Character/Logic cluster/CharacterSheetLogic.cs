@@ -27,12 +27,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = RulebookLore.Races.Human.Str * info.EntityLevel,
-                Constitution= RulebookLore.Races.Human.Con * info.EntityLevel,
-                Agility     = RulebookLore.Races.Human.Agi * info.EntityLevel,
-                Willpower   = RulebookLore.Races.Human.Wil * info.EntityLevel,
-                Perception  = RulebookLore.Races.Human.Per * info.EntityLevel,
-                Abstract    = RulebookLore.Races.Human.Abs * info.EntityLevel
+                Strength    = RulebookLore.Calculations.Races.Human.Str * info.EntityLevel,
+                Constitution= RulebookLore.Calculations.Races.Human.Con * info.EntityLevel,
+                Agility     = RulebookLore.Calculations.Races.Human.Agi * info.EntityLevel,
+                Willpower   = RulebookLore.Calculations.Races.Human.Wil * info.EntityLevel,
+                Perception  = RulebookLore.Calculations.Races.Human.Per * info.EntityLevel,
+                Abstract    = RulebookLore.Calculations.Races.Human.Abs * info.EntityLevel
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -51,12 +51,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = RulebookLore.Races.Elf.Str * info.EntityLevel,
-                Constitution= RulebookLore.Races.Elf.Con * info.EntityLevel,
-                Agility     = RulebookLore.Races.Elf.Agi * info.EntityLevel,
-                Willpower   = RulebookLore.Races.Elf.Wil * info.EntityLevel,
-                Perception  = RulebookLore.Races.Elf.Per * info.EntityLevel,
-                Abstract    = RulebookLore.Races.Elf.Abs * info.EntityLevel
+                Strength    = RulebookLore.Calculations.Races.Elf.Str * info.EntityLevel,
+                Constitution= RulebookLore.Calculations.Races.Elf.Con * info.EntityLevel,
+                Agility     = RulebookLore.Calculations.Races.Elf.Agi * info.EntityLevel,
+                Willpower   = RulebookLore.Calculations.Races.Elf.Wil * info.EntityLevel,
+                Perception  = RulebookLore.Calculations.Races.Elf.Per * info.EntityLevel,
+                Abstract    = RulebookLore.Calculations.Races.Elf.Abs * info.EntityLevel
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -76,12 +76,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = RulebookLore.Races.Dwarf.Str * info.EntityLevel,
-                Constitution= RulebookLore.Races.Dwarf.Con * info.EntityLevel,
-                Agility     = RulebookLore.Races.Dwarf.Agi * info.EntityLevel,
-                Willpower   = RulebookLore.Races.Dwarf.Wil * info.EntityLevel,
-                Perception  = RulebookLore.Races.Dwarf.Per * info.EntityLevel,
-                Abstract    = RulebookLore.Races.Dwarf.Abs * info.EntityLevel
+                Strength    = RulebookLore.Calculations.Races.Dwarf.Str * info.EntityLevel,
+                Constitution= RulebookLore.Calculations.Races.Dwarf.Con * info.EntityLevel,
+                Agility     = RulebookLore.Calculations.Races.Dwarf.Agi * info.EntityLevel,
+                Willpower   = RulebookLore.Calculations.Races.Dwarf.Wil * info.EntityLevel,
+                Perception  = RulebookLore.Calculations.Races.Dwarf.Per * info.EntityLevel,
+                Abstract    = RulebookLore.Calculations.Races.Dwarf.Abs * info.EntityLevel
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -98,30 +98,30 @@ internal class CharacterSheetLogic
     private static void SetSheetForDanarian(CharacterSheet charsheet)
     {
         //stats
-        charsheet.Stats.Strength    += RulebookLore.Cultures.Humans.Danarian.Str;
-        charsheet.Stats.Constitution+= RulebookLore.Cultures.Humans.Danarian.Con;
-        charsheet.Stats.Agility     += RulebookLore.Cultures.Humans.Danarian.Agi;
-        charsheet.Stats.Willpower   += RulebookLore.Cultures.Humans.Danarian.Wil;
-        charsheet.Stats.Perception  += RulebookLore.Cultures.Humans.Danarian.Per;
-        charsheet.Stats.Abstract    += RulebookLore.Cultures.Humans.Danarian.Abs;
+        charsheet.Stats.Strength    += RulebookLore.Calculations.Cultures.Humans.Danarian.Str;
+        charsheet.Stats.Constitution+= RulebookLore.Calculations.Cultures.Humans.Danarian.Con;
+        charsheet.Stats.Agility     += RulebookLore.Calculations.Cultures.Humans.Danarian.Agi;
+        charsheet.Stats.Willpower   += RulebookLore.Calculations.Cultures.Humans.Danarian.Wil;
+        charsheet.Stats.Perception  += RulebookLore.Calculations.Cultures.Humans.Danarian.Per;
+        charsheet.Stats.Abstract    += RulebookLore.Calculations.Cultures.Humans.Danarian.Abs;
         //assets
-        charsheet.Assets.Resolve    += RulebookLore.Cultures.Humans.Danarian.Res;
-        charsheet.Assets.Harm       += RulebookLore.Cultures.Humans.Danarian.Har;
-        charsheet.Assets.Spot       += RulebookLore.Cultures.Humans.Danarian.Spo;
-        charsheet.Assets.Defense    += RulebookLore.Cultures.Humans.Danarian.Def;
-        charsheet.Assets.Purge      += RulebookLore.Cultures.Humans.Danarian.Pur;
-        charsheet.Assets.Mana       += RulebookLore.Cultures.Humans.Danarian.Man;
+        charsheet.Assets.Resolve    += RulebookLore.Calculations.Cultures.Humans.Danarian.Res;
+        charsheet.Assets.Harm       += RulebookLore.Calculations.Cultures.Humans.Danarian.Har;
+        charsheet.Assets.Spot       += RulebookLore.Calculations.Cultures.Humans.Danarian.Spo;
+        charsheet.Assets.Defense    += RulebookLore.Calculations.Cultures.Humans.Danarian.Def;
+        charsheet.Assets.Purge      += RulebookLore.Calculations.Cultures.Humans.Danarian.Pur;
+        charsheet.Assets.Mana       += RulebookLore.Calculations.Cultures.Humans.Danarian.Man;
         //skills
-        charsheet.Skills.Combat     += RulebookLore.Cultures.Humans.Danarian.Com;
-        charsheet.Skills.Arcane     += RulebookLore.Cultures.Humans.Danarian.Arc;
-        charsheet.Skills.Psionics   += RulebookLore.Cultures.Humans.Danarian.Psi;
-        charsheet.Skills.Hide       += RulebookLore.Cultures.Humans.Danarian.Hid;
-        charsheet.Skills.Traps      += RulebookLore.Cultures.Humans.Danarian.Tra;
-        charsheet.Skills.Tactics    += RulebookLore.Cultures.Humans.Danarian.Tac;
-        charsheet.Skills.Social     += RulebookLore.Cultures.Humans.Danarian.Soc;
-        charsheet.Skills.Apothecary += RulebookLore.Cultures.Humans.Danarian.Apo;
-        charsheet.Skills.Travel     += RulebookLore.Cultures.Humans.Danarian.Trv;
-        charsheet.Skills.Sail       += RulebookLore.Cultures.Humans.Danarian.Sai;
+        charsheet.Skills.Combat     += RulebookLore.Calculations.Cultures.Humans.Danarian.Com;
+        charsheet.Skills.Arcane     += RulebookLore.Calculations.Cultures.Humans.Danarian.Arc;
+        charsheet.Skills.Psionics   += RulebookLore.Calculations.Cultures.Humans.Danarian.Psi;
+        charsheet.Skills.Hide       += RulebookLore.Calculations.Cultures.Humans.Danarian.Hid;
+        charsheet.Skills.Traps      += RulebookLore.Calculations.Cultures.Humans.Danarian.Tra;
+        charsheet.Skills.Tactics    += RulebookLore.Calculations.Cultures.Humans.Danarian.Tac;
+        charsheet.Skills.Social     += RulebookLore.Calculations.Cultures.Humans.Danarian.Soc;
+        charsheet.Skills.Apothecary += RulebookLore.Calculations.Cultures.Humans.Danarian.Apo;
+        charsheet.Skills.Travel     += RulebookLore.Calculations.Cultures.Humans.Danarian.Trv;
+        charsheet.Skills.Sail       += RulebookLore.Calculations.Cultures.Humans.Danarian.Sai;
 
         // danarias should start with a weapon, armour and helm
     }
@@ -129,30 +129,30 @@ internal class CharacterSheetLogic
     private static void SetSheetForHighborn(CharacterSheet charsheet)
     {
         //stats
-        charsheet.Stats.Strength    += RulebookLore.Cultures.Elves.Highborn.Str;
-        charsheet.Stats.Constitution+= RulebookLore.Cultures.Elves.Highborn.Con;
-        charsheet.Stats.Agility     += RulebookLore.Cultures.Elves.Highborn.Agi;
-        charsheet.Stats.Willpower   += RulebookLore.Cultures.Elves.Highborn.Wil;
-        charsheet.Stats.Perception  += RulebookLore.Cultures.Elves.Highborn.Per;
-        charsheet.Stats.Abstract    += RulebookLore.Cultures.Elves.Highborn.Abs;
+        charsheet.Stats.Strength    += RulebookLore.Calculations.Cultures.Elves.Highborn.Str;
+        charsheet.Stats.Constitution+= RulebookLore.Calculations.Cultures.Elves.Highborn.Con;
+        charsheet.Stats.Agility     += RulebookLore.Calculations.Cultures.Elves.Highborn.Agi;
+        charsheet.Stats.Willpower   += RulebookLore.Calculations.Cultures.Elves.Highborn.Wil;
+        charsheet.Stats.Perception  += RulebookLore.Calculations.Cultures.Elves.Highborn.Per;
+        charsheet.Stats.Abstract    += RulebookLore.Calculations.Cultures.Elves.Highborn.Abs;
         //assets
-        charsheet.Assets.Resolve    += RulebookLore.Cultures.Elves.Highborn.Res;
-        charsheet.Assets.Harm       += RulebookLore.Cultures.Elves.Highborn.Har;
-        charsheet.Assets.Spot       += RulebookLore.Cultures.Elves.Highborn.Spo;
-        charsheet.Assets.Defense    += RulebookLore.Cultures.Elves.Highborn.Def;
-        charsheet.Assets.Purge      += RulebookLore.Cultures.Elves.Highborn.Pur;
-        charsheet.Assets.Mana       += RulebookLore.Cultures.Elves.Highborn.Man;
+        charsheet.Assets.Resolve    += RulebookLore.Calculations.Cultures.Elves.Highborn.Res;
+        charsheet.Assets.Harm       += RulebookLore.Calculations.Cultures.Elves.Highborn.Har;
+        charsheet.Assets.Spot       += RulebookLore.Calculations.Cultures.Elves.Highborn.Spo;
+        charsheet.Assets.Defense    += RulebookLore.Calculations.Cultures.Elves.Highborn.Def;
+        charsheet.Assets.Purge      += RulebookLore.Calculations.Cultures.Elves.Highborn.Pur;
+        charsheet.Assets.Mana       += RulebookLore.Calculations.Cultures.Elves.Highborn.Man;
         //skills
-        charsheet.Skills.Combat     += RulebookLore.Cultures.Elves.Highborn.Com;
-        charsheet.Skills.Arcane     += RulebookLore.Cultures.Elves.Highborn.Arc;
-        charsheet.Skills.Psionics   += RulebookLore.Cultures.Elves.Highborn.Psi;
-        charsheet.Skills.Hide       += RulebookLore.Cultures.Elves.Highborn.Hid;
-        charsheet.Skills.Traps      += RulebookLore.Cultures.Elves.Highborn.Tra;
-        charsheet.Skills.Tactics    += RulebookLore.Cultures.Elves.Highborn.Tac;
-        charsheet.Skills.Social     += RulebookLore.Cultures.Elves.Highborn.Soc;
-        charsheet.Skills.Apothecary += RulebookLore.Cultures.Elves.Highborn.Apo;
-        charsheet.Skills.Travel     += RulebookLore.Cultures.Elves.Highborn.Trv;
-        charsheet.Skills.Sail       += RulebookLore.Cultures.Elves.Highborn.Sai;
+        charsheet.Skills.Combat     += RulebookLore.Calculations.Cultures.Elves.Highborn.Com;
+        charsheet.Skills.Arcane     += RulebookLore.Calculations.Cultures.Elves.Highborn.Arc;
+        charsheet.Skills.Psionics   += RulebookLore.Calculations.Cultures.Elves.Highborn.Psi;
+        charsheet.Skills.Hide       += RulebookLore.Calculations.Cultures.Elves.Highborn.Hid;
+        charsheet.Skills.Traps      += RulebookLore.Calculations.Cultures.Elves.Highborn.Tra;
+        charsheet.Skills.Tactics    += RulebookLore.Calculations.Cultures.Elves.Highborn.Tac;
+        charsheet.Skills.Social     += RulebookLore.Calculations.Cultures.Elves.Highborn.Soc;
+        charsheet.Skills.Apothecary += RulebookLore.Calculations.Cultures.Elves.Highborn.Apo;
+        charsheet.Skills.Travel     += RulebookLore.Calculations.Cultures.Elves.Highborn.Trv;
+        charsheet.Skills.Sail       += RulebookLore.Calculations.Cultures.Elves.Highborn.Sai;
 
         // highborn should have a HT with no fear rolls
     }
@@ -160,30 +160,30 @@ internal class CharacterSheetLogic
     private static void SetSheetForUndermoutain(CharacterSheet charsheet)
     {
         //stats
-        charsheet.Stats.Strength    += RulebookLore.Cultures.Dwarves.Undermountain.Str;
-        charsheet.Stats.Constitution+= RulebookLore.Cultures.Dwarves.Undermountain.Con;
-        charsheet.Stats.Agility     += RulebookLore.Cultures.Dwarves.Undermountain.Agi;
-        charsheet.Stats.Willpower   += RulebookLore.Cultures.Dwarves.Undermountain.Wil;
-        charsheet.Stats.Perception  += RulebookLore.Cultures.Dwarves.Undermountain.Per;
-        charsheet.Stats.Abstract    += RulebookLore.Cultures.Dwarves.Undermountain.Abs;
+        charsheet.Stats.Strength    += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Str;
+        charsheet.Stats.Constitution+= RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Con;
+        charsheet.Stats.Agility     += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Agi;
+        charsheet.Stats.Willpower   += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Wil;
+        charsheet.Stats.Perception  += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Per;
+        charsheet.Stats.Abstract    += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Abs;
         //assets                                             
-        charsheet.Assets.Resolve    += RulebookLore.Cultures.Dwarves.Undermountain.Res;
-        charsheet.Assets.Harm       += RulebookLore.Cultures.Dwarves.Undermountain.Har;
-        charsheet.Assets.Spot       += RulebookLore.Cultures.Dwarves.Undermountain.Spo;
-        charsheet.Assets.Defense    += RulebookLore.Cultures.Dwarves.Undermountain.Def;
-        charsheet.Assets.Purge      += RulebookLore.Cultures.Dwarves.Undermountain.Pur;
-        charsheet.Assets.Mana       += RulebookLore.Cultures.Dwarves.Undermountain.Man;
+        charsheet.Assets.Resolve    += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Res;
+        charsheet.Assets.Harm       += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Har;
+        charsheet.Assets.Spot       += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Spo;
+        charsheet.Assets.Defense    += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Def;
+        charsheet.Assets.Purge      += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Pur;
+        charsheet.Assets.Mana       += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Man;
         //skills                                             
-        charsheet.Skills.Combat     += RulebookLore.Cultures.Dwarves.Undermountain.Com;
-        charsheet.Skills.Arcane     += RulebookLore.Cultures.Dwarves.Undermountain.Arc;
-        charsheet.Skills.Psionics   += RulebookLore.Cultures.Dwarves.Undermountain.Psi;
-        charsheet.Skills.Hide       += RulebookLore.Cultures.Dwarves.Undermountain.Hid;
-        charsheet.Skills.Traps      += RulebookLore.Cultures.Dwarves.Undermountain.Tra;
-        charsheet.Skills.Tactics    += RulebookLore.Cultures.Dwarves.Undermountain.Tac;
-        charsheet.Skills.Social     += RulebookLore.Cultures.Dwarves.Undermountain.Soc;
-        charsheet.Skills.Apothecary += RulebookLore.Cultures.Dwarves.Undermountain.Apo;
-        charsheet.Skills.Travel     += RulebookLore.Cultures.Dwarves.Undermountain.Trv;
-        charsheet.Skills.Sail       += RulebookLore.Cultures.Dwarves.Undermountain.Sai;
+        charsheet.Skills.Combat     += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Com;
+        charsheet.Skills.Arcane     += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Arc;
+        charsheet.Skills.Psionics   += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Psi;
+        charsheet.Skills.Hide       += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Hid;
+        charsheet.Skills.Traps      += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Tra;
+        charsheet.Skills.Tactics    += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Tac;
+        charsheet.Skills.Social     += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Soc;
+        charsheet.Skills.Apothecary += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Apo;
+        charsheet.Skills.Travel     += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Trv;
+        charsheet.Skills.Sail       += RulebookLore.Calculations.Cultures.Dwarves.Undermountain.Sai;
 
         // should start with heavy armour
     }
@@ -192,28 +192,28 @@ internal class CharacterSheetLogic
     {
         if (classes == CharactersLore.Classes.Warrior)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Warrior.LikelyStats, RulebookLore.Classes.Warrior.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Warrior.LikelySkills, RulebookLore.Classes.Warrior.UnlikelySkills);
+            IncreaseStats(sheet, statPoints, RulebookLore.Calculations.Classes.Warrior.LikelyStats, RulebookLore.Calculations.Classes.Warrior.UnlikelyStats);
+            IncreaseSkills(sheet, skillPoints, RulebookLore.Calculations.Classes.Warrior.LikelySkills, RulebookLore.Calculations.Classes.Warrior.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Mage)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Mage.LikelyStats, RulebookLore.Classes.Mage.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Mage.LikelySkills, RulebookLore.Classes.Mage.UnlikelySkills);
+            IncreaseStats(sheet, statPoints, RulebookLore.Calculations.Classes.Mage.LikelyStats, RulebookLore.Calculations.Classes.Mage.UnlikelyStats);
+            IncreaseSkills(sheet, skillPoints, RulebookLore.Calculations.Classes.Mage.LikelySkills, RulebookLore.Calculations.Classes.Mage.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Hunter)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Hunter.LikelyStats, RulebookLore.Classes.Hunter.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Hunter.LikelySkills, RulebookLore.Classes.Hunter.UnlikelySkills);
+            IncreaseStats(sheet, statPoints, RulebookLore.Calculations.Classes.Hunter.LikelyStats, RulebookLore.Calculations.Classes.Hunter.UnlikelyStats);
+            IncreaseSkills(sheet, skillPoints, RulebookLore.Calculations.Classes.Hunter.LikelySkills, RulebookLore.Calculations.Classes.Hunter.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Swashbuckler)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Swashbuckler.LikelyStats, RulebookLore.Classes.Swashbuckler.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Swashbuckler.LikelySkills, RulebookLore.Classes.Swashbuckler.UnlikelySkills);
+            IncreaseStats(sheet, statPoints, RulebookLore.Calculations.Classes.Swashbuckler.LikelyStats, RulebookLore.Calculations.Classes.Swashbuckler.UnlikelyStats);
+            IncreaseSkills(sheet, skillPoints, RulebookLore.Calculations.Classes.Swashbuckler.LikelySkills, RulebookLore.Calculations.Classes.Swashbuckler.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Sorcerer)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Sorcerer.LikelyStats, RulebookLore.Classes.Sorcerer.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Sorcerer.LikelySkills, RulebookLore.Classes.Sorcerer.UnlikelySkills);
+            IncreaseStats(sheet, statPoints, RulebookLore.Calculations.Classes.Sorcerer.LikelyStats, RulebookLore.Calculations.Classes.Sorcerer.UnlikelyStats);
+            IncreaseSkills(sheet, skillPoints, RulebookLore.Calculations.Classes.Sorcerer.LikelySkills, RulebookLore.Calculations.Classes.Sorcerer.UnlikelySkills);
         }
     }
 
@@ -235,12 +235,12 @@ internal class CharacterSheetLogic
                 chosenStat = unlikelyStats[rollForStat - 1];
             }
 
-            if      (chosenStat == RulebookLore.Acronyms.Stats.Str) sheet.Stats.Strength++;
-            else if (chosenStat == RulebookLore.Acronyms.Stats.Con) sheet.Stats.Constitution++;
-            else if (chosenStat == RulebookLore.Acronyms.Stats.Agi) sheet.Stats.Agility++;
-            else if (chosenStat == RulebookLore.Acronyms.Stats.Wil) sheet.Stats.Willpower++;
-            else if (chosenStat == RulebookLore.Acronyms.Stats.Per) sheet.Stats.Perception++;
-            else if (chosenStat == RulebookLore.Acronyms.Stats.Abs) sheet.Stats.Abstract++;
+            if      (chosenStat == RulebookLore.Calculations.Acronyms.Stats.Str) sheet.Stats.Strength++;
+            else if (chosenStat == RulebookLore.Calculations.Acronyms.Stats.Con) sheet.Stats.Constitution++;
+            else if (chosenStat == RulebookLore.Calculations.Acronyms.Stats.Agi) sheet.Stats.Agility++;
+            else if (chosenStat == RulebookLore.Calculations.Acronyms.Stats.Wil) sheet.Stats.Willpower++;
+            else if (chosenStat == RulebookLore.Calculations.Acronyms.Stats.Per) sheet.Stats.Perception++;
+            else if (chosenStat == RulebookLore.Calculations.Acronyms.Stats.Abs) sheet.Stats.Abstract++;
 
             statPoints--;
         }
@@ -264,16 +264,16 @@ internal class CharacterSheetLogic
                 chosenSkill = unlikeySkills[rollForStat - 1];
             }
 
-            if      (chosenSkill == RulebookLore.Acronyms.Skills.Com) sheet.Skills.Combat++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Arc) sheet.Skills.Arcane++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Psi) sheet.Skills.Psionics++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Hid) sheet.Skills.Hide++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Tra) sheet.Skills.Traps++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Tac) sheet.Skills.Tactics++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Soc) sheet.Skills.Social++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Apo) sheet.Skills.Apothecary++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Tra) sheet.Skills.Travel++;
-            else if (chosenSkill == RulebookLore.Acronyms.Skills.Sai) sheet.Skills.Sail++;
+            if      (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Com) sheet.Skills.Combat++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Arc) sheet.Skills.Arcane++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Psi) sheet.Skills.Psionics++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Hid) sheet.Skills.Hide++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Tra) sheet.Skills.Traps++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Tac) sheet.Skills.Tactics++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Soc) sheet.Skills.Social++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Apo) sheet.Skills.Apothecary++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Tra) sheet.Skills.Travel++;
+            else if (chosenSkill == RulebookLore.Calculations.Acronyms.Skills.Sai) sheet.Skills.Sail++;
 
             skillPoints--;
         }

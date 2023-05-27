@@ -41,8 +41,8 @@ internal class NpcAttributesLogic
         npcChar.Info.Fame = "Not much is know about this one.";
         npcChar.Info.Origins = GetOriginsByRegion(npcInfo);
 
-        if (npcChar.Info.Origins.Race != RulebookLore.Npcs.Races.Animal 
-            || npcChar.Info.Origins.Race != RulebookLore.Npcs.Races.Elemental)
+        if (npcChar.Info.Origins.Race != RulebookLore.Gameplay.Npcs.Races.Animal 
+            || npcChar.Info.Origins.Race != RulebookLore.Gameplay.Npcs.Races.Elemental)
         {
             npcChar.Info.Wealth = dice.Roll_d100(true);
         }
@@ -53,7 +53,7 @@ internal class NpcAttributesLogic
         var origins = new CharacterOrigins
         {
             Culture = "npc culture",
-            Heritage = RulebookLore.Regions.Eastern.Contains(info.Region) ? CharactersLore.Heritage.Traditional : CharactersLore.Heritage.Martial,
+            Heritage = RulebookLore.Gameplay.Regions.Eastern.Contains(info.Region) ? CharactersLore.Heritage.Traditional : CharactersLore.Heritage.Martial,
             Race = SetNpcRace(info)
         };
 
@@ -66,123 +66,123 @@ internal class NpcAttributesLogic
     {
         var animalsFoundIn = new List<string>
         {
-            RulebookLore.Regions.WestDragonmaw.Northeim,
-            RulebookLore.Regions.WestDragonmaw.Midheim,
-            RulebookLore.Regions.WestDragonmaw.Southeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Southeim,
 
-            RulebookLore.Regions.EastDragonmaw.VargasStand,
-            RulebookLore.Regions.EastDragonmaw.Longshore,
-            RulebookLore.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Farlindor,
             
-            RulebookLore.Regions.Hyperborea.FrozenWastes,
-            RulebookLore.Regions.Hyperborea.Brimland,
+            RulebookLore.Gameplay.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Gameplay.Regions.Hyperborea.Brimland,
             
-            RulebookLore.Regions.ThreeSeas.Endar,
-            RulebookLore.Regions.ThreeSeas.TwinVines,
-            RulebookLore.Regions.ThreeSeas.Stormbork,
-            RulebookLore.Regions.ThreeSeas.Calvinia
+            RulebookLore.Gameplay.Regions.ThreeSeas.Endar,
+            RulebookLore.Gameplay.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Calvinia
         };
 
         var monstersFoundIn = new List<string>
         {
-            RulebookLore.Regions.WestDragonmaw.Northeim,
-            RulebookLore.Regions.WestDragonmaw.Midheim,
-            RulebookLore.Regions.WestDragonmaw.Southeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Southeim,
 
-            RulebookLore.Regions.EastDragonmaw.VargasStand,
-            RulebookLore.Regions.EastDragonmaw.Longshore,
-            RulebookLore.Regions.EastDragonmaw.Farlindor,
-            RulebookLore.Regions.EastDragonmaw.PelRavan,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.PelRavan,
             
-            RulebookLore.Regions.Hyperborea.FrozenWastes,
-            RulebookLore.Regions.Hyperborea.Brimland,
-            RulebookLore.Regions.Hyperborea.Ryxos,
+            RulebookLore.Gameplay.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Gameplay.Regions.Hyperborea.Brimland,
+            RulebookLore.Gameplay.Regions.Hyperborea.Ryxos,
             
-            RulebookLore.Regions.ThreeSeas.Endar,
-            RulebookLore.Regions.ThreeSeas.TwinVines,
-            RulebookLore.Regions.ThreeSeas.Stormbork,
-            RulebookLore.Regions.ThreeSeas.Calvinia,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Endar,
+            RulebookLore.Gameplay.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Calvinia,
 
-            RulebookLore.Regions.Eversun.AjJahra
+            RulebookLore.Gameplay.Regions.Eversun.AjJahra
         };
 
         var humanoidsFoundIn = new List<string>
         {
-            RulebookLore.Regions.WestDragonmaw.Northeim,
-            RulebookLore.Regions.WestDragonmaw.Midheim,
-            RulebookLore.Regions.WestDragonmaw.Southeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Southeim,
 
-            RulebookLore.Regions.EastDragonmaw.VargasStand,
-            RulebookLore.Regions.EastDragonmaw.Longshore,
-            RulebookLore.Regions.EastDragonmaw.Farlindor,
-            RulebookLore.Regions.EastDragonmaw.PelRavan,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.PelRavan,
 
-            RulebookLore.Regions.Hyperborea.FrozenWastes,
-            RulebookLore.Regions.Hyperborea.Brimland,
-            RulebookLore.Regions.Hyperborea.Ryxos,
+            RulebookLore.Gameplay.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Gameplay.Regions.Hyperborea.Brimland,
+            RulebookLore.Gameplay.Regions.Hyperborea.Ryxos,
 
-            RulebookLore.Regions.ThreeSeas.Endar,
-            RulebookLore.Regions.ThreeSeas.TwinVines,
-            RulebookLore.Regions.ThreeSeas.Stormbork,
-            RulebookLore.Regions.ThreeSeas.Calvinia,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Endar,
+            RulebookLore.Gameplay.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Calvinia,
 
-            RulebookLore.Regions.Eversun.AjJahra,
-            RulebookLore.Regions.Eversun.ShiftingPlanes,
+            RulebookLore.Gameplay.Regions.Eversun.AjJahra,
+            RulebookLore.Gameplay.Regions.Eversun.ShiftingPlanes,
         };
 
         var undeadsFoundIn = new List<string>
         {
-            RulebookLore.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
 
-            RulebookLore.Regions.EastDragonmaw.VargasStand,
-            RulebookLore.Regions.EastDragonmaw.PelRavan,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.PelRavan,
 
-            RulebookLore.Regions.Hyperborea.FrozenWastes,
-            RulebookLore.Regions.Hyperborea.Ryxos,
+            RulebookLore.Gameplay.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Gameplay.Regions.Hyperborea.Ryxos,
 
-            RulebookLore.Regions.Eversun.AjJahra,
-            RulebookLore.Regions.Eversun.ShiftingPlanes,
+            RulebookLore.Gameplay.Regions.Eversun.AjJahra,
+            RulebookLore.Gameplay.Regions.Eversun.ShiftingPlanes,
         };
 
         var fiendsFoundIn = new List<string>
         {
-            RulebookLore.Regions.WestDragonmaw.Northeim,
-            RulebookLore.Regions.WestDragonmaw.Midheim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
 
-            RulebookLore.Regions.EastDragonmaw.VargasStand,
-            RulebookLore.Regions.EastDragonmaw.Longshore,
-            RulebookLore.Regions.EastDragonmaw.Farlindor,
-            RulebookLore.Regions.EastDragonmaw.PelRavan,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Longshore,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.Farlindor,
+            RulebookLore.Gameplay.Regions.EastDragonmaw.PelRavan,
 
-            RulebookLore.Regions.Hyperborea.FrozenWastes,
-            RulebookLore.Regions.Hyperborea.Ryxos,
+            RulebookLore.Gameplay.Regions.Hyperborea.FrozenWastes,
+            RulebookLore.Gameplay.Regions.Hyperborea.Ryxos,
 
-            RulebookLore.Regions.ThreeSeas.Endar,
-            RulebookLore.Regions.ThreeSeas.TwinVines,
-            RulebookLore.Regions.ThreeSeas.Stormbork,
-            RulebookLore.Regions.ThreeSeas.Calvinia,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Endar,
+            RulebookLore.Gameplay.Regions.ThreeSeas.TwinVines,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Stormbork,
+            RulebookLore.Gameplay.Regions.ThreeSeas.Calvinia,
 
-            RulebookLore.Regions.Eversun.AjJahra,
-            RulebookLore.Regions.Eversun.ShiftingPlanes,
-            RulebookLore.Regions.Eversun.Peradin
+            RulebookLore.Gameplay.Regions.Eversun.AjJahra,
+            RulebookLore.Gameplay.Regions.Eversun.ShiftingPlanes,
+            RulebookLore.Gameplay.Regions.Eversun.Peradin
         };
 
         var elementalFoundIn = new List<string>
         {
-            RulebookLore.Regions.Hyperborea.Ryxos,
+            RulebookLore.Gameplay.Regions.Hyperborea.Ryxos,
 
-            RulebookLore.Regions.Eversun.ShiftingPlanes,
-            RulebookLore.Regions.Eversun.Peradin
+            RulebookLore.Gameplay.Regions.Eversun.ShiftingPlanes,
+            RulebookLore.Gameplay.Regions.Eversun.Peradin
         };
 
         List<string> possibleRaces = new();
 
-        if (animalsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Animal);
-        if (monstersFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Monster);
-        if (humanoidsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Humanoid);
-        if (undeadsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Undead);
-        if (fiendsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Fiend);
-        if (elementalFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Npcs.Races.Elemental);
+        if (animalsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Gameplay.Npcs.Races.Animal);
+        if (monstersFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Gameplay.Npcs.Races.Monster);
+        if (humanoidsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Gameplay.Npcs.Races.Humanoid);
+        if (undeadsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Gameplay.Npcs.Races.Undead);
+        if (fiendsFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Gameplay.Npcs.Races.Fiend);
+        if (elementalFoundIn.Contains(info.Region)) possibleRaces.Add(RulebookLore.Gameplay.Npcs.Races.Elemental);
 
         var index = dice.Roll_XdY(0, possibleRaces.Count - 1);
         return possibleRaces[index];
@@ -192,27 +192,27 @@ internal class NpcAttributesLogic
     {
         var roll = dice.Roll_d100();
 
-        if (race == RulebookLore.Npcs.Races.Animal)
+        if (race == RulebookLore.Gameplay.Npcs.Races.Animal)
         {
             return CharactersLore.Classes.Warrior;   
         }
-        else if (race == RulebookLore.Npcs.Races.Monster)
+        else if (race == RulebookLore.Gameplay.Npcs.Races.Monster)
         {
             return roll <= 70 ? CharactersLore.Classes.Warrior : (roll >= 95 ? CharactersLore.Classes.Mage : CharactersLore.Classes.Hunter);
         }
-        else if (race == RulebookLore.Npcs.Races.Humanoid)
+        else if (race == RulebookLore.Gameplay.Npcs.Races.Humanoid)
         {
             return roll <= 50 ? CharactersLore.Classes.Warrior : (roll >= 80 ? CharactersLore.Classes.Mage : CharactersLore.Classes.Hunter);
         }
-        else if (race == RulebookLore.Npcs.Races.Undead)
+        else if (race == RulebookLore.Gameplay.Npcs.Races.Undead)
         {
             return roll <= 80 ? CharactersLore.Classes.Warrior : CharactersLore.Classes.Mage;
         }
-        else if (race == RulebookLore.Npcs.Races.Fiend)
+        else if (race == RulebookLore.Gameplay.Npcs.Races.Fiend)
         {
             return roll <= 30 ? CharactersLore.Classes.Warrior : (roll >= 50 ? CharactersLore.Classes.Mage : CharactersLore.Classes.Hunter);
         }
-        else if (race == RulebookLore.Npcs.Races.Elemental)
+        else if (race == RulebookLore.Gameplay.Npcs.Races.Elemental)
         {
             return roll <= 50 ? CharactersLore.Classes.Warrior : CharactersLore.Classes.Mage;
         }
@@ -226,7 +226,7 @@ internal class NpcAttributesLogic
     private CharacterSkills CalculateNpcSkills(NpcInfo npcInfo)
     {
         var skills = new CharacterSkills();
-        var skillsFactor = RulebookLore.Npcs.SkillsDifferenceFactor;
+        var skillsFactor = RulebookLore.Gameplay.Npcs.SkillsDifferenceFactor;
 
         var comMin = npcInfo.SkillsMin.Combat - skillsFactor < 0 ? 10 : npcInfo.SkillsMin.Combat - skillsFactor;
         var comMax = npcInfo.SkillsMax.Combat + skillsFactor;
@@ -274,7 +274,7 @@ internal class NpcAttributesLogic
     private CharacterAssets CalculateNpcAssets(NpcInfo npcInfo)
     {
         var assets = new CharacterAssets();
-        var assetsFactor = RulebookLore.Npcs.AssetsDifferenceFactor;
+        var assetsFactor = RulebookLore.Gameplay.Npcs.AssetsDifferenceFactor;
 
         var resMin = npcInfo.AssetsMin.Resolve - assetsFactor < 0 ? 5 : npcInfo.AssetsMin.Resolve - assetsFactor;
         var resMax = npcInfo.AssetsMax.Resolve + assetsFactor;
@@ -306,7 +306,7 @@ internal class NpcAttributesLogic
     private CharacterStats CalculateNpcStats(NpcInfo npcInfo)
     {
         var stats = new CharacterStats();
-        var statsFactor = RulebookLore.Npcs.StatsDifferenceFactor;
+        var statsFactor = RulebookLore.Gameplay.Npcs.StatsDifferenceFactor;
 
         var strMin = npcInfo.StatsMin.Strength - statsFactor < 0 ? 10 : npcInfo.StatsMin.Strength - statsFactor;
         var strMax = npcInfo.StatsMax.Strength + statsFactor;

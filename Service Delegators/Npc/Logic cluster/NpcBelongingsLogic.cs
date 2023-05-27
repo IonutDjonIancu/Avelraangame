@@ -19,15 +19,15 @@ internal class NpcBelongingsLogic
 
     internal void SetNpcInventory(Character npc)
     {
-        if (npc.Info.Origins.Race == RulebookLore.Npcs.Races.Animal
-            || npc.Info.Origins.Race == RulebookLore.Npcs.Races.Elemental) return;
+        if (npc.Info.Origins.Race == RulebookLore.Gameplay.Npcs.Races.Animal
+            || npc.Info.Origins.Race == RulebookLore.Gameplay.Npcs.Races.Elemental) return;
 
         npc.Inventory.Mainhand = HasItem() ? SetMainhandItem() : null;
-        if (npc.Info.Origins.Race == RulebookLore.Npcs.Races.Undead) return;
+        if (npc.Info.Origins.Race == RulebookLore.Gameplay.Npcs.Races.Undead) return;
 
         npc.Inventory.Head = HasItem() ? itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm) : null;
         npc.Inventory.Body = HasItem() ? itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour) : null;
-        if (npc.Info.Origins.Race == RulebookLore.Npcs.Races.Fiend) return;
+        if (npc.Info.Origins.Race == RulebookLore.Gameplay.Npcs.Races.Fiend) return;
 
         npc.Inventory.Offhand = HasItem() ? SetOffhandItem(npc) : null;
         npc.Inventory.Ranged = HasItem() ? SetRangedItem() : null;
