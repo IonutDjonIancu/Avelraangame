@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Persistance_Manager;
+using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
@@ -16,12 +17,17 @@ internal class DatabasePersistenceLogic
 
     internal async void SaveDbToDiskFile()
     {
-        dbm.Snapshot.DbDate = DateTime.Now;
-        var dbJson = JsonConvert.SerializeObject(dbm.Snapshot);
-        var dbPath = dbm.Info.DbPath;
+        dbm.Snapshot.LastAction = DateTime.Now;
 
-        // remove players or all other non-essential information when saving snapshot to disk
-        // create another object before saving to disk from snapshot
+        var database = new Database
+        {
+            DbDate = dbm.Snapshot.LastAction,
+            CharacterStubs = dbm.Snapshot.CharacterStubs,
+            Parties = dbm.Snapshot.Parties
+        };
+
+        var dbJson = JsonConvert.SerializeObject(database);
+        var dbPath = dbm.Info.DbPath;
 
         await SaveToFileOnDisk(dbJson, dbPath);
     }

@@ -18,10 +18,13 @@ internal class GameplayLogicDelegator
 
     internal Party CreateParty()
     {
+        SanitizePartiesOnCreate();
+
         var party = new Party
         {
             Id = Guid.NewGuid().ToString(),
             CreationDate = DateTime.Now.ToShortDateString(),
+            IsAdventuring = false
         };
 
         dbs.Snapshot.Parties.Add(party);
@@ -30,4 +33,16 @@ internal class GameplayLogicDelegator
 
         return party;
     }
+
+    #region private methods
+    private void SanitizePartiesOnCreate()
+    {
+        var sevenDaysAgo = DateTime.Now - DateTime.Now.AddDays(-7);
+
+        var oldParties = dbs.Snapshot.Parties.Where(s => DateTime.Parse(s.CreationDate) < DateTime.Now - sevenDaysAgo && !s.IsAdventuring).ToList();
+        if (oldParties.Count == 0) return;
+
+        oldParties.ForEach(s => dbs.Snapshot.Parties.Remove(s));
+    }
+    #endregion
 }

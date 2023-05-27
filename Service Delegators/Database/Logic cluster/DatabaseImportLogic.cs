@@ -15,9 +15,8 @@ internal class DatabaseImportLogic
 
     internal void ImportDatabase(Database database)
     {
-        dbm.Snapshot.DbDate = database.DbDate;
+        dbm.Snapshot.LastAction = database.DbDate;
         dbm.Snapshot.CharacterStubs = database.CharacterStubs;
-        dbm.Snapshot.Items = database.Items;
         dbm.Snapshot.Parties = database.Parties;
     }
 

@@ -17,8 +17,6 @@ public class GameplayService : IGameplayService
 
     public Party CreateParty()
     {
-        // run validation logic where empty parties get deleted
-
         return logic.CreateParty();
     }
 }

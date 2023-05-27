@@ -2,7 +2,7 @@
 
 public class DatabaseManagerSnapshot
 {
-    public DateTime DbDate { get; set; }
+    public DateTime LastAction { get; set; }
     public List<string> Admins { get; set; }
     public List<string> Banned { get; set; }
     public List<CharacterStub> CharacterStubs { get; set; }

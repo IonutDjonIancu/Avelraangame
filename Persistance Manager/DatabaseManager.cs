@@ -47,14 +47,13 @@ public class DatabaseManager : IDatabaseManager
 
         return new DatabaseManagerSnapshot
         {
-            DbDate = avDatabase.DbDate,
+            LastAction = avDatabase.DbDate,
             Admins = admins,
             Banned = banned,
             CharacterStubs = avDatabase.CharacterStubs,
             Parties = avDatabase.Parties,
 
             Players = ReadPlayerFiles(info.DbPlayersPath),
-            Items = avDatabase.Items
         };
     }
 
