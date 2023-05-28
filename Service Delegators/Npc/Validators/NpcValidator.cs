@@ -6,6 +6,10 @@ namespace Service_Delegators.Validators;
 
 internal class NpcValidator : ValidatorBase
 {
+    internal NpcValidator(Snapshot snapshot) 
+        : base(snapshot)
+    { }
+
     public void ValidateNpcOnGenerate(NpcInfo npcInfo)
     {
         ValidateObject(npcInfo);

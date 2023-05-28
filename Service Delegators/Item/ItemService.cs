@@ -8,9 +8,11 @@ public class ItemService : IItemService
     private readonly ItemValidator validator;
     private readonly ItemLogicDelegator logic;
 
-    public ItemService(IDiceRollService diceRollService)
+    public ItemService(
+        IDatabaseService databaseService, 
+        IDiceRollService diceRollService)
     {
-        validator = new ItemValidator();
+        validator = new ItemValidator(databaseService.Snapshot);
         logic = new ItemLogicDelegator(diceRollService);
     }
     

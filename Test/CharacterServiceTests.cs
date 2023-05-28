@@ -6,7 +6,7 @@ public class CharacterServiceTests : TestBase
 
     public CharacterServiceTests()
     {
-        var listOfPlayers = dbs.Snapshot.Players.ToList();
+        var listOfPlayers = snapshot.Players.ToList();
 
         foreach (var player in listOfPlayers)
         {

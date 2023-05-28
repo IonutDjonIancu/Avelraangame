@@ -4,17 +4,17 @@ namespace Service_Delegators;
 
 internal class CharacterValidator : ValidatorBase
 {
-    private readonly IDatabaseService dbs;
+    private readonly Snapshot snapshot;
 
-    private CharacterValidator() { }
-    internal CharacterValidator(IDatabaseService databaseService)
+    internal CharacterValidator(Snapshot snapshot)
+        : base(snapshot)
     {
-        dbs = databaseService;
+        this.snapshot = snapshot;
     }
 
     internal void ValidateMaxNumberOfCharacters(string playerId)
     {
-        var playerCharsCount = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters!.Count;
+        var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters!.Count;
 
         if (playerCharsCount >= 5) Throw("Max number of characters reached (5 characters allowed per player)");
     }
@@ -23,7 +23,7 @@ internal class CharacterValidator : ValidatorBase
     {
         ValidateObject(origins);
         
-        if (!dbs.Snapshot.CharacterStubs!.Exists(s => s.PlayerId == playerId)) Throw("No stub templates found for this player.");
+        if (!snapshot.CharacterStubs!.Exists(s => s.PlayerId == playerId)) Throw("No stub templates found for this player.");
 
         ValidateRace(origins.Race);
         ValidateCulture(origins.Culture);
@@ -43,7 +43,7 @@ internal class CharacterValidator : ValidatorBase
             if (!CharactersLore.Skills.All.Contains(trait.Skill)) Throw("No such Skill was found with the indicated skill name.");
         }
 
-        var character = dbs.Snapshot.Players.First(p => p.Identity.Id == trait.PlayerId).Characters.First(c => c.Identity.Id == trait.CharacterId);
+        var character = snapshot.Players.First(p => p.Identity.Id == trait.PlayerId).Characters.First(c => c.Identity.Id == trait.CharacterId);
         var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
 
         if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) Throw("Character does not have enough Deeds points to aquire said Heroic Trait.");
@@ -63,7 +63,7 @@ internal class CharacterValidator : ValidatorBase
 
         if (!toEquip) return;
 
-        var player = dbs.Snapshot.Players.Find(s => s.Identity.Id == equip.PlayerId);
+        var player = snapshot.Players.Find(s => s.Identity.Id == equip.PlayerId);
         var character = player!.Characters.Find(s => s.Identity!.Id == equip.CharacterId);
         var itemSubtype = character!.Supplies!.Find(i => i.Identity.Id == equip.ItemId)?.Subtype;
         if (itemSubtype == null) Throw("No such item found on this character.");
@@ -172,17 +172,7 @@ internal class CharacterValidator : ValidatorBase
     {
         ValidateGuid(partyId);
 
-        if (!dbs.Snapshot.Parties.Exists(p => p.Id == partyId)) Throw("This party does not exist.");
-    }
-
-    internal void ValidateCharacterPlayerCombination(CharacterIdentity identity)
-    {
-        ValidateGuid(identity.Id);
-        ValidateGuid(identity.PlayerId);
-
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId)!;
-
-        if (!player.Characters.Exists(c => c.Identity!.Id == identity.Id)) Throw("Character not found.");
+        if (!snapshot.Parties.Exists(p => p.Id == partyId)) Throw("This party does not exist.");
     }
 
     internal void ValidateStatExists(string stat)
@@ -193,14 +183,14 @@ internal class CharacterValidator : ValidatorBase
 
     internal void ValidateCharacterHasStatsPoints(CharacterIdentity chr)
     {
-        var hasPoints = dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.StatPoints > 0;
+        var hasPoints = snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.StatPoints > 0;
 
         if (!hasPoints) Throw($"Character does not have any stat points to distribute.");
     }
 
     internal void ValidateCharacterHasSkillsPoints(CharacterIdentity chr)
     {
-        var hasPoints = dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.SkillPoints > 0;
+        var hasPoints = snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.SkillPoints > 0;
 
         if (!hasPoints) Throw($"Character does not have any skill points to distribute.");
     }

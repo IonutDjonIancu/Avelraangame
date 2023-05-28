@@ -1,20 +1,21 @@
-﻿using Persistance_Manager;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
 internal class DatabaseValidator : ValidatorBase
 {
-    private readonly IDatabaseManager dbm;
+    private readonly Snapshot snapshot;
 
-    internal DatabaseValidator(IDatabaseManager databaseManager)
+    internal DatabaseValidator(Snapshot snapshot)
+        : base(snapshot)
     {
-        dbm = databaseManager;
+        this.snapshot = snapshot;
     }
 
     internal void ValidatePlayerIsAdmin(string playerId)
     {
-        var playerName = dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId)!.Identity.Name;
+        var playerName = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Identity.Name;
 
-        if (!dbm.Snapshot.Admins.Contains(playerName)) Throw("Action not allowed, player is not an admin.");
+        if (!snapshot.Admins.Contains(playerName)) Throw("Action not allowed, player is not an admin.");
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class DatabaseManagerSnapshot
+public class Snapshot
 {
     public DateTime LastAction { get; set; }
     public List<string> Admins { get; set; }

@@ -14,8 +14,8 @@ public class CharacterService : ICharacterService
         IItemService itemService)
     {
         dbs = databaseService;
-        validator = new CharacterValidator(dbs);
-        logic = new CharacterLogicDelegator(dbs, diceRollService, itemService);
+        validator = new CharacterValidator(databaseService.Snapshot);
+        logic = new CharacterLogicDelegator(databaseService, diceRollService, itemService);
     }
 
     public CharacterStub CreateCharacterStub(string playerId)

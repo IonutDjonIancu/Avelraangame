@@ -6,7 +6,25 @@ namespace Service_Delegators;
 
 internal class ValidatorBase
 {
-    internal void ValidateIfPlayerExists(DatabaseManagerSnapshot snapshot, string playerId)
+    private readonly Snapshot snapshot;
+
+    private ValidatorBase() { }
+    internal ValidatorBase(Snapshot snapshot)
+    {
+        this.snapshot = snapshot;
+    }
+
+    internal void ValidateCharacterPlayerCombination(CharacterIdentity characterIdentity)
+    {
+        ValidateGuid(characterIdentity.Id);
+        ValidateGuid(characterIdentity.PlayerId);
+
+        var player = snapshot.Players.Find(p => p.Identity.Id == characterIdentity.PlayerId)!;
+
+        if (!player.Characters.Exists(c => c.Identity!.Id == characterIdentity.Id)) Throw("Character not found.");
+    }
+
+    internal void ValidateIfPlayerExists(string playerId)
     {
         ValidateGuid(playerId);
         if (!snapshot.Players.Exists(p => p.Identity.Id == playerId)) Throw("Player not found");

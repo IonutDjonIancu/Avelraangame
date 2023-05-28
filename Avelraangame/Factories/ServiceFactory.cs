@@ -20,11 +20,12 @@ public class ServiceFactory : IServiceFactory
         DatabaseService     = new DatabaseService(databaseManager);
         Metadata            = new MetadataService(DatabaseService);
 
+        // services will be instantiated in the order that they require each other
         DicerollService     = new DiceRollService();
         PlayerService       = new PlayerService(DatabaseService);
-        ItemService         = new ItemService(DicerollService);
+        ItemService         = new ItemService(DatabaseService, DicerollService);
         CharacterService    = new CharacterService(DatabaseService, DicerollService, ItemService);
-        NpcService          = new NpcService(DicerollService, ItemService, CharacterService);
+        NpcService          = new NpcService(DatabaseService, DicerollService, ItemService, CharacterService);
         GameplayService     = new GameplayService(DatabaseService, DicerollService);
     }
 }

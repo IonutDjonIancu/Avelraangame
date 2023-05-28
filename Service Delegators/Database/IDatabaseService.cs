@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface IDatabaseService
 {
-    DatabaseManagerSnapshot Snapshot { get; set; }
+    Snapshot Snapshot { get; set; }
 
     #region database
     void PersistDatabase();

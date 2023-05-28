@@ -1,11 +1,13 @@
-﻿#pragma warning disable CA1822 // Mark members as static
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
 internal class ItemValidator : ValidatorBase
 {
+    internal ItemValidator(Snapshot snapshot) 
+        : base(snapshot)
+    { }
+
     internal void ValidateTypeAndSubtypeOnGenerate(string type, string subtype)
     {
         ValidateString(type);
@@ -18,5 +20,3 @@ internal class ItemValidator : ValidatorBase
             || ItemsLore.Subtypes.Wealth.All.Contains(subtype))) Throw("No such subtype found for item generate.");
     }
 }
-
-#pragma warning restore CA1822 // Mark members as static

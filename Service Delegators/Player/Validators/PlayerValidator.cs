@@ -6,11 +6,12 @@ namespace Service_Delegators.Validators;
 
 internal class PlayerValidator : ValidatorBase
 {
-    private readonly IDatabaseService dbs;
+    private readonly Snapshot snapshot;
 
-    internal PlayerValidator(IDatabaseService databaseService)
+    internal PlayerValidator(Snapshot snapshot)
+        : base(snapshot)
 	{
-		dbs = databaseService;
+        this.snapshot = snapshot;
 	}
 
     internal void ValidatePlayerCanLogin(string? token)
@@ -29,17 +30,12 @@ internal class PlayerValidator : ValidatorBase
     {
         ValidateString(name);
 
-        if (!dbs.Snapshot.Players.Exists(p => p.Identity.Name == name)) Throw("Player does not exist.");
-    }
-
-    internal void ValidatePlayerExists(string playerId)
-    {
-        ValidateIfPlayerExists(dbs.Snapshot, playerId);
+        if (!snapshot.Players.Exists(p => p.Identity.Name == name)) Throw("Player does not exist.");
     }
 
     internal void ValidatePlayersCount()
     {
-        if (dbs.Snapshot.Players!.Count >= 20) Throw("Player limit reached, please contact admins.");
+        if (snapshot.Players!.Count >= 20) Throw("Player limit reached, please contact admins.");
     }
 
     internal void ValidatePlayerOnCreate(string playerName)
@@ -47,7 +43,7 @@ internal class PlayerValidator : ValidatorBase
         ValidatePlayerName(playerName);
         ValidatePlayersCount();
 
-        if (dbs.Snapshot.Players!.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) Throw("Player already exists.");
+        if (snapshot.Players!.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) Throw("Player already exists.");
     }
 
     internal void ValidatePlayerName(string name)

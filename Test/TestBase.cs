@@ -16,7 +16,7 @@ public class TestBase
     protected readonly ICharacterService characterService;
     protected readonly INpcService npcService;
 
-    protected readonly DatabaseManagerSnapshot snapshot;
+    protected readonly Snapshot snapshot;
 
     protected TestBase()
 	{
@@ -34,16 +34,16 @@ public class TestBase
 
         diceService = new DiceRollService();
         playerService = new PlayerService(dbs);
-        itemService = new ItemService(diceService);
+        itemService = new ItemService(dbs, diceService);
         characterService = new CharacterService(dbs, diceService, itemService);
-        npcService = new NpcService(diceService, itemService, characterService);
+        npcService = new NpcService(dbs, diceService, itemService, characterService);
     }
 
     protected string CreatePlayer(string playerName)
     {
-        dbs.Snapshot.Players!.Clear();
+        snapshot.Players!.Clear();
         playerService.CreatePlayer(playerName);
 
-        return dbs.Snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
+        return snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
     }
 }

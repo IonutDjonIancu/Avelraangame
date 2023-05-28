@@ -10,7 +10,7 @@ public class PlayerService : IPlayerService
 
     public PlayerService(IDatabaseService databaseService)
     {
-        validator = new PlayerValidator(databaseService);
+        validator = new PlayerValidator(databaseService.Snapshot);
         logic = new PlayerLogicDelegator(databaseService);
     }
 
@@ -34,7 +34,7 @@ public class PlayerService : IPlayerService
 
     public void DeletePlayer(string playerId)
     {
-        validator.ValidatePlayerExists(playerId);
+        validator.ValidateIfPlayerExists(playerId);
         
         logic.RemovePlayer(playerId);
     }
