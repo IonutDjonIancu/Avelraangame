@@ -507,6 +507,25 @@ public class PalantirController : ControllerBase
         }
     }
 
+    // PUT: /api/palantir/Gameplay/LeaveParty
+    [HttpPut("Gameplay/LeaveParty")]
+    public IActionResult LeaveParty([FromQuery] Request request, string partyId, string characterId)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+
+            return Ok(party);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
     #endregion
 
     #region private methods

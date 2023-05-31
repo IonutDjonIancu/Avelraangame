@@ -25,4 +25,10 @@ public class GameplayService : IGameplayService
         validator.ValidatePartyBeforeJoin(partyId, charIdentity);
         return logic.JoinParty(partyId, charIdentity);
     }
+
+    public Party LeaveParty(string partyId, CharacterIdentity charIdentity)
+    {
+        validator.ValidatePartyOnLeave(partyId, charIdentity);
+        return logic.LeaveParty(partyId, charIdentity);
+    }
 }

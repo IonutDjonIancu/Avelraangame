@@ -18,8 +18,20 @@ internal class GameplayValidator : ValidatorBase
     
         ValidateCharacterPlayerCombination(charIdentity);
 
-        var party = snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
+        var isCharacterInAnotherParty = snapshot.Parties.SelectMany(s => s.CharacterIds).ToList().Contains(charIdentity.Id);
+        if (isCharacterInAnotherParty) Throw("Character is already in another party.");
+    }
 
-        if (party.CharacterIds.Contains(charIdentity.Id)) Throw("Character is already in this party.");
+    internal void ValidatePartyOnLeave(string partyId, CharacterIdentity charIdentity)
+    {
+        if (!snapshot.Parties.Exists(s => s.Id == partyId)) Throw("Party with specified id does not exist.");
+
+        ValidateCharacterPlayerCombination(charIdentity);
+
+        var isCharInParty = snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters!.Find(s => s.Identity.Id == charIdentity.Id)!.Info.IsInParty;
+        if (!isCharInParty) Throw("Character is in no party.");
+
+        var party = snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
+        if (party.IsAdventuring) Throw("Unable to abandon party during adventuring.");
     }
 }

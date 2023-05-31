@@ -34,6 +34,21 @@ internal class GameplayLogicDelegator
         return party;
     }
 
+    internal Party LeaveParty(string partyId, CharacterIdentity charIdentity)
+    {
+        var party = dbs.Snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
+        var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
+
+        party.PartyLeadId = "";
+        party.CharacterIds.Remove(charIdentity.Id);
+        character.Info.IsInParty = false;
+
+        dbs.PersistDatabase();
+        dbs.PersistPlayer(charIdentity.PlayerId);
+
+        return party;
+    }
+
     internal Party JoinParty(string partyId, CharacterIdentity charIdentity)
     {
         var party = dbs.Snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
