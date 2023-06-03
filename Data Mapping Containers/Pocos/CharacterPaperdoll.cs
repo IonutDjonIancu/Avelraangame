@@ -4,14 +4,6 @@ namespace Data_Mapping_Containers.Dtos;
 
 public class CharacterPaperdoll
 {
-    private readonly Acronyms acronyms;
-
-    private CharacterPaperdoll() { }
-    public CharacterPaperdoll(Acronyms acronyms)
-    {
-        this.acronyms = acronyms;
-    }
-
     public CharacterStats Stats { get; set; } = new();
     public CharacterAssets Assets { get; set; } = new();
     public CharacterSkills Skills { get; set; } = new();
@@ -26,37 +18,37 @@ public class CharacterPaperdoll
         var strCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = acronyms.Stats.Strength,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Str,
             DefaultValue = Stats.Strength
         };
         var conCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = acronyms.Stats.Constitution,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Con,
             DefaultValue = Stats.Constitution
         };
         var agiCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = acronyms.Stats.Agility,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Agi,
             DefaultValue = Stats.Agility
         };
         var wilCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = acronyms.Stats.Willpower,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Wil,
             DefaultValue = Stats.Willpower
         };
         var perCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = acronyms.Stats.Perception,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Per,
             DefaultValue = Stats.Perception
         };
         var absCol = new DataColumn
         {
             DataType = Type.GetType("System.Decimal"),
-            ColumnName = acronyms.Stats.Abstract,
+            ColumnName = RulebookLore.Calculations.Acronyms.Stats.Abs,
             DefaultValue = Stats.Abstract
         };
 

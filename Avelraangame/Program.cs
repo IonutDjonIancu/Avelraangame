@@ -5,7 +5,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 #region logger
-var path = $"{Directory.GetCurrentDirectory()}\\Resources\\LogFiles\\Logs.txt"; // TODO change location
+var path = $"{Directory.GetCurrentDirectory()}\\Resources\\Log Files\\Logs.txt";
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.File(path, rollingInterval: RollingInterval.Day)

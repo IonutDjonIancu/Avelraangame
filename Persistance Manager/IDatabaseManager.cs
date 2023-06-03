@@ -4,11 +4,6 @@ namespace Persistance_Manager;
 
 public interface IDatabaseManager
 {
-    MetadataManager Metadata { get; set; }
-    DatabaseSnapshot Snapshot { get; set; }
-
-    void Persist();
-
-    void PersistPlayer(Player player);
-    void RemovePlayer(Player player);
+    DatabaseManagerInfo Info { get; init; }
+    Snapshot Snapshot { get; set; }
 }

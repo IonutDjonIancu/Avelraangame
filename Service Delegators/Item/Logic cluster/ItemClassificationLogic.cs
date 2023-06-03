@@ -8,6 +8,7 @@ internal class ItemClassificationLogic
 {
     private readonly IDiceRollService dice;
 
+    private ItemClassificationLogic() { }
     internal ItemClassificationLogic(IDiceRollService dice)
 	{
 		this.dice = dice;
@@ -25,15 +26,13 @@ internal class ItemClassificationLogic
         else  /*(roll >=   1)*/ { item.Level = 1; item.LevelName = ItemsLore.LevelNames.Common; }
     }
 
-    internal void SetItemTypeAndSubtypeAndInventoryLocations(Item item)
+    internal void SetItemTypeAndSubtype(Item item)
     {
         var roll = dice.Roll_d20();
 
         if      (roll >= 17)    { item.Type = ItemsLore.Types.Protection; SetProtectionSubtype(item); }
         else if (roll >=  5)    { item.Type = ItemsLore.Types.Weapon; SetWeaponSubtype(item); }
         else  /*(roll >=  1)*/  { item.Type = ItemsLore.Types.Wealth; SetWealthSubtype(item); }
-
-        item.InventoryLocations = SetItemInventoryLocation(item.Subtype);
     }
 
     internal void SetItemCategoryAndDescription(Item item)
@@ -43,98 +42,123 @@ internal class ItemClassificationLogic
         else  /*(item.Type == ItemsLore.Types.Wealth)*/     SetCategoryAndDescriptionFor(ItemsLore.Categories.Wealth[item.Subtype], item);
     }
 
-    internal List<string> SetItemInventoryLocation(string subtype)
+    internal void TaintItem(Item item)
     {
-        var listOfLocations = new List<string>();
+        item.HasTaint = item.Level >= 3 && dice.Roll_d20() % 2 == 0;
+    }
 
+    internal void SetItemInventoryLocation(Item item)
+    {
         // protection
-        if (subtype == ItemsLore.Subtypes.Protections.Helm)
+        if (item.Subtype == ItemsLore.Subtypes.Protections.Helm)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Head);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Head);
         }
-        else if (subtype == ItemsLore.Subtypes.Protections.Armour)
+        else if (item.Subtype == ItemsLore.Subtypes.Protections.Armour)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Body);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Body);
 
         }
-        else if (subtype == ItemsLore.Subtypes.Protections.Shield)
+        else if (item.Subtype == ItemsLore.Subtypes.Protections.Shield)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Shield);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Offhand);
 
         }
         // weapons
-        else if (subtype == ItemsLore.Subtypes.Weapons.Sword)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Sword)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Offhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Offhand);
 
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Pike)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Pike)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Crossbow)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Crossbow)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Polearm)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Polearm)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Mace)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Mace)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Offhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Offhand);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Axe)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Axe)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Offhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Offhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Dagger)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Dagger)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Offhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Offhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Bow)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Bow)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Sling)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Sling)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
-        else if (subtype == ItemsLore.Subtypes.Weapons.Spear)
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Spear)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Mainhand);
-            listOfLocations.Add(ItemsLore.InventoryLocation.Ranged);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Mainhand);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Ranged);
         }
         // wealth
-        else if (subtype == ItemsLore.Subtypes.Wealth.Gems)
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Gems)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Heraldry);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Heraldry);
         }
-        else if (subtype == ItemsLore.Subtypes.Wealth.Valuables)
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Valuables)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Heraldry);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Heraldry);
         }
-        else if (subtype == ItemsLore.Subtypes.Wealth.Trinket)
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Trinket)
         {
-            listOfLocations.Add(ItemsLore.InventoryLocation.Heraldry);
+            item.InventoryLocations.Add(ItemsLore.InventoryLocation.Heraldry);
         }
+    }
 
-        return listOfLocations;
+    internal void SetItemSubcategory(Item item)
+    {
+        // protection
+        if      (item.Subtype == ItemsLore.Subtypes.Protections.Helm) item.Subcategory = ItemsLore.Subcategories.Garment;
+        else if (item.Subtype == ItemsLore.Subtypes.Protections.Armour) item.Subcategory = ItemsLore.Subcategories.Garment;
+        else if (item.Subtype == ItemsLore.Subtypes.Protections.Shield) item.Subcategory = ItemsLore.Subcategories.Onehanded;
+        // weapons
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Sword) item.Subcategory = ItemsLore.Subcategories.Onehanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Mace) item.Subcategory = ItemsLore.Subcategories.Onehanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Axe) item.Subcategory = ItemsLore.Subcategories.Onehanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Dagger) item.Subcategory = ItemsLore.Subcategories.Onehanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Spear) item.Subcategory = ItemsLore.Subcategories.Onehanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Pike) item.Subcategory = ItemsLore.Subcategories.Twohanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Polearm) item.Subcategory = ItemsLore.Subcategories.Twohanded;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Crossbow) item.Subcategory = ItemsLore.Subcategories.Ranged;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Bow) item.Subcategory = ItemsLore.Subcategories.Ranged;
+        else if (item.Subtype == ItemsLore.Subtypes.Weapons.Sling) item.Subcategory = ItemsLore.Subcategories.Ranged;
+        // wealth
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Gems) item.Subcategory = ItemsLore.Subcategories.Garment;
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Valuables) item.Subcategory = ItemsLore.Subcategories.Garment;
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Trinket) item.Subcategory = ItemsLore.Subcategories.Garment;
     }
 
     #region private methods
     private void SetCategoryAndDescriptionFor(Dictionary<string, string> category, Item item)
     {
         var count = category.Keys.Count;
-        var position = dice.Roll_dX(count);
+        var position = dice.Roll_1dX(count);
         var element = category.ElementAt(position - 1);
 
         item.Category = element.Key;

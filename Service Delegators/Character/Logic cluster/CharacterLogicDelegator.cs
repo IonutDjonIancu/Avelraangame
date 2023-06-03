@@ -1,39 +1,30 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8604 // Possible null reference argument.
-
-using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
 internal class CharacterLogicDelegator
 {
-    private readonly IDatabaseManager dbm;
-
     private readonly CharacterSheetLogic charSheetLogic;
     private readonly CharacterTraitsLogic charTraitsLogic;
     private readonly CharacterLevelupLogic charLevelupLogic;
     private readonly CharacterItemsLogic charItemsLogic;
     private readonly CharacterCreateLogic charCreateLogic;
-    private readonly CharacterIdentityLogic charIdentityLogic;
     private readonly CharacterPaperdollLogic charPaperdollLogic;
+    private readonly CharacterInfoLogic charInfoLogic;
 
     private CharacterLogicDelegator() { }
-
     internal CharacterLogicDelegator(
-        IDatabaseManager databaseManager,
+        IDatabaseService databaseService,
         IDiceRollService diceRollService,
         IItemService itemService)
     {
-        dbm = databaseManager;
-
-        charPaperdollLogic = new CharacterPaperdollLogic(databaseManager);
-        charLevelupLogic = new CharacterLevelupLogic(databaseManager);
-        charItemsLogic = new CharacterItemsLogic(databaseManager);
-        charIdentityLogic = new CharacterIdentityLogic(databaseManager);
-        charTraitsLogic = new CharacterTraitsLogic(databaseManager, charPaperdollLogic);
-        charSheetLogic = new CharacterSheetLogic(databaseManager, diceRollService);
-        charCreateLogic = new CharacterCreateLogic(databaseManager, diceRollService, itemService, charSheetLogic);
+        charSheetLogic = new CharacterSheetLogic(diceRollService);
+        charInfoLogic = new CharacterInfoLogic(databaseService);
+        charItemsLogic = new CharacterItemsLogic(databaseService);
+        charLevelupLogic = new CharacterLevelupLogic(databaseService);
+        charPaperdollLogic = new CharacterPaperdollLogic(databaseService);
+        charTraitsLogic = new CharacterTraitsLogic(databaseService, charPaperdollLogic);
+        charCreateLogic = new CharacterCreateLogic(databaseService, diceRollService, itemService, charSheetLogic);
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -46,56 +37,68 @@ internal class CharacterLogicDelegator
         return charCreateLogic.SaveStub(origins, playerId);
     }
 
-    internal Character ChangeName(CharacterUpdate charUpdate, string playerId)
+    internal Character ChangeName(string name, CharacterIdentity identity)
     {
-       return charIdentityLogic.ChangeName(charUpdate, playerId);
+       return charInfoLogic.ChangeName(name, identity);
     }
 
-    internal Character IncreaseStats(CharacterUpdate charUpdate, string playerId)
+    internal Character AddFame(string fame, CharacterIdentity identity)
     {
-        return charLevelupLogic.IncreaseStats(charUpdate, playerId);
+        return charInfoLogic.AddFame(fame, identity);
     }
 
-    internal Character IncreaseSkills(CharacterUpdate charUpdate, string playerId)
+    internal Character SetParty(CharacterIdentity identity)
     {
-       return charLevelupLogic.IncreaseSkills(charUpdate, playerId);
+        return charInfoLogic.SetParty(identity);
     }
 
-    internal void DeleteCharacter(string characterId, string playerId)
+    internal Character AddWealth(int wealth, CharacterIdentity identity)
     {
-        var player = dbm.Metadata.GetPlayerById(playerId);
-        var character = player.Characters.Find(c => c.Identity.Id == characterId);
-
-        player.Characters.Remove(character);
-        
-        dbm.PersistPlayer(player);
+        return charInfoLogic.AddWealth(wealth, identity);
     }
 
-    internal Character EquipItem(CharacterEquip equip, string playerId)
+    internal Character IncreaseStats(string stat, CharacterIdentity identity)
+    {
+        return charLevelupLogic.IncreaseStats(stat, identity);
+    }
+
+    internal Character IncreaseSkills(string skill, CharacterIdentity identity)
+    {
+       return charLevelupLogic.IncreaseSkills(skill, identity);
+    }
+    
+    internal void KillChar(CharacterIdentity identity)
+    {
+        charInfoLogic.KillChar(identity);
+    }
+
+    internal void DeleteChar(CharacterIdentity identity)
+    {
+        charInfoLogic.DeleteChar(identity);
+    }
+
+    internal Character EquipItem(CharacterEquip equip)
     { 
-        return charItemsLogic.EquipItem(equip, playerId);
+        return charItemsLogic.EquipItem(equip);
     }
 
-    internal Character UnequipItem(CharacterEquip unequip, string playerId)
+    internal Character UnequipItem(CharacterEquip unequip)
     {
-        return charItemsLogic.UnequipItem(unequip, playerId);
+        return charItemsLogic.UnequipItem(unequip);
     }
 
-    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait)
     {
-        return charTraitsLogic.ApplyHeroicTrait(trait, playerId);
+        return charTraitsLogic.ApplyHeroicTrait(trait);
     }
 
-    internal CharacterPaperdoll CalculatePaperdoll(string characterId, string playerId)
+    internal CharacterPaperdoll CalculatePaperdollForCharacter(CharacterIdentity identity)
     {
-        return charPaperdollLogic.CalculatePaperdoll(characterId, playerId);
+        return charPaperdollLogic.CalculatePaperdollForCharacter(identity);
     }
 
-    internal CharacterPaperdoll CalculatePaperdollForNpc(Character character)
+    internal CharacterPaperdoll CalculatePaperdollOnly(Character character)
     {
-        return charPaperdollLogic.CalculatePaperdollForNpc(character);
+        return charPaperdollLogic.CalculatePaperdoll(character);
     }
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8604 // Possible null reference argument.

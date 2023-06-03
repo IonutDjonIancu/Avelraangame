@@ -24,7 +24,7 @@ public class AuthenticatorModule : IAuthenticatorModule
         return (imageUrl, code);
     }
 
-    public bool ValidateTfApin(string playerId, string playerName, string code)
+    public bool ValidateTfAPin(string playerId, string playerName, string code)
     {
         var playerIdNoDashes = playerId.Replace("-", string.Empty);
         byte[] bytes = Encoding.ASCII.GetBytes($"{playerName.ToLower()}{playerIdNoDashes}");
@@ -33,6 +33,4 @@ public class AuthenticatorModule : IAuthenticatorModule
 
         return isValid;
     }
-
-
 }

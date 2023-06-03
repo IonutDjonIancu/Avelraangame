@@ -6,16 +6,13 @@ public class DiceServiceTests : TestBase
     [Description("Roll 20 should return a DiceRoll object")]
     public void Roll20_diceRoll_object_should_have_properties()
     {
-        var roll = diceService.Roll_d20_NoHeritage();
+        var roll = diceService.Roll_d20();
 
-        roll.Should().NotBeNull();
-        roll.Roll.Should().BeGreaterThan(0);
-        roll.Dice?.Count.Should().BeGreaterThan(0);
-        roll.Grade.Should().BeGreaterThan(0);
+        roll.Should().BeGreaterThan(0);
     }
 
     [Theory]
-    [Description("Danarian roll should have a list of dice smaller than 21")]
+    [Description("Traditional roll should have a list of dice smaller than 21")]
     public void Roll20_Danarian_test()
     {
         var roll = diceService.Roll_d20_Traditional();
@@ -29,7 +26,7 @@ public class DiceServiceTests : TestBase
     }
 
     [Theory]
-    [Description("Calvinian roll should have a list of dice smaller than 101")]
+    [Description("Martial roll should have a list of dice smaller than 101")]
     public void Roll20_Calvinian_test()
     {
         var roll = diceService.Roll_d20_Martial();

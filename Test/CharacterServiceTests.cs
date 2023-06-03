@@ -1,7 +1,4 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8604 // Possible null reference argument.
-
-namespace Tests;
+﻿namespace Tests;
 
 public class CharacterServiceTests : TestBase
 {
@@ -9,12 +6,7 @@ public class CharacterServiceTests : TestBase
 
     public CharacterServiceTests()
     {
-        var listOfPlayers = dbm.Snapshot.Players.ToList();
-
-        foreach (var player in listOfPlayers)
-        {
-            playerService.DeletePlayer(player.Identity.Id);
-        }
+        dbs.Snapshot.Players.Clear();
     }
 
     [Theory]
@@ -25,7 +17,7 @@ public class CharacterServiceTests : TestBase
 
         var stub = characterService.CreateCharacterStub(playerId);
 
-        dbm.Snapshot.CharacterStubs.Count.Should().BeGreaterThanOrEqualTo(1);
+        dbs.Snapshot.CharacterStubs.Count.Should().BeGreaterThanOrEqualTo(1);
         stub.Should().NotBeNull();
         stub.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         stub.StatPoints.Should().BeGreaterThanOrEqualTo(1);
@@ -37,7 +29,7 @@ public class CharacterServiceTests : TestBase
     public void Save_character_stub_test()
     {
         var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        dbs.Snapshot.CharacterStubs.Clear();
 
         characterService.CreateCharacterStub(playerId);
 
@@ -51,20 +43,20 @@ public class CharacterServiceTests : TestBase
 
         var character = characterService.SaveCharacterStub(origins, playerId);
 
-        dbm.Snapshot.CharacterStubs.Count.Should().Be(0);
+        dbs.Snapshot.CharacterStubs.Count.Should().Be(0);
         character.Should().NotBeNull();
 
         character.Identity.Should().NotBeNull();
         character.Identity.Id.Should().NotBeNullOrWhiteSpace();
         character.Identity.PlayerId.Should().Be(playerId);
-        character.Identity.Name.Should().NotBeNullOrWhiteSpace();
+        character.Info.Name.Should().NotBeNullOrWhiteSpace();
 
         character.Info.Should().NotBeNull();
         character.Info.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
-        character.Info.Race.Should().Be(origins.Race);
-        character.Info.Culture.Should().Be(origins.Culture);
-        character.Info.Heritage.Should().Be(origins.Heritage);
-        character.Info.Class.Should().Be(origins.Class);
+        character.Info.Origins.Race.Should().Be(origins.Race);
+        character.Info.Origins.Culture.Should().Be(origins.Culture);
+        character.Info.Origins.Heritage.Should().Be(origins.Heritage);
+        character.Info.Origins.Class.Should().Be(origins.Class);
         character.Info.Fame.Should().NotBeNullOrWhiteSpace();
         character.Info.Wealth.Should().BeGreaterThanOrEqualTo(1);
         character.Info.DateOfBirth.Should().Be(DateTime.Now.ToShortDateString());
@@ -82,7 +74,7 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Should().NotBeNull();
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
-        character.IsAlive.Should().BeTrue();
+        character.Info.IsAlive.Should().BeTrue();
     }
 
     [Theory]
@@ -90,53 +82,24 @@ public class CharacterServiceTests : TestBase
     public void Rename_character_test()
     {
         var newCharName = "Jax";
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
 
-        characterService.CreateCharacterStub(playerId);
+        var chr = CreateHumanCharacter("Jax");
+        chr = characterService.UpdateCharacterName(newCharName, CreateCharIdentity(chr));
 
-        var origins = new CharacterOrigins
-        {
-            Race = CharactersLore.Races.Human,
-            Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
-            Class = CharactersLore.Classes.Warrior
-        };
-
-        var character = characterService.SaveCharacterStub(origins, playerId);
-        character = characterService.UpdateCharacter(new CharacterUpdate
-        {
-            CharacterId = character.Identity.Id,
-            Name = newCharName
-        }, playerId);
-
-        character.Identity.Name.Should().Be(newCharName);
+        chr.Info.Name.Should().Be(newCharName);
     }
 
     [Theory]
     [Description("Deleting a character should remove it from db.")]
     public void Delete_character_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
 
-        characterService.CreateCharacterStub(playerId);
+        characterService.DeleteCharacter(CreateCharIdentity(chr));
 
-        var origins = new CharacterOrigins
-        {
-            Race = CharactersLore.Races.Human,
-            Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
-            Class = CharactersLore.Classes.Warrior
-        };
+        var characters = characterService.GetCharactersByPlayerId(chr.Identity.PlayerId);
 
-        var character = characterService.SaveCharacterStub(origins, playerId);
-
-        characterService.DeleteCharacter(character.Identity.Id, playerId);
-
-        var characters = characterService.GetCharacters(playerId);
-
-        characters.CharactersList.Should().NotContain(character);
+        characters.CharactersList.Should().NotContain(chr);
         characters.Count.Should().Be(0);
     }
 
@@ -144,147 +107,81 @@ public class CharacterServiceTests : TestBase
     [Description("Increasing the stats from a character should save it to db.")]
     public void Increase_stats_for_character_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
 
-        characterService.CreateCharacterStub(playerId);
+        var currentStr = chr.Sheet.Stats.Strength;
 
-        var origins = new CharacterOrigins
-        {
-            Race = CharactersLore.Races.Human,
-            Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
-            Class = CharactersLore.Classes.Warrior
-        };
+        dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.Identity.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Identity.Id)!.LevelUp.StatPoints = 1;
 
-        var character = characterService.SaveCharacterStub(origins, playerId);
+        chr = characterService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
 
-        var currentStr = character.Sheet.Stats.Strength;
-
-        dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.StatPoints = 1;
-
-        character = characterService.UpdateCharacter(new CharacterUpdate
-        {
-            CharacterId = character.Identity.Id,
-            Stat = CharactersLore.Stats.Strength
-        }, playerId);
-
-        character.Sheet.Stats.Strength.Should().Be(currentStr + 1);
+        chr.Sheet.Stats.Strength.Should().Be(currentStr + 1);
     }
 
     [Theory]
     [Description("Increasing the stats from a character with no stat points should throw.")]
     public void Increase_stats_with_no_points_for_character_should_throw_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-
-        Assert.Throws<Exception>(() => character = characterService.UpdateCharacter(new CharacterUpdate
-        {
-            CharacterId = character.Identity.Id,
-            Stat = CharactersLore.Stats.Strength
-        }, playerId));
+        Assert.Throws<Exception>(() => characterService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr)));
     }
 
     [Theory]
     [Description("Increasing the skills from a character should save it to db.")]
     public void Increase_skills_for_character_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
+        var currentCombat = chr.Sheet.Skills.Combat;
 
-        characterService.CreateCharacterStub(playerId);
+        dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.Identity.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Identity.Id)!.LevelUp.SkillPoints = 1;
 
-        var origins = new CharacterOrigins
-        {
-            Race = CharactersLore.Races.Human,
-            Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
-            Class = CharactersLore.Classes.Warrior
-        };
+        chr = characterService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr));
 
-        var character = characterService.SaveCharacterStub(origins, playerId);
-
-        var currentCombat = character.Sheet.Skills.Combat;
-
-        dbm.Snapshot.Players.Find(p => p.Identity.Id == playerId).Characters.Find(c => c.Identity.Id == character.Identity.Id).LevelUp.SkillPoints = 1;
-
-        character = characterService.UpdateCharacter(new CharacterUpdate
-        {
-            CharacterId = character.Identity.Id,
-            Skill = CharactersLore.Skills.Combat
-        }, playerId);
-
-        character.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
+        chr.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
     }
 
     [Theory]
-    [Description("Increasing the skills from a character with no stat points should throw.")]
+    [Description("Increasing the skills from a character with no skill points should throw.")]
     public void Increase_skills_with_no_points_for_character_should_throw_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-
-        Assert.Throws<Exception>(() => character = characterService.UpdateCharacter(new CharacterUpdate
-        {
-            CharacterId = character.Identity.Id,
-            Skill = CharactersLore.Skills.Combat
-        }, playerId));
+        Assert.Throws<Exception>(() => characterService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr)));
     }
 
     [Theory]
     [Description("Equipping an item in character inventory.")]
     public void Equip_item_on_character_inventory_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-
-        var item = character.Supplies?.First();
+        var item = chr.Supplies.First();
         item.Should().NotBeNull();
 
-        var location = GetItemLocation(character);
+        var location = item.InventoryLocations.First();
 
         var equip = new CharacterEquip
         {
-            CharacterId = character.Identity.Id,
+            PlayerId = chr.Identity.PlayerId,
+            CharacterId = chr.Identity.Id,
             InventoryLocation = location,
-            ItemId = character.Supplies.First().Identity.Id
+            ItemId = chr.Supplies.First().Identity.Id
         };
 
-        characterService.EquipCharacterItem(equip, playerId);
+        characterService.EquipCharacterItem(equip);
 
         var hasEquipedItem =
-            character.Inventory.Head != null
-            || character.Inventory.Ranged != null
-            || character.Inventory.Body != null
-            || character.Inventory.Mainhand != null
-            || character.Inventory.Offhand != null
-            || character.Inventory.Shield != null;
+            chr.Inventory.Head != null
+            || chr.Inventory.Ranged != null
+            || chr.Inventory.Body != null
+            || chr.Inventory.Mainhand != null
+            || chr.Inventory.Offhand != null
+            || chr.Inventory.Shield != null;
 
-        if (character.Inventory.Heraldry.Count > 0)
+        if (chr.Inventory.Heraldry!.Count > 0)
         {
-            hasEquipedItem = character.Inventory.Heraldry.First() != null;
+            hasEquipedItem = chr.Inventory.Heraldry.First() != null;
         }
 
         hasEquipedItem.Should().BeTrue();
@@ -294,81 +191,65 @@ public class CharacterServiceTests : TestBase
     [Description("Unequipping an item from character inventory.")]
     public void Unequip_item_from_character_inventory_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-
-        var item = character.Supplies?.First();
+        var item = chr.Supplies.First();
         item.Should().NotBeNull();
 
-        var location = GetItemLocation(character);
+        var location = item.InventoryLocations.First();
 
         var equip = new CharacterEquip
         {
-            CharacterId = character.Identity.Id,
+            PlayerId = chr.Identity.PlayerId,
+            CharacterId = chr.Identity.Id,
             InventoryLocation = location,
-            ItemId = character.Supplies.First().Identity.Id
+            ItemId = chr.Supplies.First().Identity.Id
         };
 
-        characterService.EquipCharacterItem(equip, playerId);
-        characterService.UnequipCharacterItem(equip, playerId);
+        characterService.EquipCharacterItem(equip);
+        characterService.UnequipCharacterItem(equip);
 
         var hasEquipedItem =
-            character.Inventory.Head != null
-            || character.Inventory.Ranged != null
-            || character.Inventory.Body != null
-            || character.Inventory.Mainhand != null
-            || character.Inventory.Offhand != null
-            || character.Inventory.Shield != null;
+            chr.Inventory.Head != null
+            || chr.Inventory.Ranged != null
+            || chr.Inventory.Body != null
+            || chr.Inventory.Mainhand != null
+            || chr.Inventory.Offhand != null
+            || chr.Inventory.Shield != null;
 
-        if (character.Inventory.Heraldry.Count > 0)
+        if (chr.Inventory.Heraldry!.Count > 0)
         {
-            hasEquipedItem = character.Inventory.Heraldry.First() != null;
+            hasEquipedItem = chr.Inventory.Heraldry.First() != null;
         }
 
         hasEquipedItem.Should().BeFalse();
-        character.Supplies.Count.Should().Be(1);
+        chr.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
     }
 
     [Theory]
     [Description("Learning a common bonus heroic trait.")]
     public void Learn_common_bonus_heroic_trait_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
+        chr.LevelUp.DeedsPoints = 100;
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-        character.LevelUp.DeedsPoints = 100;
-
-        var listOfTraits = characterService.GetHeroicTraits();
-
-        var swordsman = listOfTraits.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman);
+        var swordsman = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman.Identity.Name)!;
 
         var trait = new CharacterHeroicTrait
         {
-            CharacterId = character.Identity.Id,
+            PlayerId = chr.Identity.PlayerId,
+            CharacterId = chr.Identity.Id,
             HeroicTraitId = swordsman.Identity.Id,
         };
 
-        var combatBeforeTrait = character.Sheet.Skills.Combat;
-        characterService.LearnHeroicTrait(trait, playerId);
-        var combatIncreasedOnce = character.Sheet.Skills.Combat;
+        var combatBeforeTrait = chr.Sheet.Skills.Combat;
+        characterService.LearnHeroicTrait(trait);
+        var combatIncreasedOnce = chr.Sheet.Skills.Combat;
 
         combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
 
-        characterService.LearnHeroicTrait(trait, playerId);
-        var combatIncreasedTwice = character.Sheet.Skills.Combat;
+        characterService.LearnHeroicTrait(trait);
+        var combatIncreasedTwice = chr.Sheet.Skills.Combat;
 
         combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
     }
@@ -377,66 +258,55 @@ public class CharacterServiceTests : TestBase
     [Description("Learning a unique heroic trait twice throws error.")]
     public void Learn_unique_heroic_trait_throws_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
+        chr.LevelUp.DeedsPoints = 1000;
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-        character.LevelUp.DeedsPoints = 1000;
-
-        var listOfTraits = characterService.GetHeroicTraits();
-
-        var metachaos = listOfTraits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology);
+        var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
 
         var trait = new CharacterHeroicTrait
         {
-            CharacterId = character.Identity.Id,
+            PlayerId = chr.Identity.PlayerId,
+            CharacterId = chr.Identity.Id,
             HeroicTraitId = metachaos.Identity.Id,
         };
 
-        characterService.LearnHeroicTrait(trait, playerId);
+        characterService.LearnHeroicTrait(trait);
 
-        Assert.Throws<Exception>(() => characterService.LearnHeroicTrait(trait, playerId));
+        Assert.Throws<Exception>(() => characterService.LearnHeroicTrait(trait));
     }
 
     [Theory]
-    [Description("Get character paperdoll.")]
+    [Description("Create character paperdoll.")]
     public void Generate_character_paperdoll_test()
     {
-        var playerId = CreatePlayer(playerName);
-        dbm.Snapshot.CharacterStubs.Clear();
+        var chr = CreateHumanCharacter("Jax");
+        chr.LevelUp.DeedsPoints = 1000;
 
-        var character = CreateCharacter(
-            CharactersLore.Races.Human,
-            CharactersLore.Cultures.Human.Danarian,
-            CharactersLore.Heritage.Traditional,
-            CharactersLore.Classes.Warrior,
-            playerId);
-        character.LevelUp.DeedsPoints = 1000;
-
-        var listOfTraits = characterService.GetHeroicTraits();
-
-        var candlelight = listOfTraits.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight);
-        var metachaos = listOfTraits.Find(t => t.Identity.Name == TraitsLore.ActiveTraits.metachaosDaemonology);
+        var candlelight = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight.Identity.Name)!;
+        var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
 
         var candlelightTrait = new CharacterHeroicTrait
         {
-            CharacterId = character.Identity.Id,
+            PlayerId = chr.Identity.PlayerId,
+            CharacterId = chr.Identity.Id,
             HeroicTraitId = candlelight.Identity.Id,
         };
         var metachaosTrait = new CharacterHeroicTrait
         {
-            CharacterId = character.Identity.Id,
+            PlayerId = chr.Identity.PlayerId,
+            CharacterId = chr.Identity.Id,
             HeroicTraitId = metachaos.Identity.Id,
         };
-        characterService.LearnHeroicTrait(candlelightTrait, playerId);
-        characterService.LearnHeroicTrait(metachaosTrait, playerId);
+        characterService.LearnHeroicTrait(candlelightTrait);
+        characterService.LearnHeroicTrait(metachaosTrait);
 
-        var paperdoll = characterService.CalculateCharacterPaperdoll(character.Identity.Id, playerId);
+        var charIdentity = new CharacterIdentity
+        {
+            Id = chr.Identity.Id,
+            PlayerId = chr.Identity.PlayerId
+        };
+
+        var paperdoll = characterService.CalculatePaperdollForPlayerCharacter(charIdentity);
 
         paperdoll.Should().NotBeNull();
         paperdoll.Stats.Should().NotBeNull();
@@ -444,101 +314,49 @@ public class CharacterServiceTests : TestBase
         paperdoll.Skills.Should().NotBeNull();
         paperdoll.SpecialSkills.Should().NotBeNull();
 
-        paperdoll.Stats.Strength.Should().BeGreaterThanOrEqualTo(character.Sheet.Stats.Strength);
+        paperdoll.Stats.Strength.Should().BeGreaterThanOrEqualTo(chr.Sheet.Stats.Strength);
         paperdoll.Assets.Resolve.Should().BeGreaterThan(10);
         paperdoll.Skills.Arcane.Should().BeGreaterThan(20);
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
     }
 
-    #region private methods
-    private string GetItemLocation(Character character)
+
+    [Theory]
+    [Description("Joining party should reflect on Character.")]
+    public void Join_party_correctly_displays_on_Character_test()
     {
-        var item = itemService.GenerateRandomItem();
-        if (item.Subtype == ItemsLore.Subtypes.Wealth.Goods)
-        {
-            return GetItemLocation(character);
-        }
+        var party = gameplayService.CreateParty();
+        var chr = CreateHumanCharacter("Jax");
 
-        item.Identity.CharacterId = character.Identity.Id;
-        character.Supplies.Clear();
-        character.Supplies.Add(item);
+        gameplayService.JoinParty(party.Id, CreateCharIdentity(chr));
 
-        string location = string.Empty;
-        if (ItemsLore.Subtypes.Weapons.All.Contains(item.Subtype))
-        {
-            switch (item.Subtype)
-            {
-                case ItemsLore.Subtypes.Weapons.Axe:
-                case ItemsLore.Subtypes.Weapons.Dagger:
-                case ItemsLore.Subtypes.Weapons.Mace:
-                case ItemsLore.Subtypes.Weapons.Pike:
-                case ItemsLore.Subtypes.Weapons.Polearm:
-                case ItemsLore.Subtypes.Weapons.Spear:
-                case ItemsLore.Subtypes.Weapons.Sword:
-                    location = ItemsLore.InventoryLocation.Mainhand;
-                    break;
-                case ItemsLore.Subtypes.Weapons.Bow:
-                case ItemsLore.Subtypes.Weapons.Crossbow:
-                case ItemsLore.Subtypes.Weapons.Sling:
-                    location = ItemsLore.InventoryLocation.Ranged;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else if (ItemsLore.Subtypes.Protections.All.Contains(item.Subtype))
-        {
-            switch (item.Subtype)
-            {
-                case ItemsLore.Subtypes.Protections.Helm:
-                    location = ItemsLore.InventoryLocation.Head;
-                    break;
-                case ItemsLore.Subtypes.Protections.Armour:
-                    location = ItemsLore.InventoryLocation.Body;
-                    break;
-                case ItemsLore.Subtypes.Protections.Shield:
-                    location = ItemsLore.InventoryLocation.Shield;
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            switch (item.Subtype)
-            {
-                case ItemsLore.Subtypes.Wealth.Gems:
-                case ItemsLore.Subtypes.Wealth.Trinket:
-                case ItemsLore.Subtypes.Wealth.Valuables:
-                    location = ItemsLore.InventoryLocation.Heraldry;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return location;
+        chr.Info.IsInParty.Should().BeTrue();   
     }
 
-    private Character CreateCharacter(string race, string culture, string heritage, string classes, string playerId)
+    [Theory]
+    [Description("Leaving party should reflect on Character.")]
+    public void Leave_party_correctly_displays_on_Character_test()
     {
-        dbm.Snapshot.CharacterStubs.Clear();
+        var party = gameplayService.CreateParty();
+        var chr = CreateHumanCharacter("Jax");
 
-        characterService.CreateCharacterStub(playerId);
+        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Id, CreateCharIdentity(chr)));
 
-        var origins = new CharacterOrigins
+        gameplayService.JoinParty(party.Id, CreateCharIdentity(chr));
+        gameplayService.LeaveParty(party.Id, CreateCharIdentity(chr));
+
+        chr.Info.IsInParty.Should().BeFalse();
+    }
+
+    #region private methods
+    private static CharacterIdentity CreateCharIdentity(Character chr)
+    {
+        return new CharacterIdentity
         {
-            Race = race,
-            Culture = culture,
-            Heritage = heritage,
-            Class = classes
+            Id = chr.Identity.Id,
+            PlayerId = chr.Identity.PlayerId
         };
-
-        return characterService.SaveCharacterStub(origins, playerId);
     }
     #endregion
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8604 // Possible null reference argument.

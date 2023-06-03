@@ -15,7 +15,7 @@ public class CharacterInventory
     public Item? Ranged { get; set; }
 
     [MaxLength(5, ErrorMessage = "Heraldry cannot support more items.")]
-    public List<Item>? Heraldry { get; set; } = new List<Item>();
+    public List<Item>? Heraldry { get; set; } = new();
 
     public List<Item> GetAllEquipedItems()
     {

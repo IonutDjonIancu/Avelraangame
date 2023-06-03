@@ -11,6 +11,11 @@ public class DiceRollService : IDiceRollService
         logic = new DiceRollLogicDelegator();
     }
 
+    public bool FlipCoin()
+    {
+        return logic.FlipCoin();
+    }
+
     public int Roll_d20(bool hasReroll = false)
     {
         if (hasReroll)
@@ -35,19 +40,14 @@ public class DiceRollService : IDiceRollService
         }
     }
 
-    public int Roll_dX(int x)
+    public int Roll_1dX(int x)
     {
         return logic.Roll1dXnoReroll(x);
     }
 
-    public int Roll_dXY(int x, int y)
+    public int Roll_XdY(int x, int y)
     {
         return logic.RollXdYnoReroll(x, y);
-    }
-
-    public DiceRoll Roll_d20_NoHeritage(int bonus = 0)
-    {
-        return logic.GenerateRollFor(CharactersLore.Heritage.None, bonus);
     }
 
     public DiceRoll Roll_d20_Traditional(int bonus = 0)

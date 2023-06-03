@@ -5,20 +5,25 @@ namespace Service_Delegators;
 
 public class ItemService : IItemService
 {
+    private readonly ItemValidator validator;
     private readonly ItemLogicDelegator logic;
 
-    public ItemService(IDiceRollService diceRollService)
-    { 
+    public ItemService(
+        IDatabaseService databaseService, 
+        IDiceRollService diceRollService)
+    {
+        validator = new ItemValidator(databaseService.Snapshot);
         logic = new ItemLogicDelegator(diceRollService);
     }
     
     public Item GenerateRandomItem()
     {
-        return logic.GetARandomItem();
+        return logic.GenerateItem();
     }
 
     public Item GenerateSpecificItem(string type, string subtype)
     {
-        return logic.GetASpecificItem(type, subtype);
+        validator.ValidateTypeAndSubtypeOnGenerate(type, subtype);
+        return logic.GenerateItem(type, subtype);
     }
 }
