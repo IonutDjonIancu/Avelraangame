@@ -15,8 +15,7 @@ public class TestBase
     protected readonly IItemService itemService;
     protected readonly ICharacterService characterService;
     protected readonly INpcService npcService;
-
-    protected readonly Snapshot snapshot;
+    protected readonly IGameplayService gameplayService;
 
     protected TestBase()
 	{
@@ -37,13 +36,32 @@ public class TestBase
         itemService = new ItemService(dbs, diceService);
         characterService = new CharacterService(dbs, diceService, itemService);
         npcService = new NpcService(dbs, diceService, itemService, characterService);
+        gameplayService = new GameplayService(dbs, diceService);
     }
 
     protected string CreatePlayer(string playerName)
     {
-        snapshot.Players!.Clear();
+        dbs.Snapshot.Players!.Clear();
         playerService.CreatePlayer(playerName);
 
-        return snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
+        return dbs.Snapshot.Players!.Find(p => p.Identity.Name == playerName)!.Identity.Id;
+    }
+
+    protected Character CreateHumanCharacter(string playerName)
+    {
+        var playerId = CreatePlayer(playerName);
+        dbs.Snapshot.CharacterStubs.Clear();
+
+        characterService.CreateCharacterStub(playerId);
+
+        var origins = new CharacterOrigins
+        {
+            Race = CharactersLore.Races.Human,
+            Culture = CharactersLore.Cultures.Human.Danarian,
+            Heritage = CharactersLore.Heritage.Traditional,
+            Class = CharactersLore.Classes.Warrior
+        };
+
+        return characterService.SaveCharacterStub(origins, playerId);
     }
 }

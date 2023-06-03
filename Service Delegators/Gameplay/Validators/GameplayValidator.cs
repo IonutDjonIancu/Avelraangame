@@ -18,7 +18,9 @@ internal class GameplayValidator : ValidatorBase
     
         ValidateCharacterPlayerCombination(charIdentity);
 
-        var isCharacterInAnotherParty = snapshot.Parties.SelectMany(s => s.CharacterIds).ToList().Contains(charIdentity.Id);
+        var isCharacterInAnotherParty = 
+            snapshot.Parties.SelectMany(s => s.CharacterIds).ToList().Contains(charIdentity.Id)
+            || snapshot.Parties.Select(s => s.PartyLeadId).ToList().Contains(charIdentity.Id);
         if (isCharacterInAnotherParty) Throw("Character is already in another party.");
     }
 
@@ -33,5 +35,6 @@ internal class GameplayValidator : ValidatorBase
 
         var party = snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
         if (party.IsAdventuring) Throw("Unable to abandon party during adventuring.");
+        if (!party.CharacterIds.Contains(charIdentity.Id)) Throw("This party does not have this character.");
     }
 }

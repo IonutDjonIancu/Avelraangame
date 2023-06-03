@@ -58,11 +58,9 @@ internal class GameplayLogicDelegator
         {
             party.PartyLeadId = charIdentity.Id;
         }
-        else
-        {
-            party.CharacterIds.Add(charIdentity.Id);
-        }
 
+        // we add the character to the party list of characters irrespective if he is the party lead or not
+        party.CharacterIds.Add(charIdentity.Id);
         character.Info.IsInParty = true;
 
         dbs.PersistDatabase();

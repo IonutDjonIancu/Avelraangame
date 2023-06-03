@@ -6,12 +6,7 @@ public class CharacterServiceTests : TestBase
 
     public CharacterServiceTests()
     {
-        var listOfPlayers = snapshot.Players.ToList();
-
-        foreach (var player in listOfPlayers)
-        {
-            playerService.DeletePlayer(player.Identity.Id);
-        }
+        dbs.Snapshot.Players.Clear();
     }
 
     [Theory]
@@ -88,7 +83,7 @@ public class CharacterServiceTests : TestBase
     {
         var newCharName = "Jax";
 
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
         chr = characterService.UpdateCharacterName(newCharName, CreateCharIdentity(chr));
 
         chr.Info.Name.Should().Be(newCharName);
@@ -98,7 +93,7 @@ public class CharacterServiceTests : TestBase
     [Description("Deleting a character should remove it from db.")]
     public void Delete_character_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
 
         characterService.DeleteCharacter(CreateCharIdentity(chr));
 
@@ -112,7 +107,7 @@ public class CharacterServiceTests : TestBase
     [Description("Increasing the stats from a character should save it to db.")]
     public void Increase_stats_for_character_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
 
         var currentStr = chr.Sheet.Stats.Strength;
 
@@ -127,7 +122,7 @@ public class CharacterServiceTests : TestBase
     [Description("Increasing the stats from a character with no stat points should throw.")]
     public void Increase_stats_with_no_points_for_character_should_throw_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
 
         Assert.Throws<Exception>(() => characterService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr)));
     }
@@ -136,7 +131,7 @@ public class CharacterServiceTests : TestBase
     [Description("Increasing the skills from a character should save it to db.")]
     public void Increase_skills_for_character_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
         var currentCombat = chr.Sheet.Skills.Combat;
 
         dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.Identity.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Identity.Id)!.LevelUp.SkillPoints = 1;
@@ -150,7 +145,7 @@ public class CharacterServiceTests : TestBase
     [Description("Increasing the skills from a character with no skill points should throw.")]
     public void Increase_skills_with_no_points_for_character_should_throw_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
 
         Assert.Throws<Exception>(() => characterService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr)));
     }
@@ -159,7 +154,7 @@ public class CharacterServiceTests : TestBase
     [Description("Equipping an item in character inventory.")]
     public void Equip_item_on_character_inventory_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
 
         var item = chr.Supplies.First();
         item.Should().NotBeNull();
@@ -196,7 +191,7 @@ public class CharacterServiceTests : TestBase
     [Description("Unequipping an item from character inventory.")]
     public void Unequip_item_from_character_inventory_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
 
         var item = chr.Supplies.First();
         item.Should().NotBeNull();
@@ -235,7 +230,7 @@ public class CharacterServiceTests : TestBase
     [Description("Learning a common bonus heroic trait.")]
     public void Learn_common_bonus_heroic_trait_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 100;
 
         var swordsman = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman.Identity.Name)!;
@@ -263,7 +258,7 @@ public class CharacterServiceTests : TestBase
     [Description("Learning a unique heroic trait twice throws error.")]
     public void Learn_unique_heroic_trait_throws_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 1000;
 
         var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
@@ -284,7 +279,7 @@ public class CharacterServiceTests : TestBase
     [Description("Create character paperdoll.")]
     public void Generate_character_paperdoll_test()
     {
-        var chr = CreateHumanCharacter();
+        var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 1000;
 
         var candlelight = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight.Identity.Name)!;
@@ -326,6 +321,34 @@ public class CharacterServiceTests : TestBase
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
     }
 
+
+    [Theory]
+    [Description("Joining party should reflect on Character.")]
+    public void Join_party_correctly_displays_on_Character_test()
+    {
+        var party = gameplayService.CreateParty();
+        var chr = CreateHumanCharacter("Jax");
+
+        gameplayService.JoinParty(party.Id, CreateCharIdentity(chr));
+
+        chr.Info.IsInParty.Should().BeTrue();   
+    }
+
+    [Theory]
+    [Description("Leaving party should reflect on Character.")]
+    public void Leave_party_correctly_displays_on_Character_test()
+    {
+        var party = gameplayService.CreateParty();
+        var chr = CreateHumanCharacter("Jax");
+
+        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Id, CreateCharIdentity(chr)));
+
+        gameplayService.JoinParty(party.Id, CreateCharIdentity(chr));
+        gameplayService.LeaveParty(party.Id, CreateCharIdentity(chr));
+
+        chr.Info.IsInParty.Should().BeFalse();
+    }
+
     #region private methods
     private static CharacterIdentity CreateCharIdentity(Character chr)
     {
@@ -334,24 +357,6 @@ public class CharacterServiceTests : TestBase
             Id = chr.Identity.Id,
             PlayerId = chr.Identity.PlayerId
         };
-    }
-
-    private Character CreateHumanCharacter()
-    {
-        var playerId = CreatePlayer(playerName);
-        dbs.Snapshot.CharacterStubs.Clear();
-
-        characterService.CreateCharacterStub(playerId);
-
-        var origins = new CharacterOrigins
-        {
-            Race = CharactersLore.Races.Human,
-            Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
-            Class = CharactersLore.Classes.Warrior
-        };
-
-        return characterService.SaveCharacterStub(origins, playerId);
     }
     #endregion
 }
