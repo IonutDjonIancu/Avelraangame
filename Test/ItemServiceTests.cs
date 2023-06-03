@@ -1,8 +1,4 @@
-﻿using Data_Mapping_Containers.Dtos;
-using Data_Mapping_Containers.Dtos;
-using FluentAssertions.Extensions;
-
-namespace Tests;
+﻿namespace Tests;
 
 public class ItemServiceTests : TestBase
 {

@@ -1,27 +1,21 @@
-﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
-
-using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
-using Service_Delegators.Validators;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
 public class CharacterService : ICharacterService
 {
-    private readonly IDatabaseManager dbm;
+    private readonly IDatabaseService dbs;
     private readonly CharacterValidator validator;
     private readonly CharacterLogicDelegator logic;
 
     public CharacterService(
-        IDatabaseManager databaseManager,
+        IDatabaseService databaseService,
         IDiceRollService diceRollService,
         IItemService itemService)
     {
-        dbm = databaseManager;
-
-        validator = new CharacterValidator(dbm);
-        logic = new CharacterLogicDelegator(dbm, diceRollService, itemService);
+        dbs = databaseService;
+        validator = new CharacterValidator(databaseService.Snapshot);
+        logic = new CharacterLogicDelegator(databaseService, diceRollService, itemService);
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
@@ -38,104 +32,112 @@ public class CharacterService : ICharacterService
         return logic.SaveStub(origins, playerId);
     }
 
-    public Character UpdateCharacter(CharacterUpdate charUpdate, string playerId)
+    public Character UpdateCharacterName(string name, CharacterIdentity identity)
     {
-        if      (!string.IsNullOrWhiteSpace(charUpdate.Name)) return ModifyName(charUpdate, playerId);
-        else if (!string.IsNullOrWhiteSpace(charUpdate.Stat)) return ModifyStats(charUpdate, playerId);
-        else if (!string.IsNullOrWhiteSpace(charUpdate.Skill)) return ModifySkills(charUpdate, playerId);
-        else throw new Exception("No changes detected on character update.");
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidateCharacterName(name);
+
+        return logic.ChangeName(name, identity);
     }
 
-    public void DeleteCharacter(string characterId, string playerId)
+    public Character UpdateCharacterFame(string fame, CharacterIdentity identity)
     {
-        validator.ValidateCharacterOnDelete(characterId, playerId);
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidateString(fame);
 
-        logic.DeleteCharacter(characterId, playerId);
+        return logic.AddFame(fame, identity);
     }
 
-    public Characters GetCharacters(string playerId)
+    public Character UpdateCharacterParty(string partyId, CharacterIdentity identity)
     {
-        var player = dbm.Metadata.GetPlayerById(playerId);
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidatePartyOnJoin(partyId);
 
-        validator.ValidateObject(player);
+        return logic.SetParty(identity);
+    }
+
+    public Character UpdateCharacterWealth(int wealth, CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidateNumber(wealth);
+
+        return logic.AddWealth(wealth, identity);
+    }
+
+
+    public Character UpdateCharacterStats(string stat, CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidateStatExists(stat);
+        validator.ValidateCharacterHasStatsPoints(identity);
+
+        return logic.IncreaseStats(stat, identity);
+    }
+
+    public Character UpdateCharacterSkills(string skill, CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidateSkillExists(skill);
+        validator.ValidateCharacterHasSkillsPoints(identity);
+
+        return logic.IncreaseSkills(skill, identity);
+    }
+
+    public void KillCharacter(CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+
+        logic.KillChar(identity);
+    }
+
+    public void DeleteCharacter(CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+
+        logic.DeleteChar(identity);
+    }
+
+    public Characters GetCharactersByPlayerId(string playerId)
+    {
+        var characters = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters;
 
         return new Characters
         {
-            Count = player.Characters.Count,
-            CharactersList = player.Characters
+            Count = characters!.Count,
+            CharactersList = characters
         };
     }
 
-    public Character EquipCharacterItem(CharacterEquip equip, string playerId)
+    public Character EquipCharacterItem(CharacterEquip equip)
     {
-        validator.ValidateCharacterEquipUnequipItem(equip, playerId, true);
+        validator.ValidateCharacterEquipUnequipItem(equip, true);
 
-        return logic.EquipItem(equip, playerId);
+        return logic.EquipItem(equip);
     }
 
-    public Character UnequipCharacterItem(CharacterEquip unequip, string playerId)
+    public Character UnequipCharacterItem(CharacterEquip unequip)
     {
-        validator.ValidateCharacterEquipUnequipItem(unequip, playerId, false);
+        validator.ValidateCharacterEquipUnequipItem(unequip, false);
 
-        return logic.UnequipItem(unequip, playerId);
+        return logic.UnequipItem(unequip);
     }
 
-    public Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId)
+    public CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity)
     {
-        validator.ValidateCharacterLearnHeroicTrait(trait, playerId);
+        validator.ValidateCharacterPlayerCombination(identity);
 
-        return logic.ApplyHeroicTrait(trait, playerId);
+        return logic.CalculatePaperdollForCharacter(identity);
     }
 
-    public CharacterPaperdoll CalculateCharacterPaperdoll(string characterId, string playerId)
+    public CharacterPaperdoll CalculatePaperdoll(Character character)
     {
-        validator.ValidateCharacterPlayerCombination(characterId, playerId);
-
-        return logic.CalculatePaperdoll(characterId, playerId);
+        return logic.CalculatePaperdollOnly(character);
     }
 
-    public CharacterPaperdoll CalculateCharacterPaperdoll(Character character)
+    public Character LearnHeroicTrait(CharacterHeroicTrait trait)
     {
-        return logic.CalculatePaperdollForNpc(character);
+        validator.ValidateCharacterLearnHeroicTrait(trait);
+
+        return logic.ApplyHeroicTrait(trait);
     }
-
-    public List<HeroicTrait> GetHeroicTraits()
-    {
-        return dbm.Snapshot.Traits;
-    }
-
-    public Rulebook GetRulebook()
-    {
-        return dbm.Snapshot.Rulebook;
-    }
-
-    #region private methods
-    private Character ModifyName(CharacterUpdate charUpdate, string playerId)
-    {
-        validator.ValidateCharacterOnNameUpdate(charUpdate, playerId);
-
-        return logic.ChangeName(charUpdate, playerId);
-    }
-
-    private Character ModifyStats(CharacterUpdate charUpdate, string playerId)
-    {
-        validator.ValidateObject(charUpdate);
-        validator.ValidateGuid(charUpdate.CharacterId);
-        validator.ValidateStatsToDistribute(charUpdate.CharacterId, charUpdate.Stat, playerId);
-
-        return logic.IncreaseStats(charUpdate, playerId);
-    }
-
-    private Character ModifySkills(CharacterUpdate charUpdate, string playerId)
-    {
-        validator.ValidateObject(charUpdate);
-        validator.ValidateGuid(charUpdate.CharacterId);
-        validator.ValidateSkillsToDistribute(charUpdate.CharacterId, charUpdate.Skill, playerId);
-
-        return logic.IncreaseSkills(charUpdate, playerId);
-    }
-    #endregion
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8603 // Possible null reference return.

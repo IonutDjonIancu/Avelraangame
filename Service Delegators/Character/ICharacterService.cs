@@ -7,19 +7,24 @@ public interface ICharacterService
     CharacterStub CreateCharacterStub(string playerId);
     Character SaveCharacterStub(CharacterOrigins origins, string playerId);
 
-    Character UpdateCharacter(CharacterUpdate charUpdate, string playerId);
-    void DeleteCharacter(string characterId, string playerId);
+    Character UpdateCharacterName(string name, CharacterIdentity identity);
+    Character UpdateCharacterFame(string fame, CharacterIdentity identity);
+    Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
+    Character UpdateCharacterParty(string partyId, CharacterIdentity identity);
 
-    Characters GetCharacters(string playerId);   
+    Character UpdateCharacterStats(string stat, CharacterIdentity identity);
+    Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
+    
+    void KillCharacter(CharacterIdentity identity);
+    void DeleteCharacter(CharacterIdentity identity);
 
-    Character EquipCharacterItem(CharacterEquip equip, string playerId);
-    Character UnequipCharacterItem(CharacterEquip unequip, string playerId);
+    Characters GetCharactersByPlayerId(string playerId);   
 
-    CharacterPaperdoll CalculateCharacterPaperdoll(string characterId, string playerId);
-    CharacterPaperdoll CalculateCharacterPaperdoll(Character character);
+    Character EquipCharacterItem(CharacterEquip equip);
+    Character UnequipCharacterItem(CharacterEquip unequip);
 
-    Character LearnHeroicTrait(CharacterHeroicTrait trait, string playerId);
-    List<HeroicTrait> GetHeroicTraits();   
+    CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity);
+    CharacterPaperdoll CalculatePaperdoll(Character character);
 
-    Rulebook GetRulebook();
+    Character LearnHeroicTrait(CharacterHeroicTrait trait);
 }

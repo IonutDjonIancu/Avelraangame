@@ -6,37 +6,36 @@ namespace Avelraangame.Factories;
 
 public class FactoryManager : IFactoryManager
 {
-    public IDatabaseManager Dbm { get; init; }
     public IServiceFactory ServiceFactory { get; init; }
 
     private FactoryManager() { }
 
-    public FactoryManager(IAppSettingsConfigManager configManager)
+    public FactoryManager(IAppSettingsConfigManager config)
     {
-        var config = new DatabaseManagerConfig()
+        var dbcfg = new DatabaseManagerConfig()
         {
-            DbPath = configManager.DbPath,
-            DbPlayersPath = configManager.DbPlayersPath,
-            DbRulebookPath = configManager.DbRulebookPath,
+            DbPath = config.DbPath,
+            DbPlayersPath = config.DbPlayersPath,
 
-            LogPath = configManager.LogPath,
+            LogPath = config.LogPath,
 
-            Key = configManager.DbKey,
-
-            AvelraanEmail = configManager.AvelraanEmail,
-            AvelraanPassword = configManager.AvelraanEmailPass
+            AvelraanEmail = config.AvelraanEmail,
+            AvelraanPassword = config.AvelraanEmailPass,
+            AveelraanSecretKey = config.AvelraanSecretKey
         };
         
         try
         {
-            Dbm = new DatabaseManager(config);
+            // setting up cache instance
+            var dbManager = new DatabaseManager(dbcfg);
+
+            // setting up services
+            ServiceFactory = new ServiceFactory(dbManager); 
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"{ex.Message}\n{ex.StackTrace}");
             throw new Exception("Unable to instantiate DatabaseManager, check logs for more details.");
         }
-
-        ServiceFactory = new ServiceFactory(Dbm);
     }
 }

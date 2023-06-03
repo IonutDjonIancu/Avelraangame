@@ -33,157 +33,133 @@ public class TraitsLore
         public const string rolls = "Rolls";
     }
 
-    public static class ActiveTraits
+    public static class ActivateTraits
     {
         // 1
-        public const string metachaosDaemonology = "Metachaos Daemonology";
-        public const string metachaosDaemonology_description = "Increases your spellcraft evocation prowess by 50% for all spells during an entire round, will occur in the next 3 odd rounds.";
-        public const string metachaosDaemonology_lore = "It is said amongst mages that this technique was initially discovered by the forefathers of the first humans of Khardah. Others claim it came from the sorceres of V'ald during the first descent of the elves upon the Cloud Kingdom of mankind. Although uncertainty shrouds this spellweave expertise, there is evidence that links the great pyramid in Khardah to the Illithos that shows how deeply research has this been.";
-
-        public static readonly List<HeroicTrait> All = new()
+        public static readonly HeroicTrait metachaosDaemonology = new()
         {
-            new HeroicTrait
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "7718aef3-4d96-4686-841f-45f5cae0266b",
-                    Name = metachaosDaemonology,
-                },
-                Description = metachaosDaemonology_description,
-                Lore = metachaosDaemonology_lore,
-                Type = Type.active,
-                Subtype = Subtype.onetime,
-                Category = Category.rolls,
-                DeedsCost = 100
-            }
+                Id = "7718aef3-4d96-4686-841f-45f5cae0266b",
+                Name = "Metachaos Daemonology",
+            },
+            Description = "Increases your spellcraft evocation prowess by 50% for all spells during an entire round, will occur in the next 3 odd rounds.",
+            Lore = "It is said amongst mages that this technique was initially discovered by the forefathers of the first humans of Khardah. Others claim it came from the sorceres of V'ald during the first descent of the elves upon the Cloud Kingdom of mankind. Although uncertainty shrouds this spellweave expertise, there is evidence that links the great pyramid in Khardah to the Illithos that shows how deeply research has this been.",
+            Type = Type.active,
+            Subtype = Subtype.onetime,
+            Category = Category.rolls,
+            DeedsCost = 100
         };
     }
 
     public static class PassiveTraits
     {
         // 1
-        public const string fatePoint = "Fate Point";
-        public const string fatePoint_description = "Your critical hits start from 19 out of a d20 die.";
-        public const string fatePoint_lore = "Any adventurer whose hands hold the marks of a sword hilt or the burns of spellcraft will eventually develop this ability. It marks its bearer as one who has travelled roads seen by a few.";
-
-        // 2
-        public const string theStrengthOfMany = "The Strength of Many";
-        public const string theStrengthOfMany_description = "Increases Paperdoll stat Strength by 10%.";
-        public const string theStrengthOfMany_lore = "At one point in your life, you have developed an almost unnatural ability to bend steel.";
-
-        // 3
-        public const string lifeInThePits = "Life in the Pits";
-        public const string lifeInThePits_description = "Increases Paperdoll asset Resolve by 50.";
-        public const string lifeInThePits_lore = "You've spent three months in fighting pits as wall decorator.";
-
-        // 4
-        public const string candlelight = "Candlelight";
-        public const string candlelight_description = "Increases Paperdoll skill Arcane by 20.";
-        public const string candlelight_lore = "Your candlelight studies have finally proven effective... somewhat.";
-
-        public static readonly List<HeroicTrait> All = new()
+        public static readonly HeroicTrait fatePoint = new()
         {
-            new HeroicTrait
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "f85a2b0f-428d-4691-8cdc-caa6c399ec94",
-                    Name = fatePoint,
-                },
-                Description = fatePoint_description,
-                Lore = fatePoint_lore,
-                Type = Type.passive,
-                Subtype = Subtype.onetime,
-                Category = Category.rolls,
-                DeedsCost = 50
+                Id = "f85a2b0f-428d-4691-8cdc-caa6c399ec94",
+                Name = "Fate Point",
             },
-            new HeroicTrait
+            Description = "Your critical hits start from 19 out of a d20 die.",
+            Lore = "Any adventurer whose hands hold the marks of a sword hilt or the burns of spellcraft will eventually develop this ability. It marks its bearer as one who has travelled roads seen by a few.",
+            Type = Type.passive,
+            Subtype = Subtype.onetime,
+            Category = Category.rolls,
+            DeedsCost = 50
+        };
+        // 2
+        public static readonly HeroicTrait theStrengthOfMany = new()
+        {
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "782d8a39-b6cc-46bb-8f6a-622525bfcba1",
-                    Name = theStrengthOfMany,
-                },
-                Description = theStrengthOfMany_description,
-                Lore = theStrengthOfMany_lore,
-                Type = Type.passive,
-                Subtype = Subtype.onetime,
-                Category = Category.stats,
-                DeedsCost = 10
+                Id = "782d8a39-b6cc-46bb-8f6a-622525bfcba1",
+                Name = "The Strength of Many",
             },
-            new HeroicTrait
+            Description = "Increases Paperdoll stat Strength by 10%.",
+            Lore = "At one point in your life you have developed an almost unnatural ability to bend steel.",
+            Type = Type.passive,
+            Subtype = Subtype.onetime,
+            Category = Category.stats,
+            DeedsCost = 10
+        };
+        // 3
+        public static readonly HeroicTrait lifeInThePits = new()
+        {
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "bda31453-f71e-4055-941e-eade048d57bf",
-                    Name = lifeInThePits,
-                },
-                Description = lifeInThePits_description,
-                Lore = lifeInThePits_lore,
-                Type = Type.passive,
-                Subtype = Subtype.onetime,
-                Category = Category.assets,
-                DeedsCost = 3
+                Id = "782d8a39-b6cc-46bb-8f6a-622525bfcba1",
+                Name = "Life in the Pits",
             },
-            new HeroicTrait
+            Description = "Increases Paperdoll asset Resolve by 50.",
+            Lore = "You've spent some three months in fighting pits as wall decorator.",
+            Type = Type.passive,
+            Subtype = Subtype.onetime,
+            Category = Category.assets,
+            DeedsCost = 3
+        };
+        // 4
+        public static readonly HeroicTrait candlelight = new()
+        {
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "e0fe3f49-16c2-4ed2-8273-8e3036402508",
-                    Name = candlelight,
-                },
-                Description = candlelight_description,
-                Lore = candlelight_lore,
-                Type = Type.passive,
-                Subtype = Subtype.onetime,
-                Category = Category.skills,
-                DeedsCost = 2
-            }
+                Id = "e0fe3f49-16c2-4ed2-8273-8e3036402508",
+                Name = "Candlelight",
+            },
+            Description = "Increases Paperdoll skill Arcane by 20.",
+            Lore = "Your candlelight studies have finally proven effective... somewhat.",
+            Type = Type.passive,
+            Subtype = Subtype.onetime,
+            Category = Category.skills,
+            DeedsCost = 2
         };
     }
 
     public static class BonusTraits
     {
         // 1
-        public const string swordsman = "Swordsman";
-        public const string swordsman_description = "Increases the base Combat skill by 5 plus another 1% of its Paperdoll amount.";
-        public const string swordsman_lore = "Steady arm and stout shield are the best teachers you have ever known.";
-        // 2
-        public const string skillful = "Skillful";
-        public const string skillful_description = "Increases a specific skill by 20% of its base amount.";
-        public const string skillful_lore = "A testament of your accomplishments during your years as an adventurer.";
-
-        public static readonly List<HeroicTrait> All = new()
+        public static readonly HeroicTrait swordsman = new()
         {
-            new HeroicTrait
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "0d5e0310-013b-42bd-b479-5c961dd583e1",
-                    Name = skillful,
-                },
-                Description = skillful_description,
-                Lore = skillful_lore,
-                Type = Type.bonus,
-                Subtype = Subtype.onetime,
-                Category = Category.skills,
-                DeedsCost = 5
+                Id = "ea91b5bb-c338-431d-bef5-915483aac4a0",
+                Name = "Swordsman",
             },
-            new HeroicTrait
+            Description = "Increases the base Combat skill by 5 plus another 1% of the character's Paperdoll amount.",
+            Lore = "Steady arm and stout shield are the best teachers you have ever known.",
+            Type = Type.bonus,
+            Subtype = Subtype.multiple,
+            Category = Category.skills,
+            DeedsCost = 1
+        };
+        // 2
+        public static readonly HeroicTrait skillful = new()
+        {
+            Identity = new HeroicTraitIdentity
             {
-                Identity = new HeroicTraitIdentity
-                {
-                    Id = "ea91b5bb-c338-431d-bef5-915483aac4a0",
-                    Name = swordsman,
-                },
-                Description = swordsman_description,
-                Lore = swordsman_lore,
-                Type = Type.bonus,
-                Subtype = Subtype.multiple,
-                Category = Category.skills,
-                DeedsCost = 1
-            }
+                Id = "0d5e0310-013b-42bd-b479-5c961dd583e1",
+                Name = "Skillful",
+            },
+            Description = "Increases a specific skill by 20% of its base amount.",
+            Lore = "A testament of your accomplishments during your years as an adventurer.",
+            Type = Type.bonus,
+            Subtype = Subtype.onetime,
+            Category = Category.skills,
+            DeedsCost = 5
         };
     }
 
+    public static readonly List<HeroicTrait> All = new()
+    {
+        ActivateTraits.metachaosDaemonology,
+
+        PassiveTraits.fatePoint,
+        PassiveTraits.theStrengthOfMany,
+        PassiveTraits.lifeInThePits,
+        PassiveTraits.candlelight,
+
+        BonusTraits.swordsman,
+        BonusTraits.skillful,
+    };
 }

@@ -6,6 +6,11 @@ internal class DiceRollLogicDelegator
 {
     private readonly Random random = new();
     
+    internal bool FlipCoin()
+    {
+        return random.Next(1, 3) == 1;
+    }
+
     internal int Roll1d20NoReroll()
     {
         return random.Next(1, 21);
@@ -55,8 +60,8 @@ internal class DiceRollLogicDelegator
     internal DiceRoll GenerateRollFor(string heritage, int bonus = 0)
     {
         var dice = new List<int>();
-
         int roll;
+
         if      (IsTraditional(heritage))   roll = Rolld20WithList(dice, bonus);
         else if (IsMartial(heritage))       roll = Rolld100WithList(dice, bonus);
         else  /*(none)*/                    roll = Rolld20WithList(dice, bonus);

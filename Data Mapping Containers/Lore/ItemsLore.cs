@@ -35,13 +35,12 @@ public class ItemsLore
         public const string Body = "Body";
         public const string Mainhand = "Mainhand";
         public const string Offhand = "Offhand";
-        public const string Shield = "Shield";
         public const string Ranged = "Ranged";
         public const string Heraldry = "Heraldry";
 
         public static readonly List<string> All = new()
         {
-            Head, Body, Mainhand, Offhand, Shield, Ranged, Heraldry
+            Head, Body, Mainhand, Offhand, Ranged, Heraldry
         };
     }
 
@@ -135,6 +134,19 @@ public class ItemsLore
             { Subtypes.Wealth.Valuables, ItemsLore.Wealth.Valuables },
             { Subtypes.Wealth.Trinket, ItemsLore.Wealth.Trinkets },
             { Subtypes.Wealth.Goods, ItemsLore.Wealth.Goods }
+        };
+    }
+
+    public static class Subcategories
+    {
+        public const string Onehanded = "Onehanded";
+        public const string Twohanded = "Twohanded";
+        public const string Ranged = "Ranged";
+        public const string Garment = "Garment";
+
+        public static readonly List<string> All = new()
+        {
+            Onehanded, Twohanded, Ranged, Garment
         };
     }
 

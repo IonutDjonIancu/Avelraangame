@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Data_Mapping_Containers.Dtos;
+﻿namespace Data_Mapping_Containers.Dtos;
 
 public class CharactersLore
 {
@@ -68,7 +66,6 @@ public class CharactersLore
 
     public static class Heritage
     {
-        public const string None = "None";
         public const string Traditional = "Traditional";
         public const string Martial = "Martial";
 
