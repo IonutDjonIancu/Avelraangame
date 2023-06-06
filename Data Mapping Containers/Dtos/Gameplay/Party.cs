@@ -6,5 +6,5 @@ public class Party
     public string CreationDate { get; set; }
     public bool IsAdventuring { get; set; }
     public string PartyLeadId { get; set; }
-    public List<string> CharacterIds { get; set; } = new();
+    public List<PartyMember> PartyMembers { get; set; } = new();
 }

@@ -18,10 +18,12 @@ internal class GameplayValidator : ValidatorBase
     
         ValidateCharacterPlayerCombination(charIdentity);
 
-        var isCharacterInAnotherParty = 
-            snapshot.Parties.SelectMany(s => s.CharacterIds).ToList().Contains(charIdentity.Id)
-            || snapshot.Parties.Select(s => s.PartyLeadId).ToList().Contains(charIdentity.Id);
-        if (isCharacterInAnotherParty) Throw("Character is already in another party.");
+        var isCharInAnotherParty = snapshot.Parties
+            .SelectMany(s => s.PartyMembers)
+            .SelectMany(s => s.CharacterIds)
+            .Contains(charIdentity.Id);
+
+        if (isCharInAnotherParty) Throw("Character is already in a party.");
     }
 
     internal void ValidatePartyOnLeave(string partyId, CharacterIdentity charIdentity)
@@ -30,11 +32,20 @@ internal class GameplayValidator : ValidatorBase
 
         ValidateCharacterPlayerCombination(charIdentity);
 
-        var isCharInParty = snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters!.Find(s => s.Identity.Id == charIdentity.Id)!.Info.IsInParty;
-        if (!isCharInParty) Throw("Character is in no party.");
+        var isCharInAnotherParty = snapshot.Parties
+           .SelectMany(s => s.PartyMembers)
+           .SelectMany(s => s.CharacterIds)
+           .Contains(charIdentity.Id);
+        if (!isCharInAnotherParty) Throw("Character is in no party.");
 
         var party = snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
-        if (party.IsAdventuring) Throw("Unable to abandon party during adventuring.");
-        if (!party.CharacterIds.Contains(charIdentity.Id)) Throw("This party does not have this character.");
+        if (party.IsAdventuring) Throw("Cannot abandon party during adventuring.");
+
+        if (!party.PartyMembers.SelectMany(s => s.CharacterIds).Contains(charIdentity.Id)) Throw("This party does not have this character.");
+    }
+
+    internal void ValidateWarpartyOnCreate(string partyId)
+    {
+        throw new NotImplementedException();
     }
 }
