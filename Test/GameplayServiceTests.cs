@@ -26,7 +26,7 @@ public class GameplayServiceTests : TestBase
         gameplayService.JoinParty(party.Id, GetCharacterIdentity(chr));
 
         dbs.Snapshot.Parties.First().PartyLeadId.Should().Be(chr.Identity.Id);
-        dbs.Snapshot.Parties.First().CharacterIds.Count.Should().Be(1);
+        dbs.Snapshot.Parties.First().PartyMembers.First().CharacterIds.Count.Should().Be(1);
     }
 
     [Theory]

@@ -36,11 +36,29 @@ internal class GameplayLogicDelegator
 
     internal Party LeaveParty(string partyId, CharacterIdentity charIdentity)
     {
-        var party = dbs.Snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
+        var party = dbs.Snapshot.Parties.Find(s => s.Id == partyId)!;
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
 
-        party.PartyLeadId = "";
-        party.CharacterIds.Remove(charIdentity.Id);
+        var member = party.PartyMembers.Find(s => s.PlayerId == charIdentity.PlayerId)!;
+        member.CharacterIds.Remove(charIdentity.Id);
+
+        if (member.CharacterIds.Count == 0)
+        {
+            party.PartyMembers.Remove(member);
+        }
+
+        if (party.PartyLeadId == charIdentity.Id)
+        {
+            if (party.PartyMembers.Count > 0)
+            {
+                party.PartyLeadId = party.PartyMembers.First().CharacterIds.First();
+            }
+            else
+            {
+                party.PartyLeadId = string.Empty;
+            }
+        }
+        
         character.Info.IsInParty = false;
 
         dbs.PersistDatabase();
@@ -58,15 +76,37 @@ internal class GameplayLogicDelegator
         {
             party.PartyLeadId = charIdentity.Id;
         }
+        // we still add the character to the party list of characters irrespective if he is the party lead or not
 
-        // we add the character to the party list of characters irrespective if he is the party lead or not
-        party.CharacterIds.Add(charIdentity.Id);
+        if (party.PartyMembers.Select(s => s.PlayerId).Contains(charIdentity.PlayerId))
+        {
+            party.PartyMembers.First(s => s.PlayerId == charIdentity.PlayerId).CharacterIds.Add(charIdentity.Id);
+        }
+        else
+        {
+            var newMember = new PartyMember
+            {
+                PlayerId = charIdentity.PlayerId,
+            };
+            newMember.CharacterIds.Add(charIdentity.Id);
+
+            party.PartyMembers.Add(newMember);
+        }
+        
         character.Info.IsInParty = true;
 
-        dbs.PersistDatabase();
         dbs.PersistPlayer(charIdentity.PlayerId);
+        dbs.PersistDatabase();
 
         return party;
+    }
+
+    public Warparty CreateWarparty(string partyId)
+    {
+        //var partyChars = dbs.Snapshot.Parties.Find(s => s.Id == partyId)!.CharacterIds;
+
+        // we need dictionary of playerId and characterId
+        throw new NotImplementedException();
     }
 
     #region private methods
@@ -74,7 +114,10 @@ internal class GameplayLogicDelegator
     {
         var sevenDaysAgo = DateTime.Now - DateTime.Now.AddDays(-7);
 
-        var oldParties = dbs.Snapshot.Parties.Where(s => DateTime.Parse(s.CreationDate) < DateTime.Now - sevenDaysAgo && !s.IsAdventuring).ToList();
+        var oldParties = dbs.Snapshot.Parties.Where(
+            s => DateTime.Parse(s.CreationDate) < DateTime.Now - sevenDaysAgo 
+            && !s.IsAdventuring
+            && s.PartyMembers.Count == 0).ToList();
         if (oldParties.Count == 0) return;
 
         oldParties.ForEach(s => dbs.Snapshot.Parties.Remove(s));
