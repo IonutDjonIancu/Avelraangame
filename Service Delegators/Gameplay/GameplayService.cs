@@ -31,4 +31,10 @@ public class GameplayService : IGameplayService
         validator.ValidatePartyOnLeave(partyId, charIdentity);
         return logic.LeaveParty(partyId, charIdentity);
     }
+
+    public Warparty CreateWarparty(string partyId)
+    {
+        validator.ValidateWarpartyOnCreate(partyId);
+        return logic.CreateWarparty(partyId);
+    }
 }
