@@ -52,6 +52,7 @@ public class DatabaseManager : IDatabaseManager
             Banned = banned,
             CharacterStubs = avDatabase.CharacterStubs,
             Parties = avDatabase.Parties,
+            Warparties = avDatabase.Warparties,
 
             Players = ReadPlayerFiles(info.DbPlayersPath),
         };

@@ -6,5 +6,8 @@ public class Party
     public string CreationDate { get; set; }
     public bool IsAdventuring { get; set; }
     public string PartyLeadId { get; set; }
-    public List<PartyMember> PartyMembers { get; set; } = new();
+    public List<CharacterPaperdoll> PartyMembers { get; set; } = new();
+
+    // loot will be populated for every party member death
+    public List<Item> Loot { get; set; } 
 }

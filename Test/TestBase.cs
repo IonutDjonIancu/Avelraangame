@@ -36,7 +36,7 @@ public class TestBase
         itemService = new ItemService(dbs, diceService);
         characterService = new CharacterService(dbs, diceService, itemService);
         npcService = new NpcService(dbs, diceService, itemService, characterService);
-        gameplayService = new GameplayService(dbs, diceService);
+        gameplayService = new GameplayService(dbs, diceService, characterService);
     }
 
     protected string CreatePlayer(string playerName)
