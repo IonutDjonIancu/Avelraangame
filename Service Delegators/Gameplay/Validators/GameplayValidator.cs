@@ -34,7 +34,7 @@ internal class GameplayValidator : ValidatorBase
            .SelectMany(s => s.PartyMembers)
            .Select(s => s.CharacterId)
            .Contains(charIdentity.Id);
-        if (!isCharInAnotherParty) Throw("Character is in a different party.");
+        if (isCharInAnotherParty) Throw("Character is in a different party.");
 
         var party = snapshot.Parties.FirstOrDefault(s => s.Id == partyId)!;
         if (party.IsAdventuring) Throw("Cannot abandon party during adventuring.");

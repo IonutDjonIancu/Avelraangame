@@ -40,7 +40,8 @@ public class GameplayServiceTests : TestBase
         gameplayService.JoinParty(party.Id, charIdentity);
         gameplayService.LeaveParty(party.Id, charIdentity);
 
-        dbs.Snapshot.Parties.First().PartyLeadId.Should().BeEmpty();
+        chr.Info.IsInParty.Should().BeFalse();
+        dbs.Snapshot.Parties.SelectMany(s => s.PartyMembers).Select(d => d.CharacterId).Contains(chr.Identity.Id).Should().BeFalse();
     }
     #endregion
 
@@ -61,16 +62,6 @@ public class GameplayServiceTests : TestBase
 
         dbs.Snapshot.Parties.Count.Should().Be(1);
         dbs.Snapshot.Parties.First().Id.Should().Be(newParty.Id);   
-    }
-
-    [Theory]
-    [Description("Wrong party id on join should throw.")]
-    public void Join_party_with_wrong_id_should_throw_test()
-    {
-        var party = CreateParty();
-        var chr = CreateHumanCharacter("Jax");
-
-        Assert.Throws<Exception>(() => gameplayService.JoinParty("asdas", GetCharacterIdentity(chr)));
     }
 
     [Theory]

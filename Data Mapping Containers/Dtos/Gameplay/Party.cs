@@ -9,5 +9,5 @@ public class Party
     public List<CharacterPaperdoll> PartyMembers { get; set; } = new();
 
     // loot will be populated for every party member death
-    public List<Item> Loot { get; set; } 
+    public List<Item> Loot { get; set; } = new();
 }
