@@ -24,7 +24,15 @@ internal class CharacterPaperdollLogic
         var items = character.Inventory.GetAllEquipedItems();
         var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
 
-        var paperdoll = new CharacterPaperdoll();
+        var paperdoll = new CharacterPaperdoll()
+        {
+            PlayerId = character.Identity.PlayerId,
+            CharacterId = character.Identity.Id,
+            Name = character.Info.Name,
+            Race = character.Info.Origins.Race,
+            Inventory = items
+        };
+
         CalculatePaperdollStats(character, items, paperdoll);
         CalculatePaperdollAssets(character, items, paperdoll);
         CalculatePaperdollSkills(character, items, paperdoll);

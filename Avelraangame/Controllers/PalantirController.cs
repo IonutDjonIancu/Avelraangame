@@ -471,23 +471,6 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // GET: /api/palantir/Gameplay/CreateParty
-    [HttpGet("Gameplay/CreateParty")]
-    public IActionResult CreateParty()
-    {
-        try
-        {
-            var party = factory.ServiceFactory.GameplayService.CreateParty();
-
-            return Ok(party);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
     // PUT: /api/palantir/Gameplay/JoinParty
     [HttpPut("Gameplay/JoinParty")]
     public IActionResult JoinParty([FromQuery] Request request, string partyId, string characterId)

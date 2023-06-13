@@ -7,6 +7,7 @@ public class Snapshot
     public List<string> Banned { get; set; }
     public List<CharacterStub> CharacterStubs { get; set; }
     public List<Party> Parties { get; set; }
+    public List<Warparty> Warparties { get; set; }
 
     public List<Player> Players { get; set; }
     public List<Item> Items { get; set; }
