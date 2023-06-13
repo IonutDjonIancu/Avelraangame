@@ -9,10 +9,11 @@ public class GameplayService : IGameplayService
 
     public GameplayService(
         IDatabaseService databaseService,
-        IDiceRollService diceRollService)
+        IDiceRollService diceRollService,
+        ICharacterService characterService)
     {
         validator = new GameplayValidator(databaseService.Snapshot);
-        logic = new GameplayLogicDelegator(databaseService, diceRollService);
+        logic = new GameplayLogicDelegator(databaseService, diceRollService, characterService);
     }
 
     public Party CreateParty()
@@ -22,7 +23,7 @@ public class GameplayService : IGameplayService
 
     public Party JoinParty(string partyId, CharacterIdentity charIdentity)
     {
-        validator.ValidatePartyBeforeJoin(partyId, charIdentity);
+        validator.ValidatePartyBeforeJoin(charIdentity);
         return logic.JoinParty(partyId, charIdentity);
     }
 
@@ -30,11 +31,5 @@ public class GameplayService : IGameplayService
     {
         validator.ValidatePartyOnLeave(partyId, charIdentity);
         return logic.LeaveParty(partyId, charIdentity);
-    }
-
-    public Warparty CreateWarparty(string partyId)
-    {
-        validator.ValidateWarpartyOnCreate(partyId);
-        return logic.CreateWarparty(partyId);
     }
 }

@@ -26,6 +26,6 @@ public class ServiceFactory : IServiceFactory
         ItemService         = new ItemService(DatabaseService, DicerollService);
         CharacterService    = new CharacterService(DatabaseService, DicerollService, ItemService);
         NpcService          = new NpcService(DatabaseService, DicerollService, ItemService, CharacterService);
-        GameplayService     = new GameplayService(DatabaseService, DicerollService);
+        GameplayService     = new GameplayService(DatabaseService, DicerollService, CharacterService);
     }
 }
