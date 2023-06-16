@@ -172,7 +172,7 @@ internal class CharacterValidator : ValidatorBase
     {
         ValidateGuid(partyId);
 
-        if (!snapshot.Parties.Exists(p => p.Id == partyId)) Throw("This party does not exist.");
+        if (!snapshot.Parties.Exists(p => p.Identity.Id == partyId)) Throw("This party does not exist.");
     }
 
     internal void ValidateStatExists(string stat)
@@ -206,6 +206,20 @@ internal class CharacterValidator : ValidatorBase
         ValidateString(name, "Invalid string for name.");
         if (name.Length < 3) Throw("Character name is too short, minimum of 3 letters allowed.");
         if (name.Length > 30) Throw("Character name is too long, maximum of 30 letters allowed.");
+    }
+
+    internal void ValidateIfPartyIsAdventuring(string characterId)
+    {
+        var party = snapshot.Parties.Find(s => s.Characters.Select(s => s.Id).ToList().Contains(characterId));
+
+        if (party != null && party.IsAdventuring) Throw("Cannot modify character during adventuring.");
+    }
+
+    internal void ValidateIfCharacterInParty(string characterId)
+    {
+        var isCharInParty = snapshot.Parties.Exists(s => s.Characters.Select(s => s.Id).ToList().Contains(characterId));
+
+        if (isCharInParty) Throw("Unable to modify character when in party.");
     }
 
     #region private methods
