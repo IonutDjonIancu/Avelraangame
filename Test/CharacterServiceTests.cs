@@ -277,7 +277,7 @@ public class CharacterServiceTests : TestBase
 
     [Theory]
     [Description("Create character paperdoll.")]
-    public void Generate_character_paperdoll_test()
+    public void Calculate_character_paperdoll_test()
     {
         var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 1000;
@@ -319,6 +319,8 @@ public class CharacterServiceTests : TestBase
         paperdoll.Skills.Arcane.Should().BeGreaterThan(20);
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
+
+        paperdoll.ActionTokens.Should().Be(paperdoll.Assets.Resolve / 10);
     }
 
 
