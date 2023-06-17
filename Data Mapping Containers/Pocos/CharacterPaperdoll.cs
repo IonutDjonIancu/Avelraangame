@@ -14,6 +14,7 @@ public class CharacterPaperdoll
     public CharacterStats Stats { get; set; } = new();
     public CharacterAssets Assets { get; set; } = new();
     public CharacterSkills Skills { get; set; } = new();
+    public int ActionTokens { get; set; }
 
     // these are the activate Heroic Traits which can be used during combat
     public List<HeroicTrait> SpecialSkills { get; set; } = new();

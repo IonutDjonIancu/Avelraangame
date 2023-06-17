@@ -25,7 +25,11 @@ internal class GameplayLogicDelegator
 
         var party = new Party
         {
-            Id = Guid.NewGuid().ToString(),
+            Identity = new PartyIdentity()
+            {
+                Id = Guid.NewGuid().ToString(),
+                PartyLeadId = string.Empty
+            },
             CreationDate = DateTime.Now.ToShortDateString(),
             IsAdventuring = false
         };
@@ -39,16 +43,15 @@ internal class GameplayLogicDelegator
 
     internal Party JoinParty(string partyId, CharacterIdentity charIdentity)
     {
-        var party = dbs.Snapshot.Parties.Find(s => s.Id == partyId);
+        var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId);
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
 
         party ??= CreateParty();
-        var paperdoll = charService.CalculatePaperdoll(character);
-        party.PartyMembers.Add(paperdoll);
+        party.Characters.Add(charIdentity);
             
-        if (string.IsNullOrWhiteSpace(party.PartyLeadId))
+        if (string.IsNullOrWhiteSpace(party.Identity.PartyLeadId))
         {
-            party.PartyLeadId = charIdentity.Id;
+            party.Identity.PartyLeadId = charIdentity.Id;
         }
         
         character.Info.IsInParty = true;
@@ -61,31 +64,36 @@ internal class GameplayLogicDelegator
 
     internal Party LeaveParty(string partyId, CharacterIdentity charIdentity)
     {
-        var party = dbs.Snapshot.Parties.Find(s => s.Id == partyId)!;
+        var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId)!;
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
 
-        var member = party.PartyMembers.Find(s => s.CharacterId == charIdentity.Id)!;
+        var member = party.Paperdolls.Find(s => s.CharacterId == charIdentity.Id)!;
+        if (member != null)
+        {
+            character.LevelUp.StatPoints += member.LevelUp.StatPoints;
+            character.LevelUp.SkillPoints += member.LevelUp.SkillPoints;
+            character.LevelUp.DeedsPoints += member.LevelUp.DeedsPoints;
+            party.Paperdolls.Remove(member);
+        }
 
-        character.LevelUp.StatPoints += member.LevelUp.StatPoints;
-        character.LevelUp.SkillPoints += member.LevelUp.SkillPoints;
-        character.LevelUp.DeedsPoints += member.LevelUp.DeedsPoints;
-
-        if (party.PartyLeadId == charIdentity.Id)
+        if (party.Identity.PartyLeadId == charIdentity.Id)
         {
             party.Loot.ForEach(s => character.Supplies.Add(s));
             party.Loot.Clear();
-
-            if (party.PartyMembers.Count > 0)
-            {
-                party.PartyLeadId = party.PartyMembers.First().CharacterId!;
-            }
-            else
-            {
-                party.PartyLeadId = string.Empty;
-            }
+            party.Identity.PartyLeadId = string.Empty;
         }
-        party.PartyMembers.Remove(member);
+
+        party.Characters.Remove(charIdentity);
         character.Info.IsInParty = false;
+
+        if (party.Characters.Count > 0)
+        {
+            party.Identity.PartyLeadId = party.Characters.First().Id!;
+        }
+        else
+        {
+            dbs.Snapshot.Parties.Remove(party);
+        }
 
         dbs.PersistDatabase();
         dbs.PersistPlayer(charIdentity.PlayerId);
@@ -102,7 +110,7 @@ internal class GameplayLogicDelegator
         var oldParties = dbs.Snapshot.Parties.Where(
             s => DateTime.Parse(s.CreationDate) < DateTime.Now - sevenDaysAgo 
             && !s.IsAdventuring
-            && s.PartyMembers.Count == 0).ToList();
+            && s.Characters.Count == 0).ToList();
         if (oldParties.Count == 0) return;
 
         oldParties.ForEach(s => dbs.Snapshot.Parties.Remove(s));

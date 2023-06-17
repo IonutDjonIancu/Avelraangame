@@ -1,4 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
+using System.Text.RegularExpressions;
 
 namespace Service_Delegators;
 
@@ -37,6 +38,7 @@ internal class CharacterPaperdollLogic
         CalculatePaperdollAssets(character, items, paperdoll);
         CalculatePaperdollSkills(character, items, paperdoll);
         CalculatePaperdollSpecialSkills(character, items, paperdoll);
+        CalculatePaperdollActionTokens(paperdoll);
 
         return paperdoll;
     }
@@ -175,6 +177,18 @@ internal class CharacterPaperdollLogic
         if (character.HeroicTraits.Exists(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight.Identity.Name))
         {
             paperdoll.Skills.Arcane += 20;
+        }
+    }
+
+    private static void CalculatePaperdollActionTokens(CharacterPaperdoll paperdoll)
+    {
+        if (paperdoll.Assets.Resolve < 10) 
+        {
+            paperdoll.ActionTokens = 1;
+        }
+        else
+        {
+            paperdoll.ActionTokens = paperdoll.Assets.Resolve / 10;
         }
     }
     #endregion

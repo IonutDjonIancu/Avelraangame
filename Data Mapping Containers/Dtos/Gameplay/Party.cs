@@ -2,11 +2,13 @@
 
 public class Party
 {
-    public string Id { get; set; }
+    public PartyIdentity Identity { get; set; }
+
     public string CreationDate { get; set; }
     public bool IsAdventuring { get; set; }
-    public string PartyLeadId { get; set; }
-    public List<CharacterPaperdoll> PartyMembers { get; set; } = new();
+    public bool IsInCombat { get; set; }
+    public List<CharacterIdentity> Characters { get; set; } = new();
+    public List<CharacterPaperdoll> Paperdolls { get; set; } = new();
 
     // loot will be populated for every party member death
     public List<Item> Loot { get; set; } = new();
