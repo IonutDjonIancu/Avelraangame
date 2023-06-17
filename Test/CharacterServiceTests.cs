@@ -320,7 +320,10 @@ public class CharacterServiceTests : TestBase
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
 
-        paperdoll.ActionTokens.Should().Be(paperdoll.Assets.Resolve / 10);
+        var calculatedActionTokens = RulebookLore.Calculations.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
+        var actionTokens = calculatedActionTokens <= 1 ? 1 : calculatedActionTokens;
+
+        paperdoll.ActionTokens.Should().Be(actionTokens);
     }
 
 
