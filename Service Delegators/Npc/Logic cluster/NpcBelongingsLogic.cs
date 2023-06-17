@@ -67,7 +67,6 @@ internal class NpcBelongingsLogic
         return item.Subcategory == ItemsLore.Subcategories.Ranged ? SetMainhandItem() : item;
     }
 
-
     private Item GetAWeapon()
     {
         var index = dice.Roll_XdY(0, ItemsLore.Subtypes.Weapons.All.Count - 1);

@@ -74,7 +74,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private void CalculatePaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemResBonus = 0;
         var itemHarBonus = 0;
@@ -110,7 +110,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private void CalculatePaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemComBonus = 0;
         var itemArcBonus = 0;
@@ -182,13 +182,13 @@ internal class CharacterPaperdollLogic
 
     private static void CalculatePaperdollActionTokens(CharacterPaperdoll paperdoll)
     {
-        if (paperdoll.Assets.Resolve < 10) 
+        if (paperdoll.Assets.Resolve < 100) 
         {
             paperdoll.ActionTokens = 1;
         }
         else
         {
-            paperdoll.ActionTokens = paperdoll.Assets.Resolve / 10;
+            paperdoll.ActionTokens = RulebookLore.Calculations.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
         }
     }
     #endregion

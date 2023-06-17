@@ -336,6 +336,14 @@ public class RulebookLore
                 public const string Trv = "2*Con + Agi + Wil - Str";
                 public const string Sai = "2*Con + Abs";
             }
+
+            public static class Misc
+            {
+                public static int CalculateActionTokens(int resolve)
+                {
+                    return resolve / 100;
+                } 
+            }
         }
     }
 

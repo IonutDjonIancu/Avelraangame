@@ -65,6 +65,9 @@ internal class NpcPaperdollLogic
 
         // money
         npc.Wealth = (int)Math.Floor(npc.Wealth * factor);
+
+        // action tokens
+        npc.Paperdoll.ActionTokens = (int)Math.Floor(npc.Paperdoll.ActionTokens * factor) <= 1 ? 1 : (int)Math.Floor(npc.Paperdoll.ActionTokens * factor);
     }
     #endregion
 }

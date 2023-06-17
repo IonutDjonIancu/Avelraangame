@@ -26,8 +26,6 @@ internal class NpcAttributesLogic
             Assets = CalculateNpcAssets(npcInfo),
             Skills = CalculateNpcSkills(npcInfo),
         };
-
-        npcChar.Inventory = new CharacterInventory();
     }
 
     #region private methods
@@ -37,9 +35,9 @@ internal class NpcAttributesLogic
         npcChar.Info.DateOfBirth = DateTime.Now.ToShortDateString();
         npcChar.Info.IsAlive = true;
         npcChar.Info.IsInParty = false;
-        npcChar.Info.Name = $"Npc-Humanoid-{DateTime.Now.Millisecond}";
         npcChar.Info.Fame = "Not much is know about this one.";
         npcChar.Info.Origins = GetOriginsByRegion(npcInfo);
+        npcChar.Info.Name = $"Npc-{npcChar.Info.Origins.Race}-{DateTime.Now.Millisecond}"; // TODO: generate NPC name dynamically
 
         if (npcChar.Info.Origins.Race != RulebookLore.Gameplay.Npcs.Races.Animal 
             || npcChar.Info.Origins.Race != RulebookLore.Gameplay.Npcs.Races.Elemental)
@@ -52,7 +50,7 @@ internal class NpcAttributesLogic
     {
         var origins = new CharacterOrigins
         {
-            Culture = "npc culture",
+            Culture = "NPC",
             Heritage = RulebookLore.Gameplay.Regions.Eastern.Contains(info.Region) ? CharactersLore.Heritage.Traditional : CharactersLore.Heritage.Martial,
             Race = SetNpcRace(info)
         };
