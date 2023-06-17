@@ -12,9 +12,9 @@ internal class CharacterInfoLogic
         dbs = databaseService;
     }
 
-    internal Character ChangeName(string name, CharacterIdentity identity)
+    internal Character ChangeName(string name, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(identity);
+        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
         storedChar.Info!.Name = name;
 
@@ -23,9 +23,9 @@ internal class CharacterInfoLogic
         return storedChar;
     }
 
-    internal Character AddFame(string fame, CharacterIdentity identity)
+    internal Character AddFame(string fame, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(identity);
+        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
         storedChar.Info!.Fame = string.Concat(storedChar.Info.Fame, $"\n{fame}");
 
@@ -34,9 +34,9 @@ internal class CharacterInfoLogic
         return storedChar;
     }
 
-    internal Character SetParty(CharacterIdentity identity)
+    internal Character SetParty(CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(identity);
+        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
         storedChar.Info!.IsInParty = true;
 
@@ -45,9 +45,9 @@ internal class CharacterInfoLogic
         return storedChar;
     }
 
-    internal Character AddWealth(int wealth, CharacterIdentity identity)
+    internal Character AddWealth(int wealth, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(identity);
+        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
         storedChar.Info!.Wealth += wealth;
 
@@ -56,18 +56,18 @@ internal class CharacterInfoLogic
         return storedChar;
     }
 
-    internal void KillChar(CharacterIdentity identity)
+    internal void KillChar(CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(identity);
+        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
         storedChar.Info!.IsAlive = false;
 
         dbs.PersistPlayer(player.Identity.Id);
     }
 
-    internal void DeleteChar(CharacterIdentity identity)
+    internal void DeleteChar(CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(identity);
+        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
         player.Characters.Remove(storedChar!);
 
@@ -75,13 +75,12 @@ internal class CharacterInfoLogic
     }
 
     #region private methods
-    private (Character, Player) GetStoredCharacterAndPlayer(CharacterIdentity identity)
+    private (Character, Player) GetStoredCharacterAndPlayer(CharacterIdentity charIdentity)
     {
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId)!;
-        var character = player.Characters.Find(p => p.Identity!.Id == identity.Id)!;
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!;
+        var character = player.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
 
         return (character, player);
     }
     #endregion
-
 }

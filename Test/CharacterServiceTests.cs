@@ -277,7 +277,7 @@ public class CharacterServiceTests : TestBase
 
     [Theory]
     [Description("Create character paperdoll.")]
-    public void Generate_character_paperdoll_test()
+    public void Calculate_character_paperdoll_test()
     {
         var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 1000;
@@ -319,6 +319,8 @@ public class CharacterServiceTests : TestBase
         paperdoll.Skills.Arcane.Should().BeGreaterThan(20);
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
+
+        paperdoll.ActionTokens.Should().Be(paperdoll.Assets.Resolve / 10);
     }
 
 
@@ -329,7 +331,7 @@ public class CharacterServiceTests : TestBase
         var party = gameplayService.CreateParty();
         var chr = CreateHumanCharacter("Jax");
 
-        gameplayService.JoinParty(party.Id, CreateCharIdentity(chr));
+        gameplayService.JoinParty(party.Identity.Id, CreateCharIdentity(chr));
 
         chr.Info.IsInParty.Should().BeTrue();   
     }
@@ -341,10 +343,10 @@ public class CharacterServiceTests : TestBase
         var party = gameplayService.CreateParty();
         var chr = CreateHumanCharacter("Jax");
 
-        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Id, CreateCharIdentity(chr)));
+        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
 
-        gameplayService.JoinParty(party.Id, CreateCharIdentity(chr));
-        gameplayService.LeaveParty(party.Id, CreateCharIdentity(chr));
+        gameplayService.JoinParty(party.Identity.Id, CreateCharIdentity(chr));
+        gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
 
         chr.Info.IsInParty.Should().BeFalse();
     }

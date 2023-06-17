@@ -11,7 +11,7 @@ public class GameplayServiceTests : TestBase
 
         party.Should().NotBeNull();
         party.IsAdventuring.Should().BeFalse();
-        party.PartyLeadId.Should().BeNull();
+        party.Identity.PartyLeadId.Should().BeEmpty();
 
         dbs.Snapshot.Parties.Count.Should().Be(1);
     }
@@ -23,10 +23,10 @@ public class GameplayServiceTests : TestBase
         var party = CreateParty();
         var chr = CreateHumanCharacter("Jax");
 
-        gameplayService.JoinParty(party.Id, GetCharacterIdentity(chr));
+        gameplayService.JoinParty(party.Identity.Id, GetCharacterIdentity(chr));
 
-        dbs.Snapshot.Parties.First().PartyLeadId.Should().Be(chr.Identity.Id);
-        dbs.Snapshot.Parties.First().PartyMembers.Count.Should().Be(1);
+        party.Characters.Count.Should().Be(1);
+        party.Identity.PartyLeadId.Should().Be(chr.Identity.Id);
     }
 
     [Theory]
@@ -37,11 +37,12 @@ public class GameplayServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         var charIdentity = GetCharacterIdentity(chr);
 
-        gameplayService.JoinParty(party.Id, charIdentity);
-        gameplayService.LeaveParty(party.Id, charIdentity);
+        gameplayService.JoinParty(party.Identity.Id, charIdentity);
+        gameplayService.LeaveParty(party.Identity.Id, charIdentity);
 
         chr.Info.IsInParty.Should().BeFalse();
-        dbs.Snapshot.Parties.SelectMany(s => s.PartyMembers).Select(d => d.CharacterId).Contains(chr.Identity.Id).Should().BeFalse();
+        dbs.Snapshot.Parties.Count.Should().Be(0);
+        party.Identity.PartyLeadId.Should().BeEmpty();
     }
     #endregion
 
@@ -61,7 +62,7 @@ public class GameplayServiceTests : TestBase
         var newParty = gameplayService.CreateParty();
 
         dbs.Snapshot.Parties.Count.Should().Be(1);
-        dbs.Snapshot.Parties.First().Id.Should().Be(newParty.Id);   
+        dbs.Snapshot.Parties.First().Identity.Id.Should().Be(newParty.Identity.Id);   
     }
 
     [Theory]
@@ -73,9 +74,9 @@ public class GameplayServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         var charIdentity = GetCharacterIdentity(chr);
 
-        gameplayService.JoinParty(party1.Id, charIdentity);
+        gameplayService.JoinParty(party1.Identity.Id, charIdentity);
 
-        Assert.Throws<Exception>(() => gameplayService.JoinParty(party2.Id, charIdentity));
+        Assert.Throws<Exception>(() => gameplayService.JoinParty(party2.Identity.Id, charIdentity));
     }
 
     [Theory]
@@ -87,9 +88,9 @@ public class GameplayServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         var charIdentity = GetCharacterIdentity(chr);
 
-        gameplayService.JoinParty(party1.Id, charIdentity);
+        gameplayService.JoinParty(party1.Identity.Id, charIdentity);
 
-        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party2.Id, charIdentity));
+        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party2.Identity.Id, charIdentity));
     }
     #endregion
 
