@@ -64,7 +64,7 @@ internal class NpcAttributesLogic
     {
         var animalsFoundIn = new List<string>
         {
-            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Nordheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Southeim,
 
@@ -83,7 +83,7 @@ internal class NpcAttributesLogic
 
         var monstersFoundIn = new List<string>
         {
-            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Nordheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Southeim,
 
@@ -106,7 +106,7 @@ internal class NpcAttributesLogic
 
         var humanoidsFoundIn = new List<string>
         {
-            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Nordheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Southeim,
 
@@ -130,7 +130,7 @@ internal class NpcAttributesLogic
 
         var undeadsFoundIn = new List<string>
         {
-            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Nordheim,
 
             RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,
             RulebookLore.Gameplay.Regions.EastDragonmaw.PelRavan,
@@ -144,7 +144,7 @@ internal class NpcAttributesLogic
 
         var fiendsFoundIn = new List<string>
         {
-            RulebookLore.Gameplay.Regions.WestDragonmaw.Northeim,
+            RulebookLore.Gameplay.Regions.WestDragonmaw.Nordheim,
             RulebookLore.Gameplay.Regions.WestDragonmaw.Midheim,
 
             RulebookLore.Gameplay.Regions.EastDragonmaw.VargasStand,

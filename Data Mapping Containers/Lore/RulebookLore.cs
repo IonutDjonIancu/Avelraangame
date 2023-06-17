@@ -352,9 +352,9 @@ public class RulebookLore
     {
         public static class Npcs 
         {
-            public const int StatsDifferenceFactor = 30;
+            public const int StatsDifferenceFactor  = 20;
             public const int AssetsDifferenceFactor = 20;
-            public const int SkillsDifferenceFactor = 10;
+            public const int SkillsDifferenceFactor = 20;
 
             public static class Races
             {
@@ -376,7 +376,7 @@ public class RulebookLore
         {
             public static class WestDragonmaw
             {
-                public const string Northeim = "Northeim";
+                public const string Nordheim = "Nordheim";
                 public const string Midheim = "Midheim";
                 public const string Southeim = "Southeim";
             }
@@ -413,7 +413,7 @@ public class RulebookLore
 
             public static readonly List<string> Eastern = new()
             {
-                WestDragonmaw.Northeim,
+                WestDragonmaw.Nordheim,
                 WestDragonmaw.Midheim,
                 WestDragonmaw.Southeim,
 
@@ -441,7 +441,7 @@ public class RulebookLore
 
             public static readonly List<string> All = new()
             {
-                WestDragonmaw.Northeim,
+                WestDragonmaw.Nordheim,
                 WestDragonmaw.Midheim,
                 WestDragonmaw.Southeim,
 
