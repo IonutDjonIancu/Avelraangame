@@ -151,7 +151,7 @@ internal class CharacterCreateLogic
             {
                 Race = origins.Race,
                 Culture = origins.Culture,
-                Heritage = origins.Heritage,
+                Tradition = origins.Tradition,
                 Class = origins.Class,
             },
 

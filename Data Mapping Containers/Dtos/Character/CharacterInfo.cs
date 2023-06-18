@@ -3,7 +3,6 @@
 public class CharacterInfo
 {
     public string Name { get; set; }
-
     public int EntityLevel { get; set; }
 
     public CharacterOrigins Origins { get; set; } = new();
@@ -15,4 +14,6 @@ public class CharacterInfo
 
     public bool IsAlive { get; set; }
     public bool IsInParty { get; set; }
+
+    public string Location { get; set; }
 }

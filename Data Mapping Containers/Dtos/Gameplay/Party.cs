@@ -7,6 +7,8 @@ public class Party
     public string CreationDate { get; set; }
     public bool IsAdventuring { get; set; }
     public bool IsInCombat { get; set; }
+    public int Food { get; set; }
+
     public List<CharacterIdentity> Characters { get; set; } = new();
     public List<CharacterPaperdoll> Paperdolls { get; set; } = new();
 

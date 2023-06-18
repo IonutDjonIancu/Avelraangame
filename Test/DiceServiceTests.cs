@@ -15,7 +15,7 @@ public class DiceServiceTests : TestBase
     [Description("Traditional roll should have a list of dice smaller than 21")]
     public void Roll20_Danarian_test()
     {
-        var roll = diceService.Roll_d20_Traditional();
+        var roll = diceService.Roll_d20_Common();
 
         roll.Dice.Should().NotBeNull();
 

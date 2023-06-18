@@ -54,6 +54,6 @@ public class MetadataService : IMetadataService
 
     public List<string> GetAvelraanRegions()
     {
-        return RulebookLore.Gameplay.Regions.All;
+        return GameplayLore.Rulebook.Regions.All;
     }
 }

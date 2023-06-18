@@ -64,14 +64,14 @@ public class CharactersLore
         };
     }
 
-    public static class Heritage
+    public static class Tradition
     {
-        public const string Traditional = "Traditional";
         public const string Martial = "Martial";
+        public const string Common = "Common";
 
         public static readonly List<string> All = new()
         {
-            Traditional, Martial
+            Common, Martial
         };
     }
 

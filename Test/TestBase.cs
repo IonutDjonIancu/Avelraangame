@@ -58,7 +58,7 @@ public class TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
+            Tradition = CharactersLore.Tradition.Common,
             Class = CharactersLore.Classes.Warrior
         };
 

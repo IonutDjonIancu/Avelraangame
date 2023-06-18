@@ -37,7 +37,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
+            Tradition = CharactersLore.Tradition.Common,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -55,7 +55,7 @@ public class CharacterServiceTests : TestBase
         character.Info.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         character.Info.Origins.Race.Should().Be(origins.Race);
         character.Info.Origins.Culture.Should().Be(origins.Culture);
-        character.Info.Origins.Heritage.Should().Be(origins.Heritage);
+        character.Info.Origins.Tradition.Should().Be(origins.Tradition);
         character.Info.Origins.Class.Should().Be(origins.Class);
         character.Info.Fame.Should().NotBeNullOrWhiteSpace();
         character.Info.Wealth.Should().BeGreaterThanOrEqualTo(1);
@@ -75,6 +75,13 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
+        character.Info.IsInParty.Should().BeFalse();
+
+        if (character.Info.Origins.Tradition)
+        {
+            
+        }
+
     }
 
     [Theory]
@@ -320,7 +327,7 @@ public class CharacterServiceTests : TestBase
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
 
-        var calculatedActionTokens = RulebookLore.Calculations.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
+        var calculatedActionTokens = GameplayLore.Calculations.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
         var actionTokens = calculatedActionTokens <= 1 ? 1 : calculatedActionTokens;
 
         paperdoll.ActionTokens.Should().Be(actionTokens);

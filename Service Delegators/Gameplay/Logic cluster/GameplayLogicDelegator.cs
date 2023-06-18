@@ -31,7 +31,8 @@ internal class GameplayLogicDelegator
                 PartyLeadId = string.Empty
             },
             CreationDate = DateTime.Now.ToShortDateString(),
-            IsAdventuring = false
+            IsAdventuring = false,
+            Food = 1
         };
 
         dbs.Snapshot.Parties.Add(party);

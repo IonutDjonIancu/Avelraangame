@@ -12,6 +12,7 @@ public class GameplayServiceTests : TestBase
         party.Should().NotBeNull();
         party.IsAdventuring.Should().BeFalse();
         party.Identity.PartyLeadId.Should().BeEmpty();
+        party.Food.Should().Be(1);
 
         dbs.Snapshot.Parties.Count.Should().Be(1);
     }

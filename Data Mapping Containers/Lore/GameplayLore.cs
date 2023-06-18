@@ -1,11 +1,9 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class RulebookLore
+public class GameplayLore
 {
     public static class Calculations
     {
-
-
         public static class Acronyms
         {
             public static class Stats
@@ -347,8 +345,7 @@ public class RulebookLore
         }
     }
 
-
-    public static class Gameplay
+    public static class Rulebook
     {
         public static class Npcs 
         {
@@ -411,6 +408,13 @@ public class RulebookLore
                 public const string Peradin = "Peradin";
             }
 
+            public static readonly List<string> Northern = new()
+            {
+                Hyperborea.FrozenWastes,
+                Hyperborea.Brimland,
+                Hyperborea.Ryxos,
+            };
+
             public static readonly List<string> Eastern = new()
             {
                 WestDragonmaw.Nordheim,
@@ -420,23 +424,24 @@ public class RulebookLore
                 EastDragonmaw.VargasStand,
                 EastDragonmaw.Longshore,
                 EastDragonmaw.Farlindor,
-                EastDragonmaw.PelRavan
+                EastDragonmaw.PelRavan,
+
+                Eversun.Peradin
             };
 
             public static readonly List<string> Western = new()
             {
-                Hyperborea.FrozenWastes,
-                Hyperborea.Brimland,
-                Hyperborea.Ryxos,
 
                 ThreeSeas.Endar,
                 ThreeSeas.TwinVines,
                 ThreeSeas.Stormbork,
                 ThreeSeas.Calvinia,
+            };
 
+            public static readonly List<string> Southern = new()
+            {
                 Eversun.AjJahra,
-                Eversun.ShiftingPlanes,
-                Eversun.Peradin
+                Eversun.ShiftingPlanes
             };
 
             public static readonly List<string> All = new()
@@ -467,8 +472,8 @@ public class RulebookLore
 
         public static class Heritage
         {
-            public const string Traditional = CharactersLore.Heritage.Traditional;
-            public const string Martial = CharactersLore.Heritage.Martial;
+            public const string Martial = CharactersLore.Tradition.Martial;
+            public const string Common = CharactersLore.Tradition.Common;
         }
 
         public static class Quests
@@ -477,14 +482,60 @@ public class RulebookLore
             {
                 public const string Easy = "Easy";
                 public const string Medium = "Medium";
-                public const string Normal = "Normal";
+                public const string Standard = "Standard";
                 public const string Hard = "Hard";
 
                 public static readonly List<string> All = new()
                 {
-                    Easy, Medium, Normal, Hard
+                    Easy, Medium, Standard, Hard
                 };
             }
+            public static class Effort
+            {
+                public const string Normal = "Normal";
+                public const string Gifted = "Gifted";
+                public const string Chosen = "Chosen";
+                public const string Hero = "Hero";
+                public const string Olympian = "Olympian";
+                public const string Planar = "Planar";
+
+                public static readonly List<string> All = new()
+                {
+                    Normal, Gifted, Chosen, Hero, Olympian, Planar
+                };
+
+                public struct NormalRange
+                {
+                    public const int Lower = 5;
+                    public const int Upper = 50;
+                }
+                public struct GiftedRange
+                {
+                    public const int Lower = 51;
+                    public const int Upper = 100;
+                }
+                public struct ChosenRange
+                {
+                    public const int Lower = 101;
+                    public const int Upper = 200;
+                }
+                public struct HeroRange
+                {
+                    public const int Lower = 201;
+                    public const int Upper = 500;
+                }
+                public struct OlympianRange
+                {
+                    public const int Lower = 501;
+                    public const int Upper = 1000;
+                }
+                public struct PlanarRange
+                {
+                    public const int Lower = 1001;
+                    public const int Upper = 9000;
+                }
+            }
         }
+
     }
 }
