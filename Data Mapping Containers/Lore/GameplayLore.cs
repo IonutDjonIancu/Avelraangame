@@ -408,14 +408,14 @@ public class GameplayLore
                 public const string Peradin = "Peradin";
             }
 
-            public static readonly List<string> Northern = new()
+            public static readonly List<string> AllNorthern = new()
             {
                 Hyperborea.FrozenWastes,
                 Hyperborea.Brimland,
-                Hyperborea.Ryxos,
+                Hyperborea.Ryxos
             };
 
-            public static readonly List<string> Eastern = new()
+            public static readonly List<string> AllEastern = new()
             {
                 WestDragonmaw.Nordheim,
                 WestDragonmaw.Midheim,
@@ -429,16 +429,15 @@ public class GameplayLore
                 Eversun.Peradin
             };
 
-            public static readonly List<string> Western = new()
+            public static readonly List<string> AllWestern = new()
             {
-
                 ThreeSeas.Endar,
                 ThreeSeas.TwinVines,
                 ThreeSeas.Stormbork,
                 ThreeSeas.Calvinia,
             };
 
-            public static readonly List<string> Southern = new()
+            public static readonly List<string> AllSouthern = new()
             {
                 Eversun.AjJahra,
                 Eversun.ShiftingPlanes
@@ -470,7 +469,7 @@ public class GameplayLore
             };
         }
 
-        public static class Heritage
+        public static class Tradition
         {
             public const string Martial = CharactersLore.Tradition.Martial;
             public const string Common = CharactersLore.Tradition.Common;

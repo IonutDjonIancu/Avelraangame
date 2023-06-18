@@ -125,14 +125,14 @@ internal class DiceRollLogicDelegator
         return dice.Count - 1;
     }
 
-    private static bool IsCommon(string heritage)
+    private static bool IsCommon(string tradition)
     {
-        return heritage == CharactersLore.Tradition.Common;
+        return tradition == CharactersLore.Tradition.Common;
     }
 
-    private static bool IsMartial(string heritage)
+    private static bool IsMartial(string tradition)
     {
-        return heritage == CharactersLore.Tradition.Martial;
+        return tradition == CharactersLore.Tradition.Martial;
     }
     #endregion
 }

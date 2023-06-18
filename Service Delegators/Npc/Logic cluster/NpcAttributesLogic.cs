@@ -51,7 +51,7 @@ internal class NpcAttributesLogic
         var origins = new CharacterOrigins
         {
             Culture = "NPC",
-            Tradition = GameplayLore.Rulebook.Regions.Eastern.Contains(info.Region) ? CharactersLore.Tradition.Common : CharactersLore.Tradition.Martial,
+            Tradition = GameplayLore.Rulebook.Regions.AllEastern.Contains(info.Region) ? CharactersLore.Tradition.Common : CharactersLore.Tradition.Martial,
             Race = SetNpcRace(info)
         };
 

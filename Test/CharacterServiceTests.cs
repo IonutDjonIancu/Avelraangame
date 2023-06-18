@@ -77,11 +77,14 @@ public class CharacterServiceTests : TestBase
         character.Info.IsAlive.Should().BeTrue();
         character.Info.IsInParty.Should().BeFalse();
 
-        if (character.Info.Origins.Tradition)
+        if (character.Info.Origins.Tradition == GameplayLore.Rulebook.Tradition.Martial)
         {
-            
+            GameplayLore.Rulebook.Regions.AllWestern.Should().Contain(character.Info.Location);
         }
-
+        else
+        {
+            GameplayLore.Rulebook.Regions.AllEastern.Should().Contain(character.Info.Location);
+        }
     }
 
     [Theory]

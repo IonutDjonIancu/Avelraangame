@@ -10,7 +10,7 @@ public class NpcServiceTests : TestBase
         {
             Difficulty = GameplayLore.Rulebook.Quests.Difficulty.Standard,
             Region = GameplayLore.Rulebook.Regions.EastDragonmaw.Farlindor,
-            Heritage = GameplayLore.Rulebook.Heritage.Common,
+            Tradition = GameplayLore.Rulebook.Tradition.Common,
 
             StatsMin = new CharacterStats
             {
