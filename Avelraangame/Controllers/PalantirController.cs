@@ -268,7 +268,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var characters = factory.ServiceFactory.CharacterService.GetCharactersByPlayerId(playerId);
+            var characters = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId);
 
             return Ok(characters);
         }
@@ -287,7 +287,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.GetCharactersByPlayerId(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
+            var character = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
 
             return Ok(character);
         }

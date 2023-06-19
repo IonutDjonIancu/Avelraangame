@@ -34,17 +34,6 @@ internal class CharacterInfoLogic
         return storedChar;
     }
 
-    internal Character SetParty(CharacterIdentity charIdentity)
-    {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
-
-        storedChar.Info!.IsInParty = true;
-
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return storedChar;
-    }
-
     internal Character AddWealth(int wealth, CharacterIdentity charIdentity)
     {
         var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);

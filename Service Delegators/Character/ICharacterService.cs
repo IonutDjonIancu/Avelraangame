@@ -10,7 +10,6 @@ public interface ICharacterService
     Character UpdateCharacterName(string name, CharacterIdentity identity);
     Character UpdateCharacterFame(string fame, CharacterIdentity identity);
     Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
-    Character UpdateCharacterParty(string partyId, CharacterIdentity identity);
 
     Character UpdateCharacterStats(string stat, CharacterIdentity identity);
     Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
@@ -18,7 +17,7 @@ public interface ICharacterService
     void KillCharacter(CharacterIdentity identity);
     void DeleteCharacter(CharacterIdentity identity);
 
-    Characters GetCharactersByPlayerId(string playerId);   
+    Characters GetPlayerCharacters(string playerId);   
 
     Character EquipCharacterItem(CharacterEquip equip);
     Character UnequipCharacterItem(CharacterEquip unequip);

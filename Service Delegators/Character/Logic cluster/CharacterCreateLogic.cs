@@ -71,6 +71,15 @@ internal class CharacterCreateLogic
 
         character.Info.Wealth = SetWealth();
 
+        if (character.Info.Origins.Tradition == GameplayLore.Rulebook.Tradition.Martial)
+        {
+            character.Info.Location = GameplayLore.Rulebook.Regions.EastDragonmaw.Farlindor;
+        }
+        else
+        {
+            character.Info.Location = GameplayLore.Rulebook.Regions.ThreeSeas.Calvinia;
+        }
+
         // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
 
         dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
@@ -159,7 +168,8 @@ internal class CharacterCreateLogic
 
             Fame = SetFame(origins.Culture, origins.Class),
             IsAlive = true,
-            IsInParty = false
+            IsInParty = false,
+            PartyId = string.Empty,
         };
     }
     #endregion

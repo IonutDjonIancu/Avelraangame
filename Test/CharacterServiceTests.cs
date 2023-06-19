@@ -107,7 +107,7 @@ public class CharacterServiceTests : TestBase
 
         characterService.DeleteCharacter(CreateCharIdentity(chr));
 
-        var characters = characterService.GetCharactersByPlayerId(chr.Identity.PlayerId);
+        var characters = characterService.GetPlayerCharacters(chr.Identity.PlayerId);
 
         characters.CharactersList.Should().NotContain(chr);
         characters.Count.Should().Be(0);
@@ -346,7 +346,8 @@ public class CharacterServiceTests : TestBase
 
         gameplayService.JoinParty(party.Identity.Id, CreateCharIdentity(chr));
 
-        chr.Info.IsInParty.Should().BeTrue();   
+        chr.Info.IsInParty.Should().BeTrue();
+        chr.Info.PartyId.Should().Be(party.Identity.Id);
     }
 
     [Theory]

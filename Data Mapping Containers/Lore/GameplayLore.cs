@@ -415,7 +415,7 @@ public class GameplayLore
                 Hyperborea.Ryxos
             };
 
-            public static readonly List<string> AllEastern = new()
+            public static readonly List<string> AllWestern = new()
             {
                 WestDragonmaw.Nordheim,
                 WestDragonmaw.Midheim,
@@ -429,12 +429,12 @@ public class GameplayLore
                 Eversun.Peradin
             };
 
-            public static readonly List<string> AllWestern = new()
+            public static readonly List<string> AllEastern = new()
             {
                 ThreeSeas.Endar,
                 ThreeSeas.TwinVines,
                 ThreeSeas.Stormbork,
-                ThreeSeas.Calvinia,
+                ThreeSeas.Calvinia
             };
 
             public static readonly List<string> AllSouthern = new()
@@ -535,6 +535,5 @@ public class GameplayLore
                 }
             }
         }
-
     }
 }

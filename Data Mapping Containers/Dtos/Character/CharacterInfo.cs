@@ -14,6 +14,7 @@ public class CharacterInfo
 
     public bool IsAlive { get; set; }
     public bool IsInParty { get; set; }
+    public string PartyId { get; set; }
 
     public string Location { get; set; }
 }

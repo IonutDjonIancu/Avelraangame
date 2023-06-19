@@ -7,13 +7,10 @@ public class GameplayService : IGameplayService
     private readonly GameplayValidator validator;
     private readonly GameplayLogicDelegator logic;
 
-    public GameplayService(
-        IDatabaseService databaseService,
-        IDiceRollService diceRollService,
-        ICharacterService characterService)
+    public GameplayService(IDatabaseService databaseService)
     {
         validator = new GameplayValidator(databaseService.Snapshot);
-        logic = new GameplayLogicDelegator(databaseService, diceRollService, characterService);
+        logic = new GameplayLogicDelegator(databaseService);
     }
 
     public Party CreateParty()
