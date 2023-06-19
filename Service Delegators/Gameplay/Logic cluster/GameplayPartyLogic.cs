@@ -24,6 +24,7 @@ internal class GameplayPartyLogic
                 PartyLeadId = string.Empty
             },
             CreationDate = DateTime.Now.ToShortDateString(),
+            Location = string.Empty,
             IsAdventuring = false,
             Food = 1
         };
@@ -40,7 +41,12 @@ internal class GameplayPartyLogic
         var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId);
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
 
-        party ??= CreateParty();
+        if (party == null)
+        {
+            party = CreateParty();
+            party.Location = character.Info.Location;
+        }
+
         party.Characters.Add(charIdentity);
 
         if (string.IsNullOrWhiteSpace(party.Identity.PartyLeadId))

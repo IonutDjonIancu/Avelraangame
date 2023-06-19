@@ -20,7 +20,7 @@ public class GameplayService : IGameplayService
 
     public Party JoinParty(string partyId, CharacterIdentity charIdentity)
     {
-        validator.ValidatePartyBeforeJoin(charIdentity);
+        validator.ValidatePartyBeforeJoin(partyId, charIdentity);
         return logic.JoinParty(partyId, charIdentity);
     }
 
