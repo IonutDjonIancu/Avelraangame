@@ -8,9 +8,9 @@ public class NpcServiceTests : TestBase
     {
         var npcInfo = new NpcInfo
         {
-            Difficulty = GameplayLore.Rulebook.Quests.Difficulty.Standard,
-            Region = GameplayLore.Rulebook.Regions.EastDragonmaw.Farlindor,
-            Tradition = GameplayLore.Rulebook.Tradition.Common,
+            Difficulty = GameplayLore.Quests.Difficulty.Standard,
+            Subregion = GameplayLore.Regions.Dragonmaw,
+            Tradition = GameplayLore.Tradition.Common,
 
             StatsMin = new CharacterStats
             {
@@ -84,7 +84,7 @@ public class NpcServiceTests : TestBase
         npc.Paperdoll.Should().NotBeNull();
         npc.Items.Should().NotBeNull();
 
-        GameplayLore.Rulebook.Npcs.Races.All.Should().Contain(npc.Origins.Race);
+        GameplayLore.Npcs.Races.All.Should().Contain(npc.Origins.Race);
         CharactersLore.Tradition.All.Should().Contain(npc.Origins.Tradition);
         CharactersLore.Classes.All.Should().Contain(npc.Origins.Class);
 

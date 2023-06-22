@@ -1,0 +1,344 @@
+﻿namespace Data_Mapping_Containers.Dtos;
+
+public class RulebookLore
+{
+    public static class Acronyms
+    {
+        public static class Stats
+        {
+            public const string Str = "Str";
+            public const string Con = "Con";
+            public const string Agi = "Agi";
+            public const string Wil = "Wil";
+            public const string Per = "Per";
+            public const string Abs = "Abs";
+        }
+
+        public static class Assets
+        {
+            public const string Res = "Res";
+            public const string Har = "Har";
+            public const string Spo = "Spo";
+            public const string Def = "Def";
+            public const string Pur = "Pur";
+            public const string Man = "Man";
+        }
+
+        public static class Skills
+        {
+            public const string Com = "Com";
+            public const string Arc = "Arc";
+            public const string Psi = "Psi";
+            public const string Hid = "Hid";
+            public const string Tra = "Tra";
+            public const string Tac = "Tac";
+            public const string Soc = "Soc";
+            public const string Apo = "Apo";
+            public const string Trv = "Trv";
+            public const string Sai = "Sai";
+        }
+    }
+
+    public static class Races
+    {
+        public static class Human
+        {
+            public const int Str = 5;
+            public const int Con = 5;
+            public const int Agi = 5;
+            public const int Wil = 5;
+            public const int Per = 5;
+            public const int Abs = 5;
+        }
+
+        public static class Elf
+        {
+            public const int Str = 2;
+            public const int Con = 7;
+            public const int Agi = 15;
+            public const int Wil = 7;
+            public const int Per = 10;
+            public const int Abs = 10;
+        }
+
+        public static class Dwarf
+        {
+            public const int Str = 12;
+            public const int Con = 10;
+            public const int Agi = 2;
+            public const int Wil = 10;
+            public const int Per = 3;
+            public const int Abs = 10;
+        }
+    }
+
+    public static class Cultures
+    {
+        public static class Humans
+        {
+            public static class Danarian
+            {
+                // stats
+                public const int Str = 0;
+                public const int Con = 0;
+                public const int Agi = 0;
+                public const int Wil = 0;
+                public const int Per = 0;
+                public const int Abs = 0;
+                // assets
+                public const int Res = 5;
+                public const int Har = 0;
+                public const int Spo = 0;
+                public const int Def = 0;
+                public const int Pur = 0;
+                public const int Man = 0;
+                // skills
+                public const int Com = 40;
+                public const int Arc = 10;
+                public const int Psi = 10;
+                public const int Hid = -10;
+                public const int Tra = 10;
+                public const int Tac = 10;
+                public const int Soc = 20;
+                public const int Apo = 10;
+                public const int Trv = 20;
+                public const int Sai = 10;
+            }
+        }
+
+        public static class Elves
+        {
+            public static class Highborn
+            {
+                // stats
+                public const int Str = 0;
+                public const int Con = 0;
+                public const int Agi = 0;
+                public const int Wil = 10;
+                public const int Per = 0;
+                public const int Abs = 0;
+                // assets
+                public const int Res = 10;
+                public const int Har = 0;
+                public const int Spo = 50;
+                public const int Def = 0;
+                public const int Pur = 0;
+                public const int Man = 0;
+                // skills
+                public const int Com = 20;
+                public const int Arc = 40;
+                public const int Psi = 5;
+                public const int Hid = 10;
+                public const int Tra = 10;
+                public const int Tac = 10;
+                public const int Soc = 20;
+                public const int Apo = 10;
+                public const int Trv = -40;
+                public const int Sai = -10;
+            }
+        }
+
+        public static class Dwarves
+        {
+            public static class Undermountain
+            {
+                // stats
+                public const int Str = 10;
+                public const int Con = 10;
+                public const int Agi = 0;
+                public const int Wil = 0;
+                public const int Per = 0;
+                public const int Abs = 0;
+                // assets
+                public const int Res = 20;
+                public const int Har = 10;
+                public const int Spo = 0;
+                public const int Def = 10;
+                public const int Pur = 10;
+                public const int Man = 0;
+                // skills
+                public const int Com = 30;
+                public const int Arc = 0;
+                public const int Psi = 10;
+                public const int Hid = -20;
+                public const int Tra = 10;
+                public const int Tac = 10;
+                public const int Soc = -5;
+                public const int Apo = 0;
+                public const int Trv = -20;
+                public const int Sai = -100;
+            }
+        }
+    }
+
+    public static class Classes
+    {
+        public static class Warrior
+        {
+            public static readonly List<string> LikelyStats = new()
+                {
+                    Acronyms.Stats.Str,
+                    Acronyms.Stats.Con,
+                };
+            public static readonly List<string> UnlikelyStats = new()
+                {
+                    Acronyms.Stats.Str,
+                    Acronyms.Stats.Wil,
+                    Acronyms.Stats.Agi,
+                    Acronyms.Stats.Per,
+                };
+            public static readonly List<string> LikelySkills = new()
+                {
+                    Acronyms.Skills.Com,
+                };
+            public static readonly List<string> UnlikelySkills = new()
+                {
+                    Acronyms.Skills.Com,
+                    Acronyms.Skills.Tra,
+                    Acronyms.Skills.Trv,
+                    Acronyms.Skills.Hid,
+                };
+        }
+
+        public static class Mage
+        {
+            public static readonly List<string> LikelyStats = new()
+                {
+                    Acronyms.Stats.Abs,
+                    Acronyms.Stats.Con,
+                };
+            public static readonly List<string> UnlikelyStats = new()
+                {
+                    Acronyms.Stats.Wil,
+                    Acronyms.Stats.Agi,
+                    Acronyms.Stats.Per,
+                };
+            public static readonly List<string> LikelySkills = new()
+                {
+                    Acronyms.Skills.Arc,
+                    Acronyms.Skills.Apo,
+                    Acronyms.Skills.Com,
+                };
+            public static readonly List<string> UnlikelySkills = new()
+                {
+                    Acronyms.Skills.Psi,
+                    Acronyms.Skills.Hid,
+                    Acronyms.Skills.Sai,
+                };
+        }
+
+        public static class Hunter
+        {
+            public static readonly List<string> LikelyStats = new()
+                {
+                    Acronyms.Stats.Agi,
+                    Acronyms.Stats.Per,
+                };
+            public static readonly List<string> UnlikelyStats = new()
+                {
+                    Acronyms.Stats.Agi,
+                    Acronyms.Stats.Con,
+                    Acronyms.Stats.Per,
+                };
+            public static readonly List<string> LikelySkills = new()
+                {
+                    Acronyms.Skills.Com,
+                    Acronyms.Skills.Hid,
+                    Acronyms.Skills.Tra,
+                    Acronyms.Skills.Trv,
+                };
+            public static readonly List<string> UnlikelySkills = new()
+                {
+                    Acronyms.Skills.Com,
+                    Acronyms.Skills.Tra,
+                };
+        }
+
+        public static class Swashbuckler
+        {
+            public static readonly List<string> LikelyStats = new()
+                {
+                    Acronyms.Stats.Str,
+                    Acronyms.Stats.Agi,
+                };
+            public static readonly List<string> UnlikelyStats = new()
+                {
+                    Acronyms.Stats.Agi,
+                    Acronyms.Stats.Con,
+                    Acronyms.Stats.Per,
+                    Acronyms.Stats.Wil,
+                };
+            public static readonly List<string> LikelySkills = new()
+                {
+                    Acronyms.Skills.Com,
+                    Acronyms.Skills.Arc,
+                    Acronyms.Skills.Soc,
+                };
+            public static readonly List<string> UnlikelySkills = new()
+                {
+                    Acronyms.Skills.Com,
+                    Acronyms.Skills.Tra,
+                    Acronyms.Skills.Trv,
+                    Acronyms.Skills.Sai,
+                };
+        }
+
+        public static class Sorcerer
+        {
+            public static readonly List<string> LikelyStats = new()
+                {
+                    Acronyms.Stats.Abs,
+                };
+            public static readonly List<string> UnlikelyStats = new()
+                {
+                    Acronyms.Stats.Abs,
+                    Acronyms.Stats.Con,
+                };
+            public static readonly List<string> LikelySkills = new()
+                {
+                    Acronyms.Skills.Arc,
+                };
+            public static readonly List<string> UnlikelySkills = new()
+                {
+                    Acronyms.Skills.Arc,
+                    Acronyms.Skills.Apo,
+                    Acronyms.Skills.Trv,
+                };
+        }
+    }
+
+    public static class Formulae
+    {
+        public static class Assets
+        {
+            public const string Res = "2*Str + 3*Con + Agi + 2*Wil + Per + Abs";
+            public const string Har = "2*Str + Agi + Per";
+            public const string Spo = "3*Per + Agi";
+            public const string Def = "(2*Con + Agi + Per) / 10";
+            public const string Pur = "(2*Wil + Con + Per) / 10";
+            public const string Man = "(2*Con + 3*Abs) / 5";
+        }
+
+        public static class Skills
+        {
+            public const string Com = "Str + Con + Agi";
+            public const string Arc = "Abs + Wil + Con";
+            public const string Psi = "2*Wil + Con";
+            public const string Hid = "Agi + Per + Abs";
+            public const string Tra = "2*Abs + Per";
+            public const string Tac = "3*Abs";
+            public const string Soc = "Per + Abs + Wil";
+            public const string Apo = "Abs + Per + Con";
+            public const string Trv = "2*Con + Agi + Wil - Str";
+            public const string Sai = "2*Con + Abs";
+        }
+
+        public static class Misc
+        {
+            public static int CalculateActionTokens(int resolve)
+            {
+                return resolve / 100;
+            }
+        }
+    }
+}

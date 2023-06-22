@@ -31,9 +31,9 @@ internal class NpcPaperdollLogic
     private static void ApplyDifficultyFactor(NpcInfo info, NpcPaperdoll npc)
     {
         var factor = 1.0m; // set to Normal
-        if (info.Difficulty == GameplayLore.Rulebook.Quests.Difficulty.Easy) factor = 0.25m;
-        if (info.Difficulty == GameplayLore.Rulebook.Quests.Difficulty.Medium) factor = 0.5m;
-        if (info.Difficulty == GameplayLore.Rulebook.Quests.Difficulty.Hard) factor = 2.0m;
+        if (info.Difficulty == GameplayLore.Quests.Difficulty.Easy) factor = 0.25m;
+        if (info.Difficulty == GameplayLore.Quests.Difficulty.Medium) factor = 0.5m;
+        if (info.Difficulty == GameplayLore.Quests.Difficulty.Hard) factor = 2.0m;
 
         // stats
         npc.Paperdoll.Stats.Strength = (int)Math.Floor(npc.Paperdoll.Stats.Strength * factor);

@@ -22,7 +22,7 @@ internal class GameplayValidator : ValidatorBase
         var party = snapshot.Parties.Find(p => p.Identity.Id == partyId);
         if (party != null && party!.Characters.Count > 0)
         {
-            if (character.Info.Location != party!.Location) Throw($"Unable to join party. You must first travel to their location, {party.Location}, in order to join.");
+            if (character.Info.Position.Location != party!.Position.Location) Throw($"Unable to join party. You must first travel to their location, {party.Position.Location}, in order to join.");
         }
     }
 

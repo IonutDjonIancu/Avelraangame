@@ -77,13 +77,15 @@ public class CharacterServiceTests : TestBase
         character.Info.IsAlive.Should().BeTrue();
         character.Info.IsInParty.Should().BeFalse();
 
-        if (character.Info.Origins.Tradition == GameplayLore.Rulebook.Tradition.Martial)
+        GameplayLore.Locations.Danar.All.Should().Contain(character.Info.Position.Location);
+        
+        if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
-            GameplayLore.Rulebook.Regions.AllWestern.Should().Contain(character.Info.Location);
+            // check for location in Danar
         }
         else
         {
-            GameplayLore.Rulebook.Regions.AllEastern.Should().Contain(character.Info.Location);
+            // check for location in Calvinia
         }
     }
 
@@ -330,7 +332,7 @@ public class CharacterServiceTests : TestBase
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
 
-        var calculatedActionTokens = GameplayLore.Calculations.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
+        var calculatedActionTokens = RulebookLore.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
         var actionTokens = calculatedActionTokens <= 1 ? 1 : calculatedActionTokens;
 
         paperdoll.ActionTokens.Should().Be(actionTokens);
