@@ -57,21 +57,21 @@ internal class DiceRollLogicDelegator
         return random.Next(lowerLimit, upperLimit + 1);
     }
 
-    internal DiceRoll GenerateRollFor(string heritage, int bonus = 0)
+    internal DiceRoll GenerateRollFor(string tradition, int bonus = 0)
     {
         var dice = new List<int>();
         int roll;
 
-        if      (IsTraditional(heritage))   roll = Rolld20WithList(dice, bonus);
-        else if (IsMartial(heritage))       roll = Rolld100WithList(dice, bonus);
-        else  /*(none)*/                    roll = Rolld20WithList(dice, bonus);
+        if      (IsMartial(tradition))  roll = Rolld20WithList(dice, bonus);
+        else if (IsCommon(tradition))   roll = Rolld100WithList(dice, bonus);
+        else    throw new NotImplementedException();
 
         return new DiceRoll
         {
             Roll = roll,
-            Grade = CalculateGradeFor(heritage, roll),
+            Grade = CalculateGradeFor(tradition, roll),
             Dice = dice,
-            Crits = CalculateCritsFor(heritage, dice)
+            Crits = CalculateCritsFor(tradition, dice)
         };
     }
 
@@ -98,27 +98,26 @@ internal class DiceRollLogicDelegator
 
         if (handRoll > 95)
         {
-            roll = Rolld100WithList(dice, roll);
+            roll = random.Next(1, 101);
         }
 
         return roll;
     }
 
-    private static int CalculateGradeFor(string heritage, int roll)
+    private static int CalculateGradeFor(string tradition, int roll)
     {
-        if      (IsTraditional(heritage))   return (int)Math.Ceiling(roll / 4.00M);
-        else if (IsMartial(heritage))       return (int)Math.Ceiling(roll / 20.00M);
-        else  /*(none)*/                    return (int)Math.Ceiling(roll / 4.00M);
+        if      (IsCommon(tradition))   return (int)Math.Ceiling(roll / 20.00M);
+        else if (IsMartial(tradition))  return (int)Math.Ceiling(roll / 4.00M);
+        else    throw new NotImplementedException();
     }
 
-    private static int CalculateCritsFor(string heritage, List<int> dice)
+    private static int CalculateCritsFor(string tradition, List<int> dice)
     {
-        if      (IsTraditional(heritage))   return CritsByDiceCount(dice);
-        else if (IsMartial(heritage))       return CritsByDiceCount(dice);
-        else  /*(none)*/                    return CritsByDiceCount(dice);
+        if      (IsCommon(tradition))   return CritsByDiceCount(dice);
+        else if (IsMartial(tradition))  return CritsByDiceCount(dice);
+        else    throw new NotImplementedException();
 
-        // other heritage styles influenced by crits from 19 or 18 will return a greater number of crits dice
-
+        // other tradition styles influenced by crits from 19 or 18 will return a greater number of crits dice
     }
 
     private static int CritsByDiceCount(List<int> dice)
@@ -126,14 +125,14 @@ internal class DiceRollLogicDelegator
         return dice.Count - 1;
     }
 
-    private static bool IsTraditional(string heritage)
+    private static bool IsCommon(string tradition)
     {
-        return heritage == CharactersLore.Heritage.Traditional;
+        return tradition == CharactersLore.Tradition.Common;
     }
 
-    private static bool IsMartial(string heritage)
+    private static bool IsMartial(string tradition)
     {
-        return heritage == CharactersLore.Heritage.Martial;
+        return tradition == CharactersLore.Tradition.Martial;
     }
     #endregion
 }

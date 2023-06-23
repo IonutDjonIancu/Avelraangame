@@ -50,13 +50,13 @@ public class DiceRollService : IDiceRollService
         return logic.RollXdYnoReroll(x, y);
     }
 
-    public DiceRoll Roll_d20_Traditional(int bonus = 0)
+    public DiceRoll Roll_d20_Common(int bonus = 0)
     {
-        return logic.GenerateRollFor(CharactersLore.Heritage.Traditional, bonus);
+        return logic.GenerateRollFor(CharactersLore.Tradition.Common, bonus);
     }
 
     public DiceRoll Roll_d20_Martial(int bonus = 0)
     {
-        return logic.GenerateRollFor(CharactersLore.Heritage.Martial, bonus);
+        return logic.GenerateRollFor(CharactersLore.Tradition.Martial, bonus);
     }
 }

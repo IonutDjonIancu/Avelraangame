@@ -5,8 +5,13 @@ public class Party
     public PartyIdentity Identity { get; set; }
 
     public string CreationDate { get; set; }
+    public bool IsSinglePlayerOnly { get; set; }
     public bool IsAdventuring { get; set; }
     public bool IsInCombat { get; set; }
+    public int Food { get; set; }
+
+    public Position Position { get; set; } = new();
+
     public List<CharacterIdentity> Characters { get; set; } = new();
     public List<CharacterPaperdoll> Paperdolls { get; set; } = new();
 

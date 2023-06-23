@@ -74,7 +74,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private void CalculatePaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemResBonus = 0;
         var itemHarBonus = 0;
@@ -96,21 +96,21 @@ internal class CharacterPaperdollLogic
         paperdoll.Assets = new CharacterAssets
         {
             // RES is the only asset increased by entity level
-            Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Res) + itemResBonus) * character.Info.EntityLevel,
+            Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Res) + itemResBonus) * character.Info.EntityLevel,
 
             // DEF cannot be greater than 90, so that to avoid making characters immune to all dmg
-            Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Def) + itemDefBonus >= 90
+            Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Def) + itemDefBonus >= 90
                         ? 90
-                        : character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Def) + itemDefBonus,
+                        : character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Def) + itemDefBonus,
 
-            Harm    = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Har) + itemHarBonus,
-            Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Spo) + itemSpoBonus,
-            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Pur) + itemPurBonus,
-            Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Assets.Man) + itemManBonus
+            Harm    = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Har) + itemHarBonus,
+            Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Spo) + itemSpoBonus,
+            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Pur) + itemPurBonus,
+            Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Man) + itemManBonus
         };
     }
 
-    private void CalculatePaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemComBonus = 0;
         var itemArcBonus = 0;
@@ -139,16 +139,16 @@ internal class CharacterPaperdollLogic
 
         paperdoll.Skills = new CharacterSkills
         {
-            Combat      = character.Sheet.Skills.Combat     + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Com) + itemComBonus,
-            Arcane      = character.Sheet.Skills.Arcane     + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Arc) + itemArcBonus,
-            Psionics    = character.Sheet.Skills.Psionics   + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Psi) + itemPsiBonus,
-            Hide        = character.Sheet.Skills.Hide       + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Hid) + itemHidBonus,
-            Traps       = character.Sheet.Skills.Traps      + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Tra) + itemTraBonus,
-            Tactics     = character.Sheet.Skills.Tactics    + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Tac) + itemTacBonus,
-            Social      = character.Sheet.Skills.Social     + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Soc) + itemSocBonus,
-            Apothecary  = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Apo) + itemApoBonus,
-            Travel      = character.Sheet.Skills.Travel     + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Trv) + itemTrvBonus,
-            Sail        = character.Sheet.Skills.Sail       + paperdoll.InterpretFormula(RulebookLore.Calculations.Formulae.Skills.Sai) + itemSaiBonus
+            Combat      = character.Sheet.Skills.Combat     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Com) + itemComBonus,
+            Arcane      = character.Sheet.Skills.Arcane     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Arc) + itemArcBonus,
+            Psionics    = character.Sheet.Skills.Psionics   + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Psi) + itemPsiBonus,
+            Hide        = character.Sheet.Skills.Hide       + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Hid) + itemHidBonus,
+            Traps       = character.Sheet.Skills.Traps      + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Tra) + itemTraBonus,
+            Tactics     = character.Sheet.Skills.Tactics    + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Tac) + itemTacBonus,
+            Social      = character.Sheet.Skills.Social     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Soc) + itemSocBonus,
+            Apothecary  = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Apo) + itemApoBonus,
+            Travel      = character.Sheet.Skills.Travel     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Trv) + itemTrvBonus,
+            Sail        = character.Sheet.Skills.Sail       + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Sai) + itemSaiBonus
         };
     }
 
@@ -182,13 +182,13 @@ internal class CharacterPaperdollLogic
 
     private static void CalculatePaperdollActionTokens(CharacterPaperdoll paperdoll)
     {
-        if (paperdoll.Assets.Resolve < 10) 
+        if (paperdoll.Assets.Resolve < 100) 
         {
             paperdoll.ActionTokens = 1;
         }
         else
         {
-            paperdoll.ActionTokens = paperdoll.Assets.Resolve / 10;
+            paperdoll.ActionTokens = RulebookLore.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
         }
     }
     #endregion

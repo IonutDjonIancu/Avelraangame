@@ -27,7 +27,7 @@ internal class CharacterValidator : ValidatorBase
 
         ValidateRace(origins.Race);
         ValidateCulture(origins.Culture);
-        ValidateHeritage(origins.Heritage);
+        ValidateTradition(origins.Tradition);
         ValidateClass(origins.Class);
 
         ValidateRaceCultureCombination(origins);
@@ -247,10 +247,10 @@ internal class CharacterValidator : ValidatorBase
         if (!CharactersLore.Classes.All.Contains(classes)) Throw($"Class {classes} not found.");
     }
 
-    private void ValidateHeritage(string heritage)
+    private void ValidateTradition(string tradition)
     {
-        ValidateString(heritage, "Invalid heritage string.");
-        if (!CharactersLore.Heritage.All.Contains(heritage)) Throw($"Heritage {heritage} not found..");
+        ValidateString(tradition, "Invalid tradition string.");
+        if (!CharactersLore.Tradition.All.Contains(tradition)) Throw($"Tradition {tradition} not found..");
     }
 
     private void ValidateCulture(string culture)

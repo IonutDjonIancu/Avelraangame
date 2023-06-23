@@ -71,6 +71,28 @@ internal class CharacterCreateLogic
 
         character.Info.Wealth = SetWealth();
 
+        if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
+        {
+            character.Info.Position = new Position
+            {
+                Region = GameplayLore.Regions.Dragonmaw,
+                Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
+                Land = GameplayLore.Lands.Farlindor.Danar,
+                Location = GameplayLore.Locations.Danar.Locations.Arada.ToString(),
+            };
+        }
+        else
+        {
+            // TODO: this will have to be changed eventually to incorporate Calvinia starting point
+            character.Info.Position = new Position
+            {
+                Region = GameplayLore.Regions.Dragonmaw,
+                Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
+                Land = GameplayLore.Lands.Farlindor.Danar,
+                Location = GameplayLore.Locations.Danar.Locations.Arada.ToString(),
+            };
+        }
+
         // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
 
         dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
@@ -151,7 +173,7 @@ internal class CharacterCreateLogic
             {
                 Race = origins.Race,
                 Culture = origins.Culture,
-                Heritage = origins.Heritage,
+                Tradition = origins.Tradition,
                 Class = origins.Class,
             },
 
@@ -159,7 +181,8 @@ internal class CharacterCreateLogic
 
             Fame = SetFame(origins.Culture, origins.Class),
             IsAlive = true,
-            IsInParty = false
+            IsInParty = false,
+            PartyId = string.Empty,
         };
     }
     #endregion

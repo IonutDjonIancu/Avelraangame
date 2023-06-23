@@ -3,8 +3,8 @@
 public class NpcInfo
 {
     public string Difficulty { get; set; }
-    public string Heritage { get; set; }
-    public string Region { get; set; }
+    public string Tradition { get; set; }
+    public string Subregion { get; set; }
 
     public CharacterStats StatsMin { get; set; }
     public CharacterStats StatsMax { get; set; }

@@ -36,7 +36,7 @@ public class TestBase
         itemService = new ItemService(dbs, diceService);
         characterService = new CharacterService(dbs, diceService, itemService);
         npcService = new NpcService(dbs, diceService, itemService, characterService);
-        gameplayService = new GameplayService(dbs, diceService, characterService);
+        gameplayService = new GameplayService(dbs);
     }
 
     protected string CreatePlayer(string playerName)
@@ -58,7 +58,7 @@ public class TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
+            Tradition = CharactersLore.Tradition.Common,
             Class = CharactersLore.Classes.Warrior
         };
 

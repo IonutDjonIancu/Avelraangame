@@ -47,11 +47,6 @@ internal class CharacterLogicDelegator
         return charInfoLogic.AddFame(fame, identity);
     }
 
-    internal Character SetParty(CharacterIdentity identity)
-    {
-        return charInfoLogic.SetParty(identity);
-    }
-
     internal Character AddWealth(int wealth, CharacterIdentity identity)
     {
         return charInfoLogic.AddWealth(wealth, identity);

@@ -268,7 +268,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var characters = factory.ServiceFactory.CharacterService.GetCharactersByPlayerId(playerId);
+            var characters = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId);
 
             return Ok(characters);
         }
@@ -287,7 +287,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.GetCharactersByPlayerId(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
+            var character = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
 
             return Ok(character);
         }
@@ -471,15 +471,34 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // PUT: /api/palantir/Gameplay/JoinParty
-    [HttpPut("Gameplay/JoinParty")]
-    public IActionResult JoinParty([FromQuery] Request request, string partyId, string characterId)
+    // POST: /api/palantir/Gameplay/CreateParty
+    [HttpPost("Gameplay/CreateParty")]
+    public IActionResult CreateParty([FromQuery] Request request, bool isSinglePlayerParty)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+            var party = factory.ServiceFactory.GameplayService.CreateParty(isSinglePlayerParty);
+
+            return Ok(party);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Gameplay/JoinParty
+    [HttpPut("Gameplay/JoinParty")]
+    public IActionResult JoinParty([FromQuery] Request request, string partyId, string characterId, bool isSinglePlayerParty)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, isSinglePlayerParty, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
             return Ok(party);
         }
@@ -498,7 +517,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+            var party = factory.ServiceFactory.GameplayService.LeaveParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
             return Ok(party);
         }

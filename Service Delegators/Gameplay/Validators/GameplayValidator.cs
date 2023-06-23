@@ -12,10 +12,18 @@ internal class GameplayValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
-    internal void ValidatePartyBeforeJoin(CharacterIdentity charIdentity)
+    internal void ValidatePartyBeforeJoin(string partyId, CharacterIdentity charIdentity)
     {
         ValidateCharacterPlayerCombination(charIdentity);
         IsCharacterInAnotherParty(charIdentity);
+
+        var character = snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
+
+        var party = snapshot.Parties.Find(p => p.Identity.Id == partyId);
+        if (party != null && party!.Characters.Count > 0)
+        {
+            if (character.Info.Position.Location != party!.Position.Location) Throw($"Unable to join party. You must first travel to their location, {party.Position.Location}, in order to join.");
+        }
     }
 
     internal void ValidatePartyOnLeave(string partyId, CharacterIdentity charIdentity)

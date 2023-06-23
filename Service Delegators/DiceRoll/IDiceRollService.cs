@@ -12,6 +12,6 @@ public interface IDiceRollService
     public int Roll_1dX(int upperLimit);
     public int Roll_XdY(int lowerLimit, int upperLimit);
 
-    DiceRoll Roll_d20_Traditional(int bonus = 0);
+    DiceRoll Roll_d20_Common(int bonus = 0);
     DiceRoll Roll_d20_Martial(int bonus = 0);
 }

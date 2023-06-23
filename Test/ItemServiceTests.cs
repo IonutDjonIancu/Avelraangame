@@ -2,8 +2,7 @@
 
 public class ItemServiceTests : TestBase
 {
-    [Theory]
-    [Description("Test to create a random item.")]
+    [Fact(DisplayName = "Test to create a random item")]
     public void Create_a_random_item_test()
     {
         var item = itemService.GenerateRandomItem();
@@ -11,8 +10,7 @@ public class ItemServiceTests : TestBase
         item.Should().BeOfType<Item>();
     }
 
-    [Theory]
-    [Description("Test random item name and level name.")]
+    [Fact(DisplayName = "Test random item name and level name")]
     public void Random_item_level_and_levelName_test() 
     {
         var levelNames = ItemsLore.LevelNames.LevelNamesAll;
@@ -26,8 +24,7 @@ public class ItemServiceTests : TestBase
         }
     }
 
-    [Theory]
-    [Description("Test random item type and subtype.")]
+    [Fact(DisplayName = "Test random item type and subtype")]
     public void Random_item_type_and_subtype_test()
     {
         var types = ItemsLore.Types.All;
@@ -45,8 +42,7 @@ public class ItemServiceTests : TestBase
         }
     }
 
-    [Theory]
-    [Description("Test random item category and description.")]
+    [Fact(DisplayName = "Test random item category and description")]
     public void Random_item_category_and_description_test()
     {
         var categories = new Dictionary<string, Dictionary<string, string>>();
@@ -68,8 +64,7 @@ public class ItemServiceTests : TestBase
         }
     }
 
-    [Theory]
-    [Description("Test random item quality and lore.")]
+    [Fact(DisplayName = "Test random item quality and lore")]
     public void Random_item_quality_and_lore_test()
     {
         var normalQualities = new List<string>();
@@ -104,8 +99,7 @@ public class ItemServiceTests : TestBase
         }
     }
 
-    [Theory]
-    [Description("Test random item value.")]
+    [Fact(DisplayName = "Test random item value")]
     public void Random_item_value_test()
     {
         var item = CreateAnItem();
@@ -113,8 +107,7 @@ public class ItemServiceTests : TestBase
         item.Value.Should().BeGreaterThan(0);
     }
 
-    [Theory]
-    [Description("Create specific items.")]
+    [Fact(DisplayName = "Create specific items")]
     public void Create_specific_items_test()
     {
         var helm = itemService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
