@@ -31,9 +31,9 @@ internal class NpcPaperdollLogic
     private static void ApplyDifficultyFactor(NpcInfo info, NpcPaperdoll npc)
     {
         var factor = 1.0m; // set to Normal
-        if (info.Difficulty == RulebookLore.Gameplay.Quests.Difficulty.Easy) factor = 0.25m;
-        if (info.Difficulty == RulebookLore.Gameplay.Quests.Difficulty.Medium) factor = 0.5m;
-        if (info.Difficulty == RulebookLore.Gameplay.Quests.Difficulty.Hard) factor = 2.0m;
+        if (info.Difficulty == GameplayLore.Quests.Difficulty.Easy) factor = 0.25m;
+        if (info.Difficulty == GameplayLore.Quests.Difficulty.Medium) factor = 0.5m;
+        if (info.Difficulty == GameplayLore.Quests.Difficulty.Hard) factor = 2.0m;
 
         // stats
         npc.Paperdoll.Stats.Strength = (int)Math.Floor(npc.Paperdoll.Stats.Strength * factor);
@@ -65,6 +65,9 @@ internal class NpcPaperdollLogic
 
         // money
         npc.Wealth = (int)Math.Floor(npc.Wealth * factor);
+
+        // action tokens
+        npc.Paperdoll.ActionTokens = (int)Math.Floor(npc.Paperdoll.ActionTokens * factor) <= 1 ? 1 : (int)Math.Floor(npc.Paperdoll.ActionTokens * factor);
     }
     #endregion
 }

@@ -7,24 +7,21 @@ public class GameplayService : IGameplayService
     private readonly GameplayValidator validator;
     private readonly GameplayLogicDelegator logic;
 
-    public GameplayService(
-        IDatabaseService databaseService,
-        IDiceRollService diceRollService,
-        ICharacterService characterService)
+    public GameplayService(IDatabaseService databaseService)
     {
         validator = new GameplayValidator(databaseService.Snapshot);
-        logic = new GameplayLogicDelegator(databaseService, diceRollService, characterService);
+        logic = new GameplayLogicDelegator(databaseService);
     }
 
-    public Party CreateParty()
+    public Party CreateParty(bool isSinglePlayerOnly)
     {
-        return logic.CreateParty();
+        return logic.CreateParty(isSinglePlayerOnly);
     }
 
-    public Party JoinParty(string partyId, CharacterIdentity charIdentity)
+    public Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity)
     {
-        validator.ValidatePartyBeforeJoin(charIdentity);
-        return logic.JoinParty(partyId, charIdentity);
+        validator.ValidatePartyBeforeJoin(partyId, charIdentity);
+        return logic.JoinParty(partyId, isSinglePlayerOnly, charIdentity);
     }
 
     public Party LeaveParty(string partyId, CharacterIdentity charIdentity)

@@ -2,8 +2,7 @@ namespace Tests;
 
 public class PlayerServiceTests : TestBase
 {
-    [Theory]
-    [Description("Create player should exist in db.")]
+    [Fact(DisplayName = "Create player should exist in db")]
     public void Create_player_test()
     {
         dbs.Snapshot.Players.Clear();
@@ -19,8 +18,7 @@ public class PlayerServiceTests : TestBase
         dbs.Snapshot.Players.Count.Should().Be(1);
     }
 
-    [Theory]
-    [Description("Wrong player name should throw.")]
+    [Fact(DisplayName = "Wrong player name should throw")]
     public void Create_player_with_wrong_name_test()
     {
         dbs.Snapshot.Players.Clear();
@@ -33,8 +31,7 @@ public class PlayerServiceTests : TestBase
         dbs.Snapshot.Players.Count.Should().Be(0);
     }
 
-    [Theory]
-    [Description("Same player name should throw.")]
+    [Fact(DisplayName = "Same player name should throw")]
     public void Create_player_with_same_name_test()
     {
         dbs.Snapshot.Players.Clear();
@@ -46,8 +43,7 @@ public class PlayerServiceTests : TestBase
         Assert.Throws<Exception>(() => playerService.CreatePlayer(playerName));
     }
 
-    [Theory]
-    [Description("Creating more players than the limit should throw.")]
+    [Fact(DisplayName = "Creating more players than the limit should throw")]
     public void Create_too_many_players_test()
     {
         dbs.Snapshot.Players.Clear();

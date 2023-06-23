@@ -9,8 +9,7 @@ public class CharacterServiceTests : TestBase
         dbs.Snapshot.Players.Clear();
     }
 
-    [Theory]
-    [Description("Create character stub.")]
+    [Fact(DisplayName = "Create character stub")]
     public void Create_character_stub_test()
     {
         var playerId = CreatePlayer(playerName);
@@ -24,8 +23,7 @@ public class CharacterServiceTests : TestBase
         stub.SkillPoints.Should().BeGreaterThanOrEqualTo(1);
     }
 
-    [Theory]
-    [Description("Save character stub.")]
+    [Fact(DisplayName = "Save character stub")]
     public void Save_character_stub_test()
     {
         var playerId = CreatePlayer(playerName);
@@ -37,7 +35,7 @@ public class CharacterServiceTests : TestBase
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
-            Heritage = CharactersLore.Heritage.Traditional,
+            Tradition = CharactersLore.Tradition.Common,
             Class = CharactersLore.Classes.Warrior
         };
 
@@ -55,7 +53,7 @@ public class CharacterServiceTests : TestBase
         character.Info.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         character.Info.Origins.Race.Should().Be(origins.Race);
         character.Info.Origins.Culture.Should().Be(origins.Culture);
-        character.Info.Origins.Heritage.Should().Be(origins.Heritage);
+        character.Info.Origins.Tradition.Should().Be(origins.Tradition);
         character.Info.Origins.Class.Should().Be(origins.Class);
         character.Info.Fame.Should().NotBeNullOrWhiteSpace();
         character.Info.Wealth.Should().BeGreaterThanOrEqualTo(1);
@@ -75,10 +73,21 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
+        character.Info.IsInParty.Should().BeFalse();
+
+        GameplayLore.Locations.Danar.All.Should().Contain(character.Info.Position.Location);
+        
+        if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
+        {
+            // check for location in Danar
+        }
+        else
+        {
+            // check for location in Calvinia
+        }
     }
 
-    [Theory]
-    [Description("Modifing character name should have the new name.")]
+    [Fact(DisplayName = "Modifing character name should have the new name")]
     public void Rename_character_test()
     {
         var newCharName = "Jax";
@@ -89,22 +98,20 @@ public class CharacterServiceTests : TestBase
         chr.Info.Name.Should().Be(newCharName);
     }
 
-    [Theory]
-    [Description("Deleting a character should remove it from db.")]
+    [Fact(DisplayName = "Deleting a character should remove it from db")]
     public void Delete_character_test()
     {
         var chr = CreateHumanCharacter("Jax");
 
         characterService.DeleteCharacter(CreateCharIdentity(chr));
 
-        var characters = characterService.GetCharactersByPlayerId(chr.Identity.PlayerId);
+        var characters = characterService.GetPlayerCharacters(chr.Identity.PlayerId);
 
         characters.CharactersList.Should().NotContain(chr);
         characters.Count.Should().Be(0);
     }
 
-    [Theory]
-    [Description("Increasing the stats from a character should save it to db.")]
+    [Fact(DisplayName = "Increasing the stats from a character should save it to db")]
     public void Increase_stats_for_character_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -118,8 +125,7 @@ public class CharacterServiceTests : TestBase
         chr.Sheet.Stats.Strength.Should().Be(currentStr + 1);
     }
 
-    [Theory]
-    [Description("Increasing the stats from a character with no stat points should throw.")]
+    [Fact(DisplayName = "Increasing the stats from a character with no stat points should throw")]
     public void Increase_stats_with_no_points_for_character_should_throw_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -127,8 +133,7 @@ public class CharacterServiceTests : TestBase
         Assert.Throws<Exception>(() => characterService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr)));
     }
 
-    [Theory]
-    [Description("Increasing the skills from a character should save it to db.")]
+    [Fact(DisplayName = "Increasing the skills from a character should save it to db")]
     public void Increase_skills_for_character_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -141,8 +146,7 @@ public class CharacterServiceTests : TestBase
         chr.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
     }
 
-    [Theory]
-    [Description("Increasing the skills from a character with no skill points should throw.")]
+    [Fact(DisplayName = "Increasing the skills from a character with no skill points should throw")]
     public void Increase_skills_with_no_points_for_character_should_throw_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -150,8 +154,7 @@ public class CharacterServiceTests : TestBase
         Assert.Throws<Exception>(() => characterService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr)));
     }
 
-    [Theory]
-    [Description("Equipping an item in character inventory.")]
+    [Fact(DisplayName = "Equipping an item in character inventory")]
     public void Equip_item_on_character_inventory_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -187,8 +190,7 @@ public class CharacterServiceTests : TestBase
         hasEquipedItem.Should().BeTrue();
     }
 
-    [Theory]
-    [Description("Unequipping an item from character inventory.")]
+    [Fact(DisplayName = "Unequipping an item from character inventory")]
     public void Unequip_item_from_character_inventory_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -226,8 +228,7 @@ public class CharacterServiceTests : TestBase
         chr.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
     }
 
-    [Theory]
-    [Description("Learning a common bonus heroic trait.")]
+    [Fact(DisplayName = "Learning a common bonus heroic trait")]
     public void Learn_common_bonus_heroic_trait_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -254,8 +255,7 @@ public class CharacterServiceTests : TestBase
         combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
     }
 
-    [Theory]
-    [Description("Learning a unique heroic trait twice throws error.")]
+    [Fact(DisplayName = "Learning a unique heroic trait twice throws error")]
     public void Learn_unique_heroic_trait_throws_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -275,8 +275,7 @@ public class CharacterServiceTests : TestBase
         Assert.Throws<Exception>(() => characterService.LearnHeroicTrait(trait));
     }
 
-    [Theory]
-    [Description("Create character paperdoll.")]
+    [Fact(DisplayName = "Create character paperdoll")]
     public void Calculate_character_paperdoll_test()
     {
         var chr = CreateHumanCharacter("Jax");
@@ -320,32 +319,34 @@ public class CharacterServiceTests : TestBase
         paperdoll.SpecialSkills.Count.Should().Be(1);
         paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
 
-        paperdoll.ActionTokens.Should().Be(paperdoll.Assets.Resolve / 10);
+        var calculatedActionTokens = RulebookLore.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
+        var actionTokens = calculatedActionTokens <= 1 ? 1 : calculatedActionTokens;
+
+        paperdoll.ActionTokens.Should().Be(actionTokens);
     }
 
 
-    [Theory]
-    [Description("Joining party should reflect on Character.")]
+    [Fact(DisplayName = "Joining party should reflect on Character")]
     public void Join_party_correctly_displays_on_Character_test()
     {
-        var party = gameplayService.CreateParty();
+        var party = gameplayService.CreateParty(true);
         var chr = CreateHumanCharacter("Jax");
 
-        gameplayService.JoinParty(party.Identity.Id, CreateCharIdentity(chr));
+        gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
 
-        chr.Info.IsInParty.Should().BeTrue();   
+        chr.Info.IsInParty.Should().BeTrue();
+        chr.Info.PartyId.Should().Be(party.Identity.Id);
     }
 
-    [Theory]
-    [Description("Leaving party should reflect on Character.")]
+    [Fact(DisplayName = "Leaving party should reflect on Character")]
     public void Leave_party_correctly_displays_on_Character_test()
     {
-        var party = gameplayService.CreateParty();
+        var party = gameplayService.CreateParty(true);
         var chr = CreateHumanCharacter("Jax");
 
         Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
 
-        gameplayService.JoinParty(party.Identity.Id, CreateCharIdentity(chr));
+        gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
         gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
 
         chr.Info.IsInParty.Should().BeFalse();
