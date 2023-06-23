@@ -2,14 +2,13 @@
 
 public class NpcServiceTests : TestBase
 {
-    [Theory]
-    [Description("Create an Npc.")]
+    [Fact(DisplayName = "Create an Npc")]
     public void Generate_Npc_test()
     {
         var npcInfo = new NpcInfo
         {
             Difficulty = GameplayLore.Quests.Difficulty.Standard,
-            Subregion = GameplayLore.Regions.Dragonmaw,
+            Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
             Tradition = GameplayLore.Tradition.Common,
 
             StatsMin = new CharacterStats

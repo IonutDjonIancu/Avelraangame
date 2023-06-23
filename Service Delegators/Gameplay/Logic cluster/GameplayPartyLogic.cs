@@ -12,7 +12,7 @@ internal class GameplayPartyLogic
         dbs = databaseService;
     }
 
-    internal Party CreateParty()
+    internal Party CreateParty(bool isSinglePlayerOnly)
     {
         SanitizePartiesOnCreate();
 
@@ -24,6 +24,7 @@ internal class GameplayPartyLogic
                 PartyLeadId = string.Empty
             },
             CreationDate = DateTime.Now.ToShortDateString(),
+            IsSinglePlayerOnly = isSinglePlayerOnly,
             IsAdventuring = false,
             Food = 1
         };
@@ -35,14 +36,14 @@ internal class GameplayPartyLogic
         return party;
     }
 
-    internal Party JoinParty(string partyId, CharacterIdentity charIdentity)
+    internal Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity)
     {
         var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId);
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
 
         if (party == null)
         {
-            party = CreateParty();
+            party = CreateParty(isSinglePlayerOnly);
             party.Position = character.Info.Position;
         }
 

@@ -62,9 +62,9 @@ internal class DiceRollLogicDelegator
         var dice = new List<int>();
         int roll;
 
-        if      (IsCommon(tradition))   roll = Rolld20WithList(dice, bonus);
-        else if (IsMartial(tradition))  roll = Rolld100WithList(dice, bonus);
-        else  /*(none)*/                roll = Rolld20WithList(dice, bonus);
+        if      (IsMartial(tradition))  roll = Rolld20WithList(dice, bonus);
+        else if (IsCommon(tradition))   roll = Rolld100WithList(dice, bonus);
+        else    throw new NotImplementedException();
 
         return new DiceRoll
         {
@@ -106,16 +106,16 @@ internal class DiceRollLogicDelegator
 
     private static int CalculateGradeFor(string tradition, int roll)
     {
-        if      (IsCommon(tradition))   return (int)Math.Ceiling(roll / 4.00M);
-        else if (IsMartial(tradition))  return (int)Math.Ceiling(roll / 20.00M);
-        else  /*(none)*/                return (int)Math.Ceiling(roll / 4.00M);
+        if      (IsCommon(tradition))   return (int)Math.Ceiling(roll / 20.00M);
+        else if (IsMartial(tradition))  return (int)Math.Ceiling(roll / 4.00M);
+        else    throw new NotImplementedException();
     }
 
     private static int CalculateCritsFor(string tradition, List<int> dice)
     {
         if      (IsCommon(tradition))   return CritsByDiceCount(dice);
         else if (IsMartial(tradition))  return CritsByDiceCount(dice);
-        else  /*(none)*/                return CritsByDiceCount(dice);
+        else    throw new NotImplementedException();
 
         // other tradition styles influenced by crits from 19 or 18 will return a greater number of crits dice
     }

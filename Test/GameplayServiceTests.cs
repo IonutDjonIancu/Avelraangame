@@ -2,12 +2,13 @@
 
 public class GameplayServiceTests : TestBase
 {
+    private static readonly bool isSinglePlayerParty = true;
+
     #region happy path
-    [Theory]
-    [Description("Create party.")]
+    [Fact(DisplayName = "Create single player party")]
     public void Create_party_test()
     {
-        var party = CreateParty();
+        var party = CreateParty(isSinglePlayerParty);
 
         party.Should().NotBeNull();
         party.IsAdventuring.Should().BeFalse();
@@ -17,28 +18,26 @@ public class GameplayServiceTests : TestBase
         dbs.Snapshot.Parties.Count.Should().Be(1);
     }
 
-    [Theory]
-    [Description("Join party.")]
+    [Fact(DisplayName = "Join single player party")]
     public void Join_party_test()
     {
-        var party = CreateParty();
+        var party = CreateParty(isSinglePlayerParty);
         var chr = CreateHumanCharacter("Jax");
 
-        gameplayService.JoinParty(party.Identity.Id, GetCharacterIdentity(chr));
+        gameplayService.JoinParty(party.Identity.Id, isSinglePlayerParty, GetCharacterIdentity(chr));
 
         party.Characters.Count.Should().Be(1);
         party.Identity.PartyLeadId.Should().Be(chr.Identity.Id);
     }
 
-    [Theory]
-    [Description("Leave party.")]
+    [Fact(DisplayName = "Leave party")]
     public void Leave_party_test()
     {
-        var party = CreateParty();
+        var party = CreateParty(isSinglePlayerParty);
         var chr = CreateHumanCharacter("Jax");
         var charIdentity = GetCharacterIdentity(chr);
 
-        gameplayService.JoinParty(party.Identity.Id, charIdentity);
+        gameplayService.JoinParty(party.Identity.Id, isSinglePlayerParty, charIdentity);
         gameplayService.LeaveParty(party.Identity.Id, charIdentity);
 
         chr.Info.IsInParty.Should().BeFalse();
@@ -48,11 +47,10 @@ public class GameplayServiceTests : TestBase
     #endregion
 
     #region validations
-    [Theory]
-    [Description("When creating a new party, older empty parties should be deleted.")]
+    [Fact(DisplayName = "When creating a new party, older empty parties should be deleted")]
     public void Create_party_should_delete_older_parties_test()
     {
-        var party = CreateParty();
+        var party = CreateParty(isSinglePlayerParty);
 
         var canParseDate = DateTime.TryParse(dbs.Snapshot.Parties.First().CreationDate, out var justNowDate);
         canParseDate.Should().BeTrue();
@@ -60,48 +58,46 @@ public class GameplayServiceTests : TestBase
         var olderDate = justNowDate - DateTime.Now.AddDays(-70);
         party.CreationDate = (DateTime.Now - olderDate).ToString();
 
-        var newParty = gameplayService.CreateParty();
+        var newParty = gameplayService.CreateParty(isSinglePlayerParty);
 
         dbs.Snapshot.Parties.Count.Should().Be(1);
         dbs.Snapshot.Parties.First().Identity.Id.Should().Be(newParty.Identity.Id);   
     }
 
-    [Theory]
-    [Description("Character in another party should throw on join.")]
+    [Fact(DisplayName = "Character in another party should throw on join")]
     public void Character_in_another_party_should_throw_test()
     {
-        var party1 = CreateParty();
-        var party2 = gameplayService.CreateParty();
+        var party1 = CreateParty(isSinglePlayerParty);
+        var party2 = gameplayService.CreateParty(isSinglePlayerParty);
         var chr = CreateHumanCharacter("Jax");
         var charIdentity = GetCharacterIdentity(chr);
 
-        gameplayService.JoinParty(party1.Identity.Id, charIdentity);
+        gameplayService.JoinParty(party1.Identity.Id, isSinglePlayerParty, charIdentity);
 
-        Assert.Throws<Exception>(() => gameplayService.JoinParty(party2.Identity.Id, charIdentity));
+        Assert.Throws<Exception>(() => gameplayService.JoinParty(party2.Identity.Id, isSinglePlayerParty, charIdentity));
     }
 
-    [Theory]
-    [Description("Character leaving wrong party should throw.")]
+    [Fact(DisplayName = "Character leaving wrong party should throw")]
     public void Character_leave_wrong_party_should_throw_test()
     {
-        var party1 = CreateParty();
-        var party2 = gameplayService.CreateParty();
+        var party1 = CreateParty(isSinglePlayerParty);
+        var party2 = gameplayService.CreateParty(isSinglePlayerParty);
         var chr = CreateHumanCharacter("Jax");
         var charIdentity = GetCharacterIdentity(chr);
 
-        gameplayService.JoinParty(party1.Identity.Id, charIdentity);
+        gameplayService.JoinParty(party1.Identity.Id, isSinglePlayerParty, charIdentity);
 
         Assert.Throws<Exception>(() => gameplayService.LeaveParty(party2.Identity.Id, charIdentity));
     }
     #endregion
 
     #region private methods
-    private Party CreateParty()
+    private Party CreateParty(bool isForSinglePlayer)
     {
         dbs.Snapshot.Parties.Clear();
         dbs.PersistDatabase();
 
-        return gameplayService.CreateParty();
+        return gameplayService.CreateParty(isForSinglePlayer);
     }
 
     private static CharacterIdentity GetCharacterIdentity(Character character)

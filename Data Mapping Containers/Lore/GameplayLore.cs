@@ -40,6 +40,11 @@ public class GameplayLore
         {
             public const string Farlindor = "Farlindor";
         }
+
+        public static readonly List<string> All = new()
+        {
+            Dragonmaw.Farlindor,
+        };
     }
 
     public static class Lands

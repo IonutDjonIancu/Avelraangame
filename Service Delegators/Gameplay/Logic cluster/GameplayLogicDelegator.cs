@@ -12,14 +12,14 @@ internal class GameplayLogicDelegator
         partyLogic = new GameplayPartyLogic(databaseService);
     }
 
-    internal Party CreateParty()
+    internal Party CreateParty(bool isSinglePlayerOnly)
     {
-        return partyLogic.CreateParty();
+        return partyLogic.CreateParty(isSinglePlayerOnly);
     }
 
-    internal Party JoinParty(string partyId, CharacterIdentity charIdentity)
+    internal Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity)
     {
-        return partyLogic.JoinParty(partyId, charIdentity);
+        return partyLogic.JoinParty(partyId, isSinglePlayerOnly, charIdentity);
     }
 
     internal Party LeaveParty(string partyId, CharacterIdentity charIdentity)
