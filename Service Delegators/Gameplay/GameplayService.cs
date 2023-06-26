@@ -29,4 +29,11 @@ public class GameplayService : IGameplayService
         validator.ValidatePartyOnLeave(partyId, charIdentity);
         return logic.LeaveParty(partyId, charIdentity);
     }
+
+    public Quest BeginQuest(string partyId, string questName, CharacterIdentity charIdentity)
+    {
+        validator.ValidateQuestOnBegin(partyId, questName, charIdentity);
+
+        return new Quest();
+    }
 }

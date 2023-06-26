@@ -8,5 +8,5 @@ public interface IGameplayService
     Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity);
     Party LeaveParty(string partyId, CharacterIdentity charIdentity);
 
-    
+    Quest BeginQuest(string partyId, string questName, CharacterIdentity charIdentity);
 }

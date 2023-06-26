@@ -4,6 +4,7 @@ public class Quest
 {
     public string Id { get; set; }
     public string PartyId { get; set; }
+    public string Name { get; set; }
 
     // these are hardcoded in the QuestsLore
     public string Difficulty { get; set; }
@@ -15,7 +16,8 @@ public class Quest
     public int EffortRoll { get; set; }
     public int EncountersTotal { get; set; }
     public int EncountersLeft { get; set; }
+    public bool IsInEncounter { get; set; }
     public Encounter CurrentEncounter { get; set; } = new();
-
+    public Encounter NextEncounter { get; set; } = new();
     public Reward Reward { get; set; } = new();
 }

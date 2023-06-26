@@ -21,28 +21,28 @@ internal class ValidatorBase
 
         var player = snapshot.Players.Find(p => p.Identity.Id == characterIdentity.PlayerId)!;
 
-        if (!player.Characters.Exists(c => c.Identity!.Id == characterIdentity.Id)) Throw("Character not found.");
+        if (!player.Characters.Exists(c => c.Identity!.Id == characterIdentity.Id)) throw new Exception("Character not found.");
     }
 
     internal void ValidateIfPlayerExists(string playerId)
     {
         ValidateGuid(playerId);
-        if (!snapshot.Players.Exists(p => p.Identity.Id == playerId)) Throw("Player not found");
+        if (!snapshot.Players.Exists(p => p.Identity.Id == playerId)) throw new Exception("Player not found");
     }
 
     internal void ValidateString(string str, string message = "")
     {
-        if (string.IsNullOrWhiteSpace(str)) Throw(message.Length > 0 ? message : "The provided string is invalid.");
+        if (string.IsNullOrWhiteSpace(str)) throw new Exception(message.Length > 0 ? message : "The provided string is invalid.");
     }
 
     internal static void ValidateObject(object? obj, string message = "")
     {
-        if (obj == null) Throw(message.Length > 0 ? message : $"Object found null.");
+        if (obj == null) throw new Exception(message.Length > 0 ? message : $"Object found null.");
     }
 
     internal void ValidateNumber(int num, string message = "")
     {
-        if (num <= 0) Throw(message.Length > 0 ? message : "Number cannot be smaller or equal to zero.");
+        if (num <= 0) throw new Exception(message.Length > 0 ? message : "Number cannot be smaller or equal to zero.");
     }
 
     internal void ValidateGuid(string str, string message = "")
@@ -51,14 +51,9 @@ internal class ValidatorBase
 
         var isGuidValid = Guid.TryParse(str, out var id);
 
-        if (!isGuidValid) Throw(message.Length > 0 ? message : "Invalid guid.");
+        if (!isGuidValid) throw new Exception(message.Length > 0 ? message : "Invalid guid.");
 
-        if (id == Guid.Empty) Throw("Guid cannot be an empty guid.");
-    }
-
-    internal static void Throw(string message)
-    {
-        throw new Exception(message);
+        if (id == Guid.Empty) throw new Exception("Guid cannot be an empty guid.");
     }
 }
 

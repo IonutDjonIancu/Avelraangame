@@ -68,15 +68,6 @@ internal class GameplayPartyLogic
         var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId)!;
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
 
-        var member = party.Paperdolls.Find(s => s.CharacterId == charIdentity.Id)!;
-        if (member != null)
-        {
-            character.LevelUp.StatPoints += member.LevelUp.StatPoints;
-            character.LevelUp.SkillPoints += member.LevelUp.SkillPoints;
-            character.LevelUp.DeedsPoints += member.LevelUp.DeedsPoints;
-            party.Paperdolls.Remove(member);
-        }
-
         if (party.Identity.PartyLeadId == charIdentity.Id)
         {
             party.Loot.ForEach(s => character.Supplies.Add(s));
