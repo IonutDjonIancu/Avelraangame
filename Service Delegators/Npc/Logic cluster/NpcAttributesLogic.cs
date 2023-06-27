@@ -34,7 +34,6 @@ internal class NpcAttributesLogic
         npcChar.Info.EntityLevel = RandomizeEntityLevel(dice);
         npcChar.Info.DateOfBirth = DateTime.Now.ToShortDateString();
         npcChar.Info.IsAlive = true;
-        npcChar.Info.IsInParty = false;
         npcChar.Info.Fame = "Not much is know about this one.";
         npcChar.Info.Origins = GetOriginsByRegion(npcInfo);
         npcChar.Info.Name = $"Npc-{npcChar.Info.Origins.Race}-{DateTime.Now.Millisecond}"; // TODO: generate NPC name dynamically

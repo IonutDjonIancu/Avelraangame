@@ -73,9 +73,9 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
-        character.Info.IsInParty.Should().BeFalse();
+        character.Status.IsInParty.Should().BeFalse();
 
-        GameplayLore.Locations.Danar.All.Should().Contain(character.Info.Position.Location);
+        GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
         
         if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
@@ -334,8 +334,8 @@ public class CharacterServiceTests : TestBase
 
         gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
 
-        chr.Info.IsInParty.Should().BeTrue();
-        chr.Info.PartyId.Should().Be(party.Identity.Id);
+        chr.Status.IsInParty.Should().BeTrue();
+        chr.Status.PartyId.Should().Be(party.Identity.Id);
     }
 
     [Fact(DisplayName = "Leaving party should reflect on Character")]
@@ -349,7 +349,7 @@ public class CharacterServiceTests : TestBase
         gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
         gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
 
-        chr.Info.IsInParty.Should().BeFalse();
+        chr.Status.IsInParty.Should().BeFalse();
     }
 
     #region private methods

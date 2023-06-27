@@ -44,7 +44,7 @@ internal class GameplayPartyLogic
         if (party == null)
         {
             party = CreateParty(isSinglePlayerOnly);
-            party.Position = character.Info.Position;
+            party.Position = character.Position;
         }
 
         party.Characters.Add(charIdentity);
@@ -54,8 +54,8 @@ internal class GameplayPartyLogic
             party.Identity.PartyLeadId = charIdentity.Id;
         }
 
-        character.Info.IsInParty = true;
-        character.Info.PartyId = partyId;
+        character.Status.IsInParty = true;
+        character.Status.PartyId = partyId;
 
         dbs.PersistPlayer(charIdentity.PlayerId);
         dbs.PersistDatabase();
@@ -76,7 +76,8 @@ internal class GameplayPartyLogic
         }
 
         party.Characters.Remove(charIdentity);
-        character.Info.IsInParty = false;
+        character.Status.IsInParty = false;
+        character.Status.PartyId = string.Empty;
 
         if (party.Characters.Count > 0)
         {

@@ -40,7 +40,7 @@ public class GameplayServiceTests : TestBase
         gameplayService.JoinParty(party.Identity.Id, isSinglePlayerParty, charIdentity);
         gameplayService.LeaveParty(party.Identity.Id, charIdentity);
 
-        chr.Info.IsInParty.Should().BeFalse();
+        chr.Status.IsInParty.Should().BeFalse();
         dbs.Snapshot.Parties.Count.Should().Be(0);
         party.Identity.PartyLeadId.Should().BeEmpty();
     }

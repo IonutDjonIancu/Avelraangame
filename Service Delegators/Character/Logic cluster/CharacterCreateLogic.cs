@@ -73,7 +73,7 @@ internal class CharacterCreateLogic
 
         if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
-            character.Info.Position = new Position
+            character.Position = new Position
             {
                 Region = GameplayLore.Regions.Dragonmaw,
                 Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
@@ -84,7 +84,7 @@ internal class CharacterCreateLogic
         else
         {
             // TODO: this will have to be changed eventually to incorporate Calvinia starting point
-            character.Info.Position = new Position
+            character.Position = new Position
             {
                 Region = GameplayLore.Regions.Dragonmaw,
                 Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
@@ -181,8 +181,6 @@ internal class CharacterCreateLogic
 
             Fame = SetFame(origins.Culture, origins.Class),
             IsAlive = true,
-            IsInParty = false,
-            PartyId = string.Empty,
         };
     }
     #endregion

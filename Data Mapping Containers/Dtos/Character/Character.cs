@@ -6,9 +6,10 @@ public class Character
 {
     public CharacterIdentity Identity { get; set; } = new();
     public CharacterInfo Info { get; set; } = new();
+    public CharacterStatus Status { get; set; } = new();
+    public Position Position { get; set; } = new();
 
     public CharacterLevelUp LevelUp { get; set; } = new();
-
     public CharacterSheet Sheet { get; set; } = new();
     
     public CharacterInventory Inventory { get; set; } = new();
