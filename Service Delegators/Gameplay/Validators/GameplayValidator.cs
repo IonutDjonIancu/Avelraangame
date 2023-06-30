@@ -46,10 +46,7 @@ internal class GameplayValidator : ValidatorBase
 
         var party = snapshot.Parties.Find(s => s.Identity.Id == partyId) ?? throw new Exception("No such party was found.");
 
-        if (!string.IsNullOrWhiteSpace(party.QuestId)) throw new Exception();
-        {
-            // not finished            
-        }
+        if (!string.IsNullOrWhiteSpace(party.QuestId)) throw new Exception("Quest not found.");
 
         throw new NotImplementedException();
     }

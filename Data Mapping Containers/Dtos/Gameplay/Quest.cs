@@ -9,6 +9,7 @@ public class Quest
     // these are hardcoded in the QuestsLore
     public string Difficulty { get; set; }
     public string Effort { get; set; }
+    public bool IsRepeatable { get; set; }
     public Position Position { get; set; } = new();
     public string Description { get; set; }
 
