@@ -16,17 +16,29 @@ public static class QuestsLore
     public static readonly Quest mudpaddlerOfBelford = new()
     {
         Name = mudpaddlerOfBelford_name,
+        Description = mudpaddlerOfBelford_description,
         Difficulty = GameplayLore.Quests.Difficulty.Easy,
-        Effort = GameplayLore.Quests.Effort.Normal,
+        Effort = GameplayLore.Effort.Normal,
+        Ratio = new QuestRatio()
+        {
+            Diplomacy = 5,
+            Utilitarian = 15,
+            Overcome = 20,
+
+            DiplomacyMultiplier = 4,
+            UtilitarianMultiplier = 3,
+            OvercomeMultiplier = 2,
+
+            RewardType = GameplayLore.Quests.RewardTypes.Low
+        },
         IsRepeatable = true,
         Position = new Position()
         {
-            Region = GameplayLore.Regions.Dragonmaw,
-            Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
-            Land = GameplayLore.Lands.Farlindor.Danar,
-            Location = GameplayLore.Locations.Danar.Locations.Belfordshire.ToString()
-        },
-        Description = mudpaddlerOfBelford_description
+            Region = GameplayLore.MapLocations.Dragonmaw.Name,
+            Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+            Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
+            Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Belfordshire.Name
+        }
     };
 
     public static readonly List<Quest> All = new()

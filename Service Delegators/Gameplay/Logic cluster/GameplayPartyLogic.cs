@@ -7,12 +7,12 @@ internal class GameplayPartyLogic
     private readonly IDatabaseService dbs;
 
     private GameplayPartyLogic() { }
-    public GameplayPartyLogic(IDatabaseService databaseService)
+    internal GameplayPartyLogic(IDatabaseService databaseService)
     {
         dbs = databaseService;
     }
 
-    internal Party CreateParty(bool isSinglePlayerOnly)
+    internal Party CreateParty(Position position, bool isSinglePlayerOnly = false)
     {
         SanitizePartiesOnCreate();
 
@@ -25,7 +25,10 @@ internal class GameplayPartyLogic
             },
             CreationDate = DateTime.Now.ToShortDateString(),
             IsSinglePlayerOnly = isSinglePlayerOnly,
-            IsAdventuring = false,
+
+            Position = position,
+
+            Wealth = 0,
             Food = 1
         };
 
@@ -36,16 +39,10 @@ internal class GameplayPartyLogic
         return party;
     }
 
-    internal Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity)
+    internal Party JoinParty(string partyId, CharacterIdentity charIdentity, bool isSinglePlayerOnly = false)
     {
-        var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId);
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
-
-        if (party == null)
-        {
-            party = CreateParty(isSinglePlayerOnly);
-            party.Position = character.Position;
-        }
+        var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId) ?? CreateParty(character.Position, isSinglePlayerOnly);
 
         party.Characters.Add(charIdentity);
 
@@ -67,13 +64,6 @@ internal class GameplayPartyLogic
     {
         var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId)!;
         var character = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
-
-        if (party.Identity.PartyLeadId == charIdentity.Id)
-        {
-            party.Loot.ForEach(s => character.Supplies.Add(s));
-            party.Loot.Clear();
-            party.Identity.PartyLeadId = string.Empty;
-        }
 
         party.Characters.Remove(charIdentity);
         character.Status.IsInParty = false;
@@ -102,7 +92,7 @@ internal class GameplayPartyLogic
 
         var oldParties = dbs.Snapshot.Parties.Where(
             s => DateTime.Parse(s.CreationDate) < DateTime.Now - sevenDaysAgo
-            && !s.IsAdventuring
+            && string.IsNullOrEmpty(s.Status.QuestId)
             && s.Characters.Count == 0).ToList();
         if (oldParties.Count == 0) return;
 

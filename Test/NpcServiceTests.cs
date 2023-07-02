@@ -8,7 +8,7 @@ public class NpcServiceTests : TestBase
         var npcInfo = new NpcInfo
         {
             Difficulty = GameplayLore.Quests.Difficulty.Standard,
-            Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
+            Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
             Tradition = GameplayLore.Tradition.Common,
 
             StatsMin = new CharacterStats

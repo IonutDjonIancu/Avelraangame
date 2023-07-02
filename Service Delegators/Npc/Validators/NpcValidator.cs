@@ -16,7 +16,8 @@ internal class NpcValidator : ValidatorBase
 
         if (!GameplayLore.Quests.Difficulty.All.Contains(npcInfo.Difficulty)) throw new Exception("Difficulty not found or in wrong format.");
         if (!CharactersLore.Tradition.All.Contains(npcInfo.Tradition)) throw new Exception("Tradition not found or in wrong format.");
-        if (!GameplayLore.Subregions.All.Contains(npcInfo.Subregion)) throw new Exception("Wrong npc subregion or in wrong format.");
+        //if (!GameplayLore.Subregions.All.Contains(npcInfo.Subregion)) throw new Exception("Wrong npc subregion or in wrong format.");
+        throw new NotImplementedException();
 
         ValidateObject(npcInfo.StatsMin);
         ValidateObject(npcInfo.StatsMax);

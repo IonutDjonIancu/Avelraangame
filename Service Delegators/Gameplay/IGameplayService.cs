@@ -4,9 +4,8 @@ namespace Service_Delegators;
 
 public interface IGameplayService
 {
-    Party CreateParty(bool isSinglePlayerOnly);
-    Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity);
+    Party CreateParty(Position position, bool isSinglePlayerOnly = false);
+    Party JoinParty(string partyId, CharacterIdentity charIdentity, bool isSinglePlayerOnly = false);
     Party LeaveParty(string partyId, CharacterIdentity charIdentity);
 
-    Quest BeginQuest(string partyId, string questName, CharacterIdentity charIdentity);
 }

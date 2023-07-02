@@ -7,21 +7,25 @@ public class GameplayService : IGameplayService
     private readonly GameplayValidator validator;
     private readonly GameplayLogicDelegator logic;
 
-    public GameplayService(IDatabaseService databaseService)
+    public GameplayService(
+        IDatabaseService databaseService,
+        IDiceRollService diceRollService)
     {
         validator = new GameplayValidator(databaseService.Snapshot);
-        logic = new GameplayLogicDelegator(databaseService);
+        logic = new GameplayLogicDelegator(databaseService, diceRollService);
     }
 
-    public Party CreateParty(bool isSinglePlayerOnly)
+    public Party CreateParty(Position position, bool isSinglePlayerOnly = false)
     {
-        return logic.CreateParty(isSinglePlayerOnly);
+        validator.ValidatePartyOnCreate(position);
+
+        return logic.CreateParty(position, isSinglePlayerOnly);
     }
 
-    public Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity)
+    public Party JoinParty(string partyId, CharacterIdentity charIdentity, bool isSinglePlayerOnly = false)
     {
         validator.ValidatePartyBeforeJoin(partyId, charIdentity);
-        return logic.JoinParty(partyId, isSinglePlayerOnly, charIdentity);
+        return logic.JoinParty(partyId, charIdentity, isSinglePlayerOnly);
     }
 
     public Party LeaveParty(string partyId, CharacterIdentity charIdentity)
@@ -30,10 +34,17 @@ public class GameplayService : IGameplayService
         return logic.LeaveParty(partyId, charIdentity);
     }
 
-    public Quest BeginQuest(string partyId, string questName, CharacterIdentity charIdentity)
+    public List<Quest> GetQuests(string partyId)
     {
-        validator.ValidateQuestOnBegin(partyId, questName, charIdentity);
+        validator.ValidateParty(partyId);
 
-        return new Quest();
+        return logic.GetQuestsAtPartyLocation(partyId);
+    }
+
+    public Quest ChooseQuest(string partyId, string questName)
+    {
+        validator.ValidateQuestOnBegin(partyId, questName);
+
+        return logic.BeginQuestForParty(partyId, questName);
     }
 }

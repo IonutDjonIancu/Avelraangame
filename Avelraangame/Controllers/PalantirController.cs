@@ -27,6 +27,8 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
+        var a = factory.ServiceFactory.DatabaseService.Snapshot;
+
         return Ok("Okay");
     }
     #endregion
@@ -473,13 +475,13 @@ public class PalantirController : ControllerBase
     #region Gameplay
     // POST: /api/palantir/Gameplay/CreateParty
     [HttpPost("Gameplay/CreateParty")]
-    public IActionResult CreateParty([FromQuery] Request request, bool isSinglePlayerParty)
+    public IActionResult CreateParty([FromQuery] Request request, bool isSinglePlayerParty, [FromBody] Position partyPostion)
     {
         try
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var party = factory.ServiceFactory.GameplayService.CreateParty(isSinglePlayerParty);
+            var party = factory.ServiceFactory.GameplayService.CreateParty(partyPostion, isSinglePlayerParty);
 
             return Ok(party);
         }
@@ -498,7 +500,7 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, isSinglePlayerParty, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId }, isSinglePlayerParty);
 
             return Ok(party);
         }

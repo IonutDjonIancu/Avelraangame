@@ -75,7 +75,8 @@ public class CharacterServiceTests : TestBase
         character.Info.IsAlive.Should().BeTrue();
         character.Status.IsInParty.Should().BeFalse();
 
-        GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
+        //GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
+        throw new NotImplementedException();
         
         if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
@@ -329,27 +330,29 @@ public class CharacterServiceTests : TestBase
     [Fact(DisplayName = "Joining party should reflect on Character")]
     public void Join_party_correctly_displays_on_Character_test()
     {
-        var party = gameplayService.CreateParty(true);
-        var chr = CreateHumanCharacter("Jax");
+        throw new NotImplementedException();
+        //var party = gameplayService.CreateParty(true);
+        //var chr = CreateHumanCharacter("Jax");
 
-        gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
+        //gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
 
-        chr.Status.IsInParty.Should().BeTrue();
-        chr.Status.PartyId.Should().Be(party.Identity.Id);
+        //chr.Status.IsInParty.Should().BeTrue();
+        //chr.Status.PartyId.Should().Be(party.Identity.Id);
     }
 
     [Fact(DisplayName = "Leaving party should reflect on Character")]
     public void Leave_party_correctly_displays_on_Character_test()
     {
-        var party = gameplayService.CreateParty(true);
-        var chr = CreateHumanCharacter("Jax");
+        throw new NotImplementedException();
+        //var party = gameplayService.CreateParty(true);
+        //var chr = CreateHumanCharacter("Jax");
 
-        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
+        //Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
 
-        gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
-        gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
+        //gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
+        //gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
 
-        chr.Status.IsInParty.Should().BeFalse();
+        //chr.Status.IsInParty.Should().BeFalse();
     }
 
     #region private methods

@@ -10,4 +10,6 @@ public class Snapshot
 
     public List<Player> Players { get; set; }
     public List<Item> Items { get; set; }
+
+    public Map Map { get; set; }
 }

@@ -2,14 +2,12 @@
 
 public class CharacterStatus
 {
-    public bool IsLockedForChange { get; set; }
+    public bool HasAttributesLocked { get; set; }
+    public bool HasInventoryLocked { get; set; }
 
     public bool IsInParty { get; set; }
     public string PartyId { get; set; }
 
-    public bool IsInQuest { get; set; }
-    public string QuestId { get; set; }
-
-    public bool IsInEncounter { get; set; }
-    public string EncounterId { get; set; }
+    public int NrOfQuestsFinished { get; set; }
+    public List<string> QuestsFinished { get; set; } = new();
 }

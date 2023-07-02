@@ -54,6 +54,6 @@ public class MetadataService : IMetadataService
 
     public List<string> GetAvelraanRegions()
     {
-        return GameplayLore.Regions.All;
+        throw new NotImplementedException();
     }
 }

@@ -58,15 +58,23 @@ internal class CharacterCreateLogic
             },
 
             Info = info,
-
             LevelUp = new CharacterLevelUp(),
+            Status = new CharacterStatus()
+            {
+                HasAttributesLocked = false,
+                HasInventoryLocked = false,
+                IsInParty = false,
+                PartyId = string.Empty,
+                NrOfQuestsFinished = 0,
+                QuestsFinished = new List<string>()
+            },
 
             Sheet = sheetLogic.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
 
             Inventory = new CharacterInventory(),
             Supplies = SetSupplies(),
 
-            HeroicTraits = new List<HeroicTrait>(),
+            HeroicTraits = new List<HeroicTrait>()
         };
 
         character.Info.Wealth = SetWealth();
@@ -75,10 +83,10 @@ internal class CharacterCreateLogic
         {
             character.Position = new Position
             {
-                Region = GameplayLore.Regions.Dragonmaw,
-                Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
-                Land = GameplayLore.Lands.Farlindor.Danar,
-                Location = GameplayLore.Locations.Danar.Locations.Arada.ToString(),
+                Region = GameplayLore.MapLocations.Dragonmaw.Name,
+                Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+                Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
+                Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
             };
         }
         else
@@ -86,10 +94,10 @@ internal class CharacterCreateLogic
             // TODO: this will have to be changed eventually to incorporate Calvinia starting point
             character.Position = new Position
             {
-                Region = GameplayLore.Regions.Dragonmaw,
-                Subregion = GameplayLore.Subregions.Dragonmaw.Farlindor,
-                Land = GameplayLore.Lands.Farlindor.Danar,
-                Location = GameplayLore.Locations.Danar.Locations.Arada.ToString(),
+                Region = GameplayLore.MapLocations.Dragonmaw.Name,
+                Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+                Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
+                Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
             };
         }
 

@@ -6,11 +6,9 @@ public class Party
 
     public string CreationDate { get; set; }
     public bool IsSinglePlayerOnly { get; set; }
-
-    public string QuestId { get; set; }
     public bool IsAdventuring { get; set; }
-    public bool IsInCombat { get; set; }
-    public bool PreventInventoryChange { get; set; }
+
+    public PartyStatus Status { get; set; } = new();
 
     public Position Position { get; set; } = new();
 
@@ -18,7 +16,8 @@ public class Party
 
     public int Food { get; set; }
     public int Wealth { get; set; }
-    public List<Item> Supplies { get; set; }
+    public List<Item> Supplies { get; set; } = new();
+
     // loot will be populated for every party member death
     public List<Item> Loot { get; set; } = new();
 }
