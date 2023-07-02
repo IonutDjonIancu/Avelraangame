@@ -27,8 +27,6 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        var a = factory.ServiceFactory.DatabaseService.Snapshot;
-
         return Ok("Okay");
     }
     #endregion

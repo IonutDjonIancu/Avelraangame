@@ -43,27 +43,33 @@ public class GameplayLore
                         public static readonly Location Arada = new()
                         {
                             Name = AradaName,
-                            FullName = $"{AradaName}_{Danar.Name}_{Farlindor.Name}_{Dragonmaw.Name}",
+                            FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{AradaName}",
                             Description = "The capital of Danar Land. A well fortified city with two fortresses a keep, garisons, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
                             Effort = Effort.Normal,
+                            EffortLower = Effort.NormalRange.Lower,
+                            EffortUpper = Effort.NormalRange.Upper,
                             TravelToCost = 1
                         };
                         private const string LanwickName = "Lanwick Province";
                         public static readonly Location Lanwick = new()
                         {
                             Name = LanwickName,
-                            FullName = $"{LanwickName}_{Danar.Name}_{Farlindor.Name}_{Dragonmaw.Name}",
+                            FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{LanwickName}",
                             Description = "A rich province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
                             Effort = Effort.Normal,
+                            EffortLower = Effort.NormalRange.Lower,
+                            EffortUpper = Effort.NormalRange.Upper,
                             TravelToCost = 3
                         };
                         private const string BelfordshireName = "Belfordshire";
                         public static readonly Location Belfordshire = new()
                         {
                             Name = BelfordshireName,
-                            FullName = $"{BelfordshireName}_{Danar.Name}_{Farlindor.Name}_{Dragonmaw.Name}",
+                            FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{BelfordshireName}",
                             Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
                             Effort = Effort.Gifted,
+                            EffortLower = Effort.GiftedRange.Lower,
+                            EffortUpper = Effort.GiftedRange.Upper,
                             TravelToCost = 4
                         };
                     }

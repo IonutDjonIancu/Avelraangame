@@ -67,7 +67,12 @@ public class DatabaseManager : IDatabaseManager
     {
         var map = new Map();
 
-        GameplayLore.MapLocations.All.ForEach(s => map.Locations.Add(s));
+        foreach (var location in GameplayLore.MapLocations.All)
+        {
+            location.LastTimeVisited = DateTime.Now;
+            map.Locations.Add(location);
+        }
+
         var json = JsonConvert.SerializeObject(map);
 
         await SaveToFileOnDisk(json, mapPath);
