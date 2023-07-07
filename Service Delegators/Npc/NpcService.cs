@@ -21,6 +21,12 @@ public class NpcService : INpcService
     public NpcPaperdoll GenerateNpc(NpcInfo npcInfo)
     {
         validator.ValidateNpcOnGenerate(npcInfo);
-        return logic.GenerateNpc(npcInfo);
+        return logic.GenerateNpcPaperdoll(npcInfo);
+    }
+
+    public NpcCharacter GenerateGoodGuyNpc(Position position, int effortUpper)
+    {
+        validator.ValidatePosition(position);
+        return logic.GenerateNpcCharacter(position, effortUpper);
     }
 }

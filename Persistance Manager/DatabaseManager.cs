@@ -53,31 +53,18 @@ public class DatabaseManager : IDatabaseManager
             Admins = admins,
             Banned = banned,
 
-            CharacterStubs = avDatabase.CharacterStubs,
-
-            Parties = avDatabase.Parties,
-
+            // player files will be loaded to make sure we have the admins
             Players = ReadPlayerFiles(info.DbPlayersPath),
 
-            Map = CreateMapFile(info.DbMapPath).Result,
+            // TODO: to refactor, not really necessary
+            CharacterStubs = avDatabase.CharacterStubs,
+
+            // TODO: to remove parties
+            Parties = avDatabase.Parties,
+
+            // no need to load the map from its lore class
+            Map = new Map(),
         };
-    }
-
-    private static async Task<Map> CreateMapFile(string mapPath)
-    {
-        var map = new Map();
-
-        foreach (var location in GameplayLore.MapLocations.All)
-        {
-            location.LastTimeVisited = DateTime.Now;
-            map.Locations.Add(location);
-        }
-
-        var json = JsonConvert.SerializeObject(map);
-
-        await SaveToFileOnDisk(json, mapPath);
-
-        return map;
     }
 
     private static List<Player> ReadPlayerFiles(string playersPath)

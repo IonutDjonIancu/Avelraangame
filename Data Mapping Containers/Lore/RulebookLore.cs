@@ -311,26 +311,88 @@ public class RulebookLore
     {
         public static class Assets
         {
-            public const string Res = "2*Str + 3*Con + Agi + 2*Wil + Per + Abs";
-            public const string Har = "2*Str + Agi + Per";
-            public const string Spo = "3*Per + Agi";
-            public const string Def = "(2*Con + Agi + Per) / 10";
-            public const string Pur = "(2*Wil + Con + Per) / 10";
-            public const string Man = "(2*Con + 3*Abs) / 5";
+            public static int CalculateResolve(CharacterStats cs)
+            {
+                return 2 * cs.Strength + 3 * cs.Constitution + cs.Agility + 2 * cs.Willpower + cs.Perception + cs.Abstract;
+            }
+
+            public static int CalculateHarm(CharacterStats cs)
+            {
+                return 2 * cs.Strength + cs.Agility + cs.Perception;
+            }
+
+            public static int CalculateSpot(CharacterStats cs)
+            {
+                return 3 * cs.Perception + cs.Agility;
+            }
+
+            public static int CalculateDefense(CharacterStats cs)
+            {
+                return (2 * cs.Constitution + cs.Agility + cs.Perception) / 10;
+            }
+
+            public static int CalculatePurge(CharacterStats cs)
+            {
+                return (2 * cs.Willpower + cs.Constitution + cs.Perception) / 10;
+            }
+
+            public static int CalculateMana(CharacterStats cs)
+            {
+                return (2 * cs.Constitution + 3 * cs.Abstract) / 2;
+            }
         }
 
         public static class Skills
         {
-            public const string Com = "Str + Con + Agi";
-            public const string Arc = "Abs + Wil + Con";
-            public const string Psi = "2*Wil + Con";
-            public const string Hid = "Agi + Per + Abs";
-            public const string Tra = "2*Abs + Per";
-            public const string Tac = "3*Abs";
-            public const string Soc = "Per + Abs + Wil";
-            public const string Apo = "Abs + Per + Con";
-            public const string Trv = "2*Con + Agi + Wil - Str";
-            public const string Sai = "2*Con + Abs";
+            public static int CalculateCombat(CharacterStats cs)
+            {
+                return cs.Strength + cs.Constitution + cs.Agility;
+            }
+
+            public static int CalculateArcane(CharacterStats cs)
+            {
+                return cs.Abstract + cs.Willpower + cs.Constitution;
+            }
+
+            public static int CalculatePsionics(CharacterStats cs)
+            {
+                return 2 * cs.Willpower + cs.Constitution;
+            }
+
+            public static int CalculateHide(CharacterStats cs)
+            {
+                return 2 * cs.Agility + cs.Perception + cs.Abstract - cs.Strength;
+            }
+            
+            public static int CalculateTraps(CharacterStats cs)
+            {
+                return 2 * cs.Abstract + cs.Perception;
+            }
+
+            public static int CalculateTactics(CharacterStats cs)
+            {
+                return 3 * cs.Abstract;
+            }
+
+            public static int CalculateSocial(CharacterStats cs)
+            {
+                return cs.Perception + cs.Abstract + cs.Willpower;
+            }
+
+            public static int CalculateApothecary(CharacterStats cs)
+            {
+                return cs.Abstract + cs.Perception + cs.Constitution;
+            }
+
+            public static int CalculateTravel(CharacterStats cs)
+            {
+                return 2 * cs.Constitution + cs.Agility + cs.Willpower - cs.Strength;
+            }
+
+            public static int CalculateSail(CharacterStats cs)
+            {
+                return 2 * cs.Constitution + cs.Abstract;
+            }
         }
 
         public static class Misc

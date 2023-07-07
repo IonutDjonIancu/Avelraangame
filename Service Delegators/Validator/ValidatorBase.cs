@@ -14,6 +14,16 @@ internal class ValidatorBase
         this.snapshot = snapshot;
     }
 
+    internal void ValidatePosition(Position position)
+    {
+        ValidateObject(position, "Position is null.");
+
+        var fullName = Utils.GetLocationFullName(position);
+
+        if (!GameplayLore.MapLocations.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
+    }
+
+
     internal void ValidateCharacterPlayerCombination(CharacterIdentity characterIdentity)
     {
         ValidateGuid(characterIdentity.Id);

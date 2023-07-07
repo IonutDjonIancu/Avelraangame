@@ -6,108 +6,99 @@ internal class GameplayQuestsLogic
 {
     private readonly IDatabaseService dbs;
     private readonly IDiceRollService diceService;
+    private readonly IItemService itemsService;
+    private readonly INpcService npcsService;
 
     private GameplayQuestsLogic() { }
     internal GameplayQuestsLogic(
         IDatabaseService databaseService,
-        IDiceRollService diceRollService)
+        IDiceRollService diceRollService,
+        IItemService itemService,
+        INpcService npcService)
     {
         dbs = databaseService;
         diceService = diceRollService;
+        itemsService = itemService;
+        npcsService = npcService;
     }
 
-    internal List<Quest> GetQuestsAtPartyLocation(string partyId)
+    internal Location GenerateLocation(Position position)
     {
-        var region = dbs.Snapshot.Parties.Find(p => p.Identity.Id == partyId)!.Position.Region;
-        var subregion = dbs.Snapshot.Parties.Find(p => p.Identity.Id == partyId)!.Position.Subregion;
-        var land = dbs.Snapshot.Parties.Find(p => p.Identity.Id == partyId)!.Position.Land;
-        var location = dbs.Snapshot.Parties.Find(p => p.Identity.Id == partyId)!.Position.Location;
+        var fullName = Utils.GetLocationFullName(position);
 
-        var position = new Position()
+        var locationData = GameplayLore.MapLocations.All.Find(s => s.FullName == fullName)!;
+
+        var location = dbs.Snapshot.Map.Locations.Find(s => s.FullName == fullName);
+
+        if (location != null)
         {
-            Region = region,
-            Subregion = subregion,
-            Land = land,
-            Location = location
-        };
+            var isDateDifference = (location!.LastTimeVisited - DateTime.Now) > new TimeSpan(0);
 
-        return QuestsLore.All.Where(s => s.Position == position).ToList();
-    }
+            if (!isDateDifference)
+            {
+                return location;
+            }
+            else
+            {
+                dbs.Snapshot.Map.Locations.Remove(location!);
+                
+                location.LastTimeVisited = DateTime.Now;
 
-    internal Quest BeginQuestForParty(string partyId, string questName)
-    {
-        var questData = QuestsLore.All.Find(s => s.Name == questName)!;
-        var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == partyId)!;
+                //// generate new quests
+                //currentLocation.Quests = ...;
 
-        // quest logic
-        var quest = new Quest
+                location.Market = GenerateMarketItems(location.EffortUpper);
+                location.Npcs = GenerateMercenaries(position, location.EffortUpper);
+            }
+        }
+        else
         {
-            Id = Guid.NewGuid().ToString(),
-            PartyId = party.Identity.Id,
-            IsInEncounter = false,
-            Name = questData.Name,
-            Description = questData.Description,
-            Difficulty = questData.Difficulty,
-            Effort = questData.Effort,
-            Ratio = questData.Ratio,
-            Position = questData.Position,
-            IsRepeatable = questData.IsRepeatable
-        };
-
-        GenerateEncounters(quest);
-        GenerateReward(quest);
-
-        // party logic
-        party.Status.QuestId = quest.Id;
-        foreach (var charIdentity in party.Characters)
-        {
-            var player = dbs.Snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!;
-            var character = player.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
-
-            character.Status.HasAttributesLocked = true;
-            dbs.PersistPlayer(charIdentity.PlayerId);
+            location = new Location()
+            {
+                Name = locationData.Name,
+                FullName = locationData.FullName,
+                Description = locationData.Description,
+                Effort = locationData.Effort,
+                EffortLower = locationData.EffortLower,
+                EffortUpper = locationData.EffortUpper,
+                TravelToCost = locationData.TravelToCost,
+                LastTimeVisited = DateTime.Now,
+                //// generate new quests
+                //Quests = ...,
+                Market = GenerateMarketItems(locationData.EffortUpper),
+                Npcs = GenerateMercenaries(position, locationData.EffortUpper)
+            };
         }
 
-        dbs.PersistDatabase();
-
-        return quest;
+        return location;
     }
 
     #region private methods
-    private void GenerateEncounters(Quest quest)
+    private List<Item> GenerateMarketItems(int effortUpper)
     {
-        var party = dbs.Snapshot.Parties.Find(s => s.Identity.Id == quest.PartyId)!;
+        var items = new List<Item>();
+        var nrOfItems = diceService.Roll_1dX(effortUpper / 2);
 
-        var encounter = new QuestEncounter()
+        for (int i = 0; i < nrOfItems; i++)
         {
-            Id = Guid.NewGuid().ToString(),
-            PartyLeadId = party.Identity.PartyLeadId,
-        };
+            items.Add(itemsService.GenerateRandomItem());
+        }
 
-        var diploRoll = diceService.Roll_d100();
-        var utilRoll = diceService.Roll_d100();
-        var overRoll = diceService.Roll_d100();
-        if      (diploRoll <= quest.Ratio.Diplomacy)    encounter.Type = GameplayLore.Quests.Encounters.Types.Diplomacy;
-        else if (utilRoll <= quest.Ratio.Utilitarian)   encounter.Type = GameplayLore.Quests.Encounters.Types.Utilitarian;
-        else if (overRoll <= quest.Ratio.Overcome)      encounter.Type = GameplayLore.Quests.Encounters.Types.Overcome;
-        else  /*(overRoll <= quest.Ratio.Fight)*/       encounter.Type = GameplayLore.Quests.Encounters.Types.Fight;
-
-        var diploChoicesCount = GameplayLore.Quests.Encounters.Diplomacy.Choices.All.Count;
-        var choiceIndex = diceService.Roll_1dX(diploChoicesCount) - 1;
-        encounter.DiplomacyChoice = GameplayLore.Quests.Encounters.Diplomacy.Choices.All[choiceIndex];
-
-        var diploPassesCount = GameplayLore.Quests.Encounters.Diplomacy.Passes.All.Count;
-        var passIndex = diceService.Roll_1dX(diploPassesCount) - 1;
-        encounter.DiplomacyPass = GameplayLore.Quests.Encounters.Diplomacy.Passes.All[passIndex];
-
-
-
-
+        return items;
     }
 
-    private void GenerateReward(Quest quest)
+    private List<NpcCharacter> GenerateMercenaries(Position position, int effortUpper)
     {
-        throw new NotImplementedException();
+        var mercs = new List<NpcCharacter>();
+        var rollForMercs = diceService.Roll_1dX(effortUpper / 10);
+        var nrOfMercs = rollForMercs < 1 ? 1 : rollForMercs;
+
+        for (int i = 0; i < nrOfMercs; i++)
+        {
+            mercs.Add(npcsService.GenerateGoodGuyNpc(position, effortUpper));
+        }
+
+        return mercs;
     }
     #endregion
 }

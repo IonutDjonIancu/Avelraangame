@@ -1,5 +1,6 @@
-﻿using Data_Mapping_Containers.Dtos;
-using System.Text.RegularExpressions;
+﻿#pragma warning disable CA1822 // Mark members as static
+
+using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
@@ -96,17 +97,17 @@ internal class CharacterPaperdollLogic
         paperdoll.Assets = new CharacterAssets
         {
             // RES is the only asset increased by entity level
-            Resolve = (character.Sheet.Assets.Resolve + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Res) + itemResBonus) * character.Info.EntityLevel,
+            Resolve = (character.Sheet.Assets.Resolve + RulebookLore.Formulae.Assets.CalculateResolve(character.Sheet.Stats) + itemResBonus) * character.Info.EntityLevel,
 
             // DEF cannot be greater than 90, so that to avoid making characters immune to all dmg
-            Defense = character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Def) + itemDefBonus >= 90
+            Defense = character.Sheet.Assets.Defense + RulebookLore.Formulae.Assets.CalculateDefense(character.Sheet.Stats) + itemDefBonus >= 90
                         ? 90
-                        : character.Sheet.Assets.Defense + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Def) + itemDefBonus,
+                        : character.Sheet.Assets.Defense + RulebookLore.Formulae.Assets.CalculateDefense(character.Sheet.Stats) + itemDefBonus,
 
-            Harm    = character.Sheet.Assets.Harm + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Har) + itemHarBonus,
-            Spot    = character.Sheet.Assets.Spot + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Spo) + itemSpoBonus,
-            Purge   = character.Sheet.Assets.Purge + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Pur) + itemPurBonus,
-            Mana    = character.Sheet.Assets.Mana + paperdoll.InterpretFormula(RulebookLore.Formulae.Assets.Man) + itemManBonus
+            Harm    = character.Sheet.Assets.Harm + RulebookLore.Formulae.Assets.CalculateHarm(character.Sheet.Stats) + itemHarBonus,
+            Spot    = character.Sheet.Assets.Spot + RulebookLore.Formulae.Assets.CalculateSpot(character.Sheet.Stats) + itemSpoBonus,
+            Purge   = character.Sheet.Assets.Purge + RulebookLore.Formulae.Assets.CalculatePurge(character.Sheet.Stats) + itemPurBonus,
+            Mana    = character.Sheet.Assets.Mana + RulebookLore.Formulae.Assets.CalculateMana(character.Sheet.Stats) + itemManBonus
         };
     }
 
@@ -139,27 +140,30 @@ internal class CharacterPaperdollLogic
 
         paperdoll.Skills = new CharacterSkills
         {
-            Combat      = character.Sheet.Skills.Combat     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Com) + itemComBonus,
-            Arcane      = character.Sheet.Skills.Arcane     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Arc) + itemArcBonus,
-            Psionics    = character.Sheet.Skills.Psionics   + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Psi) + itemPsiBonus,
-            Hide        = character.Sheet.Skills.Hide       + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Hid) + itemHidBonus,
-            Traps       = character.Sheet.Skills.Traps      + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Tra) + itemTraBonus,
-            Tactics     = character.Sheet.Skills.Tactics    + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Tac) + itemTacBonus,
-            Social      = character.Sheet.Skills.Social     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Soc) + itemSocBonus,
-            Apothecary  = character.Sheet.Skills.Apothecary + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Apo) + itemApoBonus,
-            Travel      = character.Sheet.Skills.Travel     + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Trv) + itemTrvBonus,
-            Sail        = character.Sheet.Skills.Sail       + paperdoll.InterpretFormula(RulebookLore.Formulae.Skills.Sai) + itemSaiBonus
+            Combat      = character.Sheet.Skills.Combat     + RulebookLore.Formulae.Skills.CalculateCombat(character.Sheet.Stats) + itemComBonus,
+            Arcane      = character.Sheet.Skills.Arcane     + RulebookLore.Formulae.Skills.CalculateArcane(character.Sheet.Stats) + itemArcBonus,
+            Psionics    = character.Sheet.Skills.Psionics   + RulebookLore.Formulae.Skills.CalculatePsionics(character.Sheet.Stats) + itemPsiBonus,
+            Hide        = character.Sheet.Skills.Hide       + RulebookLore.Formulae.Skills.CalculateHide(character.Sheet.Stats) + itemHidBonus,
+            Traps       = character.Sheet.Skills.Traps      + RulebookLore.Formulae.Skills.CalculateTraps(character.Sheet.Stats) + itemTraBonus,
+            Tactics     = character.Sheet.Skills.Tactics    + RulebookLore.Formulae.Skills.CalculateTactics(character.Sheet.Stats) + itemTacBonus,
+            Social      = character.Sheet.Skills.Social     + RulebookLore.Formulae.Skills.CalculateSocial(character.Sheet.Stats) + itemSocBonus,
+            Apothecary  = character.Sheet.Skills.Apothecary + RulebookLore.Formulae.Skills.CalculateApothecary(character.Sheet.Stats) + itemApoBonus,
+            Travel      = character.Sheet.Skills.Travel     + RulebookLore.Formulae.Skills.CalculateTravel(character.Sheet.Stats) + itemTrvBonus,
+            Sail        = character.Sheet.Skills.Sail       + RulebookLore.Formulae.Skills.CalculateSail(character.Sheet.Stats) + itemSaiBonus
         };
     }
 
     private static void CalculatePaperdollSpecialSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         if (character.HeroicTraits == null) return;
-        
-        paperdoll.SpecialSkills = new List<HeroicTrait>();
 
-        // TODO: cater for items heroic traits in the future
-        // some items may contain heroic traits!!
+        if (items.Count > 0)
+        {
+            // some items may contain heroic traits!!
+            // TODO: cater for items heroic traits in the future
+        }
+
+        paperdoll.SpecialSkills = new List<HeroicTrait>();
 
         if (character.HeroicTraits?.Count < 0) return;
         paperdoll.SpecialSkills = character.HeroicTraits!.Where(ht => ht.Type == TraitsLore.Type.active).ToList();
@@ -194,3 +198,4 @@ internal class CharacterPaperdollLogic
     #endregion
 }
 
+#pragma warning restore CA1822 // Mark members as static

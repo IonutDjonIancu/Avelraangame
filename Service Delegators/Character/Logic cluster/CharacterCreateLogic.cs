@@ -64,7 +64,7 @@ internal class CharacterCreateLogic
                 HasAttributesLocked = false,
                 HasInventoryLocked = false,
                 IsInParty = false,
-                PartyId = string.Empty,
+                QuestId = string.Empty,
                 NrOfQuestsFinished = 0,
                 QuestsFinished = new List<string>()
             },

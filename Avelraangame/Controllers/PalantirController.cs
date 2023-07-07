@@ -471,17 +471,15 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // POST: /api/palantir/Gameplay/CreateParty
-    [HttpPost("Gameplay/CreateParty")]
-    public IActionResult CreateParty([FromQuery] Request request, bool isSinglePlayerParty, [FromBody] Position partyPostion)
+    // GET: /api/palantir/Gameplay/GetLocation
+    [HttpGet("Gameplay/GetLocation")]
+    public IActionResult GetLocation([FromBody] Position partyPostion)
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var location = factory.ServiceFactory.GameplayService.GetLocation(partyPostion);
 
-            var party = factory.ServiceFactory.GameplayService.CreateParty(partyPostion, isSinglePlayerParty);
-
-            return Ok(party);
+            return Ok(location);
         }
         catch (Exception ex)
         {
@@ -490,43 +488,7 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Gameplay/JoinParty
-    [HttpPut("Gameplay/JoinParty")]
-    public IActionResult JoinParty([FromQuery] Request request, string partyId, string characterId, bool isSinglePlayerParty)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
 
-            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId }, isSinglePlayerParty);
-
-            return Ok(party);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Gameplay/LeaveParty
-    [HttpPut("Gameplay/LeaveParty")]
-    public IActionResult LeaveParty([FromQuery] Request request, string partyId, string characterId)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
-
-            var party = factory.ServiceFactory.GameplayService.LeaveParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
-
-            return Ok(party);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
 
     #endregion
 

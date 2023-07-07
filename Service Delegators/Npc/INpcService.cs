@@ -5,4 +5,6 @@ namespace Service_Delegators;
 public interface INpcService
 {
     NpcPaperdoll GenerateNpc(NpcInfo info);
+
+    NpcCharacter GenerateGoodGuyNpc(Position position, int effortUpper);
 }

@@ -15,5 +15,5 @@ public class Location
     public DateTime LastTimeVisited { get; set; }
     public List<Quest> Quests { get; set; } = new();
     public List<Item> Market { get; set; } = new();
-    public List<Character> Npcs { get; set; } = new();
+    public List<NpcCharacter> Npcs { get; set; } = new();
 }
