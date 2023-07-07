@@ -44,12 +44,13 @@ public class GameplayLore
                         {
                             Name = AradaName,
                             FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{AradaName}",
-                            Description = "The capital of Danar Land. A well fortified city with two fortresses a keep, garisons, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
+                            Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent serving army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
                             Effort = Effort.Normal,
                             EffortLower = Effort.NormalRange.Lower,
                             EffortUpper = Effort.NormalRange.Upper,
                             TravelToCost = 1
                         };
+
                         private const string LanwickName = "Lanwick Province";
                         public static readonly Location Lanwick = new()
                         {
@@ -61,6 +62,7 @@ public class GameplayLore
                             EffortUpper = Effort.NormalRange.Upper,
                             TravelToCost = 3
                         };
+
                         private const string BelfordshireName = "Belfordshire";
                         public static readonly Location Belfordshire = new()
                         {

@@ -53,7 +53,7 @@ internal class NpcLogicDelegator
 
         chr.Identity = new CharacterIdentity()
         {
-            Id = Guid.Empty.ToString(),
+            Id = Guid.NewGuid().ToString(),
             PlayerId = Guid.Empty.ToString()
         };
 
@@ -63,7 +63,7 @@ internal class NpcLogicDelegator
             EntityLevel = entityLvl,
             DateOfBirth = DateTime.Now.ToShortDateString(),
             IsAlive = true,
-            Fame = $"This person is known around {position.Location}.",
+            Fame = $"This person is quite well known around {position.Location}.",
             Wealth = 0,
             Origins = new CharacterOrigins()
             {
@@ -140,7 +140,7 @@ internal class NpcLogicDelegator
     {
         var charSheet = new CharacterSheet();
 
-        charSheet.Stats = SetStatsByRace(race);
+        charSheet.Stats = SetStatsByRace(race, effortUpper);
         charSheet.Assets = SetAssets(charSheet.Stats, effortUpper);
         charSheet.Skills = SetSkills(charSheet.Stats, effortUpper);
 
@@ -193,36 +193,36 @@ internal class NpcLogicDelegator
         return charAssets;
     }
 
-    private static CharacterStats SetStatsByRace(string race)
+    private CharacterStats SetStatsByRace(string race, int effortUpper)
     {
         var charStats = new CharacterStats();
 
         if (race == CharactersLore.Races.Human)
         {
-            charStats.Strength      = RulebookLore.Races.Human.Str;
-            charStats.Constitution  = RulebookLore.Races.Human.Con;
-            charStats.Agility       = RulebookLore.Races.Human.Agi;
-            charStats.Willpower     = RulebookLore.Races.Human.Wil;
-            charStats.Perception    = RulebookLore.Races.Human.Per;
-            charStats.Abstract      = RulebookLore.Races.Human.Abs;
+            charStats.Strength      = Randomize(effortUpper) + RulebookLore.Races.Human.Str;
+            charStats.Constitution  = Randomize(effortUpper) + RulebookLore.Races.Human.Con;
+            charStats.Agility       = Randomize(effortUpper) + RulebookLore.Races.Human.Agi;
+            charStats.Willpower     = Randomize(effortUpper) + RulebookLore.Races.Human.Wil;
+            charStats.Perception    = Randomize(effortUpper) + RulebookLore.Races.Human.Per;
+            charStats.Abstract      = Randomize(effortUpper) + RulebookLore.Races.Human.Abs;
         } 
         else if (race == CharactersLore.Races.Elf)
         {
-            charStats.Strength      = RulebookLore.Races.Elf.Str;
-            charStats.Constitution  = RulebookLore.Races.Elf.Con;
-            charStats.Agility       = RulebookLore.Races.Elf.Agi;
-            charStats.Willpower     = RulebookLore.Races.Elf.Wil;
-            charStats.Perception    = RulebookLore.Races.Elf.Per;
-            charStats.Abstract      = RulebookLore.Races.Elf.Abs;
+            charStats.Strength      = Randomize(effortUpper) + RulebookLore.Races.Elf.Str;
+            charStats.Constitution  = Randomize(effortUpper) + RulebookLore.Races.Elf.Con;
+            charStats.Agility       = Randomize(effortUpper) + RulebookLore.Races.Elf.Agi;
+            charStats.Willpower     = Randomize(effortUpper) + RulebookLore.Races.Elf.Wil;
+            charStats.Perception    = Randomize(effortUpper) + RulebookLore.Races.Elf.Per;
+            charStats.Abstract      = Randomize(effortUpper) + RulebookLore.Races.Elf.Abs;
         }
         else if (race == CharactersLore.Races.Dwarf)
         {
-            charStats.Strength      = RulebookLore.Races.Dwarf.Str;
-            charStats.Constitution  = RulebookLore.Races.Dwarf.Con;
-            charStats.Agility       = RulebookLore.Races.Dwarf.Agi;
-            charStats.Willpower     = RulebookLore.Races.Dwarf.Wil;
-            charStats.Perception    = RulebookLore.Races.Dwarf.Per;
-            charStats.Abstract      = RulebookLore.Races.Dwarf.Abs;
+            charStats.Strength      = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Str;
+            charStats.Constitution  = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Con;
+            charStats.Agility       = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Agi;
+            charStats.Willpower     = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Wil;
+            charStats.Perception    = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Per;
+            charStats.Abstract      = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Abs;
         }
 
 

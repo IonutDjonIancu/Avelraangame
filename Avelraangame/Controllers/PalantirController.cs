@@ -471,8 +471,8 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // GET: /api/palantir/Gameplay/GetLocation
-    [HttpGet("Gameplay/GetLocation")]
+    // POST: /api/palantir/Gameplay/GetLocation
+    [HttpPost("Gameplay/GetLocation")]
     public IActionResult GetLocation([FromBody] Position partyPostion)
     {
         try

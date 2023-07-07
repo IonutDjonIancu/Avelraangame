@@ -70,6 +70,9 @@ internal class GameplayQuestsLogic
             };
         }
 
+        dbs.Snapshot.Map.Locations.Add(location);
+        dbs.PersistLocation(location.FullName);
+
         return location;
     }
 

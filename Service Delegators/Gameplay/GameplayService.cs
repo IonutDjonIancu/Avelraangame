@@ -22,7 +22,6 @@ public class GameplayService : IGameplayService
         validator.ValidatePosition(position);
 
         return logic.GenerateLocation(position);
-
     }
 
 }

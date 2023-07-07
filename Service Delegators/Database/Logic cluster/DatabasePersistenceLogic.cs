@@ -29,7 +29,7 @@ internal class DatabasePersistenceLogic
         var dbJson = JsonConvert.SerializeObject(database);
         var dbPath = dbm.Info.DbPath;
 
-        await SaveToFileOnDisk(dbJson, dbPath);
+        await SaveFileToDisk(dbJson, dbPath);
     }
 
     internal async void SavePlayerToDiskFile(string playerId)
@@ -38,7 +38,16 @@ internal class DatabasePersistenceLogic
         var playerJson = JsonConvert.SerializeObject(player);
         var playerPath = $"{dbm.Info.DbPlayersPath}\\Player{playerId}.json";
 
-        await SaveToFileOnDisk(playerJson, playerPath);
+        await SaveFileToDisk(playerJson, playerPath);
+    }
+
+    internal async void SaveLocationToDiskFile(string fullName)
+    {
+        var location = dbm.Snapshot.Map.Locations.Find(s => s.FullName == fullName);
+        var locationJson = JsonConvert.SerializeObject(location);
+        var locationPath = dbm.Info.DbMapPath;
+
+        await SaveFileToDisk(locationJson, locationPath);
     }
 
     internal async void RemovePlayerFile(string playerId)
@@ -50,7 +59,7 @@ internal class DatabasePersistenceLogic
 
 
     #region private methods 
-    private async Task SaveToFileOnDisk(string json, string path, int tries = 0)
+    private async Task SaveFileToDisk(string json, string path, int tries = 0)
     {
         if (tries >= 3) throw new Exception($"Unable to persist file to disk at path: {path}.");
 
@@ -62,7 +71,7 @@ internal class DatabasePersistenceLogic
         catch (Exception)
         {
             Thread.Sleep(300);
-            await SaveToFileOnDisk(json, path, tries);
+            await SaveFileToDisk(json, path, tries);
         }
     }
 
