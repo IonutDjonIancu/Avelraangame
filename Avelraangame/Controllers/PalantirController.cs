@@ -458,9 +458,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var character = factory.ServiceFactory.NpcService.GenerateNpc(info);
+            throw new NotImplementedException();
 
-            return Ok(character);
+            return Ok();
         }
         catch (Exception ex)
         {

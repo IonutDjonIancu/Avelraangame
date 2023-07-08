@@ -27,17 +27,16 @@ public class GameplayLore
 
     public static class MapLocations
     {
-        // regions
-        public static class Dragonmaw
+        public static class Dragonmaw // continent
         {
             public const string Name = "Dragonmaw";
-            public static class Farlindor
+            public static class Farlindor // land
             {
                 public const string Name = "Farlindor";
-                public static class Danar
+                public static class Danar // kingdom
                 {
                     public const string Name = "Danar";
-                    public static class Locations
+                    public static class Locations // settlement
                     {
                         private const string AradaName = "Arada";
                         public static readonly Location Arada = new()
@@ -258,217 +257,84 @@ public class GameplayLore
 
     public static class Quests
     {
-        public static class Difficulty
+        public static readonly QuestDetails Patrol = new()
         {
-            public const string Easy = "Easy";
-            public const string Medium = "Medium";
-            public const string Standard = "Standard";
-            public const string Hard = "Hard";
-
-            public static readonly List<string> All = new()
+            Name = "Patrol",
+            ShortDescription = $"Mudpaddler and spears",
+            Description = $"An ordinary job for any sellsword in these lands. It doesn't shine, but it pays well. You are being handed a hand-drawn map on a rigid cyperus paper, probably of eastern origin. " +
+            $"The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. A couple of gold crowns are placed on a piece of " +
+            $"linnen cloth in front of you to illustrate your payment. After a long silence, you nod in agreement, the man rolls the paper into a salted hollow leather cylinder and hands it to you.",
+            IsRepeatable = true,
+            EffortRequired = Effort.NormalRange.Upper,
+            AvailableAt = new List<string>
             {
-                Easy, Medium, Standard, Hard
-            };
-        }
-        
-        public static class RewardTypes
+                MapLocations.Dragonmaw.Farlindor.Danar.Name,
+            },
+            Reward = new QuestReward
+            {
+                HasWealth = true,
+                HasItem = false,
+                HasLoot = false,
+                HasStats = false,
+                HasSkills = false,
+                HasTraits = false,
+            }
+        };
+
+        public static readonly QuestDetails KillGoblins = new()
         {
-            public const string Low = "Low";
-            public const string Average = "Average";
-            public const string High = "High";
-            public const string Heroic = "Heroic";
-            public const string Legendary = "Legendary";
-        }
+            Name = "KillGoblins",
+            ShortDescription = $"Goblins around",
+            Description = $"The lowest scum in the world, goblins are feared everywhere for their ways to terrorize settlements. You will find disemboweled, half eaten animals or people, burned crops, and destroyed viliges when these " +
+            $"hated creatures from Pel'Ravan mountains raid the lowlands. Therefore, the marshals have been giving rewards for all sellswords that can bring goblin heads to the gutters. " +
+            $"You are to find the camp, and remove it by any means necessary. This is easier said than done since goblins are known to be deceitful and shifty creatures.",
+            IsRepeatable = true,
+            EffortRequired = Effort.NormalRange.Upper,
+            AvailableAt = new List<string>
+            {
+                MapLocations.Dragonmaw.Farlindor.Danar.Name,
+            },
+            Reward = new QuestReward
+            {
+                HasWealth = true,
+                HasItem = false,
+                HasLoot = false,
+                HasStats = false,
+                HasSkills = false,
+                HasTraits = false,
+            }
+        };
 
-        public static class Encounters
+        public static readonly QuestDetails RescueLordFromRansom = new()
         {
-            public static class Types
+            Name = "RescueLordFromRansom",
+            ShortDescription = $"Rescue a lord from being ransomed.",
+            Description = $"Following an skirmish between the armies of two local noblemen, one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
+            $"people like you are called in to try to save the imprisoned knight from being ransomed. You have no involvement in the matter and it's a chance to build up a reputation... as well as get your hands on a hefty reward. " +
+            $"The man that brought this up to your attention, a member of the local clergy, asks for your discression, telling you that if you get caught there won't be anybody sent after you, and that the lord that hired you " +
+            $"will, as is customary, deny any involvement in the matter. If you fail you'll probably be publicly quartered and your head will end up on a pike at the entrance to a castle.",
+            IsRepeatable = false,
+            EffortRequired = Effort.NormalRange.Upper,
+            AvailableAt = new List<string>
             {
-                public const string Diplomacy = "Diplomacy";
-                public const string Utilitarian = "Utilitarian";
-                public const string Overcome = "Overcome";
-                public const string Fight = "Fight";
-            }
-
-            public static class Diplomacy
+                MapLocations.Dragonmaw.Farlindor.Danar.Name,
+            },
+            Reward = new QuestReward
             {
-                public static class Choices
-                {
-                    private const string choice1 = "Let's think about this.";
-                    private const string choice2 = "I feel I can find a way through this entanglement.";
-                    private const string choice3 = "Maybe a smarter way is to avoid a confrontation.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        choice1,
-                        choice2,
-                        choice3,
-                    };
-                }
-
-                public static class Passes
-                {
-                    private const string pass1 = "Your diplomatic tongue gets you around.";
-                    private const string pass2 = "Your methods seem to work.";
-                    private const string pass3 = "A non-violent approach was chosen.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        pass1,
-                        pass2,
-                        pass3,
-                    };
-                }
-
-                public class  Fails
-                {
-                    private const string fail1 = "You can't seem to work your mind around it.";
-                    private const string fail2 = "This was way too difficult for you.";
-                    private const string fail3 = "You failed.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        fail1,
-                        fail2,
-                        fail3,
-                    };
-                }
+                HasWealth = true,
+                HasItem = true,
+                HasLoot = false,
+                HasStats = false,
+                HasSkills = false,
+                HasTraits = false,
             }
+        };
 
-            public static class Utilitarian
-            {
-                public static class Choices
-                {
-                    private const string choice1 = "Let's use some of our stuff to get around this.";
-                    private const string choice2 = "I'll pay.";
-                    private const string choice3 = "Perhaps trade is the better approach.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        choice1,
-                        choice2,
-                        choice3,
-                    };
-                }
-
-                public static class Passes
-                {
-                    private const string pass1 = "Richness has its advantages.";
-                    private const string pass2 = "That worked.";
-                    private const string pass3 = "Prosperity provides means to get you by.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        pass1,
-                        pass2,
-                        pass3,
-                    };
-                }
-
-                public class Fails
-                {
-                    private const string fail1 = "No richness can get you over this.";
-                    private const string fail2 = "Perhaps it was way more expensive than you thought.";
-                    private const string fail3 = "That failed.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        fail1,
-                        fail2,
-                        fail3,
-                    };
-                }
-            }
-
-            public static class Overcome
-            {
-                public static class Choices
-                {
-                    private const string choice1 = "We can overcome this.";
-                    private const string choice2 = "Let's make a run for it.";
-                    private const string choice3 = "We can force it through.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        choice1,
-                        choice2,
-                        choice3,
-                    };
-                }
-
-                public static class Passes
-                {
-                    private const string pass1 = "Courage and resolve pay off.";
-                    private const string pass2 = "You seem to overcome this easily.";
-                    private const string pass3 = "You display an outstanding performance.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        pass1,
-                        pass2,
-                        pass3,
-                    };
-                }
-
-                public class Fails
-                {
-                    private const string fail1 = "Too weak to overcome this.";
-                    private const string fail2 = "Pathetic.";
-                    private const string fail3 = "Failure.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        fail1,
-                        fail2,
-                        fail3,
-                    };
-                }
-            }
-
-            public static class Fight
-            {
-                public static class Choices
-                {
-                    private const string choice1 = "I am death incarnate.";
-                    private const string choice2 = "You dig like a dog...";
-                    private const string choice3 = "*say nothing and slowly draw your weapon*";
-
-                    public static readonly List<string> All = new()
-                    {
-                        choice1,
-                        choice2,
-                        choice3,
-                    };
-                }
-
-                public static class Passes
-                {
-                    private const string pass1 = "Valor has proven you right once again.";
-                    private const string pass2 = "Tales will be told of your deeds one today.";
-                    private const string pass3 = "As they fell to the ground, you clean your blade and move on.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        pass1,
-                        pass2,
-                        pass3,
-                    };
-                }
-
-                public class Fails
-                {
-                    private const string fail1 = "You have been bested.";
-                    private const string fail2 = "Defeat.";
-                    private const string fail3 = "Death comes faster to those who seek it.";
-
-                    public static readonly List<string> All = new()
-                    {
-                        fail1,
-                        fail2,
-                        fail3,
-                    };
-                }
-            }
-        }
+        public static readonly List<QuestDetails> All = new()
+        {
+            RescueLordFromRansom,
+            KillGoblins,
+            Patrol
+        };
     }
 }

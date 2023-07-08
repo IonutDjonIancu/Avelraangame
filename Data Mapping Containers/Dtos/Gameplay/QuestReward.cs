@@ -2,13 +2,10 @@
 
 public class QuestReward
 {
-    public string Id { get; set; }
-    public string Description { get; set; }
-
-    public List<Item> Items { get; set; } = new();
-    public List<HeroicTrait> Traits { get; set; } = new();
-    
-    public int Wealth { get; set; }
-    public int StatPoints { get; set; }
-    public int SkillPoints { get; set; }
+    public bool HasWealth { get; set; }
+    public bool HasItem { get; set; }
+    public bool HasLoot { get; set; } // several items
+    public bool HasStats { get; set; }
+    public bool HasSkills { get; set; }
+    public bool HasTraits { get; set; }
 }

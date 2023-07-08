@@ -44,9 +44,7 @@ internal class GameplayQuestsLogic
                 
                 location.LastTimeVisited = DateTime.Now;
 
-                //// generate new quests
-                //currentLocation.Quests = ...;
-
+                location.PossibleQuests = GetPossibleQuests(position, locationData.EffortUpper);
                 location.Market = GenerateMarketItems(location.EffortUpper);
                 location.Npcs = GenerateMercenaries(position, location.EffortUpper);
             }
@@ -63,8 +61,7 @@ internal class GameplayQuestsLogic
                 EffortUpper = locationData.EffortUpper,
                 TravelToCost = locationData.TravelToCost,
                 LastTimeVisited = DateTime.Now,
-                //// generate new quests
-                //Quests = ...,
+                PossibleQuests = GetPossibleQuests(position, locationData.EffortUpper),
                 Market = GenerateMarketItems(locationData.EffortUpper),
                 Npcs = GenerateMercenaries(position, locationData.EffortUpper)
             };
@@ -77,6 +74,11 @@ internal class GameplayQuestsLogic
     }
 
     #region private methods
+    private static List<QuestDetails> GetPossibleQuests(Position position, int effortUpper)
+    {
+        return GameplayLore.Quests.All.Where(s => s.AvailableAt.Contains(position.Land) && s.EffortRequired <= effortUpper).ToList();
+    }
+
     private List<Item> GenerateMarketItems(int effortUpper)
     {
         var items = new List<Item>();

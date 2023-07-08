@@ -9,7 +9,6 @@ internal class NpcLogicDelegator
 {
     private readonly NpcAttributesLogic attributesLogic;
     private readonly NpcBelongingsLogic belongingsLogic;
-    private readonly NpcPaperdollLogic paperdollLogic;
 
     private readonly IDiceRollService dice;
     private readonly IItemService items;
@@ -22,22 +21,9 @@ internal class NpcLogicDelegator
     {
         attributesLogic = new NpcAttributesLogic(diceService);
         belongingsLogic = new NpcBelongingsLogic(diceService, itemService);
-        paperdollLogic = new NpcPaperdollLogic(characterService);
 
         dice = diceService;
         items = itemService;
-    }
-
-    internal NpcPaperdoll GenerateNpcPaperdoll(NpcInfo npcInfo)
-    {
-        var npcCharacter = new Character();
-            
-        attributesLogic.SetNpcCharacterSheet(npcInfo, npcCharacter);
-        belongingsLogic.SetNpcInventory(npcCharacter);
-
-        var npcPaperdoll = paperdollLogic.CalculateNpcPaperdoll(npcInfo, npcCharacter);
-
-        return npcPaperdoll;
     }
 
     internal NpcCharacter GenerateNpcCharacter(Position position, int effortUpper)
@@ -184,7 +170,8 @@ internal class NpcLogicDelegator
 
         charAssets.Spot = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateSpot(stats);
 
-        charAssets.Defense = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateDefense(stats);
+        var defense = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateDefense(stats);
+        charAssets.Defense = defense >= 90 ? 90 : defense;
 
         charAssets.Purge = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculatePurge(stats);
 
