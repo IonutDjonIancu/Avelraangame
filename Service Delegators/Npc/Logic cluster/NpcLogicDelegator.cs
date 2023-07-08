@@ -170,10 +170,11 @@ internal class NpcLogicDelegator
 
         charAssets.Spot = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateSpot(stats);
 
-        var defense = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateDefense(stats);
+        var defense = (Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateDefense(stats)) / 10;
         charAssets.Defense = defense >= 90 ? 90 : defense;
 
-        charAssets.Purge = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculatePurge(stats);
+        var purge = (Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculatePurge(stats)) / 10;
+        charAssets.Purge = purge >= 90 ? 90 : purge;
 
         charAssets.Mana = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateMana(stats);
 

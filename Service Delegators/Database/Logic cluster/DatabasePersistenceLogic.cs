@@ -41,10 +41,9 @@ internal class DatabasePersistenceLogic
         await SaveFileToDisk(playerJson, playerPath);
     }
 
-    internal async void SaveLocationToDiskFile(string fullName)
+    internal async void SaveLocationsToDiskFile()
     {
-        var location = dbm.Snapshot.Map.Locations.Find(s => s.FullName == fullName);
-        var locationJson = JsonConvert.SerializeObject(location);
+        var locationJson = JsonConvert.SerializeObject(dbm.Snapshot.Map);
         var locationPath = dbm.Info.DbMapPath;
 
         await SaveFileToDisk(locationJson, locationPath);

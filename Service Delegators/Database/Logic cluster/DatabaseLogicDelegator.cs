@@ -27,9 +27,9 @@ internal class DatabaseLogicDelegator
     {
         persistLogic.SavePlayerToDiskFile(playerId);
     }
-    internal void SaveLocation(string fullName)
+    internal void SaveLocations()
     {
-        persistLogic.SaveLocationToDiskFile(fullName);
+        persistLogic.SaveLocationsToDiskFile();
     }
 
 

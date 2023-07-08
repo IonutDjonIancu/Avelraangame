@@ -283,7 +283,7 @@ public class GameplayLore
 
         public static readonly QuestDetails KillGoblins = new()
         {
-            Name = "KillGoblins",
+            Name = "Kill goblins",
             ShortDescription = $"Goblins around",
             Description = $"The lowest scum in the world, goblins are feared everywhere for their ways to terrorize settlements. You will find disemboweled, half eaten animals or people, burned crops, and destroyed viliges when these " +
             $"hated creatures from Pel'Ravan mountains raid the lowlands. Therefore, the marshals have been giving rewards for all sellswords that can bring goblin heads to the gutters. " +
@@ -307,7 +307,7 @@ public class GameplayLore
 
         public static readonly QuestDetails RescueLordFromRansom = new()
         {
-            Name = "RescueLordFromRansom",
+            Name = "Rescue lord from ransom",
             ShortDescription = $"Rescue a lord from being ransomed.",
             Description = $"Following an skirmish between the armies of two local noblemen, one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
             $"people like you are called in to try to save the imprisoned knight from being ransomed. You have no involvement in the matter and it's a chance to build up a reputation... as well as get your hands on a hefty reward. " +

@@ -68,15 +68,15 @@ internal class GameplayQuestsLogic
         }
 
         dbs.Snapshot.Map.Locations.Add(location);
-        dbs.PersistLocation(location.FullName);
+        dbs.PersistLocations();
 
         return location;
     }
 
     #region private methods
-    private static List<QuestDetails> GetPossibleQuests(Position position, int effortUpper)
+    private static List<string> GetPossibleQuests(Position position, int effortUpper)
     {
-        return GameplayLore.Quests.All.Where(s => s.AvailableAt.Contains(position.Land) && s.EffortRequired <= effortUpper).ToList();
+        return GameplayLore.Quests.All.Where(s => s.AvailableAt.Contains(position.Land) && s.EffortRequired <= effortUpper).Select(s => s.Name).ToList();
     }
 
     private List<Item> GenerateMarketItems(int effortUpper)
