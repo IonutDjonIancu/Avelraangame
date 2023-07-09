@@ -73,9 +73,10 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
-        character.Info.IsInParty.Should().BeFalse();
+        character.Status.IsInParty.Should().BeFalse();
 
-        GameplayLore.Locations.Danar.All.Should().Contain(character.Info.Position.Location);
+        //GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
+        throw new NotImplementedException();
         
         if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
@@ -166,8 +167,11 @@ public class CharacterServiceTests : TestBase
 
         var equip = new CharacterEquip
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity 
+            { 
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             InventoryLocation = location,
             ItemId = chr.Supplies.First().Identity.Id
         };
@@ -202,8 +206,11 @@ public class CharacterServiceTests : TestBase
 
         var equip = new CharacterEquip
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             InventoryLocation = location,
             ItemId = chr.Supplies.First().Identity.Id
         };
@@ -238,8 +245,11 @@ public class CharacterServiceTests : TestBase
 
         var trait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = swordsman.Identity.Id,
         };
 
@@ -265,8 +275,11 @@ public class CharacterServiceTests : TestBase
 
         var trait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = metachaos.Identity.Id,
         };
 
@@ -286,14 +299,20 @@ public class CharacterServiceTests : TestBase
 
         var candlelightTrait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = candlelight.Identity.Id,
         };
         var metachaosTrait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = metachaos.Identity.Id,
         };
         characterService.LearnHeroicTrait(candlelightTrait);
@@ -329,27 +348,29 @@ public class CharacterServiceTests : TestBase
     [Fact(DisplayName = "Joining party should reflect on Character")]
     public void Join_party_correctly_displays_on_Character_test()
     {
-        var party = gameplayService.CreateParty(true);
-        var chr = CreateHumanCharacter("Jax");
+        throw new NotImplementedException();
+        //var party = gameplayService.CreateParty(true);
+        //var chr = CreateHumanCharacter("Jax");
 
-        gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
+        //gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
 
-        chr.Info.IsInParty.Should().BeTrue();
-        chr.Info.PartyId.Should().Be(party.Identity.Id);
+        //chr.Status.IsInParty.Should().BeTrue();
+        //chr.Status.PartyId.Should().Be(party.Identity.Id);
     }
 
     [Fact(DisplayName = "Leaving party should reflect on Character")]
     public void Leave_party_correctly_displays_on_Character_test()
     {
-        var party = gameplayService.CreateParty(true);
-        var chr = CreateHumanCharacter("Jax");
+        throw new NotImplementedException();
+        //var party = gameplayService.CreateParty(true);
+        //var chr = CreateHumanCharacter("Jax");
 
-        Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
+        //Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
 
-        gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
-        gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
+        //gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
+        //gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
 
-        chr.Info.IsInParty.Should().BeFalse();
+        //chr.Status.IsInParty.Should().BeFalse();
     }
 
     #region private methods

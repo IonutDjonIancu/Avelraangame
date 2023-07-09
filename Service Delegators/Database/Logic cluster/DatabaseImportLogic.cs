@@ -17,7 +17,6 @@ internal class DatabaseImportLogic
     {
         dbm.Snapshot.LastAction = database.DbDate;
         dbm.Snapshot.CharacterStubs = database.CharacterStubs;
-        dbm.Snapshot.Parties = database.Parties;
     }
 
     internal void ImportPlayer(Player newPlayer)

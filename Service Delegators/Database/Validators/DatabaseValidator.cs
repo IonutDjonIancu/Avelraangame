@@ -16,6 +16,6 @@ internal class DatabaseValidator : ValidatorBase
     {
         var playerName = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Identity.Name;
 
-        if (!snapshot.Admins.Contains(playerName)) Throw("Action not allowed, player is not an admin.");
+        if (!snapshot.Admins.Contains(playerName)) throw new Exception("Action not allowed, player is not an admin.");
     }
 }

@@ -18,12 +18,16 @@ public class DatabaseService : IDatabaseService
         logic = new DatabaseLogicDelegator(databaseManager);
     }
 
-    #region database
     public void PersistDatabase()
     {
         logic.SaveDb();
     }
+    public void PersistPlayer(string playerId)
+    {
+        logic.SavePlayer(playerId);
+    }
 
+    #region database
     public void ExportDatabase(string requesterPlayerId)
     {
         validator.ValidatePlayerIsAdmin(requesterPlayerId);
@@ -38,11 +42,6 @@ public class DatabaseService : IDatabaseService
     #endregion
 
     #region player
-    public void PersistPlayer(string playerId)
-    {
-        logic.SavePlayer(playerId);
-    }
-
     public void DeletePlayer(string requesterPlayerId)
     {
         logic.RemovePlayer(requesterPlayerId);

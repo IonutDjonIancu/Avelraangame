@@ -14,7 +14,7 @@ internal class CharacterItemsLogic
 
     internal Character UnequipItem(CharacterEquip unequip)
     {
-        var (character, player) = GetStoredCharacterAndPlayer(new CharacterIdentity() { Id = unequip.CharacterId, PlayerId = unequip.PlayerId });
+        var (character, player) = GetStoredCharacterAndPlayer(unequip.CharacterIdentity);
         Item item;
 
         if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Head)
@@ -57,7 +57,7 @@ internal class CharacterItemsLogic
 
     internal Character EquipItem(CharacterEquip equip)
     {
-        var (character, player) = GetStoredCharacterAndPlayer(new CharacterIdentity() { Id = equip.CharacterId, PlayerId = equip.PlayerId }); 
+        var (character, player) = GetStoredCharacterAndPlayer(equip.CharacterIdentity); 
         var item = character.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
 
         if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head)

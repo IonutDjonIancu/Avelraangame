@@ -33,6 +33,7 @@ public class DatabaseManager : IDatabaseManager
         {
             DbPath = $"{currentDir}{config.DbPath}",
             DbPlayersPath = $"{currentDir}{config.DbPlayersPath}",
+
             LogPath = $"{currentDir}{config.LogPath}",
 
             AvelraanEmail = config.AvelraanEmail,
@@ -50,10 +51,12 @@ public class DatabaseManager : IDatabaseManager
             LastAction = avDatabase.DbDate,
             Admins = admins,
             Banned = banned,
-            CharacterStubs = avDatabase.CharacterStubs,
-            Parties = avDatabase.Parties,
 
+            // player files will be loaded to make sure we have the admins
             Players = ReadPlayerFiles(info.DbPlayersPath),
+
+            // TODO: to refactor, not really necessary
+            CharacterStubs = avDatabase.CharacterStubs,
         };
     }
 
@@ -71,6 +74,22 @@ public class DatabaseManager : IDatabaseManager
         }
 
         return list;
+    }
+
+    private static async Task SaveToFileOnDisk(string json, string path, int tries = 0)
+    {
+        if (tries >= 3) throw new Exception($"Unable to persist file to disk at path: {path}.");
+
+        try
+        {
+            tries++;
+            await File.WriteAllTextAsync(path, json);
+        }
+        catch (Exception)
+        {
+            Thread.Sleep(300);
+            await SaveToFileOnDisk(json, path, tries);
+        }
     }
     #endregion
 }

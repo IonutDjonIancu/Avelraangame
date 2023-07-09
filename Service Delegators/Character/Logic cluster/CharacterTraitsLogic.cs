@@ -18,8 +18,8 @@ internal class CharacterTraitsLogic
 
     internal Character ApplyHeroicTrait(CharacterHeroicTrait trait)
     {
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == trait.PlayerId)!;
-        var character = player.Characters.Find(c => c.Identity.Id == trait.CharacterId)!;
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == trait.CharacterIdentity.PlayerId)!;
+        var character = player.Characters.Find(c => c.Identity.Id == trait.CharacterIdentity.Id)!;
         var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId)!;
 
         character.HeroicTraits.Add(heroicTrait);

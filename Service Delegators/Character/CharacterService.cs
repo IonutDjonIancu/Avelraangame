@@ -34,7 +34,7 @@ public class CharacterService : ICharacterService
     {
         validator.ValidateCharacterPlayerCombination(identity);
         validator.ValidateCharacterName(name);
-        validator.ValidateIfPartyIsAdventuring(identity.Id);
+        validator.ValidateIfCharacterIsLocked(identity);
         return logic.ChangeName(name, identity);
     }
 
@@ -48,7 +48,7 @@ public class CharacterService : ICharacterService
     public Character UpdateCharacterWealth(int wealth, CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfPartyIsAdventuring(identity.Id);
+        validator.ValidateIfCharacterIsLocked(identity);
         validator.ValidateNumber(wealth);
         return logic.AddWealth(wealth, identity);
     }
@@ -56,7 +56,7 @@ public class CharacterService : ICharacterService
     public Character UpdateCharacterStats(string stat, CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfPartyIsAdventuring(identity.Id);
+        validator.ValidateIfCharacterIsLocked(identity);
         validator.ValidateStatExists(stat);
         validator.ValidateCharacterHasStatsPoints(identity);
         return logic.IncreaseStats(stat, identity);
@@ -65,7 +65,7 @@ public class CharacterService : ICharacterService
     public Character UpdateCharacterSkills(string skill, CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfPartyIsAdventuring(identity.Id);
+        validator.ValidateIfCharacterIsLocked(identity);
         validator.ValidateSkillExists(skill);
         validator.ValidateCharacterHasSkillsPoints(identity);
         return logic.IncreaseSkills(skill, identity);
@@ -80,7 +80,7 @@ public class CharacterService : ICharacterService
     public void DeleteCharacter(CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterInParty(identity.Id);
+        validator.ValidateIfCharacterInParty(identity);
         logic.DeleteChar(identity);
     }
 
@@ -98,14 +98,14 @@ public class CharacterService : ICharacterService
     public Character EquipCharacterItem(CharacterEquip equip)
     {
         validator.ValidateCharacterEquipUnequipItem(equip, true);
-        validator.ValidateIfPartyIsAdventuring(equip.CharacterId);
+        validator.ValidateIfCharacterIsLocked(equip.CharacterIdentity);
         return logic.EquipItem(equip);
     }
 
     public Character UnequipCharacterItem(CharacterEquip unequip)
     {
         validator.ValidateCharacterEquipUnequipItem(unequip, false);
-        validator.ValidateIfPartyIsAdventuring(unequip.CharacterId);
+        validator.ValidateIfCharacterIsLocked(unequip.CharacterIdentity);
         return logic.UnequipItem(unequip);
     }
 
@@ -123,7 +123,7 @@ public class CharacterService : ICharacterService
     public Character LearnHeroicTrait(CharacterHeroicTrait trait)
     {
         validator.ValidateCharacterLearnHeroicTrait(trait);
-        validator.ValidateIfPartyIsAdventuring(trait.CharacterId);
+        validator.ValidateIfCharacterIsLocked(trait.CharacterIdentity);
         return logic.ApplyHeroicTrait(trait);
     }
 }
