@@ -82,10 +82,10 @@ internal class CharacterCreateLogic
         {
             character.Position = new Position
             {
-                Region = GameplayLore.MapLocations.Dragonmaw.Name,
-                Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
-                Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
-                Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
+                Region = GameplayLore.Map.Dragonmaw.Name,
+                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.Name,
+                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Name,
+                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
             };
         }
         else
@@ -93,10 +93,10 @@ internal class CharacterCreateLogic
             // TODO: this will have to be changed eventually to incorporate Calvinia starting point
             character.Position = new Position
             {
-                Region = GameplayLore.MapLocations.Dragonmaw.Name,
-                Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
-                Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
-                Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
+                Region = GameplayLore.Map.Dragonmaw.Name,
+                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.Name,
+                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Name,
+                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
             };
         }
 

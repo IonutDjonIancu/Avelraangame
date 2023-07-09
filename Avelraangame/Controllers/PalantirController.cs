@@ -464,13 +464,32 @@ public class PalantirController : ControllerBase
     #region Gameplay
     // POST: /api/palantir/Gameplay/GetLocation
     [HttpPost("Gameplay/GetLocation")]
-    public IActionResult GetLocation([FromBody] Position partyPostion)
+    public IActionResult GetLocation([FromBody] Position position)
     {
         try
         {
-            var location = factory.ServiceFactory.GameplayService.GetLocation(partyPostion);
+            var location = factory.ServiceFactory.GameplayService.GetLocation(position);
 
             return Ok(location);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // POST: /api/palantir/Gameplay/TravelToLocation
+    [HttpPost("Gameplay/TravelToLocation")]
+    public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] PositionTravel positionTravel)
+    {
+        try
+        {
+            positionTravel.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
+
+            factory.ServiceFactory.GameplayService.TravelToLocation(positionTravel);
+
+            return Ok();
         }
         catch (Exception ex)
         {

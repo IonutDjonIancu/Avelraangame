@@ -15,6 +15,8 @@ public class CharacterInventory
     [MaxLength(5, ErrorMessage = "Heraldry cannot support more items.")]
     public List<Item>? Heraldry { get; set; } = new();
 
+    public int Provisions { get; set; }
+
     public List<Item> GetAllEquipedItems()
     {
         var listOfItems = new List<Item>();

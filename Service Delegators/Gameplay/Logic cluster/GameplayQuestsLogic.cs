@@ -26,7 +26,7 @@ internal class GameplayQuestsLogic
     {
         var fullName = Utils.GetLocationFullName(position);
 
-        var locationData = GameplayLore.MapLocations.All.Find(s => s.FullName == fullName)!;
+        var locationData = GameplayLore.Map.All.Find(s => s.FullName == fullName)!;
 
         var location = dbs.Snapshot.Locations.Find(s => s.FullName == fullName);
 
@@ -44,9 +44,9 @@ internal class GameplayQuestsLogic
                 
                 location.LastTimeVisited = DateTime.Now;
 
-                location.PossibleQuests = GetPossibleQuests(position, locationData.EffortUpper);
-                location.Market = GenerateMarketItems(location.EffortUpper);
-                location.Npcs = GenerateMercenaries(position, location.EffortUpper);
+                location.PossibleQuests = GetPossibleQuests(position, locationData.EffortLevel);
+                location.Market = GenerateMarketItems(location.EffortLevel);
+                location.Npcs = GenerateMercenaries(position, location.EffortLevel);
             }
         }
         else
@@ -57,13 +57,12 @@ internal class GameplayQuestsLogic
                 FullName = locationData.FullName,
                 Description = locationData.Description,
                 Effort = locationData.Effort,
-                EffortLower = locationData.EffortLower,
-                EffortUpper = locationData.EffortUpper,
+                EffortLevel = locationData.EffortLevel,
                 TravelToCost = locationData.TravelToCost,
                 LastTimeVisited = DateTime.Now,
-                PossibleQuests = GetPossibleQuests(position, locationData.EffortUpper),
-                Market = GenerateMarketItems(locationData.EffortUpper),
-                Npcs = GenerateMercenaries(position, locationData.EffortUpper)
+                PossibleQuests = GetPossibleQuests(position, locationData.EffortLevel),
+                Market = GenerateMarketItems(locationData.EffortLevel),
+                Npcs = GenerateMercenaries(position, locationData.EffortLevel)
             };
         }
 

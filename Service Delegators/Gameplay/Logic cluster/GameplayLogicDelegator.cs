@@ -20,4 +20,10 @@ internal class GameplayLogicDelegator
     {
         return questLogic.GenerateLocation(position);
     }
+
+    internal void MoveToLocation(PositionTravel positionTravel)
+    {
+
+
+    }
 }

@@ -27,7 +27,7 @@ internal class ValidatorBase
 
         var fullName = Utils.GetLocationFullName(position);
 
-        if (!GameplayLore.MapLocations.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
+        if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
     }
 
 

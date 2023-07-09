@@ -64,32 +64,32 @@ internal class NpcAttributesLogic
     {
         var animalsFoundIn = new List<string>
         {
-            GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+            GameplayLore.Map.Dragonmaw.Farlindor.Name,
         };
 
         var monstersFoundIn = new List<string>
         {
-             GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.Name,
         };
 
         var humanoidsFoundIn = new List<string>
         {
-             GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.Name,
         };
 
         var undeadsFoundIn = new List<string>
         {
-             GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.Name,
         };
 
         var fiendsFoundIn = new List<string>
         {
-             GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.Name,
         };
 
         var elementalFoundIn = new List<string>
         {
-             GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.Name,
         };
 
         List<string> possibleRaces = new();

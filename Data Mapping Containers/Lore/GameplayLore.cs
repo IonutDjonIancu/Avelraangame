@@ -25,7 +25,7 @@ public class GameplayLore
     }
 
 
-    public static class MapLocations
+    public static class Map
     {
         public static class Dragonmaw // continent
         {
@@ -45,8 +45,7 @@ public class GameplayLore
                             FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{AradaName}",
                             Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent serving army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
                             Effort = Effort.Normal,
-                            EffortLower = Effort.NormalRange.Lower,
-                            EffortUpper = Effort.NormalRange.Upper,
+                            EffortLevel = Effort.NormalRange,
                             TravelToCost = 1
                         };
 
@@ -57,8 +56,7 @@ public class GameplayLore
                             FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{LanwickName}",
                             Description = "A rich province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
                             Effort = Effort.Normal,
-                            EffortLower = Effort.NormalRange.Lower,
-                            EffortUpper = Effort.NormalRange.Upper,
+                            EffortLevel = Effort.NormalRange,
                             TravelToCost = 3
                         };
 
@@ -69,8 +67,7 @@ public class GameplayLore
                             FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{BelfordshireName}",
                             Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
                             Effort = Effort.Gifted,
-                            EffortLower = Effort.GiftedRange.Lower,
-                            EffortUpper = Effort.GiftedRange.Upper,
+                            EffortLevel = Effort.GiftedRange,
                             TravelToCost = 4
                         };
                     }
@@ -107,36 +104,12 @@ public class GameplayLore
                 Normal, Gifted, Chosen, Hero, Olympian, Planar
             };
 
-        public struct NormalRange
-        {
-            public const int Lower = 5;
-            public const int Upper = 50;
-        }
-        public struct GiftedRange
-        {
-            public const int Lower = 51;
-            public const int Upper = 100;
-        }
-        public struct ChosenRange
-        {
-            public const int Lower = 101;
-            public const int Upper = 200;
-        }
-        public struct HeroRange
-        {
-            public const int Lower = 201;
-            public const int Upper = 500;
-        }
-        public struct OlympianRange
-        {
-            public const int Lower = 501;
-            public const int Upper = 1000;
-        }
-        public struct PlanarRange
-        {
-            public const int Lower = 1001;
-            public const int Upper = 9000;
-        }
+        public const int NormalRange = 50;
+        public const int GiftedRange = 100;
+        public const int ChosenRange = 200;
+        public const int HeroRange = 500;
+        public const int OlympianRange = 1000;
+        public const int PlanarRange = 9000;
     }
 
 
@@ -265,10 +238,10 @@ public class GameplayLore
             $"The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. A couple of gold crowns are placed on a piece of " +
             $"linnen cloth in front of you to illustrate your payment. After a long silence, you nod in agreement, the man rolls the paper into a salted hollow leather cylinder and hands it to you.",
             IsRepeatable = true,
-            EffortRequired = Effort.NormalRange.Upper,
+            EffortRequired = Effort.NormalRange,
             AvailableAt = new List<string>
             {
-                MapLocations.Dragonmaw.Farlindor.Danar.Name,
+                Map.Dragonmaw.Farlindor.Danar.Name,
             },
             Reward = new QuestReward
             {
@@ -289,10 +262,10 @@ public class GameplayLore
             $"hated creatures from Pel'Ravan mountains raid the lowlands. Therefore, the marshals have been giving rewards for all sellswords that can bring goblin heads to the gutters. " +
             $"You are to find the camp, and remove it by any means necessary. This is easier said than done since goblins are known to be deceitful and shifty creatures.",
             IsRepeatable = true,
-            EffortRequired = Effort.NormalRange.Upper,
+            EffortRequired = Effort.NormalRange,
             AvailableAt = new List<string>
             {
-                MapLocations.Dragonmaw.Farlindor.Danar.Name,
+                Map.Dragonmaw.Farlindor.Danar.Name,
             },
             Reward = new QuestReward
             {
@@ -314,10 +287,10 @@ public class GameplayLore
             $"The man that brought this up to your attention, a member of the local clergy, asks for your discression, telling you that if you get caught there won't be anybody sent after you, and that the lord that hired you " +
             $"will, as is customary, deny any involvement in the matter. If you fail you'll probably be publicly quartered and your head will end up on a pike at the entrance to a castle.",
             IsRepeatable = false,
-            EffortRequired = Effort.NormalRange.Upper,
+            EffortRequired = Effort.GiftedRange,
             AvailableAt = new List<string>
             {
-                MapLocations.Dragonmaw.Farlindor.Danar.Name,
+                Map.Dragonmaw.Farlindor.Danar.Name,
             },
             Reward = new QuestReward
             {

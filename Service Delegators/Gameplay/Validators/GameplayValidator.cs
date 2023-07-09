@@ -12,4 +12,21 @@ internal class GameplayValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
+    internal void ValidateBeforeTravel(PositionTravel positionTravel)
+    {
+        ValidateCharacterPlayerCombination(positionTravel.CharacterIdentity);
+        var character = GetCharacter(positionTravel.CharacterIdentity);
+
+        if (!string.IsNullOrEmpty(character.Status.QuestId)) throw new Exception("Unable to travel during quest.");
+        if (!character.Info.IsAlive) throw new Exception("Unable to travel, your character is dead.");
+
+        var totalProvisions = character.Inventory.Provisions
+            + character.Henchmen.Select(s => s.Inventory.Provisions).Sum()
+            + character.PartyMembers.Select(s => s.Inventory.Provisions).Sum();
+
+        if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
+
+        var destinationFullName = Utils.GetLocationFullName(positionTravel.Destination);
+        if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(destinationFullName)) throw new Exception("No such destination is known.");
+    }
 }

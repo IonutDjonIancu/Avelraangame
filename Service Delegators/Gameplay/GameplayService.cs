@@ -20,8 +20,14 @@ public class GameplayService : IGameplayService
     public Location GetLocation(Position position)
     {
         validator.ValidatePosition(position);
-
         return logic.GenerateLocation(position);
+    }
+
+    public void TravelToLocation(PositionTravel positionTravel)
+    {
+        validator.ValidateBeforeTravel(positionTravel);
+
+        logic.MoveToLocation(positionTravel);
     }
 
 }
