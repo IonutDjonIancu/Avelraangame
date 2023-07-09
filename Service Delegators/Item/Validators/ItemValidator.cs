@@ -13,10 +13,10 @@ internal class ItemValidator : ValidatorBase
         ValidateString(type);
         ValidateString(subtype);
 
-        if (!ItemsLore.Types.All.Contains(type)) Throw("No such type found for item generate.");
+        if (!ItemsLore.Types.All.Contains(type)) throw new Exception("No such type found for item generate.");
 
         if (!(ItemsLore.Subtypes.Weapons.All.Contains(subtype)
             || ItemsLore.Subtypes.Protections.All.Contains(subtype)
-            || ItemsLore.Subtypes.Wealth.All.Contains(subtype))) Throw("No such subtype found for item generate.");
+            || ItemsLore.Subtypes.Wealth.All.Contains(subtype))) throw new Exception("No such subtype found for item generate.");
     }
 }

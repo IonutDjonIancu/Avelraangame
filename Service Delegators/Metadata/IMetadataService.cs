@@ -11,7 +11,5 @@ public interface IMetadataService
     List<string> GetClasses();
     List<HeroicTrait> GetHeroicTraits();
     
-    List<Party> GetParties();
-    
     List<string> GetAvelraanRegions();
 }

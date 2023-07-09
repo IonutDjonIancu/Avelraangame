@@ -23,11 +23,11 @@ internal class DatabaseLogicDelegator
     {
         persistLogic.SaveDbToDiskFile();
     }
-
     internal void SavePlayer(string playerId)
     {
         persistLogic.SavePlayerToDiskFile(playerId);
     }
+
 
     internal void RemovePlayer(string playerId)
     {

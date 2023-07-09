@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8604 // Possible null reference argument.
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data_Mapping_Containers.Pocos;
@@ -33,5 +31,3 @@ public class CharacterInventory
         return listOfItems;
     }
 }
-
-#pragma warning restore CS8604 // Possible null reference argument.

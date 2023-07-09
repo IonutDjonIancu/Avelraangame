@@ -18,9 +18,15 @@ public class NpcService : INpcService
         logic = new NpcLogicDelegator(diceRollService, itemService, characterService);
     }
 
-    public NpcPaperdoll GenerateNpc(NpcInfo npcInfo)
+    public NpcCharacter GenerateBadGuyNpc(Position position, int effortUpper)
     {
-        validator.ValidateNpcOnGenerate(npcInfo);
-        return logic.GenerateNpc(npcInfo);
+        validator.ValidatePosition(position);
+        throw new NotImplementedException();
+    }
+
+    public NpcCharacter GenerateGoodGuyNpc(Position position, int effortUpper)
+    {
+        validator.ValidatePosition(position);
+        return logic.GenerateNpcCharacter(position, effortUpper);
     }
 }

@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CA1822 // Mark members as static
 
 using Data_Mapping_Containers.Dtos;
+using System;
 
 namespace Service_Delegators.Validators;
 
@@ -16,7 +17,7 @@ internal class PlayerValidator : ValidatorBase
 
     internal void ValidatePlayerCanLogin(string? token)
     {
-        if (token == null) Throw("Not allowed to login.");
+        if (token == null) throw new Exception("Not allowed to login.");
     }
 
     internal void ValidatePlayerOnLogin(PlayerLogin login)
@@ -30,12 +31,12 @@ internal class PlayerValidator : ValidatorBase
     {
         ValidateString(name);
 
-        if (!snapshot.Players.Exists(p => p.Identity.Name == name)) Throw("Player does not exist.");
+        if (!snapshot.Players.Exists(p => p.Identity.Name == name)) throw new Exception("Player does not exist.");
     }
 
     internal void ValidatePlayersCount()
     {
-        if (snapshot.Players!.Count >= 20) Throw("Player limit reached, please contact admins.");
+        if (snapshot.Players!.Count >= 20) throw new Exception("Player limit reached, please contact admins.");
     }
 
     internal void ValidatePlayerOnCreate(string playerName)
@@ -43,13 +44,13 @@ internal class PlayerValidator : ValidatorBase
         ValidatePlayerName(playerName);
         ValidatePlayersCount();
 
-        if (snapshot.Players!.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) Throw("Player already exists.");
+        if (snapshot.Players!.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) throw new Exception("Player already exists.");
     }
 
     internal void ValidatePlayerName(string name)
     {
         ValidateString(name);
-        if (name.Length > 20) Throw($"Name {name} too long, 20 characters max.");
+        if (name.Length > 20) throw new Exception($"Name {name} too long, 20 characters max.");
     }
 }
 

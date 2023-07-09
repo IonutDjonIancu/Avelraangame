@@ -3,14 +3,12 @@
 public class Quest
 {
     public string Id { get; set; }
+    public Character PartyLead { get; set; }
 
-    public string Location { get; set; }
-    public string Difficulty { get; set; }
+    public Position Position { get; set; } = new();
+    public List<QuestEncounter> Encounters { get; set; } = new();
     public string Effort { get; set; }
+    public bool IsOngoing { get; set; }
 
-    public string Description { get; set; }
-    public Dictionary<string, string> Encounters { get; set; }
-
-
-
+    public QuestDetails Details { get; set; } = new();
 }

@@ -4,6 +4,10 @@ namespace Service_Delegators;
 
 public interface IDiceRollService
 {
+    /// <summary>
+    /// Returns either true or false
+    /// </summary>
+    /// <returns></returns>
     public bool FlipCoin();
 
     public int Roll_d20(bool hasReroll = false);

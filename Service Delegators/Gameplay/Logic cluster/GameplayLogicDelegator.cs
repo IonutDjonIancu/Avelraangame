@@ -4,26 +4,20 @@ namespace Service_Delegators;
 
 internal class GameplayLogicDelegator
 {
-    private readonly GameplayPartyLogic partyLogic;
+    private readonly GameplayQuestsLogic questLogic;
 
     private GameplayLogicDelegator() { }
-    internal GameplayLogicDelegator(IDatabaseService databaseService)
+    internal GameplayLogicDelegator(
+        IDatabaseService databaseService,
+        IDiceRollService diceRollService,
+        IItemService itemService,
+        INpcService npcService)
     {
-        partyLogic = new GameplayPartyLogic(databaseService);
+        questLogic = new GameplayQuestsLogic(databaseService, diceRollService, itemService, npcService);
     }
 
-    internal Party CreateParty(bool isSinglePlayerOnly)
+    internal Location GenerateLocation(Position position)
     {
-        return partyLogic.CreateParty(isSinglePlayerOnly);
-    }
-
-    internal Party JoinParty(string partyId, bool isSinglePlayerOnly, CharacterIdentity charIdentity)
-    {
-        return partyLogic.JoinParty(partyId, isSinglePlayerOnly, charIdentity);
-    }
-
-    internal Party LeaveParty(string partyId, CharacterIdentity charIdentity)
-    {
-        return partyLogic.LeaveParty(partyId, charIdentity);    
+        return questLogic.GenerateLocation(position);
     }
 }

@@ -2,8 +2,7 @@
 
 public class CharacterEquip
 {
-    public string PlayerId { get; set; }
-    public string CharacterId { get; set; }
+    public CharacterIdentity CharacterIdentity { get; set; }
     public string ItemId { get; set; }
     public string InventoryLocation { get; set; }
 }

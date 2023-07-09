@@ -6,14 +6,15 @@ public interface IDatabaseService
 {
     Snapshot Snapshot { get; set; }
 
-    #region database
     void PersistDatabase();
+    void PersistPlayer(string playerId);
+
+    #region database
     void ExportDatabase(string playerId);
     void ImportDatabase(string databaseJsonString, string playerId);
     #endregion
 
     #region player
-    void PersistPlayer(string playerId);
     void DeletePlayer(string playerId);
     void ImportPlayer(string playerJsonString, string playerId);
     #endregion

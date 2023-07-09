@@ -32,15 +32,6 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Metadata
-    // GET: /api/palantir/Metadata/GetParties
-    [HttpGet("Metadata/GetParties")]
-    public IActionResult GetParties()
-    {
-        var response = factory.ServiceFactory.Metadata.GetParties();
-
-        return Ok(response);
-    }
-
     // GET: /api/palantir/Metadata/GetPlayers
     [HttpGet("Metadata/GetPlayers")]
     public IActionResult GetPlayers()
@@ -380,7 +371,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            equip.PlayerId = MatchTokensForPlayer(request);
+            equip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
             var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip);
 
@@ -399,7 +390,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            unequip.PlayerId = MatchTokensForPlayer(request);
+            unequip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
             var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip);
 
@@ -418,7 +409,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            trait.PlayerId = MatchTokensForPlayer(request);
+            trait.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
             var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait);
 
@@ -458,9 +449,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var character = factory.ServiceFactory.NpcService.GenerateNpc(info);
+            throw new NotImplementedException();
 
-            return Ok(character);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -471,17 +462,15 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // POST: /api/palantir/Gameplay/CreateParty
-    [HttpPost("Gameplay/CreateParty")]
-    public IActionResult CreateParty([FromQuery] Request request, bool isSinglePlayerParty)
+    // POST: /api/palantir/Gameplay/GetLocation
+    [HttpPost("Gameplay/GetLocation")]
+    public IActionResult GetLocation([FromBody] Position partyPostion)
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var location = factory.ServiceFactory.GameplayService.GetLocation(partyPostion);
 
-            var party = factory.ServiceFactory.GameplayService.CreateParty(isSinglePlayerParty);
-
-            return Ok(party);
+            return Ok(location);
         }
         catch (Exception ex)
         {
@@ -490,43 +479,7 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Gameplay/JoinParty
-    [HttpPut("Gameplay/JoinParty")]
-    public IActionResult JoinParty([FromQuery] Request request, string partyId, string characterId, bool isSinglePlayerParty)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
 
-            var party = factory.ServiceFactory.GameplayService.JoinParty(partyId, isSinglePlayerParty, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
-
-            return Ok(party);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Gameplay/LeaveParty
-    [HttpPut("Gameplay/LeaveParty")]
-    public IActionResult LeaveParty([FromQuery] Request request, string partyId, string characterId)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
-
-            var party = factory.ServiceFactory.GameplayService.LeaveParty(partyId, new CharacterIdentity() { Id = characterId, PlayerId = playerId });
-
-            return Ok(party);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
 
     #endregion
 
