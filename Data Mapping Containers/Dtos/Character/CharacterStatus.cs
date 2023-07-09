@@ -2,8 +2,7 @@
 
 public class CharacterStatus
 {
-    public bool HasAttributesLocked { get; set; }
-    public bool HasInventoryLocked { get; set; }
+    public bool IsLockedForModify { get; set; }
 
     public bool IsInParty { get; set; }
     public string QuestId { get; set; }

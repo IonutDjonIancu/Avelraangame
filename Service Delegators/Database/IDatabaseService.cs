@@ -8,7 +8,6 @@ public interface IDatabaseService
 
     void PersistDatabase();
     void PersistPlayer(string playerId);
-    void PersistLocations();
 
     #region database
     void ExportDatabase(string playerId);

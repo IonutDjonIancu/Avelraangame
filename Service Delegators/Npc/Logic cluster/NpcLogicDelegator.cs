@@ -62,8 +62,7 @@ internal class NpcLogicDelegator
 
         chr.Status = new CharacterStatus()
         {
-            HasAttributesLocked = true,
-            HasInventoryLocked = true,
+            IsLockedForModify = false,
             IsInParty = false,
             QuestId = string.Empty,
             NrOfQuestsFinished = 0,

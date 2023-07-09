@@ -26,10 +26,6 @@ public class DatabaseService : IDatabaseService
     {
         logic.SavePlayer(playerId);
     }
-    public void PersistLocations()
-    {
-        logic.SaveLocations();
-    }
 
     #region database
     public void ExportDatabase(string requesterPlayerId)

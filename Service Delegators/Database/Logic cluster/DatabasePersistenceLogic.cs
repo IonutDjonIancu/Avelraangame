@@ -23,7 +23,6 @@ internal class DatabasePersistenceLogic
         {
             DbDate = dbm.Snapshot.LastAction,
             CharacterStubs = dbm.Snapshot.CharacterStubs,
-            Parties = dbm.Snapshot.Parties
         };
 
         var dbJson = JsonConvert.SerializeObject(database);
@@ -39,14 +38,6 @@ internal class DatabasePersistenceLogic
         var playerPath = $"{dbm.Info.DbPlayersPath}\\Player{playerId}.json";
 
         await SaveFileToDisk(playerJson, playerPath);
-    }
-
-    internal async void SaveLocationsToDiskFile()
-    {
-        var locationJson = JsonConvert.SerializeObject(dbm.Snapshot.Map);
-        var locationPath = dbm.Info.DbMapPath;
-
-        await SaveFileToDisk(locationJson, locationPath);
     }
 
     internal async void RemovePlayerFile(string playerId)

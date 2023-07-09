@@ -167,8 +167,11 @@ public class CharacterServiceTests : TestBase
 
         var equip = new CharacterEquip
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity 
+            { 
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             InventoryLocation = location,
             ItemId = chr.Supplies.First().Identity.Id
         };
@@ -203,8 +206,11 @@ public class CharacterServiceTests : TestBase
 
         var equip = new CharacterEquip
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             InventoryLocation = location,
             ItemId = chr.Supplies.First().Identity.Id
         };
@@ -239,8 +245,11 @@ public class CharacterServiceTests : TestBase
 
         var trait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = swordsman.Identity.Id,
         };
 
@@ -266,8 +275,11 @@ public class CharacterServiceTests : TestBase
 
         var trait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = metachaos.Identity.Id,
         };
 
@@ -287,14 +299,20 @@ public class CharacterServiceTests : TestBase
 
         var candlelightTrait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = candlelight.Identity.Id,
         };
         var metachaosTrait = new CharacterHeroicTrait
         {
-            PlayerId = chr.Identity.PlayerId,
-            CharacterId = chr.Identity.Id,
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = chr.Identity.Id,
+                PlayerId = chr.Identity.PlayerId,
+            },
             HeroicTraitId = metachaos.Identity.Id,
         };
         characterService.LearnHeroicTrait(candlelightTrait);

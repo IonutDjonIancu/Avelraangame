@@ -61,8 +61,7 @@ internal class CharacterCreateLogic
             LevelUp = new CharacterLevelUp(),
             Status = new CharacterStatus()
             {
-                HasAttributesLocked = false,
-                HasInventoryLocked = false,
+                IsLockedForModify = false,
                 IsInParty = false,
                 QuestId = string.Empty,
                 NrOfQuestsFinished = 0,

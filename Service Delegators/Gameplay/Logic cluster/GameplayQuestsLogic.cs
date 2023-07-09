@@ -28,7 +28,7 @@ internal class GameplayQuestsLogic
 
         var locationData = GameplayLore.MapLocations.All.Find(s => s.FullName == fullName)!;
 
-        var location = dbs.Snapshot.Map.Locations.Find(s => s.FullName == fullName);
+        var location = dbs.Snapshot.Locations.Find(s => s.FullName == fullName);
 
         if (location != null)
         {
@@ -40,7 +40,7 @@ internal class GameplayQuestsLogic
             }
             else
             {
-                dbs.Snapshot.Map.Locations.Remove(location!);
+                dbs.Snapshot.Locations.Remove(location!);
                 
                 location.LastTimeVisited = DateTime.Now;
 
@@ -67,8 +67,7 @@ internal class GameplayQuestsLogic
             };
         }
 
-        dbs.Snapshot.Map.Locations.Add(location);
-        dbs.PersistLocations();
+        dbs.Snapshot.Locations.Add(location);
 
         return location;
     }

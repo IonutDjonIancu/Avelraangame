@@ -46,12 +46,6 @@ public class MetadataService : IMetadataService
         return TraitsLore.All;
     }
 
-    public List<Party> GetParties()
-    {
-
-        return dbs.Snapshot.Parties;
-    }
-
     public List<string> GetAvelraanRegions()
     {
         throw new NotImplementedException();

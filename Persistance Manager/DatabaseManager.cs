@@ -33,7 +33,6 @@ public class DatabaseManager : IDatabaseManager
         {
             DbPath = $"{currentDir}{config.DbPath}",
             DbPlayersPath = $"{currentDir}{config.DbPlayersPath}",
-            DbMapPath = $"{currentDir}{config.DbMapPath}",
 
             LogPath = $"{currentDir}{config.LogPath}",
 
@@ -58,12 +57,6 @@ public class DatabaseManager : IDatabaseManager
 
             // TODO: to refactor, not really necessary
             CharacterStubs = avDatabase.CharacterStubs,
-
-            // TODO: to remove parties
-            Parties = avDatabase.Parties,
-
-            // no need to load the map from its lore class
-            Map = new Map(),
         };
     }
 

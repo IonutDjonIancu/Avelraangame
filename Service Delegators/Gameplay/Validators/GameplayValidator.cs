@@ -12,16 +12,4 @@ internal class GameplayValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
-    #region private methods
-    private void ValidateIfCharacterIsInAnotherParty(CharacterIdentity charIdentity)
-    {
-        var isCharInAnotherParty = snapshot.Parties
-            .SelectMany(p => p.Characters)
-            .Select(c => c.Id)
-            .Contains(charIdentity.Id);
-        if (isCharInAnotherParty) throw new Exception("Character is already in a party.");
-    }
-
-    
-    #endregion
 }

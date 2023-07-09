@@ -14,6 +14,13 @@ internal class ValidatorBase
         this.snapshot = snapshot;
     }
 
+    internal Character GetCharacter(CharacterIdentity characterIdentity)
+    {
+        var character = snapshot.Players.Find(p => p.Identity.Id == characterIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == characterIdentity.Id)! ?? throw new Exception("Character not found.");
+
+        return character;
+    }
+
     internal void ValidatePosition(Position position)
     {
         ValidateObject(position, "Position is null.");

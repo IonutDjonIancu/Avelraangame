@@ -35,7 +35,7 @@ internal class CharacterValidator : ValidatorBase
 
     internal void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait)
     {
-        ValidateCharacterPlayerCombination(new CharacterIdentity() { Id = trait.CharacterId, PlayerId = trait.PlayerId });
+        ValidateCharacterPlayerCombination(trait.CharacterIdentity);
         ValidateGuid(trait.HeroicTraitId);
         if (trait.Skill != null)
         {
@@ -43,7 +43,7 @@ internal class CharacterValidator : ValidatorBase
             if (!CharactersLore.Skills.All.Contains(trait.Skill)) throw new Exception("No such Skill was found with the indicated skill name.");
         }
 
-        var character = snapshot.Players.First(p => p.Identity.Id == trait.PlayerId).Characters.First(c => c.Identity.Id == trait.CharacterId);
+        var character = GetCharacter(trait.CharacterIdentity);
         var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
 
         if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) throw new Exception("Character does not have enough Deeds points to aquire said Heroic Trait.");
@@ -55,16 +55,15 @@ internal class CharacterValidator : ValidatorBase
     internal void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
     {
         ValidateObject(equip);
-        ValidateGuid(equip.CharacterId);
+        ValidateGuid(equip.CharacterIdentity.Id);
         ValidateGuid(equip.ItemId);
-        ValidateCharacterPlayerCombination(new CharacterIdentity() { Id = equip.CharacterId, PlayerId = equip.PlayerId });
+        ValidateCharacterPlayerCombination(equip.CharacterIdentity);
         ValidateString(equip.InventoryLocation);
         if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) throw new Exception("Equipment location does not fit any possible slot in inventory.");
 
         if (!toEquip) return;
 
-        var player = snapshot.Players.Find(s => s.Identity.Id == equip.PlayerId);
-        var character = player!.Characters.Find(s => s.Identity!.Id == equip.CharacterId);
+        var character = GetCharacter(equip.CharacterIdentity);
         var itemSubtype = (character!.Supplies!.Find(i => i.Identity.Id == equip.ItemId)?.Subtype) ?? throw new Exception("No such item found on this character.");
         bool isItemAtCorrectLocation;
 
@@ -166,13 +165,6 @@ internal class CharacterValidator : ValidatorBase
         if (!isItemAtCorrectLocation) throw new Exception("Item is being equipped at incorrect location.");
     }
 
-    internal void ValidatePartyOnJoin(string partyId)
-    {
-        ValidateGuid(partyId);
-
-        if (!snapshot.Parties.Exists(p => p.Identity.Id == partyId)) throw new Exception("This party does not exist.");
-    }
-
     internal void ValidateStatExists(string stat)
     {
         ValidateString(stat);
@@ -206,16 +198,16 @@ internal class CharacterValidator : ValidatorBase
         if (name.Length > 30) throw new Exception("Character name is too long, maximum of 30 letters allowed.");
     }
 
-    internal void ValidateIfPartyIsAdventuring(string characterId)
+    internal void ValidateIfCharacterIsLocked(CharacterIdentity charIdentity)
     {
-        var party = snapshot.Parties.Find(s => s.Characters.Select(s => s.Id).ToList().Contains(characterId));
+        var chr = GetCharacter(charIdentity);
 
-        if (party != null && party.IsAdventuring) throw new Exception("Cannot modify character during adventuring.");
+        if (chr.Status.IsLockedForModify) throw new Exception("Cannot modify character at this time.");
     }
 
-    internal void ValidateIfCharacterInParty(string characterId)
+    internal void ValidateIfCharacterInParty(CharacterIdentity charIdentity)
     {
-        var isCharInParty = snapshot.Parties.Exists(s => s.Characters.Select(s => s.Id).ToList().Contains(characterId));
+        var isCharInParty = GetCharacter(charIdentity).Status.IsInParty;
 
         if (isCharInParty) throw new Exception("Unable to modify character when in party.");
     }
