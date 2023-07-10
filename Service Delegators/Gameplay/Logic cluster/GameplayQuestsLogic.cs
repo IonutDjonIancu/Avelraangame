@@ -44,25 +44,23 @@ internal class GameplayQuestsLogic
                 
                 location.LastTimeVisited = DateTime.Now;
 
-                location.PossibleQuests = GetPossibleQuests(position, locationData.EffortLevel);
-                location.Market = GenerateMarketItems(location.EffortLevel);
-                location.Npcs = GenerateMercenaries(position, location.EffortLevel);
+                location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
+                location.Market = GenerateMarketItems(location.Effort);
+                location.Npcs = GenerateMercenaries(position, location.Effort);
             }
         }
         else
         {
             location = new Location()
             {
-                Name = locationData.Name,
                 FullName = locationData.FullName,
                 Description = locationData.Description,
                 Effort = locationData.Effort,
-                EffortLevel = locationData.EffortLevel,
-                TravelToCost = locationData.TravelToCost,
+                TravelCost = locationData.TravelCost,
                 LastTimeVisited = DateTime.Now,
-                PossibleQuests = GetPossibleQuests(position, locationData.EffortLevel),
-                Market = GenerateMarketItems(locationData.EffortLevel),
-                Npcs = GenerateMercenaries(position, locationData.EffortLevel)
+                PossibleQuests = GetPossibleQuests(position, locationData.Effort),
+                Market = GenerateMarketItems(locationData.Effort),
+                Npcs = GenerateMercenaries(position, locationData.Effort)
             };
         }
 

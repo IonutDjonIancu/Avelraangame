@@ -4,10 +4,6 @@ public class GameplayLore
 {
     public static class Npcs 
     {
-        public const int StatsDifferenceFactor  = 20;
-        public const int AssetsDifferenceFactor = 20;
-        public const int SkillsDifferenceFactor = 20;
-
         public static class Races
         {
             public const string Animal      = "Animal";
@@ -27,200 +23,90 @@ public class GameplayLore
 
     public static class Map
     {
-        public static class Dragonmaw // continent
+        public static class Dragonmaw
         {
-            public const string Name = "Dragonmaw";
-            public static class Farlindor // land
+            public const string DragonmawName = "Dragonmaw";
+
+            public static class Farlindor
             {
-                public const string Name = "Farlindor";
-                public static class Danar // kingdom
+                public const string FarlindorName = "Farlindor";
+
+                public static class Danar
                 {
-                    public const string Name = "Danar";
-                    public static class Locations // settlement
+                    public const string DanarName = "Danar";
+                    #region locations
+                    public const string AradaName = "Arada";
+                    public static readonly Location Arada = new()
                     {
-                        private const string AradaName = "Arada";
-                        public static readonly Location Arada = new()
+                        FullName = $"{DragonmawName}_{FarlindorName}_{DanarName}_{AradaName}", // Arada
+                        Position = new()
                         {
-                            Name = AradaName,
-                            FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{AradaName}",
-                            Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent serving army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
-                            Effort = Effort.Normal,
-                            EffortLevel = Effort.NormalRange,
-                            TravelToCost = 1
-                        };
-
-                        private const string LanwickName = "Lanwick Province";
-                        public static readonly Location Lanwick = new()
+                            Region = DragonmawName,
+                            Subregion = FarlindorName,
+                            Land = DanarName,
+                            Location = AradaName
+                        },
+                        Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent standing army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
+                        Effort = Effort.Normal,
+                        TravelCost = 1
+                    };
+                    public const string LanwickName = "Lanwick Province";
+                    public static readonly Location Lanwick = new()
+                    {
+                        FullName = $"{DragonmawName}_{FarlindorName}_{DanarName}_{LanwickName}", // Lanwick
+                        Position = new()
                         {
-                            Name = LanwickName,
-                            FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{LanwickName}",
-                            Description = "A rich province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
-                            Effort = Effort.Normal,
-                            EffortLevel = Effort.NormalRange,
-                            TravelToCost = 3
-                        };
-
-                        private const string BelfordshireName = "Belfordshire";
-                        public static readonly Location Belfordshire = new()
+                            Region = DragonmawName,
+                            Subregion = FarlindorName,
+                            Land = DanarName,
+                            Location = LanwickName
+                        },
+                        Description = "A rich province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
+                        Effort = Effort.Normal,
+                        TravelCost = 3
+                    };
+                    public const string BelfordshireName = "Belfordshire";
+                    public static readonly Location Belfordshire = new()
+                    {
+                        FullName = $"{DragonmawName}_{FarlindorName}_{DanarName}_{BelfordshireName}", // Belfordshire
+                        Position = new()
                         {
-                            Name = BelfordshireName,
-                            FullName = $"{Dragonmaw.Name}_{Farlindor.Name}_{Danar.Name}_{BelfordshireName}",
-                            Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
-                            Effort = Effort.Gifted,
-                            EffortLevel = Effort.GiftedRange,
-                            TravelToCost = 4
-                        };
-                    }
+                            Region = DragonmawName,
+                            Subregion = FarlindorName,
+                            Land = DanarName,
+                            Location = BelfordshireName
+                        },
+                        Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
+                        Effort = Effort.Gifted,
+                        TravelCost = 4
+                    };
+                    #endregion
                     public static readonly int[,] Distances = {
                         { 1, 2, 4 },
                         { 2, 1, 2 },
                         { 5, 2, 1 }
                     };
-
-                    // ... add more
                 }
             }
         }
 
         public static readonly List<Location> All = new()
         {
-            Dragonmaw.Farlindor.Danar.Locations.Arada,
-            Dragonmaw.Farlindor.Danar.Locations.Lanwick,
-            Dragonmaw.Farlindor.Danar.Locations.Belfordshire
+            Dragonmaw.Farlindor.Danar.Arada,
+            Dragonmaw.Farlindor.Danar.Lanwick,
+            Dragonmaw.Farlindor.Danar.Belfordshire
         };
     }
 
     public static class Effort
     {
-        public const string Normal = "Normal";
-        public const string Gifted = "Gifted";
-        public const string Chosen = "Chosen";
-        public const string Hero = "Hero";
-        public const string Olympian = "Olympian";
-        public const string Planar = "Planar";
-
-        public static readonly List<string> All = new()
-            {
-                Normal, Gifted, Chosen, Hero, Olympian, Planar
-            };
-
-        public const int NormalRange = 50;
-        public const int GiftedRange = 100;
-        public const int ChosenRange = 200;
-        public const int HeroRange = 500;
-        public const int OlympianRange = 1000;
-        public const int PlanarRange = 9000;
+        public const int Normal = 50; 
+        public const int Gifted = 100; 
+        public const int Chosen = 200;
+        public const int Hero = 500;
+        public const int Olympian = 1000; 
+        public const int Planar = 9000;
     }
-
-
-    public static int GetDistance(int travelFromCost, int travelToCost)
-    {
-        var value = travelFromCost - travelToCost;
-
-        return 1 + value <= 0 ? value * (-1) : value;
-    }
-
-
-
-    //public static class Regions
-    //{
-    //    public static class WestDragonmaw
-    //    {
-    //        public const string Nordheim = "Nordheim";
-    //        public const string Midheim = "Midheim";
-    //        public const string Soudheim = "Soudheim";
-    //    }
-
-    //    public static class EastDragonmaw
-    //    {
-    //        public const string VargasStand = "Varga's Stand";
-    //        public const string Longshore = "Longshore";
-    //        public const string Farlindor = "Farlindor";
-    //        public const string PelRavan = "Pel'ravan";
-    //    }
-
-    //    public static class Hyperborea
-    //    {
-    //        public const string FrozenWastes = "FrozenWastes";
-    //        public const string Brimland = "Brimland";
-    //        public const string Ryxos = "Ryxos";
-    //    }
-
-    //    public static class ThreeSeas
-    //    {
-    //        public const string Endar = "Endar";
-    //        public const string TwinVines = "Twin Vines";
-    //        public const string Stormbork = "Stormbork";
-    //        public const string Calvinia = "Calvinia";
-    //    }
-
-    //    public static class Eversun
-    //    {
-    //        public const string AjJahra = "Aj Jahra";
-    //        public const string ShiftingPlanes = "Shifting Planes";
-    //        public const string Peradin = "Peradin";
-    //    }
-
-    //    public static readonly List<string> AllNorthern = new()
-    //    {
-    //        Hyperborea.FrozenWastes,
-    //        Hyperborea.Brimland,
-    //        Hyperborea.Ryxos
-    //    };
-
-    //    public static readonly List<string> AllWestern = new()
-    //    {
-    //        WestDragonmaw.Nordheim,
-    //        WestDragonmaw.Midheim,
-    //        WestDragonmaw.Soudheim,
-
-    //        EastDragonmaw.VargasStand,
-    //        EastDragonmaw.Longshore,
-    //        EastDragonmaw.Farlindor,
-    //        EastDragonmaw.PelRavan,
-
-    //        Eversun.Peradin
-    //    };
-
-    //    public static readonly List<string> AllEastern = new()
-    //    {
-    //        ThreeSeas.Endar,
-    //        ThreeSeas.TwinVines,
-    //        ThreeSeas.Stormbork,
-    //        ThreeSeas.Calvinia
-    //    };
-
-    //    public static readonly List<string> AllSouthern = new()
-    //    {
-    //        Eversun.AjJahra,
-    //        Eversun.ShiftingPlanes
-    //    };
-
-    //    public static readonly List<string> All = new()
-    //    {
-    //        WestDragonmaw.Nordheim,
-    //        WestDragonmaw.Midheim,
-    //        WestDragonmaw.Soudheim,
-
-    //        EastDragonmaw.VargasStand,
-    //        EastDragonmaw.Longshore,
-    //        EastDragonmaw.Farlindor,
-    //        EastDragonmaw.PelRavan,
-
-    //        Hyperborea.FrozenWastes,
-    //        Hyperborea.Brimland,
-    //        Hyperborea.Ryxos,
-
-    //        ThreeSeas.Endar,
-    //        ThreeSeas.TwinVines,
-    //        ThreeSeas.Stormbork,
-    //        ThreeSeas.Calvinia,
-
-    //        Eversun.AjJahra,
-    //        Eversun.ShiftingPlanes,
-    //        Eversun.Peradin
-    //    };
-    //}
 
     public static class Tradition
     {
@@ -238,10 +124,10 @@ public class GameplayLore
             $"The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. A couple of gold crowns are placed on a piece of " +
             $"linnen cloth in front of you to illustrate your payment. After a long silence, you nod in agreement, the man rolls the paper into a salted hollow leather cylinder and hands it to you.",
             IsRepeatable = true,
-            EffortRequired = Effort.NormalRange,
+            EffortRequired = Effort.Normal,
             AvailableAt = new List<string>
             {
-                Map.Dragonmaw.Farlindor.Danar.Name,
+                Map.Dragonmaw.Farlindor.Danar.DanarName,
             },
             Reward = new QuestReward
             {
@@ -262,10 +148,10 @@ public class GameplayLore
             $"hated creatures from Pel'Ravan mountains raid the lowlands. Therefore, the marshals have been giving rewards for all sellswords that can bring goblin heads to the gutters. " +
             $"You are to find the camp, and remove it by any means necessary. This is easier said than done since goblins are known to be deceitful and shifty creatures.",
             IsRepeatable = true,
-            EffortRequired = Effort.NormalRange,
+            EffortRequired = Effort.Normal,
             AvailableAt = new List<string>
             {
-                Map.Dragonmaw.Farlindor.Danar.Name,
+                Map.Dragonmaw.Farlindor.Danar.DanarName,
             },
             Reward = new QuestReward
             {
@@ -287,10 +173,10 @@ public class GameplayLore
             $"The man that brought this up to your attention, a member of the local clergy, asks for your discression, telling you that if you get caught there won't be anybody sent after you, and that the lord that hired you " +
             $"will, as is customary, deny any involvement in the matter. If you fail you'll probably be publicly quartered and your head will end up on a pike at the entrance to a castle.",
             IsRepeatable = false,
-            EffortRequired = Effort.GiftedRange,
+            EffortRequired = Effort.Gifted,
             AvailableAt = new List<string>
             {
-                Map.Dragonmaw.Farlindor.Danar.Name,
+                Map.Dragonmaw.Farlindor.Danar.DanarName,
             },
             Reward = new QuestReward
             {

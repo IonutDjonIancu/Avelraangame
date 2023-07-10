@@ -8,4 +8,11 @@ internal static class Utils
     {
         return $"{position.Region}_{position.Subregion}_{position.Land}_{position.Location}";
     }
+
+    internal static Character GetPlayerCharacter(IDatabaseService dbs, CharacterIdentity identity)
+    {
+        return dbs.Snapshot.Players.Find(s => s.Identity.Id == identity.PlayerId)!.Characters.Find(s => s.Identity.Id == identity.Id)!;
+    }
+
+
 }

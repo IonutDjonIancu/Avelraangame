@@ -64,32 +64,32 @@ internal class NpcAttributesLogic
     {
         var animalsFoundIn = new List<string>
         {
-            GameplayLore.Map.Dragonmaw.Farlindor.Name,
+            GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
         };
 
         var monstersFoundIn = new List<string>
         {
-             GameplayLore.Map.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
         };
 
         var humanoidsFoundIn = new List<string>
         {
-             GameplayLore.Map.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
         };
 
         var undeadsFoundIn = new List<string>
         {
-             GameplayLore.Map.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
         };
 
         var fiendsFoundIn = new List<string>
         {
-             GameplayLore.Map.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
         };
 
         var elementalFoundIn = new List<string>
         {
-             GameplayLore.Map.Dragonmaw.Farlindor.Name,
+             GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
         };
 
         List<string> possibleRaces = new();
@@ -143,7 +143,7 @@ internal class NpcAttributesLogic
     private CharacterSkills CalculateNpcSkills(NpcInfo npcInfo)
     {
         var skills = new CharacterSkills();
-        var skillsFactor = GameplayLore.Npcs.SkillsDifferenceFactor;
+        var skillsFactor = 0; //TODO: to remove
 
         var comMin = npcInfo.SkillsMin.Combat - skillsFactor < 0 ? 10 : npcInfo.SkillsMin.Combat - skillsFactor;
         var comMax = npcInfo.SkillsMax.Combat + skillsFactor;
@@ -191,7 +191,7 @@ internal class NpcAttributesLogic
     private CharacterAssets CalculateNpcAssets(NpcInfo npcInfo)
     {
         var assets = new CharacterAssets();
-        var assetsFactor = GameplayLore.Npcs.AssetsDifferenceFactor;
+        var assetsFactor = 0; //TODO: to remove
 
         var resMin = npcInfo.AssetsMin.Resolve - assetsFactor < 0 ? 5 : npcInfo.AssetsMin.Resolve - assetsFactor;
         var resMax = npcInfo.AssetsMax.Resolve + assetsFactor;
@@ -223,7 +223,7 @@ internal class NpcAttributesLogic
     private CharacterStats CalculateNpcStats(NpcInfo npcInfo)
     {
         var stats = new CharacterStats();
-        var statsFactor = GameplayLore.Npcs.StatsDifferenceFactor;
+        var statsFactor = 0; //TODO: to remove
 
         var strMin = npcInfo.StatsMin.Strength - statsFactor < 0 ? 10 : npcInfo.StatsMin.Strength - statsFactor;
         var strMax = npcInfo.StatsMax.Strength + statsFactor;
