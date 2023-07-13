@@ -21,6 +21,12 @@ internal class ValidatorBase
         return character;
     }
 
+    internal void ValidateTradition(string tradition)
+    {
+        ValidateString(tradition);
+        if (!GameplayLore.Tradition.All.Contains(tradition)) throw new Exception("Unrecognized tradition.");
+    }
+
     internal void ValidatePosition(Position position)
     {
         ValidateObject(position, "Position is null.");

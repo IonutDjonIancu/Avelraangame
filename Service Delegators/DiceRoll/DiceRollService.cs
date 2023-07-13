@@ -1,62 +1,47 @@
-﻿using Data_Mapping_Containers.Dtos;
-
-namespace Service_Delegators;
+﻿namespace Service_Delegators;
 
 public class DiceRollService : IDiceRollService
 {
+    private readonly DiceRollValidator validator;
     private readonly DiceRollLogicDelegator logic;
 
-    public DiceRollService()
+    public DiceRollService(IDatabaseService databaseService)
     {
+        validator = new DiceRollValidator(databaseService.Snapshot);
         logic = new DiceRollLogicDelegator();
     }
 
-    public bool FlipCoin()
+    public int Roll_20_noReroll()
     {
-        return logic.FlipCoin();
+        return logic.Roll20noReroll();
     }
-
-    public int Roll_d20(bool hasReroll = false)
+    public int Roll_20_withReroll()
     {
-        if (hasReroll)
-        {
-            return logic.Roll1d20WithReroll();
-        }
-        else
-        {
-            return logic.Roll1d20NoReroll();
-        }
+        return logic.Roll20withReroll();
     }
-
-    public int Roll_d100(bool hasReroll = false)
+    public int Roll_100_noReroll()
     {
-        if (hasReroll)
-        {
-            return logic.Roll1d100WithReroll();
-        }
-        else
-        {
-            return logic.Roll1d100NoReroll();
-        }
+        return logic.Roll100noReroll();
     }
-
-    public int Roll_1dX(int x)
+    public int Roll_100_withReroll()
     {
-        return logic.Roll1dXnoReroll(x);
+        return logic.Roll100withReroll();
     }
-
-    public int Roll_XdY(int x, int y)
+    public (int grade, int crits) Roll_gameplay_dice(string tradition, int skill)
     {
-        return logic.RollXdYnoReroll(x, y);
+        validator.ValidateTradition(tradition);
+        return logic.RollGameplayDice(tradition, skill);
     }
-
-    public DiceRoll Roll_d20_Common(int bonus = 0)
+    public bool Roll_par_impar()
     {
-        return logic.GenerateRollFor(CharactersLore.Tradition.Common, bonus);
+        return logic.RollParImpar();
     }
-
-    public DiceRoll Roll_d20_Martial(int bonus = 0)
+    public int Roll_1_to_n(int upperLimit)
     {
-        return logic.GenerateRollFor(CharactersLore.Tradition.Martial, bonus);
+        return logic.Roll1ToN(upperLimit);
+    }
+    public int Roll_n_to_n(int lowerLimit, int upperLimit)
+    {
+        return logic.RollNToN(lowerLimit, upperLimit);
     }
 }

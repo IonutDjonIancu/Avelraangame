@@ -205,11 +205,13 @@ internal class CharacterValidator : ValidatorBase
         if (chr.Status.IsLockedForModify) throw new Exception("Cannot modify character at this time.");
     }
 
-    internal void ValidateIfCharacterInParty(CharacterIdentity charIdentity)
+    internal void ValidateIfCharacterInGameplay(CharacterIdentity charIdentity)
     {
-        var isCharInParty = GetCharacter(charIdentity).Status.IsInParty;
+        var character = GetCharacter(charIdentity);
 
-        if (isCharInParty) throw new Exception("Unable to modify character when in party.");
+        if (character.Status.IsInQuest 
+            || character.Status.IsInArena
+            || character.Status.IsInStory) throw new Exception("Unable to modify character during gameplay.");
     }
 
     #region private methods
@@ -235,12 +237,6 @@ internal class CharacterValidator : ValidatorBase
     {
         ValidateString(classes, "Invalid class string.");
         if (!CharactersLore.Classes.All.Contains(classes)) throw new Exception($"Class {classes} not found.");
-    }
-
-    private void ValidateTradition(string tradition)
-    {
-        ValidateString(tradition, "Invalid tradition string.");
-        if (!CharactersLore.Tradition.All.Contains(tradition)) throw new Exception($"Tradition {tradition} not found..");
     }
 
     private void ValidateCulture(string culture)

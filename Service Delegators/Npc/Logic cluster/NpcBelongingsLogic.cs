@@ -69,7 +69,7 @@ internal class NpcBelongingsLogic
 
     private Item GetAWeapon()
     {
-        var index = dice.Roll_XdY(0, ItemsLore.Subtypes.Weapons.All.Count - 1);
+        var index = dice.Roll_n_to_n(0, ItemsLore.Subtypes.Weapons.All.Count - 1);
         var itemSubtype = ItemsLore.Subtypes.Weapons.All[index];
 
         return itemsService.GenerateSpecificItem("Weapon", itemSubtype);
@@ -77,7 +77,7 @@ internal class NpcBelongingsLogic
     
     private bool HasItem()
     {
-        return dice.FlipCoin();
+        return dice.Roll_par_impar();
     }
     #endregion
 }

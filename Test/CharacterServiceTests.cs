@@ -73,7 +73,7 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
-        character.Status.IsInParty.Should().BeFalse();
+        character.Status.IsInQuest.Should().BeFalse();
 
         //GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
         throw new NotImplementedException();

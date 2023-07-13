@@ -48,7 +48,7 @@ public class GameplayLore
                         },
                         Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent standing army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
                         Effort = Effort.Normal,
-                        TravelCost = 1
+                        TravelCostFromArada = 1
                     };
                     public const string LanwickName = "Lanwick Province";
                     public static readonly Location Lanwick = new()
@@ -61,9 +61,9 @@ public class GameplayLore
                             Land = DanarName,
                             Location = LanwickName
                         },
-                        Description = "A rich province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
+                        Description = "A wealthy province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
                         Effort = Effort.Normal,
-                        TravelCost = 3
+                        TravelCostFromArada = 3
                     };
                     public const string BelfordshireName = "Belfordshire";
                     public static readonly Location Belfordshire = new()
@@ -78,14 +78,9 @@ public class GameplayLore
                         },
                         Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
                         Effort = Effort.Gifted,
-                        TravelCost = 4
+                        TravelCostFromArada = 4
                     };
                     #endregion
-                    public static readonly int[,] Distances = {
-                        { 1, 2, 4 },
-                        { 2, 1, 2 },
-                        { 5, 2, 1 }
-                    };
                 }
             }
         }
@@ -112,6 +107,11 @@ public class GameplayLore
     {
         public const string Martial = CharactersLore.Tradition.Martial;
         public const string Common = CharactersLore.Tradition.Common;
+
+        public static readonly List<string> All = new()
+        {
+            Martial, Common
+        };
     }
 
     public static class Quests
@@ -119,7 +119,7 @@ public class GameplayLore
         public static readonly QuestDetails Patrol = new()
         {
             Name = "Patrol",
-            ShortDescription = $"Mudpaddler and spears",
+            ShortDescription = $"Mudpaddlers and spears",
             Description = $"An ordinary job for any sellsword in these lands. It doesn't shine, but it pays well. You are being handed a hand-drawn map on a rigid cyperus paper, probably of eastern origin. " +
             $"The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. A couple of gold crowns are placed on a piece of " +
             $"linnen cloth in front of you to illustrate your payment. After a long silence, you nod in agreement, the man rolls the paper into a salted hollow leather cylinder and hands it to you.",

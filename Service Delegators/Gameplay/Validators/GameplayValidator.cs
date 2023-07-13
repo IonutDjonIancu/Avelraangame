@@ -17,12 +17,13 @@ internal class GameplayValidator : ValidatorBase
         ValidateCharacterPlayerCombination(positionTravel.CharacterIdentity);
         var character = GetCharacter(positionTravel.CharacterIdentity);
 
-        if (!string.IsNullOrEmpty(character.Status.QuestId)) throw new Exception("Unable to travel during quest.");
+        if (character.Status.IsInQuest) throw new Exception("Unable to travel during quest.");
+        if (character.Status.IsInArena) throw new Exception("Unable to travel during arena.");
+        if (character.Status.IsInQuest) throw new Exception("Unable to travel during quest.");
         if (!character.Info.IsAlive) throw new Exception("Unable to travel, your character is dead.");
 
         var totalProvisions = character.Inventory.Provisions
-            + character.Henchmen.Select(s => s.Inventory.Provisions).Sum()
-            + character.PartyMembers.Select(s => s.Inventory.Provisions).Sum();
+            + character.Henchmen.Select(s => s.Inventory.Provisions).Sum();
 
         if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
 

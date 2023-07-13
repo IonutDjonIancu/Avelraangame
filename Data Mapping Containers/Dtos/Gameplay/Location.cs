@@ -8,7 +8,7 @@ public class Location
 
     public string Description { get; set; }
     public int Effort { get; set; }
-    public int TravelCost { get; set; }
+    public int TravelCostFromArada { get; set; }
 
     // dynamically generated at player visit on get
     public DateTime LastTimeVisited { get; set; }

@@ -56,7 +56,7 @@ internal class GameplayQuestsLogic
                 FullName = locationData.FullName,
                 Description = locationData.Description,
                 Effort = locationData.Effort,
-                TravelCost = locationData.TravelCost,
+                TravelCostFromArada = locationData.TravelCostFromArada,
                 LastTimeVisited = DateTime.Now,
                 PossibleQuests = GetPossibleQuests(position, locationData.Effort),
                 Market = GenerateMarketItems(locationData.Effort),
@@ -78,7 +78,7 @@ internal class GameplayQuestsLogic
     private List<Item> GenerateMarketItems(int effortUpper)
     {
         var items = new List<Item>();
-        var nrOfItems = diceService.Roll_1dX(effortUpper / 2);
+        var nrOfItems = diceService.Roll_1_to_n(effortUpper / 2);
 
         for (int i = 0; i < nrOfItems; i++)
         {
@@ -91,7 +91,7 @@ internal class GameplayQuestsLogic
     private List<NpcCharacter> GenerateMercenaries(Position position, int effortUpper)
     {
         var mercs = new List<NpcCharacter>();
-        var rollForMercs = diceService.Roll_1dX(effortUpper / 10);
+        var rollForMercs = diceService.Roll_1_to_n(effortUpper / 10);
         var nrOfMercs = rollForMercs < 1 ? 1 : rollForMercs;
 
         for (int i = 0; i < nrOfMercs; i++)

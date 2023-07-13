@@ -63,10 +63,15 @@ internal class NpcLogicDelegator
         chr.Status = new CharacterStatus()
         {
             IsLockedForModify = false,
-            IsInParty = false,
+
+            IsInQuest = false,
             QuestId = string.Empty,
-            NrOfQuestsFinished = 0,
-            QuestsFinished = new List<string>()
+
+            IsInArena = false,
+            ArenaId = string.Empty,
+
+            IsInStory = false,
+            StoryId = string.Empty,
         };
 
         chr.Position = position;
@@ -84,12 +89,12 @@ internal class NpcLogicDelegator
     {
         var inventory = new CharacterInventory();
 
-        if (dice.FlipCoin()) inventory.Head = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
-        if (dice.FlipCoin()) inventory.Body = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
-        if (dice.FlipCoin()) inventory.Shield = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
-        if (dice.FlipCoin()) inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+        if (dice.Roll_par_impar()) inventory.Head = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
+        if (dice.Roll_par_impar()) inventory.Body = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
+        if (dice.Roll_par_impar()) inventory.Shield = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+        if (dice.Roll_par_impar()) inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
 
-        if (dice.FlipCoin()) 
+        if (dice.Roll_par_impar()) 
         { 
             inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
         }
@@ -104,7 +109,7 @@ internal class NpcLogicDelegator
         }
         else
         {
-            if (dice.FlipCoin()) inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
+            if (dice.Roll_par_impar()) inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
         }
 
         if (entityLevel >= 2)
@@ -113,7 +118,7 @@ internal class NpcLogicDelegator
 
             for (int i = 0; i < rollHeraldry; i++)
             {
-                if (dice.FlipCoin()) inventory.Heraldry!.Add(items.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
+                if (dice.Roll_par_impar()) inventory.Heraldry!.Add(items.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
             }
         }
 
@@ -225,7 +230,7 @@ internal class NpcLogicDelegator
 
     private int SetEntityLevel()
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
 
         return roll switch
         {
@@ -281,7 +286,7 @@ internal class NpcLogicDelegator
 
     private int Randomize(int max)
     {
-        return dice.Roll_1dX(max);
+        return dice.Roll_1_to_n(max);
     }
 }
 

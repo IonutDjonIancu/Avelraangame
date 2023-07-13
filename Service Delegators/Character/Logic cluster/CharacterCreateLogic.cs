@@ -62,10 +62,12 @@ internal class CharacterCreateLogic
             Status = new CharacterStatus()
             {
                 IsLockedForModify = false,
-                IsInParty = false,
+                IsInQuest = false,
                 QuestId = string.Empty,
-                NrOfQuestsFinished = 0,
-                QuestsFinished = new List<string>()
+                IsInArena = false,
+                ArenaId = string.Empty,
+                IsInStory = false,
+                StoryId = string.Empty,
             },
 
             Sheet = sheetLogic.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
@@ -115,7 +117,7 @@ internal class CharacterCreateLogic
     #region private methods
     private int RandomizeEntityLevel()
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
 
         if      (roll >= 100)   return 6;
         else if (roll >= 80)    return 5;
@@ -127,19 +129,19 @@ internal class CharacterCreateLogic
 
     private int RandomizeStatPoints(int entityLevel)
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
         return roll * entityLevel;
     }
 
     private int RandomizeSkillPoints(int entityLevel)
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
         return roll * entityLevel;
     }
 
     private List<Item> SetSupplies()
     {
-        var roll = dice.Roll_1dX(6);
+        var roll = dice.Roll_1_to_n(6);
         var supplies = new List<Item>();
 
         for (int i = 0; i < roll; i++)
@@ -158,11 +160,11 @@ internal class CharacterCreateLogic
 
     private int SetWealth()
     {
-        var rollTimes = dice.Roll_1dX(6);
+        var rollTimes = dice.Roll_1_to_n(6);
         var total = 10;
         for (int i = 0; i < rollTimes; i++)
         {
-            total += dice.Roll_1dX(100);
+            total += dice.Roll_1_to_n(100);
         }
 
         return total;
@@ -188,6 +190,11 @@ internal class CharacterCreateLogic
 
             Fame = SetFame(origins.Culture, origins.Class),
             IsAlive = true,
+            IsNpc = false,
+
+            Wealth = 0,
+            NrOfQuestsFinished = 0,
+            QuestsFinished = new List<string>()
         };
     }
     #endregion

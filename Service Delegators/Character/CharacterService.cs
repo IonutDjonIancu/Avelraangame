@@ -80,7 +80,7 @@ public class CharacterService : ICharacterService
     public void DeleteCharacter(CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterInParty(identity);
+        validator.ValidateIfCharacterInGameplay(identity);
         logic.DeleteChar(identity);
     }
 
