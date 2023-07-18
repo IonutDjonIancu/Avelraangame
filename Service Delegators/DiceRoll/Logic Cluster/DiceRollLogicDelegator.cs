@@ -80,7 +80,8 @@ internal class DiceRollLogicDelegator
     {
         int diceRoll = Roll20withReroll();
         var grade = 1 + diceRoll / 4;
-        var crits = diceRoll / 5;
+        var crit = grade / 5 - 1;
+        var crits = crit > 0 ? crit : 0;
         var grades = grade * skill / 100;
 
         return (grades, crits);
@@ -90,7 +91,8 @@ internal class DiceRollLogicDelegator
     {
         int diceRoll = Roll100withReroll();
         var grade = 1 + diceRoll / 20;
-        var crits = diceRoll / 5;
+        var crit = grade / 5 - 1;
+        var crits = crit > 0 ? crit : 0;
         var grades = grade * skill / 100;
 
         return (grades, crits);

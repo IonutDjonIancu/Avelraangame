@@ -12,6 +12,27 @@ internal class CharacterValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
+    internal void ValidateBeforeTravel(PositionTravel positionTravel)
+    {
+        ValidateCharacterPlayerCombination(positionTravel.CharacterIdentity);
+        ValidateIfCharacterIsLocked(positionTravel.CharacterIdentity);
+        
+        var character = GetCharacter(positionTravel.CharacterIdentity);
+
+        if (!character.Info.IsAlive) throw new Exception("Unable to travel, your character is dead.");
+
+        if (character.Inventory.Provisions <= 0) throw new Exception("You don't have any provisions to travel.");
+        if (character.Henchmen.Select(s => s.Inventory.Provisions).Any(s => s <= 0)) throw new Exception("One or more of your henchmen does not have enough provisions to travel.");
+
+        var totalProvisions = character.Inventory.Provisions
+            + character.Henchmen.Select(s => s.Inventory.Provisions).Sum();
+
+        if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
+
+        var destinationFullName = Utils.GetLocationFullName(positionTravel.Destination);
+        if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(destinationFullName)) throw new Exception("No such destination is known.");
+    }
+
     internal void ValidateMaxNumberOfCharacters(string playerId)
     {
         var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters!.Count;
@@ -36,6 +57,7 @@ internal class CharacterValidator : ValidatorBase
     internal void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait)
     {
         ValidateCharacterPlayerCombination(trait.CharacterIdentity);
+        ValidateIfCharacterIsLocked(trait.CharacterIdentity);
         ValidateGuid(trait.HeroicTraitId);
         if (trait.Skill != null)
         {
@@ -58,6 +80,7 @@ internal class CharacterValidator : ValidatorBase
         ValidateGuid(equip.CharacterIdentity.Id);
         ValidateGuid(equip.ItemId);
         ValidateCharacterPlayerCombination(equip.CharacterIdentity);
+        ValidateIfCharacterIsLocked(equip.CharacterIdentity);
         ValidateString(equip.InventoryLocation);
         if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) throw new Exception("Equipment location does not fit any possible slot in inventory.");
 
@@ -202,16 +225,21 @@ internal class CharacterValidator : ValidatorBase
     {
         var chr = GetCharacter(charIdentity);
 
-        if (chr.Status.IsLockedForModify) throw new Exception("Cannot modify character at this time.");
-    }
+        var reason = "";
+        if (!string.IsNullOrEmpty(chr.Status.QuestId))
+        {
+            reason = "a quest";
+        }
+        else if (!string.IsNullOrEmpty(chr.Status.ArenaId))
+        {
+            reason = "the arena";
+        }
+        else if (!string.IsNullOrEmpty(chr.Status.StoryId))
+        {
+            reason = "a story event";
+        }
 
-    internal void ValidateIfCharacterInGameplay(CharacterIdentity charIdentity)
-    {
-        var character = GetCharacter(charIdentity);
-
-        if (character.Status.IsInQuest 
-            || character.Status.IsInArena
-            || character.Status.IsInStory) throw new Exception("Unable to modify character during gameplay.");
+        if (chr.Status.IsLockedForModify) throw new Exception($"Unable to modify character at this time, character is in {reason}.");
     }
 
     #region private methods

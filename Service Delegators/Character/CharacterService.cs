@@ -79,8 +79,7 @@ public class CharacterService : ICharacterService
 
     public void DeleteCharacter(CharacterIdentity identity)
     {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterInGameplay(identity);
+        validator.ValidateIfCharacterIsLocked(identity);
         logic.DeleteChar(identity);
     }
 
@@ -98,14 +97,12 @@ public class CharacterService : ICharacterService
     public Character EquipCharacterItem(CharacterEquip equip)
     {
         validator.ValidateCharacterEquipUnequipItem(equip, true);
-        validator.ValidateIfCharacterIsLocked(equip.CharacterIdentity);
         return logic.EquipItem(equip);
     }
 
     public Character UnequipCharacterItem(CharacterEquip unequip)
     {
         validator.ValidateCharacterEquipUnequipItem(unequip, false);
-        validator.ValidateIfCharacterIsLocked(unequip.CharacterIdentity);
         return logic.UnequipItem(unequip);
     }
 
@@ -123,7 +120,12 @@ public class CharacterService : ICharacterService
     public Character LearnHeroicTrait(CharacterHeroicTrait trait)
     {
         validator.ValidateCharacterLearnHeroicTrait(trait);
-        validator.ValidateIfCharacterIsLocked(trait.CharacterIdentity);
         return logic.ApplyHeroicTrait(trait);
+    }
+
+    public void TravelToLocation(PositionTravel positionTravel)
+    {
+        validator.ValidateBeforeTravel(positionTravel);
+        logic.MoveToLocation(positionTravel);
     }
 }

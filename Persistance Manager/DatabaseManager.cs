@@ -52,11 +52,12 @@ public class DatabaseManager : IDatabaseManager
             Admins = admins,
             Banned = banned,
 
+            CharacterStubs = avDatabase.CharacterStubs,
+
             // player files will be loaded to make sure we have the admins
             Players = ReadPlayerFiles(info.DbPlayersPath),
 
-            // TODO: to refactor, not really necessary
-            CharacterStubs = avDatabase.CharacterStubs,
+            Locations = new List<Location>()
         };
     }
 

@@ -22,12 +22,4 @@ public class GameplayService : IGameplayService
         validator.ValidatePosition(position);
         return logic.GenerateLocation(position);
     }
-
-    public void TravelToLocation(PositionTravel positionTravel)
-    {
-        validator.ValidateBeforeTravel(positionTravel);
-
-        logic.MoveToLocation(positionTravel);
-    }
-
 }

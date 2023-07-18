@@ -5,7 +5,6 @@ namespace Service_Delegators;
 internal class GameplayLogicDelegator
 {
     private readonly GameplayQuestsLogic questLogic;
-    private readonly GameplayTravelLogic travelLogic;
 
     private GameplayLogicDelegator() { }
     internal GameplayLogicDelegator(
@@ -15,16 +14,10 @@ internal class GameplayLogicDelegator
         INpcService npcService)
     {
         questLogic = new GameplayQuestsLogic(databaseService, diceRollService, itemService, npcService);
-        travelLogic = new GameplayTravelLogic(databaseService, diceRollService);
     }
 
     internal Location GenerateLocation(Position position)
     {
         return questLogic.GenerateLocation(position);
-    }
-
-    internal void MoveToLocation(PositionTravel positionTravel)
-    {
-        travelLogic.MoveToLocation(positionTravel);
     }
 }

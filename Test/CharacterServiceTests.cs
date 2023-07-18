@@ -1,4 +1,6 @@
-﻿namespace Tests;
+﻿using Xunit;
+
+namespace Tests;
 
 public class CharacterServiceTests : TestBase
 {
@@ -73,7 +75,7 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
-        character.Status.IsInQuest.Should().BeFalse();
+        character.Status.IsLockedForModify.Should().BeFalse();
 
         //GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
         throw new NotImplementedException();

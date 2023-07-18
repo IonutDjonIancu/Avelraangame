@@ -5,6 +5,4 @@ namespace Service_Delegators;
 public interface IGameplayService
 {
     Location GetLocation(Position position);
-
-    void TravelToLocation(PositionTravel positionTravel);
 }

@@ -62,11 +62,8 @@ internal class CharacterCreateLogic
             Status = new CharacterStatus()
             {
                 IsLockedForModify = false,
-                IsInQuest = false,
                 QuestId = string.Empty,
-                IsInArena = false,
                 ArenaId = string.Empty,
-                IsInStory = false,
                 StoryId = string.Empty,
             },
 
