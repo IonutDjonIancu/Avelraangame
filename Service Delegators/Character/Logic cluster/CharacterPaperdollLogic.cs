@@ -18,10 +18,77 @@ internal class CharacterPaperdollLogic
     {
         var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
 
-        return CalculatePaperdoll(character);
+        return CalculateCharPaperdoll(character);
     }
 
-    internal CharacterPaperdoll CalculatePaperdoll(Character character)
+    internal CharacterPaperdoll CalculateCharPaperdoll(Character character)
+    {
+        return CalculatePaperdoll(GetBaseFromCharacter(character));
+    }
+
+    internal CharacterPaperdoll CalculateNpcPaperdoll(NpcCharacter npc)
+    {
+        return CalculatePaperdoll(GetBaseFromNpc(npc));
+    }
+
+    internal void LevelUpChar(int crits, Character character)
+    {
+        LevelUpByCrits(crits, GetBaseFromCharacter(character));
+    }
+
+    internal void LevelUpNpc(int crits, NpcCharacter npc)
+    {
+        LevelUpByCrits(crits, GetBaseFromNpc(npc));
+    }
+
+    #region private methods
+    private CharacterBase GetBaseFromCharacter(Character character)
+    {
+        var characterBase = new CharacterBase
+        {
+            Identity = character.Identity,
+            Info = character.Info,
+            Status = character.Status,
+            Position = character.Position,
+            LevelUp = character.LevelUp,
+            Sheet = character.Sheet,
+            Inventory = character.Inventory,
+            Supplies = character.Supplies,
+            HeroicTraits = character.HeroicTraits
+        };
+
+        return characterBase;
+    }
+
+    private CharacterBase GetBaseFromNpc(NpcCharacter npc)
+    {
+        var characterBase = new CharacterBase
+        {
+            Identity = npc.Identity,
+            Info = npc.Info,
+            Status = npc.Status,
+            Position = npc.Position,
+            LevelUp = npc.LevelUp,
+            Sheet = npc.Sheet,
+            Inventory = npc.Inventory,
+            Supplies = npc.Supplies,
+            HeroicTraits = npc.HeroicTraits
+        };
+
+        return characterBase;
+    }
+
+    private void LevelUpByCrits(int crits, CharacterBase character)
+    {
+        for (var i = 0; i < crits; i++)
+        {
+            character.LevelUp.DeedsPoints += 1;
+            character.LevelUp.StatPoints += 2;
+            character.LevelUp.SkillPoints += 4;
+        }
+    }
+
+    private CharacterPaperdoll CalculatePaperdoll(CharacterBase character)
     {
         var items = character.Inventory.GetAllEquipedItems();
         var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
@@ -44,8 +111,9 @@ internal class CharacterPaperdollLogic
         return paperdoll;
     }
 
-    #region private methods
-    private static void CalculatePaperdollStats(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+
+
+    private static void CalculatePaperdollStats(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemStrBonus = 0;
         var itemConBonus = 0;
@@ -75,7 +143,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private static void CalculatePaperdollAssets(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollAssets(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemResBonus = 0;
         var itemHarBonus = 0;
@@ -111,7 +179,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private static void CalculatePaperdollSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollSkills(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemComBonus = 0;
         var itemArcBonus = 0;
@@ -153,7 +221,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private static void CalculatePaperdollSpecialSkills(Character character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollSpecialSkills(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         if (character.HeroicTraits == null) return;
 

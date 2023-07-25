@@ -26,7 +26,7 @@ internal class GameplayQuestsLogic
     {
         var fullName = Utils.GetLocationFullName(position);
 
-        var locationData = GameplayLore.MapLocations.All.Find(s => s.FullName == fullName)!;
+        var locationData = GameplayLore.Map.All.Find(s => s.FullName == fullName)!;
 
         var location = dbs.Snapshot.Locations.Find(s => s.FullName == fullName);
 
@@ -44,26 +44,23 @@ internal class GameplayQuestsLogic
                 
                 location.LastTimeVisited = DateTime.Now;
 
-                location.PossibleQuests = GetPossibleQuests(position, locationData.EffortUpper);
-                location.Market = GenerateMarketItems(location.EffortUpper);
-                location.Npcs = GenerateMercenaries(position, location.EffortUpper);
+                location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
+                location.Market = GenerateMarketItems(location.Effort);
+                location.Npcs = GenerateMercenaries(position, location.Effort);
             }
         }
         else
         {
             location = new Location()
             {
-                Name = locationData.Name,
                 FullName = locationData.FullName,
                 Description = locationData.Description,
                 Effort = locationData.Effort,
-                EffortLower = locationData.EffortLower,
-                EffortUpper = locationData.EffortUpper,
-                TravelToCost = locationData.TravelToCost,
+                TravelCostFromArada = locationData.TravelCostFromArada,
                 LastTimeVisited = DateTime.Now,
-                PossibleQuests = GetPossibleQuests(position, locationData.EffortUpper),
-                Market = GenerateMarketItems(locationData.EffortUpper),
-                Npcs = GenerateMercenaries(position, locationData.EffortUpper)
+                PossibleQuests = GetPossibleQuests(position, locationData.Effort),
+                Market = GenerateMarketItems(locationData.Effort),
+                Npcs = GenerateMercenaries(position, locationData.Effort)
             };
         }
 
@@ -81,7 +78,7 @@ internal class GameplayQuestsLogic
     private List<Item> GenerateMarketItems(int effortUpper)
     {
         var items = new List<Item>();
-        var nrOfItems = diceService.Roll_1dX(effortUpper / 2);
+        var nrOfItems = diceService.Roll_1_to_n(effortUpper / 2);
 
         for (int i = 0; i < nrOfItems; i++)
         {
@@ -94,7 +91,7 @@ internal class GameplayQuestsLogic
     private List<NpcCharacter> GenerateMercenaries(Position position, int effortUpper)
     {
         var mercs = new List<NpcCharacter>();
-        var rollForMercs = diceService.Roll_1dX(effortUpper / 10);
+        var rollForMercs = diceService.Roll_1_to_n(effortUpper / 10);
         var nrOfMercs = rollForMercs < 1 ? 1 : rollForMercs;
 
         for (int i = 0; i < nrOfMercs; i++)

@@ -73,19 +73,9 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
-        character.Status.IsInParty.Should().BeFalse();
+        character.Status.IsLockedForModify.Should().BeFalse();
 
-        //GameplayLore.Locations.Danar.All.Should().Contain(character.Position.Location);
-        throw new NotImplementedException();
-        
-        if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
-        {
-            // check for location in Danar
-        }
-        else
-        {
-            // check for location in Calvinia
-        }
+        GameplayLore.Map.All.Select(s => s.LocationName).Should().Contain(character.Position.Location);
     }
 
     [Fact(DisplayName = "Modifing character name should have the new name")]
@@ -344,34 +334,29 @@ public class CharacterServiceTests : TestBase
         paperdoll.ActionTokens.Should().Be(actionTokens);
     }
 
-
-    [Fact(DisplayName = "Joining party should reflect on Character")]
-    public void Join_party_correctly_displays_on_Character_test()
+    [Theory(DisplayName = "Character travel should move to new position")]
+    [InlineData("Dragonmaw_Farlindor_Danar_Belfordshire")]
+    [InlineData("Dragonmaw_Farlindor_Danar_Arada")]
+    public void Character_travel_test(string locationFullName)
     {
-        throw new NotImplementedException();
-        //var party = gameplayService.CreateParty(true);
-        //var chr = CreateHumanCharacter("Jax");
+        var chr = CreateHumanCharacter("Jax");
+        chr.Inventory.Provisions.Should().BeGreaterThan(0);
+        chr.Inventory.Provisions.Should().BeLessThanOrEqualTo(100);
 
-        //gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
+        var travelToPosition = new CharacterTravel
+        {
+            CharacterIdentity = CreateCharIdentity(chr),
+            Destination = Utils.GetLocationPosition(locationFullName)
+        };
 
-        //chr.Status.IsInParty.Should().BeTrue();
-        //chr.Status.PartyId.Should().Be(party.Identity.Id);
+        var initialProvisions = chr.Inventory.Provisions;
+
+        characterService.TravelToLocation(travelToPosition);
+
+        chr.Inventory.Provisions.Should().BeLessThan(initialProvisions);
     }
 
-    [Fact(DisplayName = "Leaving party should reflect on Character")]
-    public void Leave_party_correctly_displays_on_Character_test()
-    {
-        throw new NotImplementedException();
-        //var party = gameplayService.CreateParty(true);
-        //var chr = CreateHumanCharacter("Jax");
 
-        //Assert.Throws<Exception>(() => gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr)));
-
-        //gameplayService.JoinParty(party.Identity.Id, true, CreateCharIdentity(chr));
-        //gameplayService.LeaveParty(party.Identity.Id, CreateCharIdentity(chr));
-
-        //chr.Status.IsInParty.Should().BeFalse();
-    }
 
     #region private methods
     private static CharacterIdentity CreateCharIdentity(Character chr)

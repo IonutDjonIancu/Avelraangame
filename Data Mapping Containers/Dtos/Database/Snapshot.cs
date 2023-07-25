@@ -8,7 +8,6 @@ public class Snapshot
     public List<CharacterStub> CharacterStubs { get; set; }
 
     public List<Player> Players { get; set; }
-    public List<Item> Items { get; set; }
 
     public List<Location> Locations { get; set; }
 }

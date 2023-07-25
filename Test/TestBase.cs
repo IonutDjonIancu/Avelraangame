@@ -31,7 +31,7 @@ public class TestBase
         dbm = new DatabaseManager(dbmConfig);
         dbs = new DatabaseService(dbm);
 
-        diceService = new DiceRollService();
+        diceService = new DiceRollService(dbs);
         playerService = new PlayerService(dbs);
         itemService = new ItemService(dbs, diceService);
         characterService = new CharacterService(dbs, diceService, itemService);

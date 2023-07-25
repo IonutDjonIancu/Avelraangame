@@ -440,6 +440,25 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/TravelToLocation
+    [HttpPut("Character/TravelToLocation")]
+    public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] CharacterTravel positionTravel)
+    {
+        try
+        {
+            positionTravel.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
+
+            factory.ServiceFactory.CharacterService.TravelToLocation(positionTravel);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region Npcs
@@ -464,11 +483,11 @@ public class PalantirController : ControllerBase
     #region Gameplay
     // POST: /api/palantir/Gameplay/GetLocation
     [HttpPost("Gameplay/GetLocation")]
-    public IActionResult GetLocation([FromBody] Position partyPostion)
+    public IActionResult GetLocation([FromBody] Position position)
     {
         try
         {
-            var location = factory.ServiceFactory.GameplayService.GetLocation(partyPostion);
+            var location = factory.ServiceFactory.GameplayService.GetLocation(position);
 
             return Ok(location);
         }
@@ -478,9 +497,6 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
-
-
     #endregion
 
     #region private methods

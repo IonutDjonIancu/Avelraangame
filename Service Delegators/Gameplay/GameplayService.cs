@@ -20,8 +20,6 @@ public class GameplayService : IGameplayService
     public Location GetLocation(Position position)
     {
         validator.ValidatePosition(position);
-
         return logic.GenerateLocation(position);
     }
-
 }

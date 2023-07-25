@@ -7,26 +7,64 @@ namespace Service_Delegators;
 
 internal class NpcLogicDelegator
 {
-    private readonly NpcAttributesLogic attributesLogic;
-    private readonly NpcBelongingsLogic belongingsLogic;
-
-    private readonly IDiceRollService dice;
-    private readonly IItemService items;
+    private readonly IDiceRollService diceService;
+    private readonly IItemService itemsService;
 
     private NpcLogicDelegator() { }
     internal NpcLogicDelegator(
-        IDiceRollService diceService,
+        IDiceRollService diceRollService,
         IItemService itemService,
         ICharacterService characterService)
     {
-        attributesLogic = new NpcAttributesLogic(diceService);
-        belongingsLogic = new NpcBelongingsLogic(diceService, itemService);
-
-        dice = diceService;
-        items = itemService;
+        diceService = diceRollService;
+        itemsService = itemService;
     }
 
-    internal NpcCharacter GenerateNpcCharacter(Position position, int effortUpper)
+    internal NpcCharacter GenerateBadGuyNpcCharacter(Position position, int effortUpper)
+    {
+        var chr = new NpcCharacter();
+
+        var race = CharactersLore.Races.Human;
+        var culture = SetCulture(race);
+        var npcClass = SetClass();
+        var entityLvl = SetEntityLevel();
+
+        chr.Identity = new CharacterIdentity()
+        {
+            Id = Guid.NewGuid().ToString(),
+            PlayerId = Guid.Empty.ToString()
+        };
+
+        chr.Info = new CharacterInfo()
+        {
+            Name = $"{race}_{DateTime.Now.Millisecond}",
+            EntityLevel = entityLvl,
+            DateOfBirth = DateTime.Now.ToShortDateString(),
+            IsAlive = true,
+            Fame = $"A brigand of {position.Location}.",
+            Wealth = diceService.Roll_100_noReroll(),
+            Origins = new CharacterOrigins()
+            {
+                Race = race,
+                Culture = culture,
+                Tradition = CharactersLore.Tradition.Martial,
+                Class = npcClass
+            }
+        };
+
+        chr.Position = position;
+
+        chr.Status = new CharacterStatus();
+        chr.LevelUp = new CharacterLevelUp();
+
+        chr.Sheet = SetCharacterSheet(race, effortUpper);
+
+        chr.Inventory = SetInventory(race, entityLvl);
+
+        return chr;
+    }
+
+    internal NpcCharacter GenerateGoodGuyNpcCharacter(Position position, int effortUpper)
     {
         var chr = new NpcCharacter();
 
@@ -60,17 +98,9 @@ internal class NpcLogicDelegator
             }
         };
 
-        chr.Status = new CharacterStatus()
-        {
-            IsLockedForModify = false,
-            IsInParty = false,
-            QuestId = string.Empty,
-            NrOfQuestsFinished = 0,
-            QuestsFinished = new List<string>()
-        };
-
         chr.Position = position;
 
+        chr.Status = new CharacterStatus();
         chr.LevelUp = new CharacterLevelUp();
 
         chr.Sheet = SetCharacterSheet(race, effortUpper);
@@ -84,27 +114,27 @@ internal class NpcLogicDelegator
     {
         var inventory = new CharacterInventory();
 
-        if (dice.FlipCoin()) inventory.Head = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
-        if (dice.FlipCoin()) inventory.Body = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
-        if (dice.FlipCoin()) inventory.Shield = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
-        if (dice.FlipCoin()) inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+        if (diceService.Roll_par_impar()) inventory.Head = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
+        if (diceService.Roll_par_impar()) inventory.Body = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
+        if (diceService.Roll_par_impar()) inventory.Shield = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+        if (diceService.Roll_par_impar()) inventory.Offhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
 
-        if (dice.FlipCoin()) 
+        if (diceService.Roll_par_impar()) 
         { 
-            inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
+            inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
         }
         else
         {
-            inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Mace);
+            inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Mace);
         }
 
         if (race == CharactersLore.Races.Elf)
         {
-            inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Bow);
+            inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Bow);
         }
         else
         {
-            if (dice.FlipCoin()) inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
+            if (diceService.Roll_par_impar()) inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
         }
 
         if (entityLevel >= 2)
@@ -113,9 +143,11 @@ internal class NpcLogicDelegator
 
             for (int i = 0; i < rollHeraldry; i++)
             {
-                if (dice.FlipCoin()) inventory.Heraldry!.Add(items.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
+                if (diceService.Roll_par_impar()) inventory.Heraldry!.Add(itemsService.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
             }
         }
+
+        inventory.Provisions = diceService.Roll_100_withReroll();
 
         return inventory;
     }
@@ -225,7 +257,7 @@ internal class NpcLogicDelegator
 
     private int SetEntityLevel()
     {
-        var roll = dice.Roll_d20(true);
+        var roll = diceService.Roll_20_withReroll();
 
         return roll switch
         {
@@ -281,7 +313,7 @@ internal class NpcLogicDelegator
 
     private int Randomize(int max)
     {
-        return dice.Roll_1dX(max);
+        return diceService.Roll_1_to_n(max);
     }
 }
 
