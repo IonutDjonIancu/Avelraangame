@@ -20,7 +20,51 @@ internal class NpcLogicDelegator
         itemsService = itemService;
     }
 
-    internal NpcCharacter GenerateNpcCharacter(Position position, int effortUpper)
+    internal NpcCharacter GenerateBadGuyNpcCharacter(Position position, int effortUpper)
+    {
+        var chr = new NpcCharacter();
+
+        var race = CharactersLore.Races.Human;
+        var culture = SetCulture(race);
+        var npcClass = SetClass();
+        var entityLvl = SetEntityLevel();
+
+        chr.Identity = new CharacterIdentity()
+        {
+            Id = Guid.NewGuid().ToString(),
+            PlayerId = Guid.Empty.ToString()
+        };
+
+        chr.Info = new CharacterInfo()
+        {
+            Name = $"{race}_{DateTime.Now.Millisecond}",
+            EntityLevel = entityLvl,
+            DateOfBirth = DateTime.Now.ToShortDateString(),
+            IsAlive = true,
+            Fame = $"A brigand of {position.Location}.",
+            Wealth = diceService.Roll_100_noReroll(),
+            Origins = new CharacterOrigins()
+            {
+                Race = race,
+                Culture = culture,
+                Tradition = CharactersLore.Tradition.Martial,
+                Class = npcClass
+            }
+        };
+
+        chr.Position = position;
+
+        chr.Status = new CharacterStatus();
+        chr.LevelUp = new CharacterLevelUp();
+
+        chr.Sheet = SetCharacterSheet(race, effortUpper);
+
+        chr.Inventory = SetInventory(race, entityLvl);
+
+        return chr;
+    }
+
+    internal NpcCharacter GenerateGoodGuyNpcCharacter(Position position, int effortUpper)
     {
         var chr = new NpcCharacter();
 
@@ -54,16 +98,9 @@ internal class NpcLogicDelegator
             }
         };
 
-        chr.Status = new CharacterStatus()
-        {
-            IsLockedForModify = false,
-            QuestId = string.Empty,
-            ArenaId = string.Empty,
-            StoryId = string.Empty,
-        };
-
         chr.Position = position;
 
+        chr.Status = new CharacterStatus();
         chr.LevelUp = new CharacterLevelUp();
 
         chr.Sheet = SetCharacterSheet(race, effortUpper);

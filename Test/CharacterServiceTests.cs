@@ -1,7 +1,4 @@
-﻿using Service_Delegators;
-using Xunit;
-
-namespace Tests;
+﻿namespace Tests;
 
 public class CharacterServiceTests : TestBase
 {
