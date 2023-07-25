@@ -58,16 +58,21 @@ internal class CharacterTravelLogic
 
         if (highestRoll <= effort / 10)
         {
+            character.Inventory.Provisions -= travelCostPerPerson * 10;
             character.Henchmen.Clear();
         }
         else if (highestRoll <= effort / 5)
         {
-            var totalMenLost = diceService.Roll_1_to_n(character.Henchmen.Count);
+            character.Inventory.Provisions -= travelCostPerPerson * 5;
 
-            for (var i = 0; i < totalMenLost; i++)
+            if (character.Henchmen.Count > 0)
             {
-                character.Henchmen.RemoveAt(i);
-            }                                                     
+                var totalMenLost = diceService.Roll_1_to_n(character.Henchmen.Count);
+                for (var i = 0; i < totalMenLost; i++)
+                {
+                    character.Henchmen.RemoveAt(i);
+                }                                                     
+            }
         }
         else if (highestRoll <= effort / 2)
         {

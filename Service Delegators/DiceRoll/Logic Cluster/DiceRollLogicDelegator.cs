@@ -82,7 +82,7 @@ internal class DiceRollLogicDelegator
         var grade = 1 + diceRoll / 4;
         var crit = grade / 5 - 1;
         var crits = crit > 0 ? crit : 0;
-        var grades = grade * skill / 100;
+        var grades = grade * skill * 5 / 100;
 
         return (grades, crits);
     }
@@ -93,7 +93,7 @@ internal class DiceRollLogicDelegator
         var grade = 1 + diceRoll / 20;
         var crit = grade / 5 - 1;
         var crits = crit > 0 ? crit : 0;
-        var grades = grade * skill / 100;
+        var grades = grade * skill * 5 / 100;
 
         return (grades, crits);
     }

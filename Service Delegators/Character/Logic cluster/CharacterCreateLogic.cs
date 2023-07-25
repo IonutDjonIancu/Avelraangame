@@ -100,6 +100,8 @@ internal class CharacterCreateLogic
         }
 
         // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
+        character.Inventory.Provisions = 100; // TODO: refactor this
+
 
         dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
 
