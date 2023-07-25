@@ -38,6 +38,6 @@ public interface ICharacterService
     Character EquipCharacterItem(CharacterEquip equip);
     Character UnequipCharacterItem(CharacterEquip unequip);
     Character LearnHeroicTrait(CharacterHeroicTrait trait);
-    void TravelToLocation(PositionTravel positionTravel);
+    void TravelToLocation(CharacterTravel positionTravel);
     #endregion
 }

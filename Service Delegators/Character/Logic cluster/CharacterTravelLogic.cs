@@ -19,7 +19,7 @@ internal class CharacterTravelLogic
         diceService = diceRollService;
     }
 
-    internal void MoveToLocation(PositionTravel positionTravel)
+    internal void MoveToLocation(CharacterTravel positionTravel)
     {
         var character = Utils.GetPlayerCharacter(dbs, positionTravel.CharacterIdentity);
 
@@ -58,12 +58,12 @@ internal class CharacterTravelLogic
 
         if (highestRoll <= effort / 10)
         {
-            character.Inventory.Provisions -= travelCostPerPerson * 10;
+            character.Inventory.Provisions -= travelCostPerPerson * 10 + 1;
             character.Henchmen.Clear();
         }
         else if (highestRoll <= effort / 5)
         {
-            character.Inventory.Provisions -= travelCostPerPerson * 5;
+            character.Inventory.Provisions -= travelCostPerPerson * 5 + 1;
 
             if (character.Henchmen.Count > 0)
             {
@@ -76,23 +76,23 @@ internal class CharacterTravelLogic
         }
         else if (highestRoll <= effort / 2)
         {
-            character.Inventory.Provisions -= travelCostPerPerson * 2;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2);
+            character.Inventory.Provisions -= travelCostPerPerson * 2 + 1;
+            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2 + 1);
         }
         else if (highestRoll <= effort)
         {
-            character.Inventory.Provisions -= travelCostPerPerson;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson);
+            character.Inventory.Provisions -= travelCostPerPerson + 1;
+            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson + 1);
         }
         else if (highestRoll >= 10 * effort)
         {
-            // no provisions will be taxed
-            // party can live off the land
+            character.Inventory.Provisions -= 1;
+            character.Henchmen.ForEach(s => s.Inventory.Provisions -= 1);
         }
         else if (highestRoll >= 5 * effort)
         {
-            character.Inventory.Provisions -= 1;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= 1);
+            character.Inventory.Provisions -= travelCostPerPerson / 5 + 1;
+            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5 + 1);
         }
         else if (highestRoll >= 2 * effort)
         {

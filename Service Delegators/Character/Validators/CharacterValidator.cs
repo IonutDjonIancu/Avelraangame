@@ -12,7 +12,7 @@ internal class CharacterValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
-    internal void ValidateBeforeTravel(PositionTravel positionTravel)
+    internal void ValidateBeforeTravel(CharacterTravel positionTravel)
     {
         ValidateCharacterPlayerCombination(positionTravel.CharacterIdentity);
         ValidateIfCharacterIsLocked(positionTravel.CharacterIdentity);

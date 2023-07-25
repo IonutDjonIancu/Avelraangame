@@ -443,7 +443,7 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/TravelToLocation
     [HttpPut("Character/TravelToLocation")]
-    public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] PositionTravel positionTravel)
+    public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] CharacterTravel positionTravel)
     {
         try
         {

@@ -99,7 +99,7 @@ internal class CharacterLogicDelegator
         return charPaperdollLogic.CalculateCharPaperdoll(character);
     }
 
-    internal void MoveToLocation(PositionTravel positionTravel)
+    internal void MoveToLocation(CharacterTravel positionTravel)
     {
         charTravelLogic.MoveToLocation(positionTravel);
     }

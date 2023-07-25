@@ -123,7 +123,7 @@ public class CharacterService : ICharacterService
         return logic.ApplyHeroicTrait(trait);
     }
 
-    public void TravelToLocation(PositionTravel positionTravel)
+    public void TravelToLocation(CharacterTravel positionTravel)
     {
         validator.ValidateBeforeTravel(positionTravel);
         logic.MoveToLocation(positionTravel);

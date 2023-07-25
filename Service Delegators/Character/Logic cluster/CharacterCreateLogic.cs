@@ -76,15 +76,16 @@ internal class CharacterCreateLogic
         };
 
         character.Info.Wealth = SetWealth();
+        character.Inventory.Provisions = dice.Roll_100_noReroll();
 
         if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
             character.Position = new Position
             {
-                Region = GameplayLore.Map.Dragonmaw.DragonmawName,
-                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
-                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.DanarName,
-                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.AradaName
+                Region = GameplayLore.Map.Dragonmaw.RegionName,
+                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.SubregionName,
+                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.LandName,
+                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Arada.LocationName
             };
         }
         else
@@ -92,15 +93,15 @@ internal class CharacterCreateLogic
             // TODO: this will have to be changed eventually to incorporate Calvinia as starting point
             character.Position = new Position
             {
-                Region = GameplayLore.Map.Dragonmaw.DragonmawName,
-                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.FarlindorName,
-                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.DanarName,
-                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.AradaName
+                Region = GameplayLore.Map.Dragonmaw.RegionName,
+                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.SubregionName,
+                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.LandName,
+                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Arada.LocationName
             };
         }
 
+
         // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
-        character.Inventory.Provisions = 100; // TODO: refactor this
 
 
         dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
