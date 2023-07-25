@@ -62,10 +62,9 @@ internal class CharacterCreateLogic
             Status = new CharacterStatus()
             {
                 IsLockedForModify = false,
-                IsInParty = false,
                 QuestId = string.Empty,
-                NrOfQuestsFinished = 0,
-                QuestsFinished = new List<string>()
+                ArenaId = string.Empty,
+                StoryId = string.Empty,
             },
 
             Sheet = sheetLogic.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
@@ -77,30 +76,33 @@ internal class CharacterCreateLogic
         };
 
         character.Info.Wealth = SetWealth();
+        character.Inventory.Provisions = dice.Roll_100_noReroll();
 
         if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
         {
             character.Position = new Position
             {
-                Region = GameplayLore.MapLocations.Dragonmaw.Name,
-                Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
-                Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
-                Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
+                Region = GameplayLore.Map.Dragonmaw.RegionName,
+                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.SubregionName,
+                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.LandName,
+                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Arada.LocationName
             };
         }
         else
         {
-            // TODO: this will have to be changed eventually to incorporate Calvinia starting point
+            // TODO: this will have to be changed eventually to incorporate Calvinia as starting point
             character.Position = new Position
             {
-                Region = GameplayLore.MapLocations.Dragonmaw.Name,
-                Subregion = GameplayLore.MapLocations.Dragonmaw.Farlindor.Name,
-                Land = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Name,
-                Location = GameplayLore.MapLocations.Dragonmaw.Farlindor.Danar.Locations.Arada.Name
+                Region = GameplayLore.Map.Dragonmaw.RegionName,
+                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.SubregionName,
+                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.LandName,
+                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Arada.LocationName
             };
         }
 
+
         // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
+
 
         dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
 
@@ -115,7 +117,7 @@ internal class CharacterCreateLogic
     #region private methods
     private int RandomizeEntityLevel()
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
 
         if      (roll >= 100)   return 6;
         else if (roll >= 80)    return 5;
@@ -127,19 +129,19 @@ internal class CharacterCreateLogic
 
     private int RandomizeStatPoints(int entityLevel)
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
         return roll * entityLevel;
     }
 
     private int RandomizeSkillPoints(int entityLevel)
     {
-        var roll = dice.Roll_d20(true);
+        var roll = dice.Roll_20_withReroll();
         return roll * entityLevel;
     }
 
     private List<Item> SetSupplies()
     {
-        var roll = dice.Roll_1dX(6);
+        var roll = dice.Roll_1_to_n(6);
         var supplies = new List<Item>();
 
         for (int i = 0; i < roll; i++)
@@ -158,11 +160,11 @@ internal class CharacterCreateLogic
 
     private int SetWealth()
     {
-        var rollTimes = dice.Roll_1dX(6);
+        var rollTimes = dice.Roll_1_to_n(6);
         var total = 10;
         for (int i = 0; i < rollTimes; i++)
         {
-            total += dice.Roll_1dX(100);
+            total += dice.Roll_1_to_n(100);
         }
 
         return total;
@@ -188,6 +190,11 @@ internal class CharacterCreateLogic
 
             Fame = SetFame(origins.Culture, origins.Class),
             IsAlive = true,
+            IsNpc = false,
+
+            Wealth = 0,
+            NrOfQuestsFinished = 0,
+            QuestsFinished = new List<string>()
         };
     }
     #endregion

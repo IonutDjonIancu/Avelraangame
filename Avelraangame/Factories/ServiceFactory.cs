@@ -21,7 +21,7 @@ public class ServiceFactory : IServiceFactory
         Metadata            = new MetadataService(DatabaseService);
 
         // services will be instantiated in the order that they require each other
-        DicerollService     = new DiceRollService();
+        DicerollService     = new DiceRollService(DatabaseService);
         PlayerService       = new PlayerService(DatabaseService);
         ItemService         = new ItemService(DatabaseService, DicerollService);
         CharacterService    = new CharacterService(DatabaseService, DicerollService, ItemService);

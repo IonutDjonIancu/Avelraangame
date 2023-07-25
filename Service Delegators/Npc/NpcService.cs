@@ -21,12 +21,12 @@ public class NpcService : INpcService
     public NpcCharacter GenerateBadGuyNpc(Position position, int effortUpper)
     {
         validator.ValidatePosition(position);
-        throw new NotImplementedException();
+        return logic.GenerateBadGuyNpcCharacter(position, effortUpper);
     }
 
     public NpcCharacter GenerateGoodGuyNpc(Position position, int effortUpper)
     {
         validator.ValidatePosition(position);
-        return logic.GenerateNpcCharacter(position, effortUpper);
+        return logic.GenerateGoodGuyNpcCharacter(position, effortUpper);
     }
 }

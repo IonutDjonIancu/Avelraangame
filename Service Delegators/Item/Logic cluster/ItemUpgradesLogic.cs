@@ -23,7 +23,7 @@ internal class ItemUpgradesLogic
     #region heirloom
     private void UpgradeItemToHeirloom(Item item)
     {
-        var randomHeirloom = dice.Roll_1dX(ItemsLore.Heirlooms.All.Count) - 1;
+        var randomHeirloom = dice.Roll_1_to_n(ItemsLore.Heirlooms.All.Count) - 1;
         var heirloom = ItemsLore.Heirlooms.All[randomHeirloom];
 
         item.Value += 5000;
@@ -227,7 +227,7 @@ internal class ItemUpgradesLogic
     #region artifact
     private void UpgrageItemToArtifact(Item item)
     {
-        var randomArtifact = dice.Roll_1dX(ItemsLore.Artifacts.All.Count) - 1;
+        var randomArtifact = dice.Roll_1_to_n(ItemsLore.Artifacts.All.Count) - 1;
         var artifact = ItemsLore.Artifacts.All[randomArtifact];
 
         item.Value += 10000;
@@ -286,7 +286,7 @@ internal class ItemUpgradesLogic
     #region relic
     private void UpgradeItemToRelic(Item item)
     {
-        var randomRelic = dice.Roll_1dX(ItemsLore.Relics.All.Count) - 1;
+        var randomRelic = dice.Roll_1_to_n(ItemsLore.Relics.All.Count) - 1;
         var relic = ItemsLore.Relics.All[randomRelic];
 
         item.Value += 30000;

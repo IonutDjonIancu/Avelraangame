@@ -5,134 +5,97 @@ namespace Service_Delegators;
 internal class DiceRollLogicDelegator
 {
     private readonly Random random = new();
-    
-    internal bool FlipCoin()
-    {
-        return random.Next(1, 3) == 1;
-    }
 
-    internal int Roll1d20NoReroll()
+    #region d20 rolls
+    internal int Roll20noReroll()
     {
         return random.Next(1, 21);
     }
 
-    internal int Roll1d20WithReroll(int roll = 0) 
+    internal int Roll20withReroll(int roll = 0) 
     {
         var handRoll = random.Next(1, 21);
         var totalRoll = roll + handRoll;
 
         if (handRoll % 20 == 0)
         {
-            totalRoll = Roll1d20WithReroll(totalRoll);
+            totalRoll = Roll20withReroll(totalRoll);
         }
 
         return totalRoll;
     }
+    #endregion
 
-    internal int Roll1d100WithReroll(int roll = 0)
-    {
-        var handRoll = random.Next(1, 101);
-        var totalRoll = roll + handRoll;
-
-        if (handRoll > 95)
-        {
-            totalRoll = Roll1d100WithReroll(totalRoll);
-        }
-
-        return totalRoll;
-    }
-
-    internal int Roll1d100NoReroll()
+    #region d100 rolls
+    internal int Roll100noReroll()
     {
         return random.Next(1, 101);
     }
 
-    internal int Roll1dXnoReroll(int upperLimit)
+    internal int Roll100withReroll(int roll = 0)
     {
-        return random.Next(1, upperLimit + 1);
-    }
+        var handRoll = random.Next(1, 101);
+        var totalRoll = roll + handRoll;
 
-    internal int RollXdYnoReroll(int lowerLimit, int upperLimit)
-    {
-        return random.Next(lowerLimit, upperLimit + 1);
-    }
-
-    internal DiceRoll GenerateRollFor(string tradition, int bonus = 0)
-    {
-        var dice = new List<int>();
-        int roll;
-
-        if      (IsMartial(tradition))  roll = Rolld20WithList(dice, bonus);
-        else if (IsCommon(tradition))   roll = Rolld100WithList(dice, bonus);
-        else    throw new NotImplementedException();
-
-        return new DiceRoll
+        if (handRoll > 95)
         {
-            Roll = roll,
-            Grade = CalculateGradeFor(tradition, roll),
-            Dice = dice,
-            Crits = CalculateCritsFor(tradition, dice)
-        };
-    }
-
-    #region private methods
-    private int Rolld20WithList(List<int> dice, int bonus = 0)
-    {
-        var handRoll = random.Next(1, 21);
-        dice.Add(handRoll);
-        var totalRoll = bonus + handRoll;
-
-        if (handRoll % 20 == 0)
-        {
-            totalRoll = Rolld20WithList(dice, totalRoll);
+            totalRoll = Roll100withReroll(totalRoll);
         }
 
         return totalRoll;
     }
+    #endregion
 
-    private int Rolld100WithList(List<int> dice, int bonus = 0)
+    #region custom rolls
+    internal (int grade, int crits) RollGameplayDice(string tradition, int skill)
     {
-        var handRoll = random.Next(1, 101);
-        dice.Add(handRoll);
-        var roll = bonus + handRoll;
-
-        if (handRoll > 95)
+        if (tradition == GameplayLore.Tradition.Martial)
         {
-            roll = random.Next(1, 101);
+            return Roll20ForSkill(skill);
         }
-
-        return roll;
+        else
+        {
+            return Roll100ForSkill(skill);
+        }
+    }
+    
+    internal bool RollParImpar()
+    {
+        return random.Next(1, 3) == 1;
     }
 
-    private static int CalculateGradeFor(string tradition, int roll)
+    internal int Roll1ToN(int upperLimit)
     {
-        if      (IsCommon(tradition))   return (int)Math.Ceiling(roll / 20.00M);
-        else if (IsMartial(tradition))  return (int)Math.Ceiling(roll / 4.00M);
-        else    throw new NotImplementedException();
+        return random.Next(1, upperLimit + 1);
     }
 
-    private static int CalculateCritsFor(string tradition, List<int> dice)
+    internal int RollNToN(int lowerLimit, int upperLimit)
     {
-        if      (IsCommon(tradition))   return CritsByDiceCount(dice);
-        else if (IsMartial(tradition))  return CritsByDiceCount(dice);
-        else    throw new NotImplementedException();
+        return random.Next(lowerLimit, upperLimit + 1);
+    }
+    #endregion
 
-        // other tradition styles influenced by crits from 19 or 18 will return a greater number of crits dice
+    #region private methods
+    private (int grades, int crits) Roll20ForSkill(int skill)
+    {
+        int diceRoll = Roll20withReroll();
+        var grade = 1 + diceRoll / 4;
+        var crit = grade / 5 - 1;
+        var crits = crit > 0 ? crit : 0;
+        var grades = grade * skill * 5 / 100;
+
+        return (grades, crits);
     }
 
-    private static int CritsByDiceCount(List<int> dice)
+    private (int grades, int crits) Roll100ForSkill(int skill)
     {
-        return dice.Count - 1;
-    }
+        int diceRoll = Roll100withReroll();
+        var grade = 1 + diceRoll / 20;
+        var crit = grade / 5 - 1;
+        var crits = crit > 0 ? crit : 0;
+        var grades = grade * skill * 5 / 100;
 
-    private static bool IsCommon(string tradition)
-    {
-        return tradition == CharactersLore.Tradition.Common;
-    }
-
-    private static bool IsMartial(string tradition)
-    {
-        return tradition == CharactersLore.Tradition.Martial;
+        return (grades, crits);
     }
     #endregion
 }

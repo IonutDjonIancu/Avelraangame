@@ -221,17 +221,17 @@ internal class CharacterSheetLogic
     {
         while (statPoints != 0)
         {
-            var roll = dice.Roll_d100();
+            var roll = dice.Roll_100_noReroll();
             string chosenStat;
 
             if (roll <= 70)
             {
-                var rollForStat = dice.Roll_1dX(likelyStats.Count);
+                var rollForStat = dice.Roll_1_to_n(likelyStats.Count);
                 chosenStat = likelyStats[rollForStat - 1];
             }
             else
             {
-                var rollForStat = dice.Roll_1dX(unlikelyStats.Count);
+                var rollForStat = dice.Roll_1_to_n(unlikelyStats.Count);
                 chosenStat = unlikelyStats[rollForStat - 1];
             }
 
@@ -250,17 +250,17 @@ internal class CharacterSheetLogic
     {
         while (skillPoints != 0)
         {
-            var roll = dice.Roll_d100();
+            var roll = dice.Roll_100_noReroll();
             string chosenSkill;
 
             if (roll <= 70)
             {
-                var rollForStat = dice.Roll_1dX(likeySkills.Count);
+                var rollForStat = dice.Roll_1_to_n(likeySkills.Count);
                 chosenSkill = likeySkills[rollForStat - 1];
             }
             else
             {
-                var rollForStat = dice.Roll_1dX(unlikeySkills.Count);
+                var rollForStat = dice.Roll_1_to_n(unlikeySkills.Count);
                 chosenSkill = unlikeySkills[rollForStat - 1];
             }
 
