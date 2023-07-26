@@ -94,13 +94,13 @@ public class CharacterService : ICharacterService
         };
     }
 
-    public Character EquipCharacterItem(CharacterEquip equip)
+    public Character EquipItem(CharacterEquip equip)
     {
         validator.ValidateCharacterEquipUnequipItem(equip, true);
         return logic.EquipItem(equip);
     }
 
-    public Character UnequipCharacterItem(CharacterEquip unequip)
+    public Character UnequipItem(CharacterEquip unequip)
     {
         validator.ValidateCharacterEquipUnequipItem(unequip, false);
         return logic.UnequipItem(unequip);
@@ -127,5 +127,11 @@ public class CharacterService : ICharacterService
     {
         validator.ValidateBeforeTravel(positionTravel);
         logic.MoveToLocation(positionTravel);
+    }
+
+    public void HireMercenary(CharacterHireMercenary hireMercenary)
+    {
+        validator.ValidateMercenaryHire(hireMercenary);
+        logic.MercenaryHire(hireMercenary);
     }
 }

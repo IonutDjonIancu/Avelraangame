@@ -2,5 +2,5 @@
 
 public class Character : CharacterBase
 {
-    public List<NpcCharacter> Henchmen { get; set; } = new();
+    public List<NpcCharacter> Mercenaries { get; set; } = new();
 }

@@ -46,7 +46,7 @@ internal class GameplayQuestsLogic
 
                 location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
                 location.Market = GenerateMarketItems(location.Effort);
-                location.Npcs = GenerateMercenaries(position, location.Effort);
+                location.Mercenaries = GenerateMercenaries(position, location.Effort);
             }
         }
         else
@@ -60,7 +60,7 @@ internal class GameplayQuestsLogic
                 LastTimeVisited = DateTime.Now,
                 PossibleQuests = GetPossibleQuests(position, locationData.Effort),
                 Market = GenerateMarketItems(locationData.Effort),
-                Npcs = GenerateMercenaries(position, locationData.Effort)
+                Mercenaries = GenerateMercenaries(position, locationData.Effort)
             };
         }
 

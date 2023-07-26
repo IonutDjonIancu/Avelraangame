@@ -7,7 +7,6 @@ public class CharacterInfo
     public string DateOfBirth { get; set; }
     public CharacterOrigins Origins { get; set; } = new();
     public bool IsAlive { get; set; }
-    public bool IsNpc { get; set; } = false;
 
     public int Wealth { get; set; }
 

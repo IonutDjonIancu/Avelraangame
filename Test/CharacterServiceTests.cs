@@ -14,7 +14,7 @@ public class CharacterServiceTests : TestBase
     {
         var playerId = CreatePlayer(playerName);
 
-        var stub = characterService.CreateCharacterStub(playerId);
+        var stub = charService.CreateCharacterStub(playerId);
 
         dbs.Snapshot.CharacterStubs.Count.Should().BeGreaterThanOrEqualTo(1);
         stub.Should().NotBeNull();
@@ -29,7 +29,7 @@ public class CharacterServiceTests : TestBase
         var playerId = CreatePlayer(playerName);
         dbs.Snapshot.CharacterStubs.Clear();
 
-        characterService.CreateCharacterStub(playerId);
+        charService.CreateCharacterStub(playerId);
 
         var origins = new CharacterOrigins
         {
@@ -39,7 +39,7 @@ public class CharacterServiceTests : TestBase
             Class = CharactersLore.Classes.Warrior
         };
 
-        var character = characterService.SaveCharacterStub(origins, playerId);
+        var character = charService.SaveCharacterStub(origins, playerId);
 
         dbs.Snapshot.CharacterStubs.Count.Should().Be(0);
         character.Should().NotBeNull();
@@ -84,7 +84,7 @@ public class CharacterServiceTests : TestBase
         var newCharName = "Jax";
 
         var chr = CreateHumanCharacter("Jax");
-        chr = characterService.UpdateCharacterName(newCharName, CreateCharIdentity(chr));
+        chr = charService.UpdateCharacterName(newCharName, CreateCharIdentity(chr));
 
         chr.Info.Name.Should().Be(newCharName);
     }
@@ -94,9 +94,9 @@ public class CharacterServiceTests : TestBase
     {
         var chr = CreateHumanCharacter("Jax");
 
-        characterService.DeleteCharacter(CreateCharIdentity(chr));
+        charService.DeleteCharacter(CreateCharIdentity(chr));
 
-        var characters = characterService.GetPlayerCharacters(chr.Identity.PlayerId);
+        var characters = charService.GetPlayerCharacters(chr.Identity.PlayerId);
 
         characters.CharactersList.Should().NotContain(chr);
         characters.Count.Should().Be(0);
@@ -111,7 +111,7 @@ public class CharacterServiceTests : TestBase
 
         dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.Identity.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Identity.Id)!.LevelUp.StatPoints = 1;
 
-        chr = characterService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
+        chr = charService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
 
         chr.Sheet.Stats.Strength.Should().Be(currentStr + 1);
     }
@@ -121,7 +121,7 @@ public class CharacterServiceTests : TestBase
     {
         var chr = CreateHumanCharacter("Jax");
 
-        Assert.Throws<Exception>(() => characterService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr)));
+        Assert.Throws<Exception>(() => charService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr)));
     }
 
     [Fact(DisplayName = "Increasing the skills from a character should save it to db")]
@@ -132,7 +132,7 @@ public class CharacterServiceTests : TestBase
 
         dbs.Snapshot.Players.Find(p => p.Identity.Id == chr.Identity.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Identity.Id)!.LevelUp.SkillPoints = 1;
 
-        chr = characterService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr));
+        chr = charService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr));
 
         chr.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
     }
@@ -142,7 +142,7 @@ public class CharacterServiceTests : TestBase
     {
         var chr = CreateHumanCharacter("Jax");
 
-        Assert.Throws<Exception>(() => characterService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr)));
+        Assert.Throws<Exception>(() => charService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr)));
     }
 
     [Fact(DisplayName = "Equipping an item in character inventory")]
@@ -166,7 +166,7 @@ public class CharacterServiceTests : TestBase
             ItemId = chr.Supplies.First().Identity.Id
         };
 
-        characterService.EquipCharacterItem(equip);
+        charService.EquipItem(equip);
 
         var hasEquipedItem =
             chr.Inventory.Head != null
@@ -205,8 +205,8 @@ public class CharacterServiceTests : TestBase
             ItemId = chr.Supplies.First().Identity.Id
         };
 
-        characterService.EquipCharacterItem(equip);
-        characterService.UnequipCharacterItem(equip);
+        charService.EquipItem(equip);
+        charService.UnequipItem(equip);
 
         var hasEquipedItem =
             chr.Inventory.Head != null
@@ -244,12 +244,12 @@ public class CharacterServiceTests : TestBase
         };
 
         var combatBeforeTrait = chr.Sheet.Skills.Combat;
-        characterService.LearnHeroicTrait(trait);
+        charService.LearnHeroicTrait(trait);
         var combatIncreasedOnce = chr.Sheet.Skills.Combat;
 
         combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
 
-        characterService.LearnHeroicTrait(trait);
+        charService.LearnHeroicTrait(trait);
         var combatIncreasedTwice = chr.Sheet.Skills.Combat;
 
         combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
@@ -273,9 +273,9 @@ public class CharacterServiceTests : TestBase
             HeroicTraitId = metachaos.Identity.Id,
         };
 
-        characterService.LearnHeroicTrait(trait);
+        charService.LearnHeroicTrait(trait);
 
-        Assert.Throws<Exception>(() => characterService.LearnHeroicTrait(trait));
+        Assert.Throws<Exception>(() => charService.LearnHeroicTrait(trait));
     }
 
     [Fact(DisplayName = "Create character paperdoll")]
@@ -305,8 +305,8 @@ public class CharacterServiceTests : TestBase
             },
             HeroicTraitId = metachaos.Identity.Id,
         };
-        characterService.LearnHeroicTrait(candlelightTrait);
-        characterService.LearnHeroicTrait(metachaosTrait);
+        charService.LearnHeroicTrait(candlelightTrait);
+        charService.LearnHeroicTrait(metachaosTrait);
 
         var charIdentity = new CharacterIdentity
         {
@@ -314,7 +314,7 @@ public class CharacterServiceTests : TestBase
             PlayerId = chr.Identity.PlayerId
         };
 
-        var paperdoll = characterService.CalculatePaperdollForPlayerCharacter(charIdentity);
+        var paperdoll = charService.CalculatePaperdollForPlayerCharacter(charIdentity);
 
         paperdoll.Should().NotBeNull();
         paperdoll.Stats.Should().NotBeNull();
@@ -351,11 +351,29 @@ public class CharacterServiceTests : TestBase
 
         var initialProvisions = chr.Inventory.Provisions;
 
-        characterService.TravelToLocation(travelToPosition);
+        charService.TravelToLocation(travelToPosition);
 
         chr.Inventory.Provisions.Should().BeLessThan(initialProvisions);
     }
 
+    [Fact(DisplayName = "Hiring a mercenary should remove it from location and add it to player")]
+    public void Hiring_mercenary_test()
+    {
+        var chr = CreateHumanCharacter("Jax");
+        chr.Info.Wealth = 10000;
+
+        var location = gameplayService.GetLocation(chr.Position);
+        location.Mercenaries.Count.Should().BeGreaterThanOrEqualTo(1);
+
+        var merc = location.Mercenaries.First();
+        merc.Identity.Id.Should().NotBe(Guid.Empty.ToString());
+        merc.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
+
+        charService.HireMercenary(new CharacterHireMercenary() { CharacterIdentity = CreateCharIdentity(chr), MercenaryId = location.Mercenaries.First().Identity.Id });
+
+        chr.Mercenaries.Count.Should().Be(1);
+        chr.Mercenaries.First().Identity.Id.Should().Be(merc.Identity.Id);
+    }
 
 
     #region private methods

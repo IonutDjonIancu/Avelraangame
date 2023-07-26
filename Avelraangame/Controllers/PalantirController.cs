@@ -373,7 +373,7 @@ public class PalantirController : ControllerBase
         {
             equip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip);
+            var character = factory.ServiceFactory.CharacterService.EquipItem(equip);
 
             return Ok(character);
         }
@@ -392,7 +392,7 @@ public class PalantirController : ControllerBase
         {
             unequip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip);
+            var character = factory.ServiceFactory.CharacterService.UnequipItem(unequip);
 
             return Ok(character);
         }
@@ -450,6 +450,25 @@ public class PalantirController : ControllerBase
             positionTravel.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
             factory.ServiceFactory.CharacterService.TravelToLocation(positionTravel);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/HireMercenary
+    [HttpPut("Character/HireMercenary")]
+    public IActionResult HireMercenary([FromQuery] Request request, [FromBody] CharacterHireMercenary hireMercenary)
+    {
+        try
+        {
+            hireMercenary.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
+
+            factory.ServiceFactory.CharacterService.HireMercenary(hireMercenary);
 
             return Ok();
         }

@@ -12,6 +12,7 @@ internal class CharacterLogicDelegator
     private readonly CharacterPaperdollLogic charPaperdollLogic;
     private readonly CharacterInfoLogic charInfoLogic;
     private readonly CharacterTravelLogic charTravelLogic;
+    private readonly CharacterNpcInteraction charNpcInteractionLogic;
 
     private CharacterLogicDelegator() { }
     internal CharacterLogicDelegator(
@@ -27,6 +28,7 @@ internal class CharacterLogicDelegator
         charTraitsLogic = new CharacterTraitsLogic(databaseService, charPaperdollLogic);
         charCreateLogic = new CharacterCreateLogic(databaseService, diceRollService, itemService, charSheetLogic);
         charTravelLogic = new CharacterTravelLogic(databaseService, diceRollService, charPaperdollLogic);
+        charNpcInteractionLogic = new CharacterNpcInteraction(databaseService);
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -102,5 +104,10 @@ internal class CharacterLogicDelegator
     internal void MoveToLocation(CharacterTravel positionTravel)
     {
         charTravelLogic.MoveToLocation(positionTravel);
+    }
+
+    internal void MercenaryHire(CharacterHireMercenary hireMercenary)
+    {
+        charNpcInteractionLogic.MercenaryHire(hireMercenary);
     }
 }

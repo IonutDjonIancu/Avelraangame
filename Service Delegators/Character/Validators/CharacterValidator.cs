@@ -12,6 +12,19 @@ internal class CharacterValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
+    internal void ValidateMercenaryHire(CharacterHireMercenary hireMercenary)
+    {
+        ValidateCharacterPlayerCombination(hireMercenary.CharacterIdentity);
+        ValidateIfCharacterIsLocked(hireMercenary.CharacterIdentity);
+
+        var character = GetCharacter(hireMercenary.CharacterIdentity);
+
+        var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullName(character.Position)) ?? throw new Exception("Location has not been visited yet.");
+        var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId) ?? throw new Exception("Wrong mercenary id for character location.");
+
+        if (merc.Worth > character.Info.Wealth) throw new Exception($"Mercenary's worth is {merc.Worth}, but your character only has {character.Info.Wealth}.");
+    }
+
     internal void ValidateBeforeTravel(CharacterTravel positionTravel)
     {
         ValidateCharacterPlayerCombination(positionTravel.CharacterIdentity);
@@ -22,10 +35,10 @@ internal class CharacterValidator : ValidatorBase
         if (!character.Info.IsAlive) throw new Exception("Unable to travel, your character is dead.");
 
         if (character.Inventory.Provisions <= 0) throw new Exception("You don't have any provisions to travel.");
-        if (character.Henchmen.Select(s => s.Inventory.Provisions).Any(s => s <= 0)) throw new Exception("One or more of your henchmen does not have enough provisions to travel.");
+        if (character.Mercenaries.Select(s => s.Inventory.Provisions).Any(s => s <= 0)) throw new Exception("One or more of your mercenaries does not have enough provisions to travel.");
 
         var totalProvisions = character.Inventory.Provisions
-            + character.Henchmen.Select(s => s.Inventory.Provisions).Sum();
+            + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
 
         if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
 
@@ -35,9 +48,9 @@ internal class CharacterValidator : ValidatorBase
 
     internal void ValidateMaxNumberOfCharacters(string playerId)
     {
-        var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters!.Count;
+        var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Info.IsAlive).ToList().Count;
 
-        if (playerCharsCount >= 5) throw new Exception("Max number of characters reached (5 characters allowed per player)");
+        if (playerCharsCount >= 5) throw new Exception("Max number of characters reached (5 alive characters allowed per player).");
     }
 
     internal void ValidateOriginsOnSaveCharacter(CharacterOrigins origins, string playerId)

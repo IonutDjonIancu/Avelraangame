@@ -35,9 +35,10 @@ public interface ICharacterService
     #endregion
 
     #region character actions
-    Character EquipCharacterItem(CharacterEquip equip);
-    Character UnequipCharacterItem(CharacterEquip unequip);
+    Character EquipItem(CharacterEquip equip);
+    Character UnequipItem(CharacterEquip unequip);
     Character LearnHeroicTrait(CharacterHeroicTrait trait);
     void TravelToLocation(CharacterTravel positionTravel);
+    void HireMercenary(CharacterHireMercenary hireMercenary);
     #endregion
 }

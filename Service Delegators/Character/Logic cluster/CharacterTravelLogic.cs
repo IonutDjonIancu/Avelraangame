@@ -29,9 +29,9 @@ internal class CharacterTravelLogic
         var destination = GameplayLore.Map.All.Find(s => s.FullName == destinationLocationFullName)!;
         
         int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);
-        var totalPeopleInParty = character.Henchmen.Count + 1; // including the party lead
+        var totalPeopleInParty = character.Mercenaries.Count + 1; // including the party lead
         var totalProvisionsCost = travelCostPerPerson * totalPeopleInParty;
-        var totalProvisions = character.Inventory.Provisions + character.Henchmen.Select(s => s.Inventory.Provisions).Sum();
+        var totalProvisions = character.Inventory.Provisions + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
         if (totalProvisionsCost > totalProvisions) throw new Exception($"Not enough provisions for all the party to travel to {destination.Position.Location}.");
         
         var effort = diceService.Roll_1_to_n(destination.Effort);
@@ -44,7 +44,7 @@ internal class CharacterTravelLogic
 
         listOfRolls.Add(characterRoll.grade);
 
-        foreach (var npc in character.Henchmen)
+        foreach (var npc in character.Mercenaries)
         {
             var npcPaperdoll = paperdollLogic.CalculateNpcPaperdoll(npc);
             var npcRoll = diceService.Roll_gameplay_dice(npc.Info.Origins.Tradition, npcPaperdoll.Skills.Travel);
@@ -59,45 +59,45 @@ internal class CharacterTravelLogic
         if (highestRoll <= effort / 10)
         {
             character.Inventory.Provisions -= travelCostPerPerson * 10 + 1;
-            character.Henchmen.Clear();
+            character.Mercenaries.Clear();
         }
         else if (highestRoll <= effort / 5)
         {
             character.Inventory.Provisions -= travelCostPerPerson * 5 + 1;
 
-            if (character.Henchmen.Count > 0)
+            if (character.Mercenaries.Count > 0)
             {
-                var totalMenLost = diceService.Roll_1_to_n(character.Henchmen.Count);
+                var totalMenLost = diceService.Roll_1_to_n(character.Mercenaries.Count);
                 for (var i = 0; i < totalMenLost; i++)
                 {
-                    character.Henchmen.RemoveAt(i);
+                    character.Mercenaries.RemoveAt(i);
                 }                                                     
             }
         }
         else if (highestRoll <= effort / 2)
         {
             character.Inventory.Provisions -= travelCostPerPerson * 2 + 1;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2 + 1);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2 + 1);
         }
         else if (highestRoll <= effort)
         {
             character.Inventory.Provisions -= travelCostPerPerson + 1;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson + 1);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson + 1);
         }
         else if (highestRoll >= 10 * effort)
         {
             character.Inventory.Provisions -= 1;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= 1);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= 1);
         }
         else if (highestRoll >= 5 * effort)
         {
             character.Inventory.Provisions -= travelCostPerPerson / 5 + 1;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5 + 1);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5 + 1);
         }
         else if (highestRoll >= 2 * effort)
         {
             character.Inventory.Provisions -= travelCostPerPerson / 2;
-            character.Henchmen.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2);
         }
         dbs.PersistPlayer(character.Identity.PlayerId);
     }
