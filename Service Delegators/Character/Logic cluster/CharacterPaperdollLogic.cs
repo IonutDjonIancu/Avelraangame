@@ -69,8 +69,6 @@ internal class CharacterPaperdollLogic
         else if (attribute == CharactersLore.Skills.Sail)       grade = RollDice(paperdoll.Skills.Sail, character);
         else throw new NotImplementedException();
 
-        if (!string.IsNullOrEmpty(character.Identity.PlayerId)) dbs.PersistPlayer(character.Identity.PlayerId);
-
         return grade;
     }
 

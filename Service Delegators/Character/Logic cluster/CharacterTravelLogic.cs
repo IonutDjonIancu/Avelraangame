@@ -49,9 +49,6 @@ internal class CharacterTravelLogic
             listOfRolls.Add(npcRoll);
 
             npc.Position = destination.Position;
-
-            // this is to give a chance for the server to persist data on the json file on disk.
-            Thread.Sleep(500); 
         }
 
         var highestRoll = listOfRolls.Max();

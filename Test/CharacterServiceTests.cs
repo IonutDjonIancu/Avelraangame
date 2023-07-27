@@ -150,6 +150,12 @@ public class CharacterServiceTests : TestBase
     {
         var chr = CreateHumanCharacter("Jax");
 
+        if (chr.Supplies.First().Subtype == ItemsLore.Subtypes.Wealth.Goods)
+        {
+            chr.Supplies.Clear();
+            chr.Supplies.Add(itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword));
+        }
+
         var item = chr.Supplies.First();
         item.Should().NotBeNull();
 
@@ -188,6 +194,12 @@ public class CharacterServiceTests : TestBase
     public void Unequip_item_from_character_inventory_test()
     {
         var chr = CreateHumanCharacter("Jax");
+
+        if (chr.Supplies.First().Subtype == ItemsLore.Subtypes.Wealth.Goods)
+        {
+            chr.Supplies.Clear();
+            chr.Supplies.Add(itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword));
+        }
 
         var item = chr.Supplies.First();
         item.Should().NotBeNull();
