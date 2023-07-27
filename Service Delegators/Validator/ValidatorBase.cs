@@ -36,7 +36,6 @@ internal class ValidatorBase
         if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
     }
 
-
     internal void ValidateCharacterPlayerCombination(CharacterIdentity characterIdentity)
     {
         ValidateGuid(characterIdentity.Id);

@@ -13,7 +13,7 @@ public class TestBase
     protected readonly IDiceRollService diceService;
     protected readonly IPlayerService playerService;
     protected readonly IItemService itemService;
-    protected readonly ICharacterService characterService;
+    protected readonly ICharacterService charService;
     protected readonly INpcService npcService;
     protected readonly IGameplayService gameplayService;
 
@@ -34,8 +34,8 @@ public class TestBase
         diceService = new DiceRollService(dbs);
         playerService = new PlayerService(dbs);
         itemService = new ItemService(dbs, diceService);
-        characterService = new CharacterService(dbs, diceService, itemService);
-        npcService = new NpcService(dbs, diceService, itemService, characterService);
+        charService = new CharacterService(dbs, diceService, itemService);
+        npcService = new NpcService(dbs, diceService, itemService, charService);
         gameplayService = new GameplayService(dbs, diceService, itemService, npcService);
     }
 
@@ -52,7 +52,7 @@ public class TestBase
         var playerId = CreatePlayer(playerName);
         dbs.Snapshot.CharacterStubs.Clear();
 
-        characterService.CreateCharacterStub(playerId);
+        charService.CreateCharacterStub(playerId);
 
         var origins = new CharacterOrigins
         {
@@ -62,6 +62,6 @@ public class TestBase
             Class = CharactersLore.Classes.Warrior
         };
 
-        return characterService.SaveCharacterStub(origins, playerId);
+        return charService.SaveCharacterStub(origins, playerId);
     }
 }

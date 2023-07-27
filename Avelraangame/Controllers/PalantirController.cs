@@ -373,7 +373,7 @@ public class PalantirController : ControllerBase
         {
             equip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.EquipCharacterItem(equip);
+            var character = factory.ServiceFactory.CharacterService.CharacterEquipItem(equip);
 
             return Ok(character);
         }
@@ -392,7 +392,7 @@ public class PalantirController : ControllerBase
         {
             unequip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.UnequipCharacterItem(unequip);
+            var character = factory.ServiceFactory.CharacterService.CharacterUnequipItem(unequip);
 
             return Ok(character);
         }
@@ -411,7 +411,7 @@ public class PalantirController : ControllerBase
         {
             trait.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.LearnHeroicTrait(trait);
+            var character = factory.ServiceFactory.CharacterService.CharacterLearnHeroicTrait(trait);
 
             return Ok(character);
         }
@@ -430,9 +430,28 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+            var paperdoll = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
-            return Ok(character);
+            return Ok(paperdoll);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // GET: /api/palantir/Character/GetCharacterNpcPaperdoll
+    [HttpGet("Character/GetCharacterNpcPaperdoll")]
+    public IActionResult GetCharacterNpcPaperdoll([FromQuery] Request request, string characterId, string npcId)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var paperdoll = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacterNpc(new CharacterIdentity() { Id = characterId, PlayerId = playerId }, npcId);
+
+            return Ok(paperdoll);
         }
         catch (Exception ex)
         {
@@ -449,7 +468,26 @@ public class PalantirController : ControllerBase
         {
             positionTravel.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
 
-            factory.ServiceFactory.CharacterService.TravelToLocation(positionTravel);
+            factory.ServiceFactory.CharacterService.CharacterTravelToLocation(positionTravel);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/HireMercenary
+    [HttpPut("Character/HireMercenary")]
+    public IActionResult HireMercenary([FromQuery] Request request, [FromBody] CharacterHireMercenary hireMercenary)
+    {
+        try
+        {
+            hireMercenary.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
+
+            factory.ServiceFactory.CharacterService.CharacterHireMercenary(hireMercenary);
 
             return Ok();
         }

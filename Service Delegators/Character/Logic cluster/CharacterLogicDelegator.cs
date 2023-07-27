@@ -12,6 +12,7 @@ internal class CharacterLogicDelegator
     private readonly CharacterPaperdollLogic charPaperdollLogic;
     private readonly CharacterInfoLogic charInfoLogic;
     private readonly CharacterTravelLogic charTravelLogic;
+    private readonly CharacterNpcInteraction charNpcInteractionLogic;
 
     private CharacterLogicDelegator() { }
     internal CharacterLogicDelegator(
@@ -23,10 +24,11 @@ internal class CharacterLogicDelegator
         charInfoLogic = new CharacterInfoLogic(databaseService);
         charItemsLogic = new CharacterItemsLogic(databaseService);
         charLevelupLogic = new CharacterLevelupLogic(databaseService);
-        charPaperdollLogic = new CharacterPaperdollLogic(databaseService);
+        charPaperdollLogic = new CharacterPaperdollLogic(databaseService, diceRollService);
         charTraitsLogic = new CharacterTraitsLogic(databaseService, charPaperdollLogic);
         charCreateLogic = new CharacterCreateLogic(databaseService, diceRollService, itemService, charSheetLogic);
         charTravelLogic = new CharacterTravelLogic(databaseService, diceRollService, charPaperdollLogic);
+        charNpcInteractionLogic = new CharacterNpcInteraction(databaseService);
     }
 
     internal CharacterStub CreateStub(string playerId)
@@ -89,18 +91,33 @@ internal class CharacterLogicDelegator
         return charTraitsLogic.ApplyHeroicTrait(trait);
     }
 
-    internal CharacterPaperdoll CalculatePaperdollForCharacter(CharacterIdentity identity)
+    internal CharacterPaperdoll CalculatePaperdollForCharacterIdentity(CharacterIdentity identity)
     {
-        return charPaperdollLogic.CalculatePaperdollForCharacter(identity);
+        return charPaperdollLogic.CalculatePaperdoll(identity);
     }
 
-    internal CharacterPaperdoll CalculatePaperdollOnly(Character character)
+    internal CharacterPaperdoll CalculatePaperdollForCharacterNpc(CharacterIdentity identity, string npcId)
     {
-        return charPaperdollLogic.CalculateCharPaperdoll(character);
+        return charPaperdollLogic.CalculatePaperdoll(identity, npcId);
+    }
+
+    internal CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
+    {
+        return charPaperdollLogic.CalculatePaperdoll(character);
+    }
+
+    internal int PaperdollRoll(string attributeRolled, Character character)
+    {
+        return charPaperdollLogic.PaperdollDiceRoll(attributeRolled, character);
     }
 
     internal void MoveToLocation(CharacterTravel positionTravel)
     {
         charTravelLogic.MoveToLocation(positionTravel);
+    }
+
+    internal void MercenaryHire(CharacterHireMercenary hireMercenary)
+    {
+        charNpcInteractionLogic.MercenaryHire(hireMercenary);
     }
 }

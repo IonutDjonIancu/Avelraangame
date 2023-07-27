@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class Character : CharacterBase
+public class Character : CharacterBase, ICharacter
 {
-    public List<NpcCharacter> Henchmen { get; set; } = new();
+    public List<NpcCharacter> Mercenaries { get; set; } = new();
 }
