@@ -31,6 +31,7 @@ public interface ICharacterService
 
     #region paperdoll
     CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity);
+    CharacterPaperdoll CalculatePaperdollForPlayerCharacterNpc(CharacterIdentity identity, string npcId);
     CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character);
     int CharacterPaperdollRoll(string attributeRolled, Character character);
     #endregion

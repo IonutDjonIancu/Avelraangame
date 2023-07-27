@@ -12,6 +12,15 @@ internal class CharacterValidator : ValidatorBase
         this.snapshot = snapshot;
     }
 
+    internal void ValidatePlayerCharacterNpc(CharacterIdentity identity, string npcId)
+    {
+        ValidateCharacterPlayerCombination(identity);
+
+        var character = GetCharacter(identity);
+
+        if (!character.Mercenaries.Exists(s => s.Identity.Id == npcId)) throw new Exception("Npc not found for the indicated character.");
+    }
+
     internal void ValidateMercenaryHire(CharacterHireMercenary hireMercenary)
     {
         ValidateCharacterPlayerCombination(hireMercenary.CharacterIdentity);

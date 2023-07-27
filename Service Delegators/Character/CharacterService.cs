@@ -112,6 +112,12 @@ public class CharacterService : ICharacterService
         return logic.CalculatePaperdollForCharacterIdentity(identity);
     }
 
+    public CharacterPaperdoll CalculatePaperdollForPlayerCharacterNpc(CharacterIdentity identity, string npcId)
+    {
+        validator.ValidatePlayerCharacterNpc(identity, npcId);
+        return logic.CalculatePaperdollForCharacterNpc(identity, npcId);
+    }
+
     public CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
     {
         return logic.CalculatePaperdollForCharacter(character);

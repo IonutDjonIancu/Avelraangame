@@ -430,9 +430,28 @@ public class PalantirController : ControllerBase
         {
             var playerId = MatchTokensForPlayer(request);
 
-            var character = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+            var paperdoll = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
-            return Ok(character);
+            return Ok(paperdoll);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // GET: /api/palantir/Character/GetCharacterNpcPaperdoll
+    [HttpGet("Character/GetCharacterNpcPaperdoll")]
+    public IActionResult GetCharacterNpcPaperdoll([FromQuery] Request request, string characterId, string npcId)
+    {
+        try
+        {
+            var playerId = MatchTokensForPlayer(request);
+
+            var paperdoll = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacterNpc(new CharacterIdentity() { Id = characterId, PlayerId = playerId }, npcId);
+
+            return Ok(paperdoll);
         }
         catch (Exception ex)
         {

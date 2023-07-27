@@ -93,12 +93,17 @@ internal class CharacterLogicDelegator
 
     internal CharacterPaperdoll CalculatePaperdollForCharacterIdentity(CharacterIdentity identity)
     {
-        return charPaperdollLogic.CalculatePaperdollByCharacterIdentity(identity);
+        return charPaperdollLogic.CalculatePaperdoll(identity);
+    }
+
+    internal CharacterPaperdoll CalculatePaperdollForCharacterNpc(CharacterIdentity identity, string npcId)
+    {
+        return charPaperdollLogic.CalculatePaperdoll(identity, npcId);
     }
 
     internal CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
     {
-        return charPaperdollLogic.CalculatePaperdollByCharacter(character);
+        return charPaperdollLogic.CalculatePaperdoll(character);
     }
 
     internal int PaperdollRoll(string attributeRolled, Character character)

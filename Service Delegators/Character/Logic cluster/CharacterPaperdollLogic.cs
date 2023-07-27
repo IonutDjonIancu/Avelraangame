@@ -18,16 +18,24 @@ internal class CharacterPaperdollLogic
         dice = diceRollService;
     }
 
-    internal CharacterPaperdoll CalculatePaperdollByCharacterIdentity(CharacterIdentity charIdentity)
+    internal CharacterPaperdoll CalculatePaperdoll(CharacterIdentity charIdentity)
     {
         var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
 
-        return CalculatePaperdoll(character);
+        return GetPaperdoll(character);
     }
 
-    internal CharacterPaperdoll CalculatePaperdollByCharacter(ICharacter npc)
+    internal CharacterPaperdoll CalculatePaperdoll(CharacterIdentity characterIdentity, string npcId)
     {
-        return CalculatePaperdoll(npc);
+        var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == characterIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == characterIdentity.Id)!;
+        var npc = character.Mercenaries.Find(s => s.Identity.Id == npcId)!;
+
+        return GetPaperdoll(npc);
+    }
+
+    internal CharacterPaperdoll CalculatePaperdoll(ICharacter character)
+    {
+        return GetPaperdoll(character);
     }
 
     /// <summary>
@@ -39,7 +47,7 @@ internal class CharacterPaperdollLogic
     /// <exception cref="NotImplementedException"></exception>
     internal int PaperdollDiceRoll(string attribute, ICharacter character)
     {
-        var paperdoll = CalculatePaperdoll(character);
+        var paperdoll = GetPaperdoll(character);
         int grade;
 
         if      (attribute == CharactersLore.Stats.Strength)    grade = RollDice(paperdoll.Stats.Strength, character);
@@ -86,7 +94,7 @@ internal class CharacterPaperdollLogic
         }
     }
 
-    private CharacterPaperdoll CalculatePaperdoll(ICharacter character)
+    private CharacterPaperdoll GetPaperdoll(ICharacter character)
     {
         var items = character.Inventory.GetAllEquipedItems();
         var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
