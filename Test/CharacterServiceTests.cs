@@ -166,7 +166,7 @@ public class CharacterServiceTests : TestBase
             ItemId = chr.Supplies.First().Identity.Id
         };
 
-        charService.EquipItem(equip);
+        charService.CharacterEquipItem(equip);
 
         var hasEquipedItem =
             chr.Inventory.Head != null
@@ -205,8 +205,8 @@ public class CharacterServiceTests : TestBase
             ItemId = chr.Supplies.First().Identity.Id
         };
 
-        charService.EquipItem(equip);
-        charService.UnequipItem(equip);
+        charService.CharacterEquipItem(equip);
+        charService.CharacterUnequipItem(equip);
 
         var hasEquipedItem =
             chr.Inventory.Head != null
@@ -244,12 +244,12 @@ public class CharacterServiceTests : TestBase
         };
 
         var combatBeforeTrait = chr.Sheet.Skills.Combat;
-        charService.LearnHeroicTrait(trait);
+        charService.CharacterLearnHeroicTrait(trait);
         var combatIncreasedOnce = chr.Sheet.Skills.Combat;
 
         combatBeforeTrait.Should().BeLessThan(combatIncreasedOnce);
 
-        charService.LearnHeroicTrait(trait);
+        charService.CharacterLearnHeroicTrait(trait);
         var combatIncreasedTwice = chr.Sheet.Skills.Combat;
 
         combatIncreasedOnce.Should().BeLessThan(combatIncreasedTwice);
@@ -273,9 +273,9 @@ public class CharacterServiceTests : TestBase
             HeroicTraitId = metachaos.Identity.Id,
         };
 
-        charService.LearnHeroicTrait(trait);
+        charService.CharacterLearnHeroicTrait(trait);
 
-        Assert.Throws<Exception>(() => charService.LearnHeroicTrait(trait));
+        Assert.Throws<Exception>(() => charService.CharacterLearnHeroicTrait(trait));
     }
 
     [Fact(DisplayName = "Create character paperdoll")]
@@ -305,8 +305,8 @@ public class CharacterServiceTests : TestBase
             },
             HeroicTraitId = metachaos.Identity.Id,
         };
-        charService.LearnHeroicTrait(candlelightTrait);
-        charService.LearnHeroicTrait(metachaosTrait);
+        charService.CharacterLearnHeroicTrait(candlelightTrait);
+        charService.CharacterLearnHeroicTrait(metachaosTrait);
 
         var charIdentity = new CharacterIdentity
         {
@@ -315,7 +315,7 @@ public class CharacterServiceTests : TestBase
         };
 
         var paperdoll = charService.CalculatePaperdollForPlayerCharacter(charIdentity);
-
+        
         paperdoll.Should().NotBeNull();
         paperdoll.Stats.Should().NotBeNull();
         paperdoll.Assets.Should().NotBeNull();
@@ -351,7 +351,7 @@ public class CharacterServiceTests : TestBase
 
         var initialProvisions = chr.Inventory.Provisions;
 
-        charService.TravelToLocation(travelToPosition);
+        charService.CharacterTravelToLocation(travelToPosition);
 
         chr.Inventory.Provisions.Should().BeLessThan(initialProvisions);
     }
@@ -369,7 +369,7 @@ public class CharacterServiceTests : TestBase
         merc.Identity.Id.Should().NotBe(Guid.Empty.ToString());
         merc.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
 
-        charService.HireMercenary(new CharacterHireMercenary() { CharacterIdentity = CreateCharIdentity(chr), MercenaryId = location.Mercenaries.First().Identity.Id });
+        charService.CharacterHireMercenary(new CharacterHireMercenary() { CharacterIdentity = CreateCharIdentity(chr), MercenaryId = location.Mercenaries.First().Identity.Id });
 
         chr.Mercenaries.Count.Should().Be(1);
         chr.Mercenaries.First().Identity.Id.Should().Be(merc.Identity.Id);

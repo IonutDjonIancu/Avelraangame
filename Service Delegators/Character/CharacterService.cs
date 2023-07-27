@@ -94,13 +94,13 @@ public class CharacterService : ICharacterService
         };
     }
 
-    public Character EquipItem(CharacterEquip equip)
+    public Character CharacterEquipItem(CharacterEquip equip)
     {
         validator.ValidateCharacterEquipUnequipItem(equip, true);
         return logic.EquipItem(equip);
     }
 
-    public Character UnequipItem(CharacterEquip unequip)
+    public Character CharacterUnequipItem(CharacterEquip unequip)
     {
         validator.ValidateCharacterEquipUnequipItem(unequip, false);
         return logic.UnequipItem(unequip);
@@ -109,27 +109,32 @@ public class CharacterService : ICharacterService
     public CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);
-        return logic.CalculatePaperdollForCharacter(identity);
+        return logic.CalculatePaperdollForCharacterIdentity(identity);
     }
 
-    public CharacterPaperdoll CalculatePaperdoll(Character character)
+    public CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
     {
-        return logic.CalculatePaperdollOnly(character);
+        return logic.CalculatePaperdollForCharacter(character);
     }
 
-    public Character LearnHeroicTrait(CharacterHeroicTrait trait)
+    public int CharacterPaperdollRoll(string attributeRolled, Character character)
+    {
+        return logic.PaperdollRoll(attributeRolled, character);
+    }
+
+    public Character CharacterLearnHeroicTrait(CharacterHeroicTrait trait)
     {
         validator.ValidateCharacterLearnHeroicTrait(trait);
         return logic.ApplyHeroicTrait(trait);
     }
 
-    public void TravelToLocation(CharacterTravel positionTravel)
+    public void CharacterTravelToLocation(CharacterTravel positionTravel)
     {
         validator.ValidateBeforeTravel(positionTravel);
         logic.MoveToLocation(positionTravel);
     }
 
-    public void HireMercenary(CharacterHireMercenary hireMercenary)
+    public void CharacterHireMercenary(CharacterHireMercenary hireMercenary)
     {
         validator.ValidateMercenaryHire(hireMercenary);
         logic.MercenaryHire(hireMercenary);

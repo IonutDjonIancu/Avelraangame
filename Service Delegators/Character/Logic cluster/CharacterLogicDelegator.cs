@@ -24,7 +24,7 @@ internal class CharacterLogicDelegator
         charInfoLogic = new CharacterInfoLogic(databaseService);
         charItemsLogic = new CharacterItemsLogic(databaseService);
         charLevelupLogic = new CharacterLevelupLogic(databaseService);
-        charPaperdollLogic = new CharacterPaperdollLogic(databaseService);
+        charPaperdollLogic = new CharacterPaperdollLogic(databaseService, diceRollService);
         charTraitsLogic = new CharacterTraitsLogic(databaseService, charPaperdollLogic);
         charCreateLogic = new CharacterCreateLogic(databaseService, diceRollService, itemService, charSheetLogic);
         charTravelLogic = new CharacterTravelLogic(databaseService, diceRollService, charPaperdollLogic);
@@ -91,14 +91,19 @@ internal class CharacterLogicDelegator
         return charTraitsLogic.ApplyHeroicTrait(trait);
     }
 
-    internal CharacterPaperdoll CalculatePaperdollForCharacter(CharacterIdentity identity)
+    internal CharacterPaperdoll CalculatePaperdollForCharacterIdentity(CharacterIdentity identity)
     {
-        return charPaperdollLogic.CalculatePaperdollForCharacter(identity);
+        return charPaperdollLogic.CalculatePaperdollByCharacterIdentity(identity);
     }
 
-    internal CharacterPaperdoll CalculatePaperdollOnly(Character character)
+    internal CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
     {
-        return charPaperdollLogic.CalculateCharPaperdoll(character);
+        return charPaperdollLogic.CalculatePaperdollByCharacter(character);
+    }
+
+    internal int PaperdollRoll(string attributeRolled, Character character)
+    {
+        return charPaperdollLogic.PaperdollDiceRoll(attributeRolled, character);
     }
 
     internal void MoveToLocation(CharacterTravel positionTravel)

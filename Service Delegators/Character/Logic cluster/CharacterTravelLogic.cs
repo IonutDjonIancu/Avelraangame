@@ -15,8 +15,8 @@ internal class CharacterTravelLogic
         CharacterPaperdollLogic characterPaperdollLogic)
     {
         dbs = databaseService;
-        paperdollLogic = characterPaperdollLogic;
         diceService = diceRollService;
+        paperdollLogic = characterPaperdollLogic;
     }
 
     internal void MoveToLocation(CharacterTravel positionTravel)
@@ -34,36 +34,36 @@ internal class CharacterTravelLogic
         var totalProvisions = character.Inventory.Provisions + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
         if (totalProvisionsCost > totalProvisions) throw new Exception($"Not enough provisions for all the party to travel to {destination.Position.Location}.");
         
+        character.Position = destination.Position;
+        
         var effort = diceService.Roll_1_to_n(destination.Effort);
         var listOfRolls = new List<int>();
 
-        var charPaperdoll = paperdollLogic.CalculateCharPaperdoll(character);
-        var characterRoll = diceService.Roll_gameplay_dice(character.Info.Origins.Tradition, charPaperdoll.Skills.Travel);
-        paperdollLogic.LevelUpChar(characterRoll.crits, character);
-        character.Position = destination.Position;
+        var characterRoll = paperdollLogic.PaperdollDiceRoll(CharactersLore.Skills.Travel, character);
 
-        listOfRolls.Add(characterRoll.grade);
+        listOfRolls.Add(characterRoll);
 
         foreach (var npc in character.Mercenaries)
         {
-            var npcPaperdoll = paperdollLogic.CalculateNpcPaperdoll(npc);
-            var npcRoll = diceService.Roll_gameplay_dice(npc.Info.Origins.Tradition, npcPaperdoll.Skills.Travel);
-            paperdollLogic.LevelUpNpc(npcRoll.crits, npc);
+            var npcRoll = paperdollLogic.PaperdollDiceRoll(CharactersLore.Skills.Travel, npc);
+            listOfRolls.Add(npcRoll);
+
             npc.Position = destination.Position;
 
-            listOfRolls.Add(npcRoll.grade);
+            // this is to give a chance for the server to persist data on the json file on disk.
+            Thread.Sleep(500); 
         }
 
         var highestRoll = listOfRolls.Max();
 
         if (highestRoll <= effort / 10)
         {
-            character.Inventory.Provisions -= travelCostPerPerson * 10 + 1;
+            character.Inventory.Provisions -= travelCostPerPerson * 10;
             character.Mercenaries.Clear();
         }
         else if (highestRoll <= effort / 5)
         {
-            character.Inventory.Provisions -= travelCostPerPerson * 5 + 1;
+            character.Inventory.Provisions -= travelCostPerPerson * 5;
 
             if (character.Mercenaries.Count > 0)
             {
@@ -76,29 +76,32 @@ internal class CharacterTravelLogic
         }
         else if (highestRoll <= effort / 2)
         {
-            character.Inventory.Provisions -= travelCostPerPerson * 2 + 1;
-            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2 + 1);
+            character.Inventory.Provisions -= travelCostPerPerson * 2;
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2);
         }
         else if (highestRoll <= effort)
         {
             character.Inventory.Provisions -= travelCostPerPerson + 1;
-            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson + 1);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson);
         }
         else if (highestRoll >= 10 * effort)
         {
-            character.Inventory.Provisions -= 1;
-            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= 1);
+            // minimum cost accounted for, lives off the land
         }
         else if (highestRoll >= 5 * effort)
         {
             character.Inventory.Provisions -= travelCostPerPerson / 5 + 1;
-            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5 + 1);
+            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5);
         }
         else if (highestRoll >= 2 * effort)
         {
             character.Inventory.Provisions -= travelCostPerPerson / 2;
             character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2);
         }
+
+        character.Inventory.Provisions -= 1;
+        character.Mercenaries.ForEach(s => s.Inventory.Provisions -= 1);
+
         dbs.PersistPlayer(character.Identity.PlayerId);
     }
 

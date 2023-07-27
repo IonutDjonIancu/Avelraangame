@@ -190,6 +190,7 @@ internal class CharacterCreateLogic
 
             Fame = SetFame(origins.Culture, origins.Class),
             IsAlive = true,
+            IsNpc = false,
 
             Wealth = 0,
             NrOfQuestsFinished = 0,

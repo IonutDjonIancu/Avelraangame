@@ -12,6 +12,8 @@ public class NpcServiceTests : TestBase
 
         Assert.NotNull(npc);
         npc.Worth.Should().BeGreaterThan(0);
+        npc.Info.IsNpc.Should().BeTrue();
+        npc.Info.IsAlive.Should().BeTrue();
     }
 
     [Fact(DisplayName = "Create bad guy npc")]
@@ -25,5 +27,7 @@ public class NpcServiceTests : TestBase
         Assert.NotNull(npc);
         npc.Worth.Should().Be(0);
         npc.Info.Wealth.Should().BeGreaterThan(0);
+        npc.Info.IsNpc.Should().BeTrue();
+        npc.Info.IsAlive.Should().BeTrue();
     }
 }

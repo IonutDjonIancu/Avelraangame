@@ -19,7 +19,8 @@ internal class CharacterNpcInteraction
         var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId)!;
 
         character.Info.Wealth -= merc.Worth;
-        
+        merc.Identity.PlayerId = character.Identity.PlayerId;
+
         character.Mercenaries.Add(merc);
         location.Mercenaries.Remove(merc);
 

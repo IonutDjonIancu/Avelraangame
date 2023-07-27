@@ -31,14 +31,15 @@ public interface ICharacterService
 
     #region paperdoll
     CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity);
-    CharacterPaperdoll CalculatePaperdoll(Character character);
+    CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character);
+    int CharacterPaperdollRoll(string attributeRolled, Character character);
     #endregion
 
     #region character actions
-    Character EquipItem(CharacterEquip equip);
-    Character UnequipItem(CharacterEquip unequip);
-    Character LearnHeroicTrait(CharacterHeroicTrait trait);
-    void TravelToLocation(CharacterTravel positionTravel);
-    void HireMercenary(CharacterHireMercenary hireMercenary);
+    Character CharacterEquipItem(CharacterEquip equip);
+    Character CharacterUnequipItem(CharacterEquip unequip);
+    Character CharacterLearnHeroicTrait(CharacterHeroicTrait trait);
+    void CharacterTravelToLocation(CharacterTravel positionTravel);
+    void CharacterHireMercenary(CharacterHireMercenary hireMercenary);
     #endregion
 }

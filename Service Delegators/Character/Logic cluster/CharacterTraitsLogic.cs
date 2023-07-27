@@ -41,7 +41,7 @@ internal class CharacterTraitsLogic
 
     private void RunSwordsmanLogic(Character character)
     {
-        var paperdollCombatValue = paperdollLogic.CalculateCharPaperdoll(character).Skills.Combat;
+        var paperdollCombatValue = paperdollLogic.CalculatePaperdollByCharacter(character).Skills.Combat;
         var value = 5 + (int)Math.Floor(paperdollCombatValue * 0.01);
         character.Sheet.Skills.Combat += value;
     }
