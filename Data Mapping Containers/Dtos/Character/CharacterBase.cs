@@ -2,7 +2,7 @@
 
 namespace Data_Mapping_Containers.Dtos;
 
-public class CharacterBase
+public class CharacterBase : ICharacter
 {
     public CharacterIdentity Identity { get; set; } = new();
     public CharacterInfo Info { get; set; } = new();

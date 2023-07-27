@@ -41,6 +41,7 @@ internal class NpcLogicDelegator
             EntityLevel = entityLvl,
             DateOfBirth = DateTime.Now.ToShortDateString(),
             IsAlive = true,
+            IsNpc = true,
             Fame = $"A brigand of {position.Location}.",
             Wealth = diceService.Roll_100_noReroll(),
             Origins = new CharacterOrigins()
@@ -87,6 +88,7 @@ internal class NpcLogicDelegator
             EntityLevel = entityLvl,
             DateOfBirth = DateTime.Now.ToShortDateString(),
             IsAlive = true,
+            IsNpc = true,
             Fame = $"This person is quite well known around {position.Location}.",
             Wealth = 0,
             Origins = new CharacterOrigins()

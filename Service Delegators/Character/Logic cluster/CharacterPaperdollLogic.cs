@@ -7,78 +7,82 @@ namespace Service_Delegators;
 internal class CharacterPaperdollLogic
 {
     private readonly IDatabaseService dbs;
+    private readonly IDiceRollService dice;
 
     private CharacterPaperdollLogic() { }
-    internal CharacterPaperdollLogic(IDatabaseService databaseService)
+    internal CharacterPaperdollLogic(
+        IDatabaseService databaseService,
+        IDiceRollService diceRollService)
     {
         dbs = databaseService;
+        dice = diceRollService;
     }
 
-    internal CharacterPaperdoll CalculatePaperdollForCharacter(CharacterIdentity charIdentity)
+    internal CharacterPaperdoll CalculatePaperdoll(CharacterIdentity charIdentity)
     {
         var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
 
-        return CalculateCharPaperdoll(character);
+        return GetPaperdoll(character);
     }
 
-    internal CharacterPaperdoll CalculateCharPaperdoll(Character character)
+    internal CharacterPaperdoll CalculatePaperdoll(CharacterIdentity characterIdentity, string npcId)
     {
-        return CalculatePaperdoll(GetBaseFromCharacter(character));
+        var character = dbs.Snapshot.Players.Find(p => p.Identity.Id == characterIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == characterIdentity.Id)!;
+        var npc = character.Mercenaries.Find(s => s.Identity.Id == npcId)!;
+
+        return GetPaperdoll(npc);
     }
 
-    internal CharacterPaperdoll CalculateNpcPaperdoll(NpcCharacter npc)
+    internal CharacterPaperdoll CalculatePaperdoll(ICharacter character)
     {
-        return CalculatePaperdoll(GetBaseFromNpc(npc));
+        return GetPaperdoll(character);
     }
 
-    internal void LevelUpChar(int crits, Character character)
+    /// <summary>
+    /// Generic gameplay roll. This is the official dice roll for characters and npcs. Includes a level up and persistence.
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <param name="character"></param>
+    /// <returns>The grade expressed as int.</returns>
+    /// <exception cref="NotImplementedException"></exception>
+    internal int PaperdollDiceRoll(string attribute, ICharacter character)
     {
-        LevelUpByCrits(crits, GetBaseFromCharacter(character));
-    }
+        var paperdoll = GetPaperdoll(character);
+        int grade;
 
-    internal void LevelUpNpc(int crits, NpcCharacter npc)
-    {
-        LevelUpByCrits(crits, GetBaseFromNpc(npc));
+        if      (attribute == CharactersLore.Stats.Strength)    grade = RollDice(paperdoll.Stats.Strength, character);
+        else if (attribute == CharactersLore.Stats.Constitution)grade = RollDice(paperdoll.Stats.Constitution, character);
+        else if (attribute == CharactersLore.Stats.Agility)     grade = RollDice(paperdoll.Stats.Agility, character);
+        else if (attribute == CharactersLore.Stats.Willpower)   grade = RollDice(paperdoll.Stats.Willpower, character);
+        else if (attribute == CharactersLore.Stats.Perception)  grade = RollDice(paperdoll.Stats.Perception, character);
+        else if (attribute == CharactersLore.Stats.Abstract)    grade = RollDice(paperdoll.Stats.Abstract, character);
+
+        else if (attribute == CharactersLore.Skills.Combat)     grade = RollDice(paperdoll.Skills.Combat, character);
+        else if (attribute == CharactersLore.Skills.Arcane)     grade = RollDice(paperdoll.Skills.Arcane, character);
+        else if (attribute == CharactersLore.Skills.Psionics)   grade = RollDice(paperdoll.Skills.Psionics, character);
+        else if (attribute == CharactersLore.Skills.Hide)       grade = RollDice(paperdoll.Skills.Hide, character);
+        else if (attribute == CharactersLore.Skills.Traps)      grade = RollDice(paperdoll.Skills.Traps, character);
+        else if (attribute == CharactersLore.Skills.Tactics)    grade = RollDice(paperdoll.Skills.Tactics, character);
+        else if (attribute == CharactersLore.Skills.Social)     grade = RollDice(paperdoll.Skills.Social, character);
+        else if (attribute == CharactersLore.Skills.Apothecary) grade = RollDice(paperdoll.Skills.Apothecary, character);
+        else if (attribute == CharactersLore.Skills.Travel)     grade = RollDice(paperdoll.Skills.Travel, character);
+        else if (attribute == CharactersLore.Skills.Sail)       grade = RollDice(paperdoll.Skills.Sail, character);
+        else throw new NotImplementedException();
+
+        return grade;
     }
 
     #region private methods
-    private CharacterBase GetBaseFromCharacter(Character character)
+    private int RollDice(int attributeValue, ICharacter character)
     {
-        var characterBase = new CharacterBase
-        {
-            Identity = character.Identity,
-            Info = character.Info,
-            Status = character.Status,
-            Position = character.Position,
-            LevelUp = character.LevelUp,
-            Sheet = character.Sheet,
-            Inventory = character.Inventory,
-            Supplies = character.Supplies,
-            HeroicTraits = character.HeroicTraits
-        };
+        var (grade, crits) = dice.Roll_gameplay_dice(character.Info.Origins.Tradition, attributeValue);
 
-        return characterBase;
+        LevelUpByCrits(crits, character);
+
+        return grade;
     }
 
-    private CharacterBase GetBaseFromNpc(NpcCharacter npc)
-    {
-        var characterBase = new CharacterBase
-        {
-            Identity = npc.Identity,
-            Info = npc.Info,
-            Status = npc.Status,
-            Position = npc.Position,
-            LevelUp = npc.LevelUp,
-            Sheet = npc.Sheet,
-            Inventory = npc.Inventory,
-            Supplies = npc.Supplies,
-            HeroicTraits = npc.HeroicTraits
-        };
-
-        return characterBase;
-    }
-
-    private void LevelUpByCrits(int crits, CharacterBase character)
+    private void LevelUpByCrits(int crits, ICharacter character)
     {
         for (var i = 0; i < crits; i++)
         {
@@ -88,7 +92,7 @@ internal class CharacterPaperdollLogic
         }
     }
 
-    private CharacterPaperdoll CalculatePaperdoll(CharacterBase character)
+    private CharacterPaperdoll GetPaperdoll(ICharacter character)
     {
         var items = character.Inventory.GetAllEquipedItems();
         var passiveTraits = character.HeroicTraits.Where(t => t.Type == TraitsLore.Type.passive).ToList();
@@ -113,7 +117,7 @@ internal class CharacterPaperdollLogic
 
 
 
-    private static void CalculatePaperdollStats(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollStats(ICharacter character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemStrBonus = 0;
         var itemConBonus = 0;
@@ -143,7 +147,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private static void CalculatePaperdollAssets(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollAssets(ICharacter character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemResBonus = 0;
         var itemHarBonus = 0;
@@ -179,7 +183,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private static void CalculatePaperdollSkills(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollSkills(ICharacter character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         var itemComBonus = 0;
         var itemArcBonus = 0;
@@ -221,7 +225,7 @@ internal class CharacterPaperdollLogic
         };
     }
 
-    private static void CalculatePaperdollSpecialSkills(CharacterBase character, List<Item> items, CharacterPaperdoll paperdoll)
+    private static void CalculatePaperdollSpecialSkills(ICharacter character, List<Item> items, CharacterPaperdoll paperdoll)
     {
         if (character.HeroicTraits == null) return;
 
