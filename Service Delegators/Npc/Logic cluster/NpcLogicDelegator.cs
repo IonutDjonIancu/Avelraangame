@@ -55,7 +55,7 @@ internal class NpcLogicDelegator
 
         chr.Position = position;
 
-        chr.Status = new CharacterStatus();
+        chr.Status = new CharacterGameplayInfo();
         chr.LevelUp = new CharacterLevelUp();
 
         chr.Sheet = SetCharacterSheet(race, effortUpper);
@@ -102,7 +102,7 @@ internal class NpcLogicDelegator
 
         chr.Position = position;
 
-        chr.Status = new CharacterStatus();
+        chr.Status = new CharacterGameplayInfo();
         chr.LevelUp = new CharacterLevelUp();
 
         chr.Sheet = SetCharacterSheet(race, effortUpper);

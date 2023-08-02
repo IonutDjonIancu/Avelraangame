@@ -59,7 +59,7 @@ internal class CharacterCreateLogic
 
             Info = info,
             LevelUp = new CharacterLevelUp(),
-            Status = new CharacterStatus()
+            Status = new CharacterGameplayInfo()
             {
                 IsLockedToModify = false,
                 QuestId = string.Empty,
