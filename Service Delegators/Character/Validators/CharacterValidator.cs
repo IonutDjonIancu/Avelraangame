@@ -261,7 +261,7 @@ internal class CharacterValidator : ValidatorBase
             reason = "a story event";
         }
 
-        if (chr.Status.IsLockedForModify) throw new Exception($"Unable to modify character at this time, character is in {reason}.");
+        if (chr.Status.IsLockedToModify) throw new Exception($"Unable to modify character at this time, character is in {reason}.");
     }
 
     #region private methods

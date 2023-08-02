@@ -9,4 +9,6 @@ public class CharacterAssets
     public int Defense { get; set; }
     public int Purge { get; set; }
     public int Mana { get; set; }
+
+    public int ActionTokens { get; set; }
 }

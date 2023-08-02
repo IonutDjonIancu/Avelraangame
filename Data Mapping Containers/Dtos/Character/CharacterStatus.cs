@@ -2,7 +2,7 @@
 
 public class CharacterStatus
 {
-    public bool IsLockedForModify { get; set; }
+    public bool IsLockedToModify { get; set; }
 
     public string QuestId { get; set; }
     public string ArenaId { get; set; }

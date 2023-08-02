@@ -73,7 +73,7 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Info.IsAlive.Should().BeTrue();
-        character.Status.IsLockedForModify.Should().BeFalse();
+        character.Status.IsLockedToModify.Should().BeFalse();
 
         GameplayLore.Map.All.Select(s => s.LocationName).Should().Contain(character.Position.Location);
     }
