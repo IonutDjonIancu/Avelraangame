@@ -26,7 +26,7 @@ internal class GameplayQuestsLogic
     {
         var fullName = Utils.GetLocationFullName(position);
 
-        var locationData = GameplayLore.Map.All.Find(s => s.FullName == fullName)!;
+        var locationData = GameplayLore.Locations.All.Find(s => s.FullName == fullName)!;
 
         var location = dbs.Snapshot.Locations.Find(s => s.FullName == fullName);
 
@@ -88,9 +88,9 @@ internal class GameplayQuestsLogic
         return items;
     }
 
-    private List<NpcCharacter> GenerateMercenaries(Position position, int effortUpper)
+    private List<Character> GenerateMercenaries(Position position, int effortUpper)
     {
-        var mercs = new List<NpcCharacter>();
+        var mercs = new List<Character>();
         var rollForMercs = diceService.Roll_1_to_n(effortUpper / 10);
         var nrOfMercs = rollForMercs < 1 ? 1 : rollForMercs;
 

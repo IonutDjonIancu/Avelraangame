@@ -4,6 +4,6 @@ namespace Service_Delegators;
 
 public interface INpcService
 {
-    NpcCharacter GenerateBadGuyNpc(Position position, int effortUpper);
-    NpcCharacter GenerateGoodGuyNpc(Position position, int effortUpper);
+    Character GenerateBadGuyNpc(string location);
+    Character GenerateGoodGuyNpc(string location);
 }

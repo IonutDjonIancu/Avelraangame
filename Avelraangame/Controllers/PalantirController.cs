@@ -310,7 +310,7 @@ public class PalantirController : ControllerBase
 
     // POST: /api/palantir/Character/SaveCharacter
     [HttpPost("Character/SaveCharacter")]
-    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterOrigins origins)
+    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterTraits origins)
     {
         try
         {
@@ -405,7 +405,7 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/LearnHeroicTrait
     [HttpPut("Character/LearnHeroicTrait")]
-    public IActionResult LearnHeroicTrait([FromQuery] Request request, [FromBody] CharacterHeroicTrait trait)
+    public IActionResult LearnHeroicTrait([FromQuery] Request request, [FromBody] CharacterSpecialSkillAdd trait)
     {
         try
         {
@@ -502,7 +502,7 @@ public class PalantirController : ControllerBase
     #region Npcs
     // POST: /api/palantir/NPC/GenerateNPC
     [HttpPost("NPC/GenerateNPC")]
-    public IActionResult GenerateNPC([FromBody] NpcInfo info)
+    public IActionResult GenerateNPC([FromBody] CharacterTraits npcTraits)
     {
         try
         {

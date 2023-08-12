@@ -18,7 +18,7 @@ internal class CharacterNpcInteraction
         var location = dbs.Snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullName(character.Position))!;
         var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId)!;
 
-        character.Info.Wealth -= merc.Worth;
+        character.Status.Wealth -= merc.Worth;
         merc.Identity.PlayerId = character.Identity.PlayerId;
 
         character.Mercenaries.Add(merc);

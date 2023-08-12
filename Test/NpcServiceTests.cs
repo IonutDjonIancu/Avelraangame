@@ -5,9 +5,9 @@ public class NpcServiceTests : TestBase
     [Fact(DisplayName = "Create good guy npc")]
     public void Generate_good_guy_npc_test()
     {
-        var location = GameplayLore.Map.All.First();
+        var location = GameplayLore.Locations.All.First();
 
-        var position = Utils.GetLocationPosition(location.FullName);
+        var position = Utils.GetPositionByFullName(location.FullName);
         var npc = npcService.GenerateGoodGuyNpc(position, location.Effort);
 
         Assert.NotNull(npc);
@@ -19,9 +19,9 @@ public class NpcServiceTests : TestBase
     [Fact(DisplayName = "Create bad guy npc")]
     public void Generate_bad_guy_npc_test()
     {
-        var location = GameplayLore.Map.All.First();
+        var location = GameplayLore.Locations.All.First();
 
-        var position = Utils.GetLocationPosition(location.FullName);
+        var position = Utils.GetPositionByFullName(location.FullName);
         var npc = npcService.GenerateBadGuyNpc(position, location.Effort);
 
         Assert.NotNull(npc);

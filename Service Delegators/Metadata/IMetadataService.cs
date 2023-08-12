@@ -9,7 +9,7 @@ public interface IMetadataService
     List<string> GetRaces();
     List<string> GetCultures();
     List<string> GetClasses();
-    List<HeroicTrait> GetHeroicTraits();
+    List<SpecialSkill> GetHeroicTraits();
     
     List<string> GetAvelraanRegions();
 }

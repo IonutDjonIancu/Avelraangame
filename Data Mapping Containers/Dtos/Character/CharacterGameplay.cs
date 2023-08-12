@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class CharacterGameplayInfo
+public class CharacterGameplay
 {
     public string QuestId { get; set; }
     public string ArenaId { get; set; }

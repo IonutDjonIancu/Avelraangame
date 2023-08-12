@@ -4,13 +4,41 @@ public class CharactersLore
 {
     public static class Races
     {
-        public const string Human = "Human";
-        public const string Elf = "Elf";
-        public const string Dwarf = "Dwarf";
+        public class Playable
+        {
+            public const string Human = "Human";
+            public const string Elf = "Elf";
+            public const string Dwarf = "Dwarf";
+            public const string Orc = "Orc";
+            //public const string Exoplanar = "Exoplanar";
 
+            public static readonly List<string> All = new()
+            {
+                Human, Elf, Dwarf, Orc
+            };
+        }
+
+        public class NonPlayable
+        {
+            public const string Undead = "Undead";
+            public const string Animal = "Animal";
+
+            public static readonly List<string> All = new()
+            {
+                Undead, Animal
+            };
+        }
+
+        //TODO: add the rest of the races
         public static readonly List<string> All = new()
         {
-            Human, Elf, Dwarf
+            Playable.Human,
+            Playable.Elf,
+            Playable.Dwarf,
+            Playable.Orc,
+
+            NonPlayable.Animal,
+            NonPlayable.Undead
         };
     }
 
@@ -19,14 +47,14 @@ public class CharactersLore
         public static class Human
         {
             public const string Danarian = "Danarian";
-            public const string Midheim = "Midheim";
-            public const string Ravanian = "Ravanian";
-            public const string Endarian = "Endarian";
-            public const string Calvinian = "Calvinian";
+            //public const string Midheim = "Midheim";
+            //public const string Ravanian = "Ravanian";
+            //public const string Endarian = "Endarian";
+            //public const string Calvinian = "Calvinian";
 
             public static readonly List<string> All = new()
             {
-                Danarian, Midheim, Ravanian, Endarian, Calvinian
+                Danarian, /*Midheim, Ravanian, Endarian, Calvinian*/
             };
         }
 
@@ -50,17 +78,53 @@ public class CharactersLore
             };
         }
 
+        public static class Orc
+        {
+            public const string Greenskin = "Greenskin";
+
+            public static readonly List<string> All = new()
+            {
+                Greenskin
+            };
+        }
+
+        public static class Animal
+        {
+            public const string Werewolf = "Werewolf";
+            public const string Werebear = "Werebear";
+
+            public static readonly List<string> All = new()
+            {
+                Werewolf, Werebear
+            };
+        }
+
+        public static class Undead
+        {
+            public const string Zombie = "Zombie";
+            public const string Skeleton = "Skeleton";
+
+            public static readonly List<string> All = new()
+            {
+                Zombie, Skeleton
+            };
+        }
+
         public static readonly List<string> All = new()
         {
             Human.Danarian,
-            Human.Midheim,
-            Human.Ravanian,
-            Human.Endarian,
-            Human.Calvinian,
 
             Elf.Highborn,
 
-            Dwarf.Undermountain
+            Dwarf.Undermountain,
+
+            Orc.Greenskin,
+
+            Animal.Werewolf,
+            Animal.Werebear,
+
+            Undead.Zombie,
+            Undead.Skeleton
         };
     }
 

@@ -21,19 +21,13 @@ internal class ValidatorBase
         return character;
     }
 
-    internal void ValidateTradition(string tradition)
-    {
-        ValidateString(tradition);
-        if (!GameplayLore.Tradition.All.Contains(tradition)) throw new Exception("Unrecognized tradition.");
-    }
-
     internal void ValidatePosition(Position position)
     {
         ValidateObject(position, "Position is null.");
 
         var fullName = Utils.GetLocationFullName(position);
 
-        if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
+        if (!GameplayLore.Locations.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
     }
 
     internal void ValidateCharacterPlayerCombination(CharacterIdentity characterIdentity)

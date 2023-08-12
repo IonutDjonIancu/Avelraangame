@@ -31,7 +31,7 @@ public class CharacterServiceTests : TestBase
 
         charService.CreateCharacterStub(playerId);
 
-        var origins = new CharacterOrigins
+        var origins = new CharacterTraits
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
@@ -47,17 +47,17 @@ public class CharacterServiceTests : TestBase
         character.Identity.Should().NotBeNull();
         character.Identity.Id.Should().NotBeNullOrWhiteSpace();
         character.Identity.PlayerId.Should().Be(playerId);
-        character.Info.Name.Should().NotBeNullOrWhiteSpace();
+        character.Status.Name.Should().NotBeNullOrWhiteSpace();
 
-        character.Info.Should().NotBeNull();
-        character.Info.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
-        character.Info.Origins.Race.Should().Be(origins.Race);
-        character.Info.Origins.Culture.Should().Be(origins.Culture);
-        character.Info.Origins.Tradition.Should().Be(origins.Tradition);
-        character.Info.Origins.Class.Should().Be(origins.Class);
-        character.Info.Fame.Should().NotBeNullOrWhiteSpace();
-        character.Info.Wealth.Should().BeGreaterThanOrEqualTo(1);
-        character.Info.DateOfBirth.Should().Be(DateTime.Now.ToShortDateString());
+        character.Status.Should().NotBeNull();
+        character.Status.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
+        character.Status.Traits.Race.Should().Be(origins.Race);
+        character.Status.Traits.Culture.Should().Be(origins.Culture);
+        character.Status.Traits.Tradition.Should().Be(origins.Tradition);
+        character.Status.Traits.Class.Should().Be(origins.Class);
+        character.Status.Fame.Should().NotBeNullOrWhiteSpace();
+        character.Status.Wealth.Should().BeGreaterThanOrEqualTo(1);
+        character.Status.DateOfBirth.Should().Be(DateTime.Now.ToShortDateString());
 
         character.LevelUp.Should().NotBeNull();
         character.LevelUp.StatPoints.Should().Be(0);
@@ -72,10 +72,10 @@ public class CharacterServiceTests : TestBase
         character.Supplies.Should().NotBeNull();
         character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
-        character.Info.IsAlive.Should().BeTrue();
+        character.Status.IsAlive.Should().BeTrue();
         character.Status.IsLockedToModify.Should().BeFalse();
 
-        GameplayLore.Map.All.Select(s => s.LocationName).Should().Contain(character.Position.Location);
+        GameplayLore.Locations.All.Select(s => s.LocationName).Should().Contain(character.Position.Location);
     }
 
     [Fact(DisplayName = "Modifing character name should have the new name")]
@@ -86,7 +86,7 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         chr = charService.UpdateCharacterName(newCharName, CreateCharIdentity(chr));
 
-        chr.Info.Name.Should().Be(newCharName);
+        chr.Status.Name.Should().Be(newCharName);
     }
 
     [Fact(DisplayName = "Deleting a character should remove it from db")]
@@ -243,16 +243,16 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 100;
 
-        var swordsman = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.BonusTraits.swordsman.Identity.Name)!;
+        var swordsman = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.BonusSpecialSkills.Swordsman.Identity.Name)!;
 
-        var trait = new CharacterHeroicTrait
+        var trait = new CharacterSpecialSkillAdd
         {
             CharacterIdentity = new CharacterIdentity
             {
                 Id = chr.Identity.Id,
                 PlayerId = chr.Identity.PlayerId,
             },
-            HeroicTraitId = swordsman.Identity.Id,
+            SpecialSkillId = swordsman.Identity.Id,
         };
 
         var combatBeforeTrait = chr.Sheet.Skills.Combat;
@@ -273,16 +273,16 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 1000;
 
-        var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
+        var metachaos = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.ActivateSpecialSkills.MetachaosDaemonology.Identity.Name)!;
 
-        var trait = new CharacterHeroicTrait
+        var trait = new CharacterSpecialSkillAdd
         {
             CharacterIdentity = new CharacterIdentity
             {
                 Id = chr.Identity.Id,
                 PlayerId = chr.Identity.PlayerId,
             },
-            HeroicTraitId = metachaos.Identity.Id,
+            SpecialSkillId = metachaos.Identity.Id,
         };
 
         charService.CharacterLearnHeroicTrait(trait);
@@ -296,26 +296,26 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         chr.LevelUp.DeedsPoints = 1000;
 
-        var candlelight = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.PassiveTraits.candlelight.Identity.Name)!;
-        var metachaos = TraitsLore.All.Find(t => t.Identity.Name == TraitsLore.ActivateTraits.metachaosDaemonology.Identity.Name)!;
+        var candlelight = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.PassiveSpecialSkills.Candlelight.Identity.Name)!;
+        var metachaos = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.ActivateSpecialSkills.MetachaosDaemonology.Identity.Name)!;
 
-        var candlelightTrait = new CharacterHeroicTrait
+        var candlelightTrait = new CharacterSpecialSkillAdd
         {
             CharacterIdentity = new CharacterIdentity
             {
                 Id = chr.Identity.Id,
                 PlayerId = chr.Identity.PlayerId,
             },
-            HeroicTraitId = candlelight.Identity.Id,
+            SpecialSkillId = candlelight.Identity.Id,
         };
-        var metachaosTrait = new CharacterHeroicTrait
+        var metachaosTrait = new CharacterSpecialSkillAdd
         {
             CharacterIdentity = new CharacterIdentity
             {
                 Id = chr.Identity.Id,
                 PlayerId = chr.Identity.PlayerId,
             },
-            HeroicTraitId = metachaos.Identity.Id,
+            SpecialSkillId = metachaos.Identity.Id,
         };
         charService.CharacterLearnHeroicTrait(candlelightTrait);
         charService.CharacterLearnHeroicTrait(metachaosTrait);
@@ -358,7 +358,7 @@ public class CharacterServiceTests : TestBase
         var travelToPosition = new CharacterTravel
         {
             CharacterIdentity = CreateCharIdentity(chr),
-            Destination = Utils.GetLocationPosition(locationFullName)
+            Destination = Utils.GetPositionByFullName(locationFullName)
         };
 
         var initialProvisions = chr.Inventory.Provisions;
@@ -372,7 +372,7 @@ public class CharacterServiceTests : TestBase
     public void Hiring_mercenary_test()
     {
         var chr = CreateHumanCharacter("Jax");
-        chr.Info.Wealth = 10000;
+        chr.Status.Wealth = 10000;
 
         var location = gameplayService.GetLocation(chr.Position);
         location.Mercenaries.Count.Should().BeGreaterThanOrEqualTo(1);

@@ -5,9 +5,8 @@ namespace Data_Mapping_Containers.Dtos;
 public class Character : ICharacter
 {
     public CharacterIdentity Identity { get; set; } = new();
-    public CharacterInfo Info { get; set; } = new();
+    public CharacterStatus Status { get; set; } = new();
     
-
     public CharacterLevelUp LevelUp { get; set; } = new();
     public CharacterSheet Sheet { get; set; } = new();
 

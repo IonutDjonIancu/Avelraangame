@@ -6,6 +6,6 @@ public class CharacterSheet
     public CharacterAssets Assets { get; set; } = new();
     public CharacterSkills Skills { get; set; } = new();
     
-    public List<HeroicTrait> HeroicTraits { get; set; } = new();
+    public List<SpecialSkill> SpecialSkills { get; set; } = new();
     //TODO: must add NegativePerks
 }

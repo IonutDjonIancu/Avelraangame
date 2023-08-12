@@ -2,30 +2,26 @@
 
 namespace Service_Delegators;
 
-internal class CharacterTraitsLogic
+internal class CharacterSpecialSkillsLogic
 {
     private readonly IDatabaseService dbs;
-    private readonly CharacterPaperdollLogic paperdollLogic;
 
-    private CharacterTraitsLogic() { }
-    internal CharacterTraitsLogic(
-        IDatabaseService databaseService,
-        CharacterPaperdollLogic characterPaperdollLogic) 
+    private CharacterSpecialSkillsLogic() { }
+    internal CharacterSpecialSkillsLogic(IDatabaseService databaseService) 
     {
         dbs = databaseService;
-        paperdollLogic = characterPaperdollLogic;
     }
 
-    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait)
+    internal Character ApplySpecialSkill(CharacterSpecialSkillAdd spsk)
     {
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == trait.CharacterIdentity.PlayerId)!;
-        var character = player.Characters.Find(c => c.Identity.Id == trait.CharacterIdentity.Id)!;
-        var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId)!;
+        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == spsk.CharacterIdentity.PlayerId)!;
+        var character = player.Characters.Find(c => c.Identity.Id == spsk.CharacterIdentity.Id)!;
+        var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId)!;
 
-        character.HeroicTraits.Add(heroicTrait);
-        character.LevelUp.DeedsPoints -= heroicTrait.DeedsCost;
+        character.Sheet.SpecialSkills.Add(specialSkill);
+        character.LevelUp.DeedsPoints -= specialSkill.DeedsCost;
 
-        if (heroicTrait.Type == TraitsLore.Type.bonus) ApplyBonusHeroicTraits(character, heroicTrait.Identity.Name, trait.Skill);
+        if (specialSkill.Type == SpecialSkillsLore.Type.Bonus) ApplyBonusHeroicTraits(character, specialSkill.Identity.Name, spsk.Subskill);
 
         dbs.PersistPlayer(player.Identity.Id);
 
@@ -35,14 +31,13 @@ internal class CharacterTraitsLogic
     #region private methods
     private void ApplyBonusHeroicTraits(Character character, string heroicTraitName, string skill = "")
     {
-        if      (heroicTraitName == TraitsLore.BonusTraits.swordsman.Identity.Name) RunSwordsmanLogic(character);
-        else if (heroicTraitName == TraitsLore.BonusTraits.skillful.Identity.Name) RunSkillfulLogic(character, skill);
+        if      (heroicTraitName == SpecialSkillsLore.BonusSpecialSkills.Swordsman.Identity.Name) RunSwordsmanLogic(character);
+        else if (heroicTraitName == SpecialSkillsLore.BonusSpecialSkills.Skillful.Identity.Name) RunSkillfulLogic(character, skill);
     }
 
-    private void RunSwordsmanLogic(Character character)
+    private static void RunSwordsmanLogic(Character character)
     {
-        var paperdollCombatValue = paperdollLogic.CalculatePaperdoll(character).Skills.Combat;
-        var value = 5 + (int)Math.Floor(paperdollCombatValue * 0.01);
+        var value = 5 + (int)Math.Floor(character.Sheet.Skills.Combat * 0.01);
         character.Sheet.Skills.Combat += value;
     }
 

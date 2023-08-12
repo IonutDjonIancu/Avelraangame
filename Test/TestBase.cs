@@ -54,7 +54,7 @@ public class TestBase
 
         charService.CreateCharacterStub(playerId);
 
-        var origins = new CharacterOrigins
+        var origins = new CharacterTraits
         {
             Race = CharactersLore.Races.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,

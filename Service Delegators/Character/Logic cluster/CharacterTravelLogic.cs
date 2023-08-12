@@ -6,27 +6,24 @@ internal class CharacterTravelLogic
 {
     private readonly IDatabaseService dbs;
     private readonly IDiceRollService diceService;
-    private readonly CharacterPaperdollLogic paperdollLogic;
 
     private CharacterTravelLogic() { }
     internal CharacterTravelLogic(
         IDatabaseService databaseService,
-        IDiceRollService diceRollService,
-        CharacterPaperdollLogic characterPaperdollLogic)
+        IDiceRollService diceRollService)
     {
         dbs = databaseService;
         diceService = diceRollService;
-        paperdollLogic = characterPaperdollLogic;
     }
 
     internal void MoveToLocation(CharacterTravel positionTravel)
     {
         var character = Utils.GetPlayerCharacter(dbs, positionTravel.CharacterIdentity);
 
-        var currentLocationFullName = Utils.GetLocationFullName(character.Position);
-        var location = GameplayLore.Map.All.Find(s => s.FullName == currentLocationFullName)!;
+        var currentLocationFullName = Utils.GetLocationFullName(character.Status.Position);
+        var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
         var destinationLocationFullName = Utils.GetLocationFullName(positionTravel.Destination);
-        var destination = GameplayLore.Map.All.Find(s => s.FullName == destinationLocationFullName)!;
+        var destination = GameplayLore.Locations.All.Find(s => s.FullName == destinationLocationFullName)!;
         
         int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);
         var totalPeopleInParty = character.Mercenaries.Count + 1; // including the party lead
@@ -34,7 +31,7 @@ internal class CharacterTravelLogic
         var totalProvisions = character.Inventory.Provisions + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
         if (totalProvisionsCost > totalProvisions) throw new Exception($"Not enough provisions for all the party to travel to {destination.Position.Location}.");
         
-        character.Position = destination.Position;
+        character.Status.Position = destination.Position;
         
         var effort = diceService.Roll_1_to_n(destination.Effort);
         var listOfRolls = new List<int>();

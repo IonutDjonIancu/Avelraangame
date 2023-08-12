@@ -37,7 +37,7 @@ public class DiceServiceTests : TestBase
     [Fact(DisplayName = "Roll gameplay dice for martial")]
     public void Roll_martial_gameplay_dice_test()
     {
-        var (grade, crits) = diceService.Roll_gameplay_dice(GameplayLore.Tradition.Martial, 100);
+        var (grade, crits) = diceService.Roll_character_dice(GameplayLore.Tradition.Martial, 100);
 
         grade.Should().BeGreaterThanOrEqualTo(1);
         crits.Should().BeGreaterThanOrEqualTo(0);
@@ -46,7 +46,7 @@ public class DiceServiceTests : TestBase
     [Fact(DisplayName = "Roll gameplay dice for common")]
     public void Roll_common_gameplay_dice_test()
     {
-        var (grade, crits) = diceService.Roll_gameplay_dice(GameplayLore.Tradition.Common, 100);
+        var (grade, crits) = diceService.Roll_character_dice(GameplayLore.Tradition.Common, 100);
 
         grade.Should().BeGreaterThanOrEqualTo(1);
         crits.Should().BeGreaterThanOrEqualTo(0);

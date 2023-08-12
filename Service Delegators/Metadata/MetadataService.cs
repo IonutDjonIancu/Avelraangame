@@ -41,9 +41,9 @@ public class MetadataService : IMetadataService
         return CharactersLore.Classes.All;
     }
 
-    public List<HeroicTrait> GetHeroicTraits()
+    public List<SpecialSkill> GetHeroicTraits()
     {
-        return TraitsLore.All;
+        return SpecialSkillsLore.All;
     }
 
     public List<string> GetAvelraanRegions()

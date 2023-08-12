@@ -31,7 +31,7 @@ internal class CharacterValidator : ValidatorBase
         var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullName(character.Position)) ?? throw new Exception("Location has not been visited yet.");
         var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId) ?? throw new Exception("Wrong mercenary id for character location.");
 
-        if (merc.Worth > character.Info.Wealth) throw new Exception($"Mercenary's worth is {merc.Worth}, but your character only has {character.Info.Wealth}.");
+        if (merc.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Worth}, but your character only has {character.Status.Wealth}.");
     }
 
     internal void ValidateBeforeTravel(CharacterTravel positionTravel)
@@ -41,7 +41,7 @@ internal class CharacterValidator : ValidatorBase
         
         var character = GetCharacter(positionTravel.CharacterIdentity);
 
-        if (!character.Info.IsAlive) throw new Exception("Unable to travel, your character is dead.");
+        if (!character.Status.IsAlive) throw new Exception("Unable to travel, your character is dead.");
 
         if (character.Inventory.Provisions <= 0) throw new Exception("You don't have any provisions to travel.");
         if (character.Mercenaries.Select(s => s.Inventory.Provisions).Any(s => s <= 0)) throw new Exception("One or more of your mercenaries does not have enough provisions to travel.");
@@ -52,47 +52,47 @@ internal class CharacterValidator : ValidatorBase
         if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
 
         var destinationFullName = Utils.GetLocationFullName(positionTravel.Destination);
-        if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(destinationFullName)) throw new Exception("No such destination is known.");
+        if (!GameplayLore.Locations.All.Select(s => s.FullName).ToList().Contains(destinationFullName)) throw new Exception("No such destination is known.");
     }
 
     internal void ValidateMaxNumberOfCharacters(string playerId)
     {
-        var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Info.IsAlive).ToList().Count;
+        var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Status.IsAlive).ToList().Count;
 
         if (playerCharsCount >= 5) throw new Exception("Max number of characters reached (5 alive characters allowed per player).");
     }
 
-    internal void ValidateOriginsOnSaveCharacter(CharacterOrigins origins, string playerId)
+    internal void ValidateTraitsOnSaveCharacter(CharacterTraits traits, string playerId)
     {
-        ValidateObject(origins);
+        ValidateObject(traits);
         
         if (!snapshot.CharacterStubs!.Exists(s => s.PlayerId == playerId)) throw new Exception("No stub templates found for this player.");
 
-        ValidateRace(origins.Race);
-        ValidateCulture(origins.Culture);
-        ValidateTradition(origins.Tradition);
-        ValidateClass(origins.Class);
+        ValidateRace(traits.Race);
+        ValidateCulture(traits.Culture);
+        ValidateCharacterBeforeRoll(traits.Tradition);
+        ValidateClass(traits.Class);
 
-        ValidateRaceCultureCombination(origins);
+        ValidateRaceCultureCombination(traits);
     }
 
-    internal void ValidateCharacterLearnHeroicTrait(CharacterHeroicTrait trait)
+    internal void ValidateCharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
     {
         ValidateCharacterPlayerCombination(trait.CharacterIdentity);
         ValidateIfCharacterIsLocked(trait.CharacterIdentity);
-        ValidateGuid(trait.HeroicTraitId);
-        if (trait.Skill != null)
+        ValidateGuid(trait.SpecialSkillId);
+        if (trait.Subskill != null)
         {
-            ValidateString(trait.Skill);
-            if (!CharactersLore.Skills.All.Contains(trait.Skill)) throw new Exception("No such Skill was found with the indicated skill name.");
+            ValidateString(trait.Subskill);
+            if (!CharactersLore.Skills.All.Contains(trait.Subskill)) throw new Exception("No such Skill was found with the indicated skill name.");
         }
 
         var character = GetCharacter(trait.CharacterIdentity);
-        var heroicTrait = TraitsLore.All.Find(t => t.Identity.Id == trait.HeroicTraitId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
+        var heroicTrait = SpecialSkillsLore.All.Find(t => t.Identity.Id == trait.SpecialSkillId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
 
         if (heroicTrait.DeedsCost > character.LevelUp.DeedsPoints) throw new Exception("Character does not have enough Deeds points to aquire said Heroic Trait.");
 
-        if (heroicTrait.Subtype == TraitsLore.Subtype.onetime
+        if (heroicTrait.Subtype == SpecialSkillsLore.Subtype.Onetime
             && character.HeroicTraits.Exists(t => t.Identity.Id == heroicTrait.Identity.Id)) throw new Exception("Character already has that Heroic Trait and it can only be learned once.");
     }
 
@@ -265,7 +265,7 @@ internal class CharacterValidator : ValidatorBase
     }
 
     #region private methods
-    private static void ValidateRaceCultureCombination(CharacterOrigins origins)
+    private static void ValidateRaceCultureCombination(CharacterTraits origins)
     {
         string message = "Invalid race culture combination";
 

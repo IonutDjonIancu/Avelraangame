@@ -24,10 +24,10 @@ public class CharacterService : ICharacterService
         return logic.CreateStub(playerId);
     }
 
-    public Character SaveCharacterStub(CharacterOrigins origins, string playerId)
+    public Character SaveCharacterStub(CharacterTraits traits, string playerId)
     {
-        validator.ValidateOriginsOnSaveCharacter(origins, playerId);
-        return logic.SaveStub(origins, playerId);
+        validator.ValidateTraitsOnSaveCharacter(traits, playerId);
+        return logic.SaveStub(traits, playerId);
     }
 
     public Character UpdateCharacterName(string name, CharacterIdentity identity)
@@ -106,29 +106,7 @@ public class CharacterService : ICharacterService
         return logic.UnequipItem(unequip);
     }
 
-    public CharacterPaperdoll CalculatePaperdollForPlayerCharacter(CharacterIdentity identity)
-    {
-        validator.ValidateCharacterPlayerCombination(identity);
-        return logic.CalculatePaperdollForCharacterIdentity(identity);
-    }
-
-    public CharacterPaperdoll CalculatePaperdollForPlayerCharacterNpc(CharacterIdentity identity, string npcId)
-    {
-        validator.ValidatePlayerCharacterNpc(identity, npcId);
-        return logic.CalculatePaperdollForCharacterNpc(identity, npcId);
-    }
-
-    public CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
-    {
-        return logic.CalculatePaperdollForCharacter(character);
-    }
-
-    public int CharacterPaperdollRoll(string attributeRolled, Character character)
-    {
-        return logic.PaperdollRoll(attributeRolled, character);
-    }
-
-    public Character CharacterLearnHeroicTrait(CharacterHeroicTrait trait)
+    public Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
     {
         validator.ValidateCharacterLearnHeroicTrait(trait);
         return logic.ApplyHeroicTrait(trait);

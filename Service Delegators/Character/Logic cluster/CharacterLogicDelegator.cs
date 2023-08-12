@@ -5,11 +5,10 @@ namespace Service_Delegators;
 internal class CharacterLogicDelegator
 {
     private readonly CharacterSheetLogic charSheetLogic;
-    private readonly CharacterTraitsLogic charTraitsLogic;
+    private readonly CharacterSpecialSkillsLogic charTraitsLogic;
     private readonly CharacterLevelupLogic charLevelupLogic;
     private readonly CharacterItemsLogic charItemsLogic;
     private readonly CharacterCreateLogic charCreateLogic;
-    private readonly CharacterPaperdollLogic charPaperdollLogic;
     private readonly CharacterInfoLogic charInfoLogic;
     private readonly CharacterTravelLogic charTravelLogic;
     private readonly CharacterNpcInteraction charNpcInteractionLogic;
@@ -24,10 +23,9 @@ internal class CharacterLogicDelegator
         charInfoLogic = new CharacterInfoLogic(databaseService);
         charItemsLogic = new CharacterItemsLogic(databaseService);
         charLevelupLogic = new CharacterLevelupLogic(databaseService);
-        charPaperdollLogic = new CharacterPaperdollLogic(databaseService, diceRollService);
-        charTraitsLogic = new CharacterTraitsLogic(databaseService, charPaperdollLogic);
+        charTraitsLogic = new CharacterSpecialSkillsLogic(databaseService);
         charCreateLogic = new CharacterCreateLogic(databaseService, diceRollService, itemService, charSheetLogic);
-        charTravelLogic = new CharacterTravelLogic(databaseService, diceRollService, charPaperdollLogic);
+        charTravelLogic = new CharacterTravelLogic(databaseService, diceRollService);
         charNpcInteractionLogic = new CharacterNpcInteraction(databaseService);
     }
 
@@ -36,9 +34,9 @@ internal class CharacterLogicDelegator
         return charCreateLogic.CreateStub(playerId);
     }
 
-    internal Character SaveStub(CharacterOrigins origins, string playerId)
+    internal Character SaveStub(CharacterTraits traits, string playerId)
     {
-        return charCreateLogic.SaveStub(origins, playerId);
+        return charCreateLogic.SaveStub(traits, playerId);
     }
 
     internal Character ChangeName(string name, CharacterIdentity identity)
@@ -86,29 +84,9 @@ internal class CharacterLogicDelegator
         return charItemsLogic.UnequipItem(unequip);
     }
 
-    internal Character ApplyHeroicTrait(CharacterHeroicTrait trait)
+    internal Character ApplyHeroicTrait(CharacterSpecialSkillAdd trait)
     {
-        return charTraitsLogic.ApplyHeroicTrait(trait);
-    }
-
-    internal CharacterPaperdoll CalculatePaperdollForCharacterIdentity(CharacterIdentity identity)
-    {
-        return charPaperdollLogic.CalculatePaperdoll(identity);
-    }
-
-    internal CharacterPaperdoll CalculatePaperdollForCharacterNpc(CharacterIdentity identity, string npcId)
-    {
-        return charPaperdollLogic.CalculatePaperdoll(identity, npcId);
-    }
-
-    internal CharacterPaperdoll CalculatePaperdollForCharacter(ICharacter character)
-    {
-        return charPaperdollLogic.CalculatePaperdoll(character);
-    }
-
-    internal int PaperdollRoll(string attributeRolled, Character character)
-    {
-        return charPaperdollLogic.PaperdollDiceRoll(attributeRolled, character);
+        return charTraitsLogic.ApplySpecialSkill(trait);
     }
 
     internal void MoveToLocation(CharacterTravel positionTravel)
