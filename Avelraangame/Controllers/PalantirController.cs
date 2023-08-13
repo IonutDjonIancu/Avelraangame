@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Avelraangame.Controllers.Validators;
+using Service_Delegators;
 
 namespace Avelraangame.Controllers;
 
@@ -422,44 +423,6 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // GET: /api/palantir/Character/GetCharacterPaperdoll
-    [HttpGet("Character/GetCharacterPaperdoll")]
-    public IActionResult GetCharacterPaperdoll([FromQuery] Request request, string characterId)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
-
-            var paperdoll = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
-
-            return Ok(paperdoll);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // GET: /api/palantir/Character/GetCharacterNpcPaperdoll
-    [HttpGet("Character/GetCharacterNpcPaperdoll")]
-    public IActionResult GetCharacterNpcPaperdoll([FromQuery] Request request, string characterId, string npcId)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
-
-            var paperdoll = factory.ServiceFactory.CharacterService.CalculatePaperdollForPlayerCharacterNpc(new CharacterIdentity() { Id = characterId, PlayerId = playerId }, npcId);
-
-            return Ok(paperdoll);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
     // PUT: /api/palantir/Character/TravelToLocation
     [HttpPut("Character/TravelToLocation")]
     public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] CharacterTravel positionTravel)
@@ -500,15 +463,32 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Npcs
-    // POST: /api/palantir/NPC/GenerateNPC
-    [HttpPost("NPC/GenerateNPC")]
-    public IActionResult GenerateNPC([FromBody] CharacterTraits npcTraits)
+    // GET: /api/palantir/NPC/GenerateGoodGuyNPC
+    [HttpGet("NPC/GenerateGoodGuyNPC")]
+    public IActionResult GenerateGoodGuyNPC(string location)
     {
         try
         {
-            throw new NotImplementedException();
+            var npc = factory.ServiceFactory.NpcService.GenerateGoodGuyNpc(location);
 
-            return Ok();
+            return Ok(npc);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // GET: /api/palantir/NPC/GenerateBadGuyNPC
+    [HttpGet("NPC/GenerateBadGuyNPC")]
+    public IActionResult GenerateBadGuyNPC(string location)
+    {
+        try
+        {
+            var npc = factory.ServiceFactory.NpcService.GenerateBadGuyNpc(location);
+
+            return Ok(npc);
         }
         catch (Exception ex)
         {

@@ -89,6 +89,7 @@ public class RulebookLore
                 public const int Defence      = 0;
                 public const int Purge        = 0;
                 public const int Mana         = 0;
+                public const int Actions      = 0;    
                 // skills
                 public const int Combat       = 40;
                 public const int Arcane       = 10;
@@ -121,6 +122,7 @@ public class RulebookLore
                 public const int Defence      = 0;
                 public const int Purge        = 0;
                 public const int Mana         = 40;
+                public const int Actions      = 1;    
                 // skills
                 public const int Combat       = 20;
                 public const int Arcane       = 40;
@@ -153,6 +155,7 @@ public class RulebookLore
                 public const int Defense      = 10;
                 public const int Purge        = 10;
                 public const int Mana         = 0;
+                public const int Actions      = 0;    
                 // skills
                 public const int Combat       = 30;
                 public const int Arcane       = 0;
@@ -185,6 +188,7 @@ public class RulebookLore
                 public const int Defense      = 0;
                 public const int Purge        = 0;
                 public const int Mana         = 0;
+                public const int Actions      = 0;    
                 // skills
                 public const int Combat       = 10;
                 public const int Arcane       = 0;
@@ -208,24 +212,43 @@ public class RulebookLore
             {
                 CharactersLore.Stats.Strength,
                 CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Willpower,
             };
             public static readonly List<string> UnlikelyStats = new()
             {
-                CharactersLore.Stats.Strength,
-                CharactersLore.Stats.Willpower,
                 CharactersLore.Stats.Agility,
                 CharactersLore.Stats.Perception,
+                CharactersLore.Stats.Abstract,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Defense,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Purge,
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions,
+
             };
             public static readonly List<string> LikelySkills = new()
             {
                 CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Travel,
             };
             public static readonly List<string> UnlikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
-                CharactersLore.Skills.Traps,
-                CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Psionics,
                 CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
             };
         }
 
@@ -239,19 +262,37 @@ public class RulebookLore
             public static readonly List<string> UnlikelyStats = new()
             {
                 CharactersLore.Stats.Willpower,
+                CharactersLore.Stats.Strength,
                 CharactersLore.Stats.Agility,
                 CharactersLore.Stats.Perception,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Purge,
             };
             public static readonly List<string> LikelySkills = new()
             {
                 CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Travel,
                 CharactersLore.Skills.Apothecary,
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Social,
             };
             public static readonly List<string> UnlikelySkills = new()
             {
+                CharactersLore.Skills.Combat,
                 CharactersLore.Skills.Psionics,
                 CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
                 CharactersLore.Skills.Sail,
             };
         }
@@ -260,26 +301,45 @@ public class RulebookLore
         {
             public static readonly List<string> LikelyStats = new()
             {
+                CharactersLore.Stats.Constitution,
                 CharactersLore.Stats.Agility,
                 CharactersLore.Stats.Perception,
             };
             public static readonly List<string> UnlikelyStats = new()
             {
-                CharactersLore.Stats.Agility,
-                CharactersLore.Stats.Constitution,
-                CharactersLore.Stats.Perception,
+                CharactersLore.Stats.Willpower,
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Abstract,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Spot,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Purge,
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions,
+
             };
             public static readonly List<string> LikelySkills = new()
             {
                 CharactersLore.Skills.Combat,
-                CharactersLore.Skills.Hide,
-                CharactersLore.Skills.Traps,
                 CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Hide,
             };
             public static readonly List<string> UnlikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
-                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
             };
         }
 
@@ -287,27 +347,44 @@ public class RulebookLore
         {
             public static readonly List<string> LikelyStats = new()
             {
-                CharactersLore.Stats.Strength,
                 CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Abstract,
+                CharactersLore.Stats.Willpower,
             };
             public static readonly List<string> UnlikelyStats = new()
             {
-                CharactersLore.Stats.Agility,
                 CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Strength,
                 CharactersLore.Stats.Perception,
-                CharactersLore.Stats.Willpower,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Mana,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Purge,
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Actions,
+
             };
             public static readonly List<string> LikelySkills = new()
             {
                 CharactersLore.Skills.Combat,
-                CharactersLore.Skills.Arcane,
                 CharactersLore.Skills.Social,
+                CharactersLore.Skills.Travel,
             };
             public static readonly List<string> UnlikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Hide,
                 CharactersLore.Skills.Traps,
-                CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Apothecary,
                 CharactersLore.Skills.Sail,
             };
         }
@@ -316,23 +393,45 @@ public class RulebookLore
         {
             public static readonly List<string> LikelyStats = new()
             {
+                CharactersLore.Stats.Constitution,
                 CharactersLore.Stats.Abstract,
             };
             public static readonly List<string> UnlikelyStats = new()
             {
-                CharactersLore.Stats.Abstract,
-                CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Willpower,
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Perception,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Purge,
+
             };
             public static readonly List<string> LikelySkills = new()
             {
                 CharactersLore.Skills.Arcane,
-                CharactersLore.Skills.Apothecary,
             };
             public static readonly List<string> UnlikelySkills = new()
             {
-                CharactersLore.Skills.Arcane,
-                CharactersLore.Skills.Apothecary,
                 CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
             };
         }
     }
@@ -341,99 +440,94 @@ public class RulebookLore
     {
         public static class Assets
         {
-            public static int CalculateResolve(CharacterStats cs)
+            public static int CalculateResolve(CharacterStats stats)
             {
-                return 2 * cs.Strength + 3 * cs.Constitution + cs.Agility + 2 * cs.Willpower + cs.Perception + cs.Abstract;
+                return 2 * stats.Strength + 3 * stats.Constitution + stats.Agility + 2 * stats.Willpower + stats.Perception + stats.Abstract;
             }
 
-            public static int CalculateHarm(CharacterStats cs)
+            public static int CalculateHarm(CharacterStats stats)
             {
-                return 2 * cs.Strength + cs.Agility + cs.Perception;
+                return 2 * stats.Strength + stats.Agility + stats.Perception;
             }
 
-            public static int CalculateSpot(CharacterStats cs)
+            public static int CalculateSpot(CharacterStats stats)
             {
-                return 3 * cs.Perception + cs.Agility;
+                return 3 * stats.Perception + stats.Agility;
             }
 
-            public static int CalculateDefense(CharacterStats cs)
+            public static int CalculateDefense(CharacterStats stats)
             {
-                return (2 * cs.Constitution + cs.Agility + cs.Perception) / 10;
+                return (2 * stats.Constitution + stats.Agility + stats.Perception) / 10;
             }
 
-            public static int CalculatePurge(CharacterStats cs)
+            public static int CalculatePurge(CharacterStats stats)
             {
-                return (2 * cs.Willpower + cs.Constitution + cs.Perception) / 10;
+                return (2 * stats.Willpower + stats.Constitution + stats.Perception) / 10;
             }
 
-            public static int CalculateMana(CharacterStats cs)
+            public static int CalculateMana(CharacterStats stats)
             {
-                return (2 * cs.Constitution + 3 * cs.Abstract) / 2;
+                return (2 * stats.Constitution + 3 * stats.Abstract) / 2;
             }
 
-            public static int CalculateActionTokens(CharacterStats cs)
+            public static int CalculateActions(CharacterStats stats)
             {
                 // based on the Resolve formula
-                return (2 * cs.Strength + 3 * cs.Constitution + cs.Agility + 2 * cs.Willpower + cs.Perception + cs.Abstract) / 100;
+                return (2 * stats.Strength + 3 * stats.Constitution + stats.Agility + 2 * stats.Willpower + stats.Perception + stats.Abstract) / 100;
             }
         }
 
         public static class Skills
         {
-            public static int CalculateCombat(CharacterStats cs)
+            public static int CalculateCombat(CharacterStats stats)
             {
-                return cs.Strength + cs.Constitution + cs.Agility;
+                return stats.Strength + stats.Constitution + stats.Agility;
             }
 
-            public static int CalculateArcane(CharacterStats cs)
+            public static int CalculateArcane(CharacterStats stats)
             {
-                return cs.Abstract + cs.Willpower + cs.Constitution;
+                return stats.Abstract + stats.Willpower + stats.Constitution;
             }
 
-            public static int CalculatePsionics(CharacterStats cs)
+            public static int CalculatePsionics(CharacterStats stats)
             {
-                return 2 * cs.Willpower + cs.Constitution;
+                return 2 * stats.Willpower + stats.Constitution;
             }
 
-            public static int CalculateHide(CharacterStats cs)
+            public static int CalculateHide(CharacterStats stats)
             {
-                return 2 * cs.Agility + cs.Perception + cs.Abstract - cs.Strength;
+                return 2 * stats.Agility + stats.Perception + stats.Abstract - stats.Strength;
             }
             
-            public static int CalculateTraps(CharacterStats cs)
+            public static int CalculateTraps(CharacterStats stats)
             {
-                return 2 * cs.Abstract + cs.Perception;
+                return 2 * stats.Abstract + stats.Perception;
             }
 
-            public static int CalculateTactics(CharacterStats cs)
+            public static int CalculateTactics(CharacterStats stats)
             {
-                return 3 * cs.Abstract;
+                return 3 * stats.Abstract;
             }
 
-            public static int CalculateSocial(CharacterStats cs)
+            public static int CalculateSocial(CharacterStats stats)
             {
-                return cs.Perception + cs.Abstract + cs.Willpower;
+                return stats.Perception + stats.Abstract + stats.Willpower;
             }
 
-            public static int CalculateApothecary(CharacterStats cs)
+            public static int CalculateApothecary(CharacterStats stats)
             {
-                return cs.Abstract + cs.Perception + cs.Constitution;
+                return stats.Abstract + stats.Perception + stats.Constitution;
             }
 
-            public static int CalculateTravel(CharacterStats cs)
+            public static int CalculateTravel(CharacterStats stats)
             {
-                return 2 * cs.Constitution + cs.Agility + cs.Willpower - cs.Strength;
+                return 2 * stats.Constitution + stats.Agility + stats.Willpower - stats.Strength;
             }
 
-            public static int CalculateSail(CharacterStats cs)
+            public static int CalculateSail(CharacterStats stats)
             {
-                return 2 * cs.Constitution + cs.Abstract;
+                return 2 * stats.Constitution + stats.Abstract;
             }
-        }
-
-        public static class Misc
-        {
-           
         }
     }
 }

@@ -116,6 +116,20 @@ public class CharacterServiceTests : TestBase
         chr.Sheet.Stats.Strength.Should().Be(currentStr + 1);
     }
 
+    [Fact(DisplayName = "Increasing the assets from a character should save it to db")]
+    public void Increase_assets_for_character_test()
+    {
+        var chr = CreateHumanCharacter("Jax");
+
+        var currentResolve = chr.Sheet.Assets.Resolve;
+
+        Utils.GetPlayerCharacter(dbs, CreateCharIdentity(chr)).LevelUp.AssetPoints = 1;
+
+        chr = charService.UpdateCharacterAssets(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
+
+        chr.Sheet.Assets.Resolve.Should().BeGreaterThan(currentResolve);
+    }
+
     [Fact(DisplayName = "Increasing the stats from a character with no stat points should throw")]
     public void Increase_stats_with_no_points_for_character_should_throw_test()
     {

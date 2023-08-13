@@ -62,6 +62,15 @@ public class CharacterService : ICharacterService
         return logic.IncreaseStats(stat, identity);
     }
 
+    public Character UpdateCharacterAssets(string asset, CharacterIdentity identity)
+    {
+        validator.ValidateCharacterPlayerCombination(identity);
+        validator.ValidateIfCharacterIsLocked(identity);
+        validator.ValidateAssetExists(asset);
+        validator.ValidateCharacterHasAssetsPoints(identity);
+        return logic.IncreaseAsset(asset, identity);
+    }
+    
     public Character UpdateCharacterSkills(string skill, CharacterIdentity identity)
     {
         validator.ValidateCharacterPlayerCombination(identity);

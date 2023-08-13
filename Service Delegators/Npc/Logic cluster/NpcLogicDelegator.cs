@@ -235,7 +235,7 @@ internal class NpcLogicDelegator
             Defense      = defense >= 90 ? 90 : defense,
             Purge        = purge >= 90 ? 90 : purge,
             Mana         = Randomize(effort) + RulebookLore.Formulae.Assets.CalculateMana(stats),
-            ActionTokens = Randomize(2) + RulebookLore.Formulae.Assets.CalculateActionTokens(stats),
+            Actions = Randomize(2) + RulebookLore.Formulae.Assets.CalculateActions(stats),
         };
     }
 

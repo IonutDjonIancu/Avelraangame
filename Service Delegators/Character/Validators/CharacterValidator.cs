@@ -216,11 +216,24 @@ internal class CharacterValidator : ValidatorBase
         if (!CharactersLore.Stats.All.Contains(stat)) throw new Exception($"Stat {stat} does not math any possible character stats.");
     }
 
+    internal void ValidateAssetExists(string asset)
+    {
+        ValidateString(asset);
+        if (!CharactersLore.Assets.All.Contains(asset)) throw new Exception($"Ssset {asset} does not math any possible character assets.");
+    }
+
     internal void ValidateCharacterHasStatsPoints(CharacterIdentity chr)
     {
         var hasPoints = snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.StatPoints > 0;
 
         if (!hasPoints) throw new Exception($"Character does not have any stat points to distribute.");
+    }
+
+    internal void ValidateCharacterHasAssetsPoints(CharacterIdentity chr)
+    {
+        var hasPoints = snapshot.Players.Find(p => p.Identity.Id == chr.PlayerId)!.Characters.Find(c => c.Identity.Id == chr.Id)!.LevelUp.AssetPoints > 0;
+
+        if (!hasPoints) throw new Exception($"Character does not have any asset points to distribute.");
     }
 
     internal void ValidateCharacterHasSkillsPoints(CharacterIdentity chr)

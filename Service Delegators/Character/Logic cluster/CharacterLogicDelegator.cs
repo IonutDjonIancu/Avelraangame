@@ -56,12 +56,17 @@ internal class CharacterLogicDelegator
 
     internal Character IncreaseStats(string stat, CharacterIdentity identity)
     {
-        return charLevelupLogic.IncreaseStats(stat, identity);
+        return charLevelupLogic.IncreaseStat(stat, identity);
+    }
+
+    internal Character IncreaseAsset(string asset, CharacterIdentity identity)
+    {
+        return charLevelupLogic.IncreaseAsset(asset, identity);
     }
 
     internal Character IncreaseSkills(string skill, CharacterIdentity identity)
     {
-       return charLevelupLogic.IncreaseSkills(skill, identity);
+       return charLevelupLogic.IncreaseSkill(skill, identity);
     }
     
     internal void KillChar(CharacterIdentity identity)

@@ -2,7 +2,8 @@
 
 public class CharacterLevelUp
 {
-    public int StatPoints { get; set; }
-    public int SkillPoints { get; set; }
     public int DeedsPoints { get; set; }
+    public int StatPoints { get; set; }
+    public int AssetPoints { get; set; }
+    public int SkillPoints { get; set; }
 }

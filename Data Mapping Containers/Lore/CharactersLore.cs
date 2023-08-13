@@ -90,12 +90,12 @@ public class CharactersLore
 
         public static class Animal
         {
-            public const string Werewolf = "Werewolf";
-            public const string Werebear = "Werebear";
+            public const string Direwolf = "Werewolf";
+            public const string Direbear = "Werebear";
 
             public static readonly List<string> All = new()
             {
-                Werewolf, Werebear
+                Direwolf, Direbear
             };
         }
 
@@ -120,8 +120,8 @@ public class CharactersLore
 
             Orc.Greenskin,
 
-            Animal.Werewolf,
-            Animal.Werebear,
+            Animal.Direwolf,
+            Animal.Direbear,
 
             Undead.Zombie,
             Undead.Skeleton
@@ -176,10 +176,11 @@ public class CharactersLore
         public const string Defense = "Defense";
         public const string Purge = "Purge";
         public const string Mana = "Mana";
+        public const string Actions = "Actions";
 
         public static readonly List<string> All = new()
         {
-            Resolve, Harm, Spot, Defense, Purge, Mana
+            Resolve, Harm, Spot, Defense, Purge, Mana, Actions
         };
     }
 

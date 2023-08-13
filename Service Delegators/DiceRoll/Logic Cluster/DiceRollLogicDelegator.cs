@@ -107,9 +107,10 @@ internal class DiceRollLogicDelegator
 
     private static void LevelUpCharacter(Character character)
     {
-        character.LevelUp.DeedsPoints += 1 * character.Status.EntityLevel;
-        character.LevelUp.StatPoints += 2 * character.Status.EntityLevel;
-        character.LevelUp.SkillPoints += 4 * character.Status.EntityLevel;
+        character.LevelUp.DeedsPoints += character.Status.EntityLevel;
+        character.LevelUp.StatPoints += character.Status.EntityLevel + 1;
+        character.LevelUp.AssetPoints += character.Status.EntityLevel + 2;
+        character.LevelUp.SkillPoints += character.Status.EntityLevel + 3;
     }
 
     private static int GetSkillValue(Character character, string skill)

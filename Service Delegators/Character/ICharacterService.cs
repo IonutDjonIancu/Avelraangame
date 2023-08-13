@@ -21,6 +21,7 @@ public interface ICharacterService
     
     // character lvlup
     Character UpdateCharacterStats(string stat, CharacterIdentity identity);
+    Character UpdateCharacterAssets(string asset, CharacterIdentity identity);
     Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
     #endregion
 
