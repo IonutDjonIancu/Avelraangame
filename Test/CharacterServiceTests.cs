@@ -33,7 +33,7 @@ public class CharacterServiceTests : TestBase
 
         var origins = new CharacterTraits
         {
-            Race = CharactersLore.Races.Human,
+            Race = CharactersLore.Races.Playable.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
             Tradition = CharactersLore.Tradition.Common,
             Class = CharactersLore.Classes.Warrior
@@ -69,13 +69,13 @@ public class CharacterServiceTests : TestBase
 
         character.Inventory.Should().NotBeNull();
 
-        character.Supplies.Should().NotBeNull();
-        character.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
+        character.Inventory.Supplies.Should().NotBeNull();
+        character.Inventory.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         character.Status.IsAlive.Should().BeTrue();
         character.Status.IsLockedToModify.Should().BeFalse();
 
-        GameplayLore.Locations.All.Select(s => s.LocationName).Should().Contain(character.Position.Location);
+        GameplayLore.Locations.All.Select(s => s.LocationName).Should().Contain(character.Status.Position.Location);
     }
 
     [Fact(DisplayName = "Modifing character name should have the new name")]
@@ -123,7 +123,7 @@ public class CharacterServiceTests : TestBase
 
         var currentResolve = chr.Sheet.Assets.Resolve;
 
-        Utils.GetPlayerCharacter(dbs, CreateCharIdentity(chr)).LevelUp.AssetPoints = 1;
+        Utils.GetPlayerCharacter(dbs.Snapshot, CreateCharIdentity(chr)).LevelUp.AssetPoints = 1;
 
         chr = charService.UpdateCharacterAssets(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
 
@@ -164,13 +164,13 @@ public class CharacterServiceTests : TestBase
     {
         var chr = CreateHumanCharacter("Jax");
 
-        if (chr.Supplies.First().Subtype == ItemsLore.Subtypes.Wealth.Goods)
+        if (chr.Inventory.Supplies.First().Subtype == ItemsLore.Subtypes.Wealth.Goods)
         {
-            chr.Supplies.Clear();
-            chr.Supplies.Add(itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword));
+            chr.Inventory.Supplies.Clear();
+            chr.Inventory.Supplies.Add(itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword));
         }
 
-        var item = chr.Supplies.First();
+        var item = chr.Inventory.Supplies.First();
         item.Should().NotBeNull();
 
         var location = item.InventoryLocations.First();
@@ -183,7 +183,7 @@ public class CharacterServiceTests : TestBase
                 PlayerId = chr.Identity.PlayerId,
             },
             InventoryLocation = location,
-            ItemId = chr.Supplies.First().Identity.Id
+            ItemId = chr.Inventory.Supplies.First().Identity.Id
         };
 
         charService.CharacterEquipItem(equip);
@@ -209,13 +209,13 @@ public class CharacterServiceTests : TestBase
     {
         var chr = CreateHumanCharacter("Jax");
 
-        if (chr.Supplies.First().Subtype == ItemsLore.Subtypes.Wealth.Goods)
+        if (chr.Inventory.Supplies.First().Subtype == ItemsLore.Subtypes.Wealth.Goods)
         {
-            chr.Supplies.Clear();
-            chr.Supplies.Add(itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword));
+            chr.Inventory.Supplies.Clear();
+            chr.Inventory.Supplies.Add(itemService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword));
         }
 
-        var item = chr.Supplies.First();
+        var item = chr.Inventory.Supplies.First();
         item.Should().NotBeNull();
 
         var location = item.InventoryLocations.First();
@@ -228,7 +228,7 @@ public class CharacterServiceTests : TestBase
                 PlayerId = chr.Identity.PlayerId,
             },
             InventoryLocation = location,
-            ItemId = chr.Supplies.First().Identity.Id
+            ItemId = chr.Inventory.Supplies.First().Identity.Id
         };
 
         charService.CharacterEquipItem(equip);
@@ -248,7 +248,7 @@ public class CharacterServiceTests : TestBase
         }
 
         hasEquipedItem.Should().BeFalse();
-        chr.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
+        chr.Inventory.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
     }
 
     [Fact(DisplayName = "Learning a common bonus heroic trait")]
@@ -304,62 +304,6 @@ public class CharacterServiceTests : TestBase
         Assert.Throws<Exception>(() => charService.CharacterLearnHeroicTrait(trait));
     }
 
-    [Fact(DisplayName = "Create character paperdoll")]
-    public void Calculate_character_paperdoll_test()
-    {
-        var chr = CreateHumanCharacter("Jax");
-        chr.LevelUp.DeedsPoints = 1000;
-
-        var candlelight = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.PassiveSpecialSkills.Candlelight.Identity.Name)!;
-        var metachaos = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.ActivateSpecialSkills.MetachaosDaemonology.Identity.Name)!;
-
-        var candlelightTrait = new CharacterSpecialSkillAdd
-        {
-            CharacterIdentity = new CharacterIdentity
-            {
-                Id = chr.Identity.Id,
-                PlayerId = chr.Identity.PlayerId,
-            },
-            SpecialSkillId = candlelight.Identity.Id,
-        };
-        var metachaosTrait = new CharacterSpecialSkillAdd
-        {
-            CharacterIdentity = new CharacterIdentity
-            {
-                Id = chr.Identity.Id,
-                PlayerId = chr.Identity.PlayerId,
-            },
-            SpecialSkillId = metachaos.Identity.Id,
-        };
-        charService.CharacterLearnHeroicTrait(candlelightTrait);
-        charService.CharacterLearnHeroicTrait(metachaosTrait);
-
-        var charIdentity = new CharacterIdentity
-        {
-            Id = chr.Identity.Id,
-            PlayerId = chr.Identity.PlayerId
-        };
-
-        var paperdoll = charService.CalculatePaperdollForPlayerCharacter(charIdentity);
-        
-        paperdoll.Should().NotBeNull();
-        paperdoll.Stats.Should().NotBeNull();
-        paperdoll.Assets.Should().NotBeNull();
-        paperdoll.Skills.Should().NotBeNull();
-        paperdoll.SpecialSkills.Should().NotBeNull();
-
-        paperdoll.Stats.Strength.Should().BeGreaterThanOrEqualTo(chr.Sheet.Stats.Strength);
-        paperdoll.Assets.Resolve.Should().BeGreaterThan(10);
-        paperdoll.Skills.Arcane.Should().BeGreaterThan(20);
-        paperdoll.SpecialSkills.Count.Should().Be(1);
-        paperdoll.SpecialSkills.First().Identity.Name.Should().Be(metachaos.Identity.Name);
-
-        var calculatedActionTokens = RulebookLore.Formulae.Misc.CalculateActionTokens(paperdoll.Assets.Resolve);
-        var actionTokens = calculatedActionTokens <= 1 ? 1 : calculatedActionTokens;
-
-        paperdoll.ActionTokens.Should().Be(actionTokens);
-    }
-
     [Theory(DisplayName = "Character travel should move to new position")]
     [InlineData("Dragonmaw_Farlindor_Danar_Belfordshire")]
     [InlineData("Dragonmaw_Farlindor_Danar_Arada")]
@@ -372,7 +316,7 @@ public class CharacterServiceTests : TestBase
         var travelToPosition = new CharacterTravel
         {
             CharacterIdentity = CreateCharIdentity(chr),
-            Destination = Utils.GetPositionByFullName(locationFullName)
+            Destination = Utils.GetPositionByLocationFullName(locationFullName)
         };
 
         var initialProvisions = chr.Inventory.Provisions;
@@ -388,7 +332,7 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
         chr.Status.Wealth = 10000;
 
-        var location = gameplayService.GetLocation(chr.Position);
+        var location = gameplayService.GetLocation(chr.Status.Position);
         location.Mercenaries.Count.Should().BeGreaterThanOrEqualTo(1);
 
         var merc = location.Mercenaries.First();

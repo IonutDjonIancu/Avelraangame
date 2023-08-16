@@ -5,7 +5,7 @@ namespace Service_Delegators;
 internal class CharacterTravelLogic
 {
     private readonly IDatabaseService dbs;
-    private readonly IDiceRollService diceService;
+    private readonly IDiceRollService dice;
 
     private CharacterTravelLogic() { }
     internal CharacterTravelLogic(
@@ -13,16 +13,16 @@ internal class CharacterTravelLogic
         IDiceRollService diceRollService)
     {
         dbs = databaseService;
-        diceService = diceRollService;
+        dice = diceRollService;
     }
 
     internal void MoveToLocation(CharacterTravel positionTravel)
     {
-        var character = Utils.GetPlayerCharacter(dbs, positionTravel.CharacterIdentity);
+        var character = Utils.GetPlayerCharacter(dbs.Snapshot, positionTravel.CharacterIdentity);
 
-        var currentLocationFullName = Utils.GetLocationFullName(character.Status.Position);
+        var currentLocationFullName = Utils.GetLocationFullNameFromPosition(character.Status.Position);
         var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
-        var destinationLocationFullName = Utils.GetLocationFullName(positionTravel.Destination);
+        var destinationLocationFullName = Utils.GetLocationFullNameFromPosition(positionTravel.Destination);
         var destination = GameplayLore.Locations.All.Find(s => s.FullName == destinationLocationFullName)!;
         
         int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);
@@ -31,21 +31,18 @@ internal class CharacterTravelLogic
         var totalProvisions = character.Inventory.Provisions + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
         if (totalProvisionsCost > totalProvisions) throw new Exception($"Not enough provisions for all the party to travel to {destination.Position.Location}.");
         
-        character.Status.Position = destination.Position;
-        
-        var effort = diceService.Roll_1_to_n(destination.Effort);
+        var effort = dice.Roll_1_to_n(destination.Effort);
         var listOfRolls = new List<int>();
 
-        var characterRoll = paperdollLogic.PaperdollDiceRoll(CharactersLore.Skills.Travel, character);
-
+        var characterRoll = dice.Roll_character_gameplay_dice(false, CharactersLore.Skills.Travel, character);
+        character.Status.Position = destination.Position;
         listOfRolls.Add(characterRoll);
 
         foreach (var npc in character.Mercenaries)
         {
-            var npcRoll = paperdollLogic.PaperdollDiceRoll(CharactersLore.Skills.Travel, npc);
+            var npcRoll = dice.Roll_character_gameplay_dice(false, CharactersLore.Skills.Travel, npc);
+            npc.Status.Position = destination.Position;
             listOfRolls.Add(npcRoll);
-
-            npc.Position = destination.Position;
         }
 
         var highestRoll = listOfRolls.Max();
@@ -61,7 +58,7 @@ internal class CharacterTravelLogic
 
             if (character.Mercenaries.Count > 0)
             {
-                var totalMenLost = diceService.Roll_1_to_n(character.Mercenaries.Count);
+                var totalMenLost = dice.Roll_1_to_n(character.Mercenaries.Count);
                 for (var i = 0; i < totalMenLost; i++)
                 {
                     character.Mercenaries.RemoveAt(i);

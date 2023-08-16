@@ -29,10 +29,10 @@ public class DiceRollService : IDiceRollService
     {
         return logic.Roll100withReroll();
     }
-    public int Roll_character_dice(Character character, string skill)
+    public int Roll_character_gameplay_dice(bool isOffense, string attribute, Character character)
     {
-        validator.ValidateCharacterBeforeRoll(character, skill);
-        return logic.RollGameplayDice(character, skill);
+        validator.ValidateCharacterBeforeRoll(character, attribute);
+        return logic.RollGameplayDice(isOffense, attribute, character);
     }
     public bool Roll_par_impar()
     {

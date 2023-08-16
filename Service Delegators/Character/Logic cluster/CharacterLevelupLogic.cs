@@ -14,7 +14,7 @@ internal class CharacterLevelupLogic
 
     internal Character IncreaseStat(string stat, CharacterIdentity identity)
     {
-        var character = Utils.GetPlayerCharacter(dbs, identity);
+        var character = Utils.GetPlayerCharacter(dbs.Snapshot, identity);
 
         var levelupStatPts = 1;
         var likelyStatPts = 0;
@@ -46,7 +46,7 @@ internal class CharacterLevelupLogic
 
     internal Character IncreaseAsset(string asset, CharacterIdentity identity)
     {
-        var character = Utils.GetPlayerCharacter(dbs, identity);
+        var character = Utils.GetPlayerCharacter(dbs.Snapshot, identity);
 
         var levelupAssetPts = 1;
         var likelyAssetPts = 0;
@@ -79,7 +79,7 @@ internal class CharacterLevelupLogic
 
     internal Character IncreaseSkill(string skill, CharacterIdentity identity)
     {
-        var character = Utils.GetPlayerCharacter(dbs, identity);
+        var character = Utils.GetPlayerCharacter(dbs.Snapshot, identity);
 
         var levelupSkillPts = 1;
         var likelySkillPts = 0;

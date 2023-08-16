@@ -48,7 +48,7 @@ internal class CharacterItemsLogic
             character.Inventory.Heraldry.Remove(item);
         }
 
-        character.Supplies!.Add(item);
+        character.Inventory.Supplies!.Add(item);
 
         dbs.PersistPlayer(player.Identity.Id);
 
@@ -58,7 +58,7 @@ internal class CharacterItemsLogic
     internal Character EquipItem(CharacterEquip equip)
     {
         var (character, player) = GetStoredCharacterAndPlayer(equip.CharacterIdentity); 
-        var item = character.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
+        var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
 
         if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head)
         {
@@ -90,7 +90,7 @@ internal class CharacterItemsLogic
             character.Inventory!.Heraldry!.Add(item);
         }
 
-        character.Supplies.Remove(item);
+        character.Inventory.Supplies.Remove(item);
 
         dbs.PersistPlayer(player.Identity.Id);
 

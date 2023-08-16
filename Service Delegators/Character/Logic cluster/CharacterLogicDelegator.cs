@@ -99,8 +99,8 @@ internal class CharacterLogicDelegator
         charTravelLogic.MoveToLocation(positionTravel);
     }
 
-    internal void MercenaryHire(CharacterHireMercenary hireMercenary)
+    internal void HireMercenary(CharacterHireMercenary hireMercenary)
     {
-        charNpcInteractionLogic.MercenaryHire(hireMercenary);
+        charNpcInteractionLogic.HireMercenary(hireMercenary);
     }
 }

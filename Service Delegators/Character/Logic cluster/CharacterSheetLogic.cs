@@ -14,25 +14,50 @@ internal class CharacterSheetLogic
 
     internal void SetCharacterSheet(int statPoints, int skillPoints, Character character)
     {
-        if      (character.Status.Traits.Race == CharactersLore.Races.Human) SetCharacterSheetForHuman(statPoints, skillPoints, character);
-        else if (character.Status.Traits.Race == CharactersLore.Races.Elf) SetCharacterSheetForElf(statPoints, skillPoints, character);
-        else if (character.Status.Traits.Race == CharactersLore.Races.Dwarf) SetCharacterSheetForDwarf(statPoints, skillPoints, character);
+        if      (character.Status.Traits.Race == CharactersLore.Races.Playable.Human) SetCharacterSheetForHuman(statPoints, skillPoints, character);
+        else if (character.Status.Traits.Race == CharactersLore.Races.Playable.Elf)   SetCharacterSheetForElf(statPoints, skillPoints, character);
+        else if (character.Status.Traits.Race == CharactersLore.Races.Playable.Dwarf) SetCharacterSheetForDwarf(statPoints, skillPoints, character);
+        else if (character.Status.Traits.Race == CharactersLore.Races.Playable.Orc)   SetCharacterSheetForOrc(statPoints, skillPoints, character);
         throw new NotImplementedException();
     }
 
     #region private methods
+    private void SetCharacterSheetForOrc(int statPoints, int skillPoints, Character character)
+    {
+        character.Sheet = new CharacterSheet
+        {
+            Stats = new CharacterStats
+            {
+                Strength     = RulebookLore.Races.Playable.Orc.Strength * character.Status.EntityLevel,
+                Constitution = RulebookLore.Races.Playable.Orc.Constitution * character.Status.EntityLevel,
+                Agility      = RulebookLore.Races.Playable.Orc.Agility * character.Status.EntityLevel,
+                Willpower    = RulebookLore.Races.Playable.Orc.Willpower * character.Status.EntityLevel,
+                Perception   = RulebookLore.Races.Playable.Orc.Perception * character.Status.EntityLevel,
+                Abstract     = RulebookLore.Races.Playable.Orc.Abstract * character.Status.EntityLevel
+            },
+            Assets = new CharacterAssets(),
+            Skills = new CharacterSkills()
+        };
+
+        if (character.Status.Traits.Culture == CharactersLore.Cultures.Orc.Greenskin) ModifySheetForGreenskin(character.Sheet);
+
+        DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
+        CalculateAssets(character.Sheet);
+        CalculateSkills(character.Sheet);
+    }
+
     private void SetCharacterSheetForHuman(int statPoints, int skillPoints, Character character)
     {
         character.Sheet = new CharacterSheet
         {
             Stats = new CharacterStats
             {
-                Strength    = RulebookLore.Races.Human.Strength * character.Status.EntityLevel,
-                Constitution= RulebookLore.Races.Human.Constitution * character.Status.EntityLevel,
-                Agility     = RulebookLore.Races.Human.Agility * character.Status.EntityLevel,
-                Willpower   = RulebookLore.Races.Human.Willpower * character.Status.EntityLevel,
-                Perception  = RulebookLore.Races.Human.Perception * character.Status.EntityLevel,
-                Abstract    = RulebookLore.Races.Human.Abstract * character.Status.EntityLevel
+                Strength     = RulebookLore.Races.Playable.Human.Strength * character.Status.EntityLevel,
+                Constitution = RulebookLore.Races.Playable.Human.Constitution * character.Status.EntityLevel,
+                Agility      = RulebookLore.Races.Playable.Human.Agility * character.Status.EntityLevel,
+                Willpower    = RulebookLore.Races.Playable.Human.Willpower * character.Status.EntityLevel,
+                Perception   = RulebookLore.Races.Playable.Human.Perception * character.Status.EntityLevel,
+                Abstract     = RulebookLore.Races.Playable.Human.Abstract * character.Status.EntityLevel
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -41,6 +66,8 @@ internal class CharacterSheetLogic
         if (character.Status.Traits.Culture == CharactersLore.Cultures.Human.Danarian) ModifySheetForDanarian(character.Sheet);
 
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
+        CalculateAssets(character.Sheet);
+        CalculateSkills(character.Sheet);
     }
 
     private void SetCharacterSheetForElf(int statPoints, int skillPoints, Character character)
@@ -49,12 +76,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = RulebookLore.Races.Elf.Strength * character.Status.EntityLevel,
-                Constitution= RulebookLore.Races.Elf.Constitution * character.Status.EntityLevel,
-                Agility     = RulebookLore.Races.Elf.Agility * character.Status.EntityLevel,
-                Willpower   = RulebookLore.Races.Elf.Willpower * character.Status.EntityLevel,
-                Perception  = RulebookLore.Races.Elf.Perception * character.Status.EntityLevel,
-                Abstract    = RulebookLore.Races.Elf.Abstract * character.Status.EntityLevel
+                Strength     = RulebookLore.Races.Playable.Elf.Strength * character.Status.EntityLevel,
+                Constitution = RulebookLore.Races.Playable.Elf.Constitution * character.Status.EntityLevel,
+                Agility      = RulebookLore.Races.Playable.Elf.Agility * character.Status.EntityLevel,
+                Willpower    = RulebookLore.Races.Playable.Elf.Willpower * character.Status.EntityLevel,
+                Perception   = RulebookLore.Races.Playable.Elf.Perception * character.Status.EntityLevel,
+                Abstract     = RulebookLore.Races.Playable.Elf.Abstract * character.Status.EntityLevel
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -63,6 +90,8 @@ internal class CharacterSheetLogic
         if (character.Status.Traits.Culture == CharactersLore.Cultures.Elf.Highborn) ModifySheetForHighborn(charsheet);
 
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
+        CalculateAssets(character.Sheet);
+        CalculateSkills(character.Sheet);
     }
 
     private void SetCharacterSheetForDwarf(int statPoints, int skillPoints, Character character)
@@ -71,12 +100,12 @@ internal class CharacterSheetLogic
         {
             Stats = new CharacterStats
             {
-                Strength    = RulebookLore.Races.Dwarf.Strength * character.Status.EntityLevel,
-                Constitution= RulebookLore.Races.Dwarf.Constitution * character.Status.EntityLevel,
-                Agility     = RulebookLore.Races.Dwarf.Agility * character.Status.EntityLevel,
-                Willpower   = RulebookLore.Races.Dwarf.Willpower * character.Status.EntityLevel,
-                Perception  = RulebookLore.Races.Dwarf.Perception * character.Status.EntityLevel,
-                Abstract    = RulebookLore.Races.Dwarf.Abstract * character.Status.EntityLevel
+                Strength     = RulebookLore.Races.Playable.Dwarf.Strength * character.Status.EntityLevel,
+                Constitution = RulebookLore.Races.Playable.Dwarf.Constitution * character.Status.EntityLevel,
+                Agility      = RulebookLore.Races.Playable.Dwarf.Agility * character.Status.EntityLevel,
+                Willpower    = RulebookLore.Races.Playable.Dwarf.Willpower * character.Status.EntityLevel,
+                Perception   = RulebookLore.Races.Playable.Dwarf.Perception * character.Status.EntityLevel,
+                Abstract     = RulebookLore.Races.Playable.Dwarf.Abstract * character.Status.EntityLevel
             },
             Assets = new CharacterAssets(),
             Skills = new CharacterSkills()
@@ -85,6 +114,40 @@ internal class CharacterSheetLogic
         if (character.Status.Traits.Culture == CharactersLore.Cultures.Dwarf.Undermountain) ModifySheetForUndermountain(charsheet);
 
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
+        CalculateAssets(character.Sheet);
+        CalculateSkills(character.Sheet);
+    }
+
+    private static void ModifySheetForGreenskin(CharacterSheet charsheet)
+    {
+        //stats
+        charsheet.Stats.Strength    += RulebookLore.Cultures.Orcs.Greenskin.Strength;
+        charsheet.Stats.Constitution+= RulebookLore.Cultures.Orcs.Greenskin.Constitution;
+        charsheet.Stats.Agility     += RulebookLore.Cultures.Orcs.Greenskin.Agility;
+        charsheet.Stats.Willpower   += RulebookLore.Cultures.Orcs.Greenskin.Willpower;
+        charsheet.Stats.Perception  += RulebookLore.Cultures.Orcs.Greenskin.Perception;
+        charsheet.Stats.Abstract    += RulebookLore.Cultures.Orcs.Greenskin.Abstract;
+        //assets
+        charsheet.Assets.Resolve    += RulebookLore.Cultures.Orcs.Greenskin.Resolve;
+        charsheet.Assets.Harm       += RulebookLore.Cultures.Orcs.Greenskin.Harm;
+        charsheet.Assets.Spot       += RulebookLore.Cultures.Orcs.Greenskin.Spot;
+        charsheet.Assets.Defense    += RulebookLore.Cultures.Orcs.Greenskin.Defense;
+        charsheet.Assets.Purge      += RulebookLore.Cultures.Orcs.Greenskin.Purge;
+        charsheet.Assets.Mana       += RulebookLore.Cultures.Orcs.Greenskin.Mana;
+        charsheet.Assets.Actions    += RulebookLore.Cultures.Orcs.Greenskin.Actions;
+        //skills
+        charsheet.Skills.Combat     += RulebookLore.Cultures.Orcs.Greenskin.Combat;
+        charsheet.Skills.Arcane     += RulebookLore.Cultures.Orcs.Greenskin.Arcane;
+        charsheet.Skills.Psionics   += RulebookLore.Cultures.Orcs.Greenskin.Psionics;
+        charsheet.Skills.Hide       += RulebookLore.Cultures.Orcs.Greenskin.Hide;
+        charsheet.Skills.Traps      += RulebookLore.Cultures.Orcs.Greenskin.Traps;
+        charsheet.Skills.Tactics    += RulebookLore.Cultures.Orcs.Greenskin.Tactics;
+        charsheet.Skills.Social     += RulebookLore.Cultures.Orcs.Greenskin.Social;
+        charsheet.Skills.Apothecary += RulebookLore.Cultures.Orcs.Greenskin.Apothecary;
+        charsheet.Skills.Travel     += RulebookLore.Cultures.Orcs.Greenskin.Travel;
+        charsheet.Skills.Sail       += RulebookLore.Cultures.Orcs.Greenskin.Sail;
+
+        // TODO: apply culture bonuses
     }
 
     private static void ModifySheetForDanarian(CharacterSheet charsheet)
@@ -103,6 +166,7 @@ internal class CharacterSheetLogic
         charsheet.Assets.Defense    += RulebookLore.Cultures.Humans.Danarian.Defence;
         charsheet.Assets.Purge      += RulebookLore.Cultures.Humans.Danarian.Purge;
         charsheet.Assets.Mana       += RulebookLore.Cultures.Humans.Danarian.Mana;
+        charsheet.Assets.Actions    += RulebookLore.Cultures.Humans.Danarian.Actions;
         //skills
         charsheet.Skills.Combat     += RulebookLore.Cultures.Humans.Danarian.Combat;
         charsheet.Skills.Arcane     += RulebookLore.Cultures.Humans.Danarian.Arcane;
@@ -115,7 +179,7 @@ internal class CharacterSheetLogic
         charsheet.Skills.Travel     += RulebookLore.Cultures.Humans.Danarian.Travel;
         charsheet.Skills.Sail       += RulebookLore.Cultures.Humans.Danarian.Sail;
 
-        // danarians should start with a weapon, armour and helm
+        // TODO: apply culture bonuses
     }
 
     private static void ModifySheetForHighborn(CharacterSheet charsheet)
@@ -146,7 +210,7 @@ internal class CharacterSheetLogic
         charsheet.Skills.Travel     += RulebookLore.Cultures.Elves.Highborn.Travel;
         charsheet.Skills.Sail       += RulebookLore.Cultures.Elves.Highborn.Sail;
 
-        // highborn should have a HT with no fear rolls
+        // TODO: apply culture bonuses
     }
 
     private static void ModifySheetForUndermountain(CharacterSheet charsheet)
@@ -177,39 +241,39 @@ internal class CharacterSheetLogic
         charsheet.Skills.Travel     += RulebookLore.Cultures.Dwarves.Undermountain.Travel;
         charsheet.Skills.Sail       += RulebookLore.Cultures.Dwarves.Undermountain.Sail;
 
-        // should start with heavy armour
+        // TODO: apply culture bonuses
     }
 
     private void DistributeClassAttributes(CharacterSheet sheet, string classes, int statPoints, int skillPoints)
     {
         if (classes == CharactersLore.Classes.Warrior)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Warrior.LikelyStats, RulebookLore.Classes.Warrior.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Warrior.LikelySkills, RulebookLore.Classes.Warrior.UnlikelySkills);
+            DistributeStatpoints(sheet, statPoints, RulebookLore.Classes.Warrior.LikelyStats, RulebookLore.Classes.Warrior.UnlikelyStats);
+            DistributeSkillpoints(sheet, skillPoints, RulebookLore.Classes.Warrior.LikelySkills, RulebookLore.Classes.Warrior.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Mage)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Mage.LikelyStats, RulebookLore.Classes.Mage.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Mage.LikelySkills, RulebookLore.Classes.Mage.UnlikelySkills);
+            DistributeStatpoints(sheet, statPoints, RulebookLore.Classes.Mage.LikelyStats, RulebookLore.Classes.Mage.UnlikelyStats);
+            DistributeSkillpoints(sheet, skillPoints, RulebookLore.Classes.Mage.LikelySkills, RulebookLore.Classes.Mage.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Hunter)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Hunter.LikelyStats, RulebookLore.Classes.Hunter.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Hunter.LikelySkills, RulebookLore.Classes.Hunter.UnlikelySkills);
+            DistributeStatpoints(sheet, statPoints, RulebookLore.Classes.Hunter.LikelyStats, RulebookLore.Classes.Hunter.UnlikelyStats);
+            DistributeSkillpoints(sheet, skillPoints, RulebookLore.Classes.Hunter.LikelySkills, RulebookLore.Classes.Hunter.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Swashbuckler)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Swashbuckler.LikelyStats, RulebookLore.Classes.Swashbuckler.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Swashbuckler.LikelySkills, RulebookLore.Classes.Swashbuckler.UnlikelySkills);
+            DistributeStatpoints(sheet, statPoints, RulebookLore.Classes.Swashbuckler.LikelyStats, RulebookLore.Classes.Swashbuckler.UnlikelyStats);
+            DistributeSkillpoints(sheet, skillPoints, RulebookLore.Classes.Swashbuckler.LikelySkills, RulebookLore.Classes.Swashbuckler.UnlikelySkills);
         }
         else if (classes == CharactersLore.Classes.Sorcerer)
         {
-            IncreaseStats(sheet, statPoints, RulebookLore.Classes.Sorcerer.LikelyStats, RulebookLore.Classes.Sorcerer.UnlikelyStats);
-            IncreaseSkills(sheet, skillPoints, RulebookLore.Classes.Sorcerer.LikelySkills, RulebookLore.Classes.Sorcerer.UnlikelySkills);
+            DistributeStatpoints(sheet, statPoints, RulebookLore.Classes.Sorcerer.LikelyStats, RulebookLore.Classes.Sorcerer.UnlikelyStats);
+            DistributeSkillpoints(sheet, skillPoints, RulebookLore.Classes.Sorcerer.LikelySkills, RulebookLore.Classes.Sorcerer.UnlikelySkills);
         }
     }
 
-    private void IncreaseStats(CharacterSheet sheet, int statPoints, List<string> likelyStats, List<string> unlikelyStats)
+    private void DistributeStatpoints(CharacterSheet sheet, int statPoints, List<string> likelyStats, List<string> unlikelyStats)
     {
         while (statPoints != 0)
         {
@@ -238,7 +302,7 @@ internal class CharacterSheetLogic
         }
     }
 
-    private void IncreaseSkills(CharacterSheet sheet, int skillPoints, List<string> likeySkills, List<string> unlikeySkills)
+    private void DistributeSkillpoints(CharacterSheet sheet, int skillPoints, List<string> likeySkills, List<string> unlikeySkills)
     {
         while (skillPoints != 0)
         {
@@ -269,6 +333,40 @@ internal class CharacterSheetLogic
 
             skillPoints--;
         }
+    }
+
+    private static void CalculateAssets(CharacterSheet sheet)
+    {
+        sheet.Assets.Harm    += RulebookLore.Formulae.Assets.CalculateHarm(sheet.Stats);
+        sheet.Assets.Spot    += RulebookLore.Formulae.Assets.CalculateSpot(sheet.Stats);
+        sheet.Assets.Defense += RulebookLore.Formulae.Assets.CalculateDefense(sheet.Stats);
+        sheet.Assets.Purge   += RulebookLore.Formulae.Assets.CalculatePurge(sheet.Stats);
+
+        var resolve = RulebookLore.Formulae.Assets.CalculateResolve(sheet.Stats);
+        sheet.Assets.Resolve     += resolve;
+        sheet.Assets.ResolveLeft += resolve;
+
+        var mana = RulebookLore.Formulae.Assets.CalculateMana(sheet.Stats);
+        sheet.Assets.Mana     += mana;
+        sheet.Assets.ManaLeft += mana;
+
+        var actions = RulebookLore.Formulae.Assets.CalculateActions(sheet.Stats);
+        sheet.Assets.Actions     += actions;
+        sheet.Assets.ActionsLeft += actions;
+    }
+
+    private static void CalculateSkills(CharacterSheet sheet)
+    {
+        sheet.Skills.Combat     += RulebookLore.Formulae.Skills.CalculateCombat(sheet.Stats);
+        sheet.Skills.Arcane     += RulebookLore.Formulae.Skills.CalculateArcane(sheet.Stats);
+        sheet.Skills.Psionics   += RulebookLore.Formulae.Skills.CalculatePsionics(sheet.Stats);
+        sheet.Skills.Hide       += RulebookLore.Formulae.Skills.CalculateHide(sheet.Stats);
+        sheet.Skills.Traps      += RulebookLore.Formulae.Skills.CalculateTraps(sheet.Stats);
+        sheet.Skills.Tactics    += RulebookLore.Formulae.Skills.CalculateTactics(sheet.Stats);
+        sheet.Skills.Social     += RulebookLore.Formulae.Skills.CalculateSocial(sheet.Stats);
+        sheet.Skills.Apothecary += RulebookLore.Formulae.Skills.CalculateApothecary(sheet.Stats);
+        sheet.Skills.Travel     += RulebookLore.Formulae.Skills.CalculateTravel(sheet.Stats);
+        sheet.Skills.Sail       += RulebookLore.Formulae.Skills.CalculateSail(sheet.Stats);
     }
     #endregion
 }

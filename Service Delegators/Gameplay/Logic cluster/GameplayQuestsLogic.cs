@@ -24,7 +24,7 @@ internal class GameplayQuestsLogic
 
     internal Location GenerateLocation(Position position)
     {
-        var fullName = Utils.GetLocationFullName(position);
+        var fullName = Utils.GetLocationFullNameFromPosition(position);
 
         var locationData = GameplayLore.Locations.All.Find(s => s.FullName == fullName)!;
 
@@ -96,7 +96,7 @@ internal class GameplayQuestsLogic
 
         for (int i = 0; i < nrOfMercs; i++)
         {
-            mercs.Add(npcsService.GenerateGoodGuyNpc(position, effortUpper));
+            mercs.Add(npcsService.GenerateGoodGuyNpc(Utils.GetLocationByPosition(position).LocationName));
         }
 
         return mercs;

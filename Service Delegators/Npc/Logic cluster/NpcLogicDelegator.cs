@@ -50,7 +50,7 @@ internal class NpcLogicDelegator
         character.Status.IsLockedToModify = false;
         character.Status.Traits = DecideTraits(isGood, location);
         character.Status.Gameplay = new CharacterGameplay();
-        character.Status.Position = Utils.GetPositionByFullName(location.FullName);
+        character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
         character.Status.Worth = location.Effort;
         character.Status.Wealth = dice.Roll_100_noReroll();
         character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this person.";

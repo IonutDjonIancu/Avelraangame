@@ -7,10 +7,9 @@ public class GameplayServiceTests : TestBase
     {
         var locFullName = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.FullName;
 
-        gameplayService.GetLocation(Utils.GetPositionByFullName(locFullName));
+        gameplayService.GetLocation(Utils.GetPositionByLocationFullName(locFullName));
 
         dbs.Snapshot.Locations.Count.Should().Be(1);
         dbs.Snapshot.Locations.First().FullName.Should().Be(locFullName);
     }
-
 }

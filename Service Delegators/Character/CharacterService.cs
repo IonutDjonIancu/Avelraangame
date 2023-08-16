@@ -129,7 +129,7 @@ public class CharacterService : ICharacterService
 
     public void CharacterHireMercenary(CharacterHireMercenary hireMercenary)
     {
-        validator.ValidateMercenaryHire(hireMercenary);
-        logic.MercenaryHire(hireMercenary);
+        validator.ValidateMercenaryBeforeHire(hireMercenary);
+        logic.HireMercenary(hireMercenary);
     }
 }

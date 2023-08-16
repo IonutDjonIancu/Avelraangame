@@ -56,7 +56,7 @@ public class TestBase
 
         var origins = new CharacterTraits
         {
-            Race = CharactersLore.Races.Human,
+            Race = CharactersLore.Races.Playable.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
             Tradition = CharactersLore.Tradition.Common,
             Class = CharactersLore.Classes.Warrior

@@ -32,14 +32,13 @@ internal class DiceRollLogicDelegator
         return random.Next(1, 101);
     }
 
-    internal int Roll100withReroll(int roll = 0)
+    internal int Roll100withReroll()
     {
-        var handRoll = random.Next(1, 101);
-        var totalRoll = roll + handRoll;
+        var totalRoll = random.Next(1, 101);
 
-        if (handRoll > 95)
+        if (totalRoll > 95)
         {
-            totalRoll = Roll100withReroll(totalRoll);
+            totalRoll += Roll100noReroll();
         }
 
         return totalRoll;
@@ -47,18 +46,6 @@ internal class DiceRollLogicDelegator
     #endregion
 
     #region custom rolls
-    internal int RollGameplayDice(Character character, string skill)
-    {
-        if (character.Status.Traits.Tradition == GameplayLore.Tradition.Martial)
-        {
-            return CharacterRolld20(character, skill);
-        }
-        else
-        {
-            return CharacterRolld100(character, skill);
-        }
-    }
-    
     internal bool RollParImpar()
     {
         return random.Next(1, 3) == 1;
@@ -75,62 +62,66 @@ internal class DiceRollLogicDelegator
     }
     #endregion
 
+    #region gameplay rolls
+    internal int RollGameplayDice(bool isOffense, string attribute, Character character)
+    {
+        var grade = character.Status.Traits.Tradition == GameplayLore.Tradition.Martial
+            ? 1 + Roll20withReroll() / 4
+            : 1 + Roll100withReroll() / 20;
+
+        return GetRollGradeAndLevelup(grade, isOffense, attribute, character);
+    }
+    #endregion
+
     #region private methods
-    private int CharacterRolld20(Character character, string skill)
-    {
-        int diceRoll = Roll20withReroll();
-        var grade = 1 + diceRoll / 4;
-        return GetGrades(character, skill, grade);
-    }
-
-    private int CharacterRolld100(Character character, string skill)
-    {
-        int diceRoll = Roll100withReroll();
-        var grade = 1 + diceRoll / 20;
-        return GetGrades(character, skill, grade);
-    }
-
-    private static int GetGrades(Character character, string skill, int grade)
+    private static int GetRollGradeAndLevelup(int grade, bool isOffense, string attribute, Character character)
     {
         var crit = grade / 5 - 1;
         var crits = crit > 0 ? crit : 0;
-        var skillValue = GetSkillValue(character, skill);
-        var grades = grade * skillValue * 5 / 100;
+        var attrValue = GetAttributeValue(character, attribute);
 
-        for (var i = 0; i < crits; i++)
-        {
-            LevelUpCharacter(character);
-        }
+        // this calculates that a 20 skill represents a 100%
+        var grades = grade * attrValue * 5 / 100;
+
+        if (isOffense) LevelUpCharacter(crits, character);
 
         return grades;
     }
 
-    private static void LevelUpCharacter(Character character)
+    private static void LevelUpCharacter(int crits, Character character)
     {
-        character.LevelUp.DeedsPoints += character.Status.EntityLevel;
-        character.LevelUp.StatPoints += character.Status.EntityLevel + 1;
-        character.LevelUp.AssetPoints += character.Status.EntityLevel + 2;
-        character.LevelUp.SkillPoints += character.Status.EntityLevel + 3;
+        character.LevelUp.DeedsPoints   += crits * (character.Status.EntityLevel);
+        character.LevelUp.StatPoints    += crits * (character.Status.EntityLevel + 1);
+        character.LevelUp.AssetPoints   += crits * (character.Status.EntityLevel + 2);
+        character.LevelUp.SkillPoints   += crits * (character.Status.EntityLevel + 3);
     }
 
-    private static int GetSkillValue(Character character, string skill)
+    private static int GetAttributeValue(Character character, string attribute) => attribute switch
     {
-        int skillValue;
+        // stats
+        CharactersLore.Stats.Strength       => character.Sheet.Stats.Strength,
+        CharactersLore.Stats.Constitution   => character.Sheet.Stats.Constitution,
+        CharactersLore.Stats.Agility        => character.Sheet.Stats.Agility,
+        CharactersLore.Stats.Willpower      => character.Sheet.Stats.Willpower,
+        CharactersLore.Stats.Perception     => character.Sheet.Stats.Perception,
+        CharactersLore.Stats.Abstract       => character.Sheet.Stats.Abstract,
 
-        if      (skill == CharactersLore.Skills.Combat) skillValue = character.Sheet.Skills.Combat;
-        else if (skill == CharactersLore.Skills.Arcane) skillValue = character.Sheet.Skills.Arcane;
-        else if (skill == CharactersLore.Skills.Psionics) skillValue = character.Sheet.Skills.Psionics;
-        else if (skill == CharactersLore.Skills.Hide) skillValue = character.Sheet.Skills.Hide;
-        else if (skill == CharactersLore.Skills.Traps) skillValue = character.Sheet.Skills.Traps;
-        else if (skill == CharactersLore.Skills.Tactics) skillValue = character.Sheet.Skills.Tactics;
-        else if (skill == CharactersLore.Skills.Social) skillValue = character.Sheet.Skills.Social;
-        else if (skill == CharactersLore.Skills.Apothecary) skillValue = character.Sheet.Skills.Apothecary;
-        else if (skill == CharactersLore.Skills.Travel) skillValue = character.Sheet.Skills.Travel;
-        else if (skill == CharactersLore.Skills.Sail) skillValue = character.Sheet.Skills.Sail;
-        else throw new NotImplementedException();
+        // assets
+        CharactersLore.Assets.Spot          => character.Sheet.Assets.Spot,
 
-        return skillValue;
-    }
+        // skills
+        CharactersLore.Skills.Combat        => character.Sheet.Skills.Combat,
+        CharactersLore.Skills.Arcane        => character.Sheet.Skills.Arcane,
+        CharactersLore.Skills.Psionics      => character.Sheet.Skills.Psionics,
+        CharactersLore.Skills.Hide          => character.Sheet.Skills.Hide,
+        CharactersLore.Skills.Traps         => character.Sheet.Skills.Traps,
+        CharactersLore.Skills.Tactics       => character.Sheet.Skills.Tactics,
+        CharactersLore.Skills.Social        => character.Sheet.Skills.Social,
+        CharactersLore.Skills.Apothecary    => character.Sheet.Skills.Apothecary,
+        CharactersLore.Skills.Travel        => character.Sheet.Skills.Travel,
+        CharactersLore.Skills.Sail          => character.Sheet.Skills.Sail,
 
+        _ => throw new Exception($"Wrong attribute given: {attribute}")
+    };
     #endregion
 }
