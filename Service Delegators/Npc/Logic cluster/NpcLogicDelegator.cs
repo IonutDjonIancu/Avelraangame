@@ -1,13 +1,11 @@
-﻿#pragma warning disable IDE0017 // Simplify object initialization
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Pocos;
 
 namespace Service_Delegators;
 
 internal class NpcLogicDelegator
 {
-    private readonly IDiceRollService diceService;
+    private readonly IDiceRollService dice;
     private readonly IItemService itemsService;
 
     private NpcLogicDelegator() { }
@@ -16,307 +14,383 @@ internal class NpcLogicDelegator
         IItemService itemService,
         ICharacterService characterService)
     {
-        diceService = diceRollService;
+        dice = diceRollService;
         itemsService = itemService;
     }
 
-    internal NpcCharacter GenerateBadGuyNpcCharacter(Position position, int effortUpper)
+    internal Character GenerateNpcCharacter(string locationName, bool isGood)
     {
-        var chr = new NpcCharacter();
+        var location = Utils.GetLocationByLocationName(locationName);
+        var character = new Character();
 
-        var race = CharactersLore.Races.Human;
-        var culture = SetCulture(race);
-        var npcClass = SetClass();
-        var entityLvl = SetEntityLevel();
+        SetIdentity(character);
+        SetStatus(character, isGood, location);
+        SetSheet(character, location);
+        SetInventory(character);
+        SetWorth(character, location);
 
-        chr.Identity = new CharacterIdentity()
-        {
-            Id = Guid.NewGuid().ToString(),
-            PlayerId = Guid.Empty.ToString()
-        };
-
-        chr.Info = new CharacterInfo()
-        {
-            Name = $"{race}_{DateTime.Now.Millisecond}",
-            EntityLevel = entityLvl,
-            DateOfBirth = DateTime.Now.ToShortDateString(),
-            IsAlive = true,
-            IsNpc = true,
-            Fame = $"A brigand of {position.Location}.",
-            Wealth = diceService.Roll_100_noReroll(),
-            Origins = new CharacterOrigins()
-            {
-                Race = race,
-                Culture = culture,
-                Tradition = CharactersLore.Tradition.Martial,
-                Class = npcClass
-            }
-        };
-
-        chr.Position = position;
-
-        chr.Status = new CharacterStatus();
-        chr.LevelUp = new CharacterLevelUp();
-
-        chr.Sheet = SetCharacterSheet(race, effortUpper);
-
-        chr.Inventory = SetInventory(race, entityLvl);
-
-        return chr;
+        return character;
     }
 
-    internal NpcCharacter GenerateGoodGuyNpcCharacter(Position position, int effortUpper)
+    #region private methods
+    #region Identity
+    private static void SetIdentity(Character character)
     {
-        var chr = new NpcCharacter();
+        character.Identity.Id = Guid.NewGuid().ToString();
+        character.Identity.PlayerId = Guid.Empty.ToString();
+    }
+    #endregion
+    #region Status
+    private void SetStatus(Character character, bool isGood, Location location)
+    {
+        character.Status.EntityLevel = DecideEntityLevel();
+        character.Status.DateOfBirth = DateTime.Now.ToShortDateString();
+        character.Status.IsNpc = true;
+        character.Status.IsAlive = true;
+        character.Status.IsLockedToModify = false;
+        character.Status.Traits = DecideTraits(isGood, location);
+        character.Status.Gameplay = new CharacterGameplay();
+        character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
+        character.Status.Worth = location.Effort;
+        character.Status.Wealth = dice.Roll_100_noReroll();
+        character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this person.";
+        character.Status.NrOfQuestsFinished = 0;
 
-        var race = SetRace();
-        var culture = SetCulture(race);
-        var npcClass = SetClass();
-        var entityLvl = SetEntityLevel();
-
-        chr.Worth = SetWorth(entityLvl, effortUpper);
-
-        chr.Identity = new CharacterIdentity()
-        {
-            Id = Guid.NewGuid().ToString(),
-            PlayerId = Guid.Empty.ToString()
-        };
-
-        chr.Info = new CharacterInfo()
-        {
-            Name = $"{race}_{DateTime.Now.Millisecond}",
-            EntityLevel = entityLvl,
-            DateOfBirth = DateTime.Now.ToShortDateString(),
-            IsAlive = true,
-            IsNpc = true,
-            Fame = $"This person is quite well known around {position.Location}.",
-            Wealth = 0,
-            Origins = new CharacterOrigins()
-            {
-                Race = race,
-                Culture = culture,
-                Tradition = CharactersLore.Tradition.Martial,
-                Class = npcClass
-            }
-        };
-
-        chr.Position = position;
-
-        chr.Status = new CharacterStatus();
-        chr.LevelUp = new CharacterLevelUp();
-
-        chr.Sheet = SetCharacterSheet(race, effortUpper);
-
-        chr.Inventory = SetInventory(race, entityLvl);
-
-        return chr;
+        character.Status.Name = ResolveName(character.Status.Traits.Race, isGood);
     }
 
-    private CharacterInventory SetInventory(string race, int entityLevel)
+    private static string ResolveName(string race, bool isGood)
+    {
+        string GoodName(string race)
+        {
+            return $"{race}_mercenary_{DateTime.Now.Millisecond}";
+        }
+
+        string BadName(string race)
+        {
+            return race switch
+            {
+                CharactersLore.Races.Playable.Human => $"Brigand_{DateTime.Now.Millisecond}",
+                CharactersLore.Races.Playable.Elf => $"Darkelf_{DateTime.Now.Millisecond}",
+                CharactersLore.Races.Playable.Dwarf => $"Outcast_dwarf_{DateTime.Now.Millisecond}",
+                CharactersLore.Races.Playable.Orc => $"Orc_{DateTime.Now.Millisecond}",
+                CharactersLore.Races.NonPlayable.Animal => $"Wild_animal_{DateTime.Now.Millisecond}",
+                CharactersLore.Races.NonPlayable.Undead => $"Undead_{DateTime.Now.Millisecond}",
+
+                _ => $"Npc_{DateTime.Now.Millisecond}",
+            };
+        }
+
+        return isGood ? GoodName(race) : BadName(race);
+    }
+
+    private CharacterTraits DecideTraits(bool isGood, Location location)
+    {
+        var race = DecideRace(isGood);
+        var culture = DecideCulture(race);
+        var tradition = DecideTradition(location);
+        var chosenClass = DecideClass();
+
+        return new CharacterTraits
+        {
+            Race = race,
+            Culture = culture,
+            Tradition = tradition,
+            Class = chosenClass
+        };
+    }
+
+    private string DecideClass()
+    {
+        var roll = dice.Roll_100_noReroll();
+
+        return roll <= 80 ? CharactersLore.Classes.Warrior : CharactersLore.Classes.Mage;
+    }
+
+    private static string DecideTradition(Location location)
+    {
+        return location.FullName.Contains(GameplayLore.Locations.Dragonmaw.RegionName) ? GameplayLore.Tradition.Martial : GameplayLore.Tradition.Common;
+    }
+
+    private string DecideRace(bool isGood)
+    {
+        string GetGoodRace()
+        {
+            var roll = dice.Roll_100_noReroll();
+
+            if (roll <= 70) return CharactersLore.Races.Playable.Human;
+            else if (roll <= 95) return CharactersLore.Races.Playable.Elf;
+            else return CharactersLore.Races.Playable.Dwarf;
+        }
+
+        string GetBadRace()
+        {
+            var roll = dice.Roll_100_noReroll();
+
+            if (roll <= 70)
+            {
+                var roll2nd = dice.Roll_100_noReroll();
+
+                if (roll2nd <= 30) return CharactersLore.Races.Playable.Human;
+                else if (roll2nd <= 55) return CharactersLore.Races.Playable.Orc;
+                else return CharactersLore.Races.NonPlayable.Animal;
+            }
+            else
+            {
+                var roll2nd = dice.Roll_100_noReroll();
+
+                if (roll2nd <= 75) return CharactersLore.Races.Playable.Orc;
+                else return CharactersLore.Races.NonPlayable.Undead;
+            }
+        }
+
+        return isGood ? GetGoodRace() : GetBadRace();
+    }
+
+    private string DecideCulture(string race)
+    {
+        if (race == CharactersLore.Races.Playable.Human)
+        {
+            var count = CharactersLore.Cultures.Human.All.Count;
+            var index = dice.Roll_1_to_n(count) - 1;
+            return CharactersLore.Cultures.Human.All[index];
+        }
+        else if (race == CharactersLore.Races.Playable.Elf)
+        {
+            var count = CharactersLore.Cultures.Elf.All.Count;
+            var index = dice.Roll_1_to_n(count) - 1;
+            return CharactersLore.Cultures.Elf.All[index];
+        }
+        else if (race == CharactersLore.Races.Playable.Dwarf)
+        {
+            var count = CharactersLore.Cultures.Dwarf.All.Count;
+            var index = dice.Roll_1_to_n(count) - 1;
+            return CharactersLore.Cultures.Dwarf.All[index];
+        }
+        else if (race == CharactersLore.Races.Playable.Orc)
+        {
+            var count = CharactersLore.Cultures.Orc.All.Count;
+            var index = dice.Roll_1_to_n(count) - 1;
+            return CharactersLore.Cultures.Orc.All[index];
+        }
+        else if (race == CharactersLore.Races.NonPlayable.Animal)
+        {
+            var count = CharactersLore.Cultures.Animal.All.Count;
+            var index = dice.Roll_1_to_n(count) - 1;
+            return CharactersLore.Cultures.Animal.All[index];
+        }
+        else if (race == CharactersLore.Races.NonPlayable.Undead)
+        {
+            var count = CharactersLore.Cultures.Undead.All.Count;
+            var index = dice.Roll_1_to_n(count) - 1;
+            return CharactersLore.Cultures.Undead.All[index];
+        }
+        else throw new Exception("Wrong race to match with culture.");
+    }
+
+    private int DecideEntityLevel()
+    {
+        var roll = dice.Roll_20_withReroll();
+        var level = roll / 20;
+
+        return ++level;
+
+    }
+    #endregion
+    #region Sheet
+    private void SetSheet(Character character, Location location)
+    {
+        character.Sheet.Stats = DecideStats(character.Status.Traits.Race, location.Effort);
+        character.Sheet.Assets = DecideAssets(character.Sheet.Stats, location.Effort);
+        character.Sheet.Skills = DecideSkills(character.Sheet.Stats, location.Effort);
+    }
+    
+    private CharacterSkills DecideSkills(CharacterStats stats, int effortUpper)
+    {
+        return new CharacterSkills
+        {
+            Combat     = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateCombat(stats),
+            Arcane     = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateArcane(stats),
+            Psionics   = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculatePsionics(stats),
+            Hide       = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateHide(stats),
+            Traps      = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateTraps(stats),
+            Tactics    = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateTactics(stats),
+            Social     = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateSocial(stats),
+            Apothecary = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateApothecary(stats),
+            Travel     = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateTravel(stats),
+            Sail       = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateSail(stats)
+        };
+    }
+
+    private CharacterAssets DecideAssets(CharacterStats stats, int effort)
+    {
+        var defense = (Randomize(effort) + RulebookLore.Formulae.Assets.CalculateDefense(stats)) / 10;
+        var purge   = (Randomize(effort) + RulebookLore.Formulae.Assets.CalculatePurge(stats)) / 10;
+
+        return new CharacterAssets
+        {
+            Resolve      = Randomize(effort) + RulebookLore.Formulae.Assets.CalculateResolve(stats),
+            Harm         = Randomize(effort) + RulebookLore.Formulae.Assets.CalculateHarm(stats),
+            Spot         = Randomize(effort) + RulebookLore.Formulae.Assets.CalculateSpot(stats),
+            Defense      = defense >= 90 ? 90 : defense,
+            Purge        = purge >= 90 ? 90 : purge,
+            Mana         = Randomize(effort) + RulebookLore.Formulae.Assets.CalculateMana(stats),
+            Actions = Randomize(2) + RulebookLore.Formulae.Assets.CalculateActions(stats),
+        };
+    }
+
+    private CharacterStats DecideStats(string race, int effort)
+    {
+        var charStats = new CharacterStats();
+
+        if (race == CharactersLore.Races.Playable.Human)
+        {
+            charStats.Strength      = Randomize(effort) + RulebookLore.Races.Playable.Human.Strength;
+            charStats.Constitution  = Randomize(effort) + RulebookLore.Races.Playable.Human.Constitution;
+            charStats.Agility       = Randomize(effort) + RulebookLore.Races.Playable.Human.Agility;
+            charStats.Willpower     = Randomize(effort) + RulebookLore.Races.Playable.Human.Willpower;
+            charStats.Perception    = Randomize(effort) + RulebookLore.Races.Playable.Human.Perception;
+            charStats.Abstract      = Randomize(effort) + RulebookLore.Races.Playable.Human.Abstract;
+        } 
+        else if (race == CharactersLore.Races.Playable.Elf)
+        {
+            charStats.Strength      = Randomize(effort) + RulebookLore.Races.Playable.Elf.Strength;
+            charStats.Constitution  = Randomize(effort) + RulebookLore.Races.Playable.Elf.Constitution;
+            charStats.Agility       = Randomize(effort) + RulebookLore.Races.Playable.Elf.Agility;
+            charStats.Willpower     = Randomize(effort) + RulebookLore.Races.Playable.Elf.Willpower;
+            charStats.Perception    = Randomize(effort) + RulebookLore.Races.Playable.Elf.Perception;
+            charStats.Abstract      = Randomize(effort) + RulebookLore.Races.Playable.Elf.Abstract;
+        }
+        else if (race == CharactersLore.Races.Playable.Dwarf)
+        {
+            charStats.Strength      = Randomize(effort) + RulebookLore.Races.Playable.Dwarf.Strength;
+            charStats.Constitution  = Randomize(effort) + RulebookLore.Races.Playable.Dwarf.Constitution;
+            charStats.Agility       = Randomize(effort) + RulebookLore.Races.Playable.Dwarf.Agility;
+            charStats.Willpower     = Randomize(effort) + RulebookLore.Races.Playable.Dwarf.Willpower;
+            charStats.Perception    = Randomize(effort) + RulebookLore.Races.Playable.Dwarf.Perception;
+            charStats.Abstract      = Randomize(effort) + RulebookLore.Races.Playable.Dwarf.Abstract;
+        }
+        else if (race == CharactersLore.Races.Playable.Orc)
+        {
+            charStats.Strength      = Randomize(effort) + RulebookLore.Races.Playable.Orc.Strength;
+            charStats.Constitution  = Randomize(effort) + RulebookLore.Races.Playable.Orc.Constitution;
+            charStats.Agility       = Randomize(effort) + RulebookLore.Races.Playable.Orc.Agility;
+            charStats.Willpower     = Randomize(effort) + RulebookLore.Races.Playable.Orc.Willpower;
+            charStats.Perception    = Randomize(effort) + RulebookLore.Races.Playable.Orc.Perception;
+            charStats.Abstract      = Randomize(effort) + RulebookLore.Races.Playable.Orc.Abstract;
+        }
+        else if (race == CharactersLore.Races.NonPlayable.Animal)
+        {
+            charStats.Strength      = Randomize(effort) + RulebookLore.Races.NonPlayable.Animal.Strength;
+            charStats.Constitution  = Randomize(effort) + RulebookLore.Races.NonPlayable.Animal.Constitution;
+            charStats.Agility       = Randomize(effort) + RulebookLore.Races.NonPlayable.Animal.Agility;
+            charStats.Willpower     = Randomize(effort) + RulebookLore.Races.NonPlayable.Animal.Willpower;
+            charStats.Perception    = Randomize(effort) + RulebookLore.Races.NonPlayable.Animal.Perception;
+            charStats.Abstract      = Randomize(effort) + RulebookLore.Races.NonPlayable.Animal.Abstract;
+        }
+        else if (race == CharactersLore.Races.NonPlayable.Animal)
+        {
+            charStats.Strength      = Randomize(effort) + RulebookLore.Races.NonPlayable.Undead.Strength;
+            charStats.Constitution  = Randomize(effort) + RulebookLore.Races.NonPlayable.Undead.Constitution;
+            charStats.Agility       = Randomize(effort) + RulebookLore.Races.NonPlayable.Undead.Agility;
+            charStats.Willpower     = Randomize(effort) + RulebookLore.Races.NonPlayable.Undead.Willpower;
+            charStats.Perception    = Randomize(effort) + RulebookLore.Races.NonPlayable.Undead.Perception;
+            charStats.Abstract      = Randomize(effort) + RulebookLore.Races.NonPlayable.Undead.Abstract;
+        }
+
+        return charStats;
+    }
+    #endregion
+    #region Inventory
+    private CharacterInventory SetInventory(Character character)
     {
         var inventory = new CharacterInventory();
+        
+        if (character.Status.Traits.Race == CharactersLore.Races.NonPlayable.Animal
+            || character.Status.Traits.Race == CharactersLore.Races.NonPlayable.Undead)
+        {
+            return inventory;
+        }
 
-        if (diceService.Roll_par_impar()) inventory.Head = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
-        if (diceService.Roll_par_impar()) inventory.Body = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
-        if (diceService.Roll_par_impar()) inventory.Shield = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
-        if (diceService.Roll_par_impar()) inventory.Offhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+        if (dice.Roll_par_impar()) inventory.Head = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
+        if (dice.Roll_par_impar()) inventory.Body = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
+        if (dice.Roll_par_impar()) inventory.Shield = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+        if (dice.Roll_par_impar()) inventory.Offhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
 
-        if (diceService.Roll_par_impar()) 
-        { 
-            inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
+
+        if (character.Status.Traits.Race == CharactersLore.Races.Playable.Human)
+        {
+            if (dice.Roll_par_impar())
+            {
+                inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
+            }
+            else
+            {
+                inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
+            }
         }
         else
         {
-            inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Mace);
+            if (dice.Roll_par_impar()) 
+            { 
+                inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Axe);
+            }
+            else
+            {
+                inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
+            }
         }
 
-        if (race == CharactersLore.Races.Elf)
+        if (character.Status.Traits.Race == CharactersLore.Races.Playable.Elf)
         {
             inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Bow);
         }
         else
         {
-            if (diceService.Roll_par_impar()) inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
+            if (dice.Roll_par_impar()) inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
         }
 
-        if (entityLevel >= 2)
+        if (character.Status.EntityLevel >= 2)
         {
             var rollHeraldry = Randomize(6);
 
             for (int i = 0; i < rollHeraldry; i++)
             {
-                if (diceService.Roll_par_impar()) inventory.Heraldry!.Add(itemsService.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
+                if (dice.Roll_par_impar()) inventory.Heraldry!.Add(itemsService.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
             }
         }
 
-        inventory.Provisions = diceService.Roll_100_withReroll();
+        inventory.Provisions = dice.Roll_100_withReroll();
 
         return inventory;
     }
+    #endregion
 
-
-    private CharacterSheet SetCharacterSheet(string race, int effortUpper)
+    private void SetWorth(Character character, Location location)
     {
-        var charSheet = new CharacterSheet();
+        var skillsAverage = (character.Sheet.Skills.Combat
+            + character.Sheet.Skills.Arcane
+            + character.Sheet.Skills.Psionics
+            + character.Sheet.Skills.Hide
+            + character.Sheet.Skills.Traps
+            + character.Sheet.Skills.Tactics
+            + character.Sheet.Skills.Social
+            + character.Sheet.Skills.Apothecary
+            + character.Sheet.Skills.Travel
+            + character.Sheet.Skills.Sail)
+            / 10;
 
-        charSheet.Stats = SetStatsByRace(race, effortUpper);
-        charSheet.Assets = SetAssets(charSheet.Stats, effortUpper);
-        charSheet.Skills = SetSkills(charSheet.Stats, effortUpper);
+        var roll = Randomize(location.Effort);
 
-        return charSheet;
-    }
-
-    private CharacterSkills SetSkills(CharacterStats stats, int effortUpper)
-    {
-        var charSkills = new CharacterSkills();
-
-        charSkills.Combat = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateCombat(stats);
-
-        charSkills.Arcane = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateArcane(stats);
-
-        charSkills.Psionics = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculatePsionics(stats);
-
-        charSkills.Hide = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateHide(stats);
-
-        charSkills.Traps = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateTraps(stats);
-
-        charSkills.Tactics = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateTactics(stats);
-
-        charSkills.Social = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateSocial(stats);
-
-        charSkills.Apothecary = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateApothecary(stats);
-
-        charSkills.Travel = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateTravel(stats);
-
-        charSkills.Sail = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateSail(stats);
-
-        return charSkills;
-    }
-
-    private CharacterAssets SetAssets(CharacterStats stats, int effortUpper)
-    {
-        var charAssets = new CharacterAssets();
-
-        charAssets.Resolve = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateResolve(stats);
-
-        charAssets.Harm = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateHarm(stats);
-
-        charAssets.Spot = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateSpot(stats);
-
-        var defense = (Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateDefense(stats)) / 10;
-        charAssets.Defense = defense >= 90 ? 90 : defense;
-
-        var purge = (Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculatePurge(stats)) / 10;
-        charAssets.Purge = purge >= 90 ? 90 : purge;
-
-        charAssets.Mana = Randomize(effortUpper) + RulebookLore.Formulae.Assets.CalculateMana(stats);
-
-        return charAssets;
-    }
-
-    private CharacterStats SetStatsByRace(string race, int effortUpper)
-    {
-        var charStats = new CharacterStats();
-
-        if (race == CharactersLore.Races.Human)
-        {
-            charStats.Strength      = Randomize(effortUpper) + RulebookLore.Races.Human.Str;
-            charStats.Constitution  = Randomize(effortUpper) + RulebookLore.Races.Human.Con;
-            charStats.Agility       = Randomize(effortUpper) + RulebookLore.Races.Human.Agi;
-            charStats.Willpower     = Randomize(effortUpper) + RulebookLore.Races.Human.Wil;
-            charStats.Perception    = Randomize(effortUpper) + RulebookLore.Races.Human.Per;
-            charStats.Abstract      = Randomize(effortUpper) + RulebookLore.Races.Human.Abs;
-        } 
-        else if (race == CharactersLore.Races.Elf)
-        {
-            charStats.Strength      = Randomize(effortUpper) + RulebookLore.Races.Elf.Str;
-            charStats.Constitution  = Randomize(effortUpper) + RulebookLore.Races.Elf.Con;
-            charStats.Agility       = Randomize(effortUpper) + RulebookLore.Races.Elf.Agi;
-            charStats.Willpower     = Randomize(effortUpper) + RulebookLore.Races.Elf.Wil;
-            charStats.Perception    = Randomize(effortUpper) + RulebookLore.Races.Elf.Per;
-            charStats.Abstract      = Randomize(effortUpper) + RulebookLore.Races.Elf.Abs;
-        }
-        else if (race == CharactersLore.Races.Dwarf)
-        {
-            charStats.Strength      = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Str;
-            charStats.Constitution  = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Con;
-            charStats.Agility       = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Agi;
-            charStats.Willpower     = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Wil;
-            charStats.Perception    = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Per;
-            charStats.Abstract      = Randomize(effortUpper) + RulebookLore.Races.Dwarf.Abs;
-        }
-
-
-        return charStats;
-    }
-
-    private int SetWorth(int entityLvl, int effortUpper)
-    {
-        var roll = Randomize(effortUpper);
-
-        return entityLvl * 100 + roll;
-    }
-
-    private int SetEntityLevel()
-    {
-        var roll = diceService.Roll_20_withReroll();
-
-        return roll switch
-        {
-            <= 20 => 1,
-            <= 40 => 2,
-            <= 60 => 3,
-            <= 80 => 4,
-            <= 100 => 5,
-            _ => 6,
-        };
-    }
-
-    private string SetClass() 
-    {
-        var warrior = CharactersLore.Classes.Warrior;
-        var mage = CharactersLore.Classes.Mage;
-        var hunter = CharactersLore.Classes.Hunter;
-
-        var roll = Randomize(100);
-
-        return roll switch
-        {
-            <= 80 => warrior,
-            <= 95 => hunter,
-            <= 100 => mage,
-            _ => throw new NotImplementedException(),
-        };
-    }
-
-    private string SetRace()
-    {
-        var roll = Randomize(3);
-
-        return roll switch
-        {
-            1 => CharactersLore.Races.Human,
-            2 => CharactersLore.Races.Elf,
-            3 => CharactersLore.Races.Dwarf,
-            _ => throw new NotImplementedException(),
-        };
-    }
-
-    private static string SetCulture(string race)
-    {
-        return race switch
-        {
-            "Human" => CharactersLore.Cultures.Human.Danarian,
-            "Elf" => CharactersLore.Cultures.Elf.Highborn,
-            "Dwarf" => CharactersLore.Cultures.Dwarf.Undermountain,
-            _ => throw new NotImplementedException(),
-        };
+        character.Status.Worth = character.Status.EntityLevel * 20 
+            + roll
+            + skillsAverage;
     }
 
     private int Randomize(int max)
     {
-        return diceService.Roll_1_to_n(max);
+        return dice.Roll_1_to_n(max);
     }
+    #endregion
 }
 
-#pragma warning restore IDE0017 // Simplify object initialization

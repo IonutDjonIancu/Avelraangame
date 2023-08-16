@@ -18,15 +18,15 @@ public class NpcService : INpcService
         logic = new NpcLogicDelegator(diceRollService, itemService, characterService);
     }
 
-    public NpcCharacter GenerateBadGuyNpc(Position position, int effortUpper)
+    public Character GenerateGoodGuyNpc(string location)
     {
-        validator.ValidatePosition(position);
-        return logic.GenerateBadGuyNpcCharacter(position, effortUpper);
+        validator.ValidateLocation(location);
+        return logic.GenerateNpcCharacter(location, true);
     }
 
-    public NpcCharacter GenerateGoodGuyNpc(Position position, int effortUpper)
+    public Character GenerateBadGuyNpc(string location)
     {
-        validator.ValidatePosition(position);
-        return logic.GenerateGoodGuyNpcCharacter(position, effortUpper);
+        validator.ValidateLocation(location);
+        return logic.GenerateNpcCharacter(location, false);
     }
 }

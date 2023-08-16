@@ -34,22 +34,14 @@ public class DiceServiceTests : TestBase
         roll.Should().BeLessThan(1000);
     }
 
-    [Fact(DisplayName = "Roll gameplay dice for martial")]
+    [Fact(DisplayName = "Roll gameplay dice")]
     public void Roll_martial_gameplay_dice_test()
     {
-        var (grade, crits) = diceService.Roll_gameplay_dice(GameplayLore.Tradition.Martial, 100);
+        var character = CreateHumanCharacter("Jax");
 
-        grade.Should().BeGreaterThanOrEqualTo(1);
-        crits.Should().BeGreaterThanOrEqualTo(0);
-    }
+        var roll = diceService.Roll_character_gameplay_dice(true, CharactersLore.Skills.Combat, character);
 
-    [Fact(DisplayName = "Roll gameplay dice for common")]
-    public void Roll_common_gameplay_dice_test()
-    {
-        var (grade, crits) = diceService.Roll_gameplay_dice(GameplayLore.Tradition.Common, 100);
-
-        grade.Should().BeGreaterThanOrEqualTo(1);
-        crits.Should().BeGreaterThanOrEqualTo(0);
+        roll.Should().BeGreaterOrEqualTo(1);
     }
 
     [Fact(DisplayName = "Roll 1 to n")]

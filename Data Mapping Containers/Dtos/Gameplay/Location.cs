@@ -15,5 +15,5 @@ public class Location
     public DateTime LastTimeVisited { get; set; }
     public List<string> PossibleQuests { get; set; } = new();
     public List<Item> Market { get; set; } = new();
-    public List<NpcCharacter> Mercenaries { get; set; } = new();
+    public List<Character> Mercenaries { get; set; } = new();
 }

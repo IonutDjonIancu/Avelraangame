@@ -11,4 +11,6 @@ internal class DiceRollValidator : ValidatorBase
     {
         this.snapshot = snapshot;
     }
+
+    
 }

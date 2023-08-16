@@ -14,26 +14,32 @@ internal class ValidatorBase
         this.snapshot = snapshot;
     }
 
-    internal Character GetCharacter(CharacterIdentity characterIdentity)
+    internal void ValidateCharacterBeforeRoll(Character character, string skill)
     {
-        var character = snapshot.Players.Find(p => p.Identity.Id == characterIdentity.PlayerId)!.Characters.Find(c => c.Identity.Id == characterIdentity.Id)! ?? throw new Exception("Character not found.");
+        ValidateObject(character);
 
-        return character;
+        if (!character.Status.IsAlive) throw new Exception("Character is dead or dying.");
+
+        ValidateString(character.Status.Traits.Tradition);
+        if (!GameplayLore.Tradition.All.Contains(character.Status.Traits.Tradition)) throw new Exception("Unrecognized tradition.");
+
+        ValidateString(skill);
+        if (!CharactersLore.Skills.All.Contains(skill)) throw new Exception("Skill does not exist.");
     }
 
-    internal void ValidateTradition(string tradition)
+    internal void ValidateLocation(string locationName)
     {
-        ValidateString(tradition);
-        if (!GameplayLore.Tradition.All.Contains(tradition)) throw new Exception("Unrecognized tradition.");
+        ValidateString(locationName);
+
+        _ = Utils.GetLocationByLocationName(locationName) ?? throw new Exception("Wrong location name.");
     }
 
     internal void ValidatePosition(Position position)
     {
-        ValidateObject(position, "Position is null.");
+        ValidateObject(position);
 
-        var fullName = Utils.GetLocationFullName(position);
-
-        if (!GameplayLore.Map.All.Select(s => s.FullName).ToList().Contains(fullName)) throw new Exception("Position data is wrong or incomplete.");
+        var locationFullName = Utils.GetLocationFullNameFromPosition(position);
+        _ = Utils.GetPositionByLocationFullName(locationFullName) ?? throw new Exception("Position data is wrong or incomplete.");
     }
 
     internal void ValidateCharacterPlayerCombination(CharacterIdentity characterIdentity)

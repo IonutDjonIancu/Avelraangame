@@ -1,4 +1,6 @@
-﻿namespace Service_Delegators;
+﻿using Data_Mapping_Containers.Dtos;
+
+namespace Service_Delegators;
 
 public class DiceRollService : IDiceRollService
 {
@@ -27,10 +29,10 @@ public class DiceRollService : IDiceRollService
     {
         return logic.Roll100withReroll();
     }
-    public (int grade, int crits) Roll_gameplay_dice(string tradition, int skill)
+    public int Roll_character_gameplay_dice(bool isOffense, string attribute, Character character)
     {
-        validator.ValidateTradition(tradition);
-        return logic.RollGameplayDice(tradition, skill);
+        validator.ValidateCharacterBeforeRoll(character, attribute);
+        return logic.RollGameplayDice(isOffense, attribute, character);
     }
     public bool Roll_par_impar()
     {

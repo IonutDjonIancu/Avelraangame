@@ -2,73 +2,70 @@
 
 public class RulebookLore
 {
-    public static class Acronyms
-    {
-        public static class Stats
-        {
-            public const string Str = "Str";
-            public const string Con = "Con";
-            public const string Agi = "Agi";
-            public const string Wil = "Wil";
-            public const string Per = "Per";
-            public const string Abs = "Abs";
-        }
-
-        public static class Assets
-        {
-            public const string Res = "Res";
-            public const string Har = "Har";
-            public const string Spo = "Spo";
-            public const string Def = "Def";
-            public const string Pur = "Pur";
-            public const string Man = "Man";
-        }
-
-        public static class Skills
-        {
-            public const string Com = "Com";
-            public const string Arc = "Arc";
-            public const string Psi = "Psi";
-            public const string Hid = "Hid";
-            public const string Tra = "Tra";
-            public const string Tac = "Tac";
-            public const string Soc = "Soc";
-            public const string Apo = "Apo";
-            public const string Trv = "Trv";
-            public const string Sai = "Sai";
-        }
-    }
-
     public static class Races
     {
-        public static class Human
+        public static class Playable
         {
-            public const int Str = 5;
-            public const int Con = 5;
-            public const int Agi = 5;
-            public const int Wil = 5;
-            public const int Per = 5;
-            public const int Abs = 5;
+            public static class Human
+            {
+                public const int Strength     = 5;
+                public const int Constitution = 5;
+                public const int Agility      = 5;
+                public const int Willpower    = 5;
+                public const int Perception   = 5;
+                public const int Abstract     = 5;
+            }
+            public static class Elf
+            {
+                public const int Strength     = 2;
+                public const int Constitution = 7;
+                public const int Agility      = 15;
+                public const int Willpower    = 7;
+                public const int Perception   = 10;
+                public const int Abstract     = 10;
+            }
+            public static class Dwarf
+            {
+                public const int Strength     = 12;
+                public const int Constitution = 10;
+                public const int Agility      = 2;
+                public const int Willpower    = 10;
+                public const int Perception   = 3;
+                public const int Abstract     = 10;
+            }
+
+            public static class Orc
+            {
+                public const int Strength     = 11;
+                public const int Constitution = 9;
+                public const int Agility      = 7;
+                public const int Willpower    = 2;
+                public const int Perception   = 9;
+                public const int Abstract     = 1;
+            }
         }
 
-        public static class Elf
+        public static class NonPlayable
         {
-            public const int Str = 2;
-            public const int Con = 7;
-            public const int Agi = 15;
-            public const int Wil = 7;
-            public const int Per = 10;
-            public const int Abs = 10;
-        }
+            public static class Undead
+            {
+                public const int Strength     = 15;
+                public const int Constitution = 20;
+                public const int Agility      = 1;
+                public const int Willpower    = 1;
+                public const int Perception   = 1;
+                public const int Abstract     = 1;
+            }
 
-        public static class Dwarf
-        {
-            public const int Str = 12;
-            public const int Con = 10;
-            public const int Agi = 2;
-            public const int Wil = 10;
-            public const int Per = 3;
-            public const int Abs = 10;
+            public static class Animal
+            {
+                public const int Strength     = 15;
+                public const int Constitution = 5;
+                public const int Agility      = 15;
+                public const int Willpower    = 1;
+                public const int Perception   = 15;
+                public const int Abstract     = 1;
+            }
         }
     }
 
@@ -79,30 +76,31 @@ public class RulebookLore
             public static class Danarian
             {
                 // stats
-                public const int Str = 0;
-                public const int Con = 0;
-                public const int Agi = 0;
-                public const int Wil = 0;
-                public const int Per = 0;
-                public const int Abs = 0;
+                public const int Strength     = 0;
+                public const int Constitution = 0;
+                public const int Agility      = 0;
+                public const int Willpower    = 0;
+                public const int Perception   = 0;
+                public const int Abstract     = 0;
                 // assets
-                public const int Res = 5;
-                public const int Har = 0;
-                public const int Spo = 0;
-                public const int Def = 0;
-                public const int Pur = 0;
-                public const int Man = 0;
+                public const int Resolve      = 5;
+                public const int Harm         = 0;
+                public const int Spot         = 0;
+                public const int Defence      = 0;
+                public const int Purge        = 0;
+                public const int Mana         = 0;
+                public const int Actions      = 0;    
                 // skills
-                public const int Com = 40;
-                public const int Arc = 10;
-                public const int Psi = 10;
-                public const int Hid = -10;
-                public const int Tra = 10;
-                public const int Tac = 10;
-                public const int Soc = 20;
-                public const int Apo = 10;
-                public const int Trv = 20;
-                public const int Sai = 10;
+                public const int Combat       = 40;
+                public const int Arcane       = 10;
+                public const int Psionics     = 10;
+                public const int Hide         = -10;
+                public const int Traps        = 10;
+                public const int Tactics      = 10;
+                public const int Social       = 20;
+                public const int Apothecary   = 10;
+                public const int Travel       = 20;
+                public const int Sail         = 10;
             }
         }
 
@@ -111,30 +109,31 @@ public class RulebookLore
             public static class Highborn
             {
                 // stats
-                public const int Str = 0;
-                public const int Con = 0;
-                public const int Agi = 0;
-                public const int Wil = 10;
-                public const int Per = 0;
-                public const int Abs = 0;
+                public const int Strength     = 0;
+                public const int Constitution = 0;
+                public const int Agility      = 0;
+                public const int Willpower    = 10;
+                public const int Perception   = 0;
+                public const int Abstract     = 0;
                 // assets
-                public const int Res = 10;
-                public const int Har = 0;
-                public const int Spo = 50;
-                public const int Def = 0;
-                public const int Pur = 0;
-                public const int Man = 0;
+                public const int Resolve      = 10;
+                public const int Harm         = 0;
+                public const int Spot         = 50;
+                public const int Defence      = 0;
+                public const int Purge        = 0;
+                public const int Mana         = 40;
+                public const int Actions      = 1;    
                 // skills
-                public const int Com = 20;
-                public const int Arc = 40;
-                public const int Psi = 5;
-                public const int Hid = 10;
-                public const int Tra = 10;
-                public const int Tac = 10;
-                public const int Soc = 20;
-                public const int Apo = 10;
-                public const int Trv = -40;
-                public const int Sai = -10;
+                public const int Combat       = 20;
+                public const int Arcane       = 40;
+                public const int Psionics     = 5;
+                public const int Hide         = 10;
+                public const int Traps        = 10;
+                public const int Tactics      = 10;
+                public const int Social       = 20;
+                public const int Apothecary   = 10;
+                public const int Travel       = -40;
+                public const int Sail         = -10;
             }
         }
 
@@ -143,30 +142,64 @@ public class RulebookLore
             public static class Undermountain
             {
                 // stats
-                public const int Str = 10;
-                public const int Con = 10;
-                public const int Agi = 0;
-                public const int Wil = 0;
-                public const int Per = 0;
-                public const int Abs = 0;
+                public const int Strength     = 10;
+                public const int Constitution = 10;
+                public const int Agility      = 0;
+                public const int Willpower    = 0;
+                public const int Perception   = 0;
+                public const int Abstract     = 0;
                 // assets
-                public const int Res = 20;
-                public const int Har = 10;
-                public const int Spo = 0;
-                public const int Def = 10;
-                public const int Pur = 10;
-                public const int Man = 0;
+                public const int Resolve      = 20;
+                public const int Harm         = 10;
+                public const int Spot         = 0;
+                public const int Defense      = 10;
+                public const int Purge        = 10;
+                public const int Mana         = 0;
+                public const int Actions      = 0;    
                 // skills
-                public const int Com = 30;
-                public const int Arc = 0;
-                public const int Psi = 10;
-                public const int Hid = -20;
-                public const int Tra = 10;
-                public const int Tac = 10;
-                public const int Soc = -5;
-                public const int Apo = 0;
-                public const int Trv = -20;
-                public const int Sai = -100;
+                public const int Combat       = 30;
+                public const int Arcane       = 0;
+                public const int Psionics     = 10;
+                public const int Hide         = -20;
+                public const int Traps        = 10;
+                public const int Tactics      = 10;
+                public const int Social       = -5;
+                public const int Apothecary   = 0;
+                public const int Travel       = -20;
+                public const int Sail         = -100;
+            }
+        }
+
+        public static class Orcs
+        {
+            public static class Greenskin
+            {
+                // stats
+                public const int Strength     = 0;
+                public const int Constitution = 0;
+                public const int Agility      = 0;
+                public const int Willpower    = 0;
+                public const int Perception   = 10;
+                public const int Abstract     = 0;
+                // assets
+                public const int Resolve      = 0;
+                public const int Harm         = 20;
+                public const int Spot         = 10;
+                public const int Defense      = 0;
+                public const int Purge        = 0;
+                public const int Mana         = 0;
+                public const int Actions      = 0;    
+                // skills
+                public const int Combat       = 10;
+                public const int Arcane       = 0;
+                public const int Psionics     = 0;
+                public const int Hide         = 10;
+                public const int Traps        = 10;
+                public const int Tactics      = 0;
+                public const int Social       = 0;
+                public const int Apothecary   = 20;
+                public const int Travel       = 40;
+                public const int Sail         = -100;
             }
         }
     }
@@ -176,134 +209,230 @@ public class RulebookLore
         public static class Warrior
         {
             public static readonly List<string> LikelyStats = new()
-                {
-                    Acronyms.Stats.Str,
-                    Acronyms.Stats.Con,
-                };
+            {
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Willpower,
+            };
             public static readonly List<string> UnlikelyStats = new()
-                {
-                    Acronyms.Stats.Str,
-                    Acronyms.Stats.Wil,
-                    Acronyms.Stats.Agi,
-                    Acronyms.Stats.Per,
-                };
+            {
+                CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Perception,
+                CharactersLore.Stats.Abstract,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Defense,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Purge,
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions,
+
+            };
             public static readonly List<string> LikelySkills = new()
-                {
-                    Acronyms.Skills.Com,
-                };
+            {
+                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Travel,
+            };
             public static readonly List<string> UnlikelySkills = new()
-                {
-                    Acronyms.Skills.Com,
-                    Acronyms.Skills.Tra,
-                    Acronyms.Skills.Trv,
-                    Acronyms.Skills.Hid,
-                };
+            {
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
+            };
         }
 
         public static class Mage
         {
             public static readonly List<string> LikelyStats = new()
-                {
-                    Acronyms.Stats.Abs,
-                    Acronyms.Stats.Con,
-                };
+            {
+                CharactersLore.Stats.Abstract,
+                CharactersLore.Stats.Constitution,
+            };
             public static readonly List<string> UnlikelyStats = new()
-                {
-                    Acronyms.Stats.Wil,
-                    Acronyms.Stats.Agi,
-                    Acronyms.Stats.Per,
-                };
+            {
+                CharactersLore.Stats.Willpower,
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Perception,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Purge,
+            };
             public static readonly List<string> LikelySkills = new()
-                {
-                    Acronyms.Skills.Arc,
-                    Acronyms.Skills.Apo,
-                    Acronyms.Skills.Com,
-                };
+            {
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Social,
+            };
             public static readonly List<string> UnlikelySkills = new()
-                {
-                    Acronyms.Skills.Psi,
-                    Acronyms.Skills.Hid,
-                    Acronyms.Skills.Sai,
-                };
+            {
+                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Sail,
+            };
         }
 
         public static class Hunter
         {
             public static readonly List<string> LikelyStats = new()
-                {
-                    Acronyms.Stats.Agi,
-                    Acronyms.Stats.Per,
-                };
+            {
+                CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Perception,
+            };
             public static readonly List<string> UnlikelyStats = new()
-                {
-                    Acronyms.Stats.Agi,
-                    Acronyms.Stats.Con,
-                    Acronyms.Stats.Per,
-                };
+            {
+                CharactersLore.Stats.Willpower,
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Abstract,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Spot,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Purge,
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions,
+
+            };
             public static readonly List<string> LikelySkills = new()
-                {
-                    Acronyms.Skills.Com,
-                    Acronyms.Skills.Hid,
-                    Acronyms.Skills.Tra,
-                    Acronyms.Skills.Trv,
-                };
+            {
+                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Hide,
+            };
             public static readonly List<string> UnlikelySkills = new()
-                {
-                    Acronyms.Skills.Com,
-                    Acronyms.Skills.Tra,
-                };
+            {
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
+            };
         }
 
         public static class Swashbuckler
         {
             public static readonly List<string> LikelyStats = new()
-                {
-                    Acronyms.Stats.Str,
-                    Acronyms.Stats.Agi,
-                };
+            {
+                CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Abstract,
+                CharactersLore.Stats.Willpower,
+            };
             public static readonly List<string> UnlikelyStats = new()
-                {
-                    Acronyms.Stats.Agi,
-                    Acronyms.Stats.Con,
-                    Acronyms.Stats.Per,
-                    Acronyms.Stats.Wil,
-                };
+            {
+                CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Perception,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Mana,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Purge,
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Actions,
+
+            };
             public static readonly List<string> LikelySkills = new()
-                {
-                    Acronyms.Skills.Com,
-                    Acronyms.Skills.Arc,
-                    Acronyms.Skills.Soc,
-                };
+            {
+                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Travel,
+            };
             public static readonly List<string> UnlikelySkills = new()
-                {
-                    Acronyms.Skills.Com,
-                    Acronyms.Skills.Tra,
-                    Acronyms.Skills.Trv,
-                    Acronyms.Skills.Sai,
-                };
+            {
+                CharactersLore.Skills.Arcane,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
+            };
         }
 
         public static class Sorcerer
         {
             public static readonly List<string> LikelyStats = new()
-                {
-                    Acronyms.Stats.Abs,
-                };
+            {
+                CharactersLore.Stats.Constitution,
+                CharactersLore.Stats.Abstract,
+            };
             public static readonly List<string> UnlikelyStats = new()
-                {
-                    Acronyms.Stats.Abs,
-                    Acronyms.Stats.Con,
-                };
+            {
+                CharactersLore.Stats.Willpower,
+                CharactersLore.Stats.Strength,
+                CharactersLore.Stats.Agility,
+                CharactersLore.Stats.Perception,
+            };
+            public static readonly List<string> LikelyAssets = new()
+            {
+                CharactersLore.Assets.Mana,
+                CharactersLore.Assets.Actions,
+            };
+            public static readonly List<string> UnlikelyAssets = new()
+            {
+                CharactersLore.Assets.Resolve,
+                CharactersLore.Assets.Harm,
+                CharactersLore.Assets.Defense,
+                CharactersLore.Assets.Spot,
+                CharactersLore.Assets.Purge,
+
+            };
             public static readonly List<string> LikelySkills = new()
-                {
-                    Acronyms.Skills.Arc,
-                };
+            {
+                CharactersLore.Skills.Arcane,
+            };
             public static readonly List<string> UnlikelySkills = new()
-                {
-                    Acronyms.Skills.Arc,
-                    Acronyms.Skills.Apo,
-                    Acronyms.Skills.Trv,
-                };
+            {
+                CharactersLore.Skills.Travel,
+                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Psionics,
+                CharactersLore.Skills.Hide,
+                CharactersLore.Skills.Traps,
+                CharactersLore.Skills.Tactics,
+                CharactersLore.Skills.Social,
+                CharactersLore.Skills.Apothecary,
+                CharactersLore.Skills.Sail,
+            };
         }
     }
 
@@ -311,95 +440,93 @@ public class RulebookLore
     {
         public static class Assets
         {
-            public static int CalculateResolve(CharacterStats cs)
+            public static int CalculateResolve(CharacterStats stats)
             {
-                return 2 * cs.Strength + 3 * cs.Constitution + cs.Agility + 2 * cs.Willpower + cs.Perception + cs.Abstract;
+                return 2 * stats.Strength + 3 * stats.Constitution + stats.Agility + 2 * stats.Willpower + stats.Perception + stats.Abstract;
             }
 
-            public static int CalculateHarm(CharacterStats cs)
+            public static int CalculateHarm(CharacterStats stats)
             {
-                return 2 * cs.Strength + cs.Agility + cs.Perception;
+                return 2 * stats.Strength + stats.Agility + stats.Perception;
             }
 
-            public static int CalculateSpot(CharacterStats cs)
+            public static int CalculateSpot(CharacterStats stats)
             {
-                return 3 * cs.Perception + cs.Agility;
+                return 3 * stats.Perception + stats.Agility;
             }
 
-            public static int CalculateDefense(CharacterStats cs)
+            public static int CalculateDefense(CharacterStats stats)
             {
-                return (2 * cs.Constitution + cs.Agility + cs.Perception) / 10;
+                return (2 * stats.Constitution + stats.Agility + stats.Perception) / 10;
             }
 
-            public static int CalculatePurge(CharacterStats cs)
+            public static int CalculatePurge(CharacterStats stats)
             {
-                return (2 * cs.Willpower + cs.Constitution + cs.Perception) / 10;
+                return (2 * stats.Willpower + stats.Constitution + stats.Perception) / 10;
             }
 
-            public static int CalculateMana(CharacterStats cs)
+            public static int CalculateMana(CharacterStats stats)
             {
-                return (2 * cs.Constitution + 3 * cs.Abstract) / 2;
+                return (2 * stats.Constitution + 3 * stats.Abstract) / 2;
+            }
+
+            public static int CalculateActions(CharacterStats stats)
+            {
+                // based on the Resolve formula
+                return (2 * stats.Strength + 3 * stats.Constitution + stats.Agility + 2 * stats.Willpower + stats.Perception + stats.Abstract) / 100;
             }
         }
 
         public static class Skills
         {
-            public static int CalculateCombat(CharacterStats cs)
+            public static int CalculateCombat(CharacterStats stats)
             {
-                return cs.Strength + cs.Constitution + cs.Agility;
+                return stats.Strength + stats.Constitution + stats.Agility;
             }
 
-            public static int CalculateArcane(CharacterStats cs)
+            public static int CalculateArcane(CharacterStats stats)
             {
-                return cs.Abstract + cs.Willpower + cs.Constitution;
+                return stats.Abstract + stats.Willpower + stats.Constitution;
             }
 
-            public static int CalculatePsionics(CharacterStats cs)
+            public static int CalculatePsionics(CharacterStats stats)
             {
-                return 2 * cs.Willpower + cs.Constitution;
+                return 2 * stats.Willpower + stats.Constitution;
             }
 
-            public static int CalculateHide(CharacterStats cs)
+            public static int CalculateHide(CharacterStats stats)
             {
-                return 2 * cs.Agility + cs.Perception + cs.Abstract - cs.Strength;
+                return 2 * stats.Agility + stats.Perception + stats.Abstract - stats.Strength;
             }
             
-            public static int CalculateTraps(CharacterStats cs)
+            public static int CalculateTraps(CharacterStats stats)
             {
-                return 2 * cs.Abstract + cs.Perception;
+                return 2 * stats.Abstract + stats.Perception;
             }
 
-            public static int CalculateTactics(CharacterStats cs)
+            public static int CalculateTactics(CharacterStats stats)
             {
-                return 3 * cs.Abstract;
+                return 3 * stats.Abstract;
             }
 
-            public static int CalculateSocial(CharacterStats cs)
+            public static int CalculateSocial(CharacterStats stats)
             {
-                return cs.Perception + cs.Abstract + cs.Willpower;
+                return stats.Perception + stats.Abstract + stats.Willpower;
             }
 
-            public static int CalculateApothecary(CharacterStats cs)
+            public static int CalculateApothecary(CharacterStats stats)
             {
-                return cs.Abstract + cs.Perception + cs.Constitution;
+                return stats.Abstract + stats.Perception + stats.Constitution;
             }
 
-            public static int CalculateTravel(CharacterStats cs)
+            public static int CalculateTravel(CharacterStats stats)
             {
-                return 2 * cs.Constitution + cs.Agility + cs.Willpower - cs.Strength;
+                return 2 * stats.Constitution + stats.Agility + stats.Willpower - stats.Strength;
             }
 
-            public static int CalculateSail(CharacterStats cs)
+            public static int CalculateSail(CharacterStats stats)
             {
-                return 2 * cs.Constitution + cs.Abstract;
-            }
-        }
-
-        public static class Misc
-        {
-            public static int CalculateActionTokens(int resolve)
-            {
-                return resolve / 100;
+                return 2 * stats.Constitution + stats.Abstract;
             }
         }
     }

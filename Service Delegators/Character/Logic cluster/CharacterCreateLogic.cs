@@ -44,10 +44,9 @@ internal class CharacterCreateLogic
         return stub;
     }
 
-    internal Character SaveStub(CharacterOrigins origins, string playerId)
+    internal Character SaveStub(CharacterTraits traits, string playerId)
     {
         var stub = dbs.Snapshot.CharacterStubs!.Find(s => s.PlayerId == playerId)!;
-        var info = CreateCharacterInfo(origins, stub);
 
         Character character = new()
         {
@@ -55,54 +54,15 @@ internal class CharacterCreateLogic
             {
                 Id = Guid.NewGuid().ToString(),
                 PlayerId = playerId,
-            },
-
-            Info = info,
-            LevelUp = new CharacterLevelUp(),
-            Status = new CharacterStatus()
-            {
-                IsLockedForModify = false,
-                QuestId = string.Empty,
-                ArenaId = string.Empty,
-                StoryId = string.Empty,
-            },
-
-            Sheet = sheetLogic.SetCharacterSheet(info, stub.StatPoints, stub.SkillPoints),
-
-            Inventory = new CharacterInventory(),
-            Supplies = SetSupplies(),
-
-            HeroicTraits = new List<HeroicTrait>()
+            }
         };
 
-        character.Info.Wealth = SetWealth();
-        character.Inventory.Provisions = dice.Roll_100_noReroll();
+        SetStatus(traits, stub, character);
+        SetSheet(stub, character);
+        SetSuppliesAndProvisions(character);
+        SetWealthAndWorth(character);
 
-        if (character.Info.Origins.Tradition == GameplayLore.Tradition.Martial)
-        {
-            character.Position = new Position
-            {
-                Region = GameplayLore.Map.Dragonmaw.RegionName,
-                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.SubregionName,
-                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.LandName,
-                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Arada.LocationName
-            };
-        }
-        else
-        {
-            // TODO: this will have to be changed eventually to incorporate Calvinia as starting point
-            character.Position = new Position
-            {
-                Region = GameplayLore.Map.Dragonmaw.RegionName,
-                Subregion = GameplayLore.Map.Dragonmaw.Farlindor.SubregionName,
-                Land = GameplayLore.Map.Dragonmaw.Farlindor.Danar.LandName,
-                Location = GameplayLore.Map.Dragonmaw.Farlindor.Danar.Arada.LocationName
-            };
-        }
-
-
-        // set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
-
+        //TODO: set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
 
         dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
 
@@ -139,18 +99,17 @@ internal class CharacterCreateLogic
         return roll * entityLevel;
     }
 
-    private List<Item> SetSupplies()
+    private void SetSuppliesAndProvisions(Character character)
     {
         var roll = dice.Roll_1_to_n(6);
-        var supplies = new List<Item>();
 
         for (int i = 0; i < roll; i++)
         {
             var item = items.GenerateRandomItem();
-            supplies.Add(item);
+            character.Inventory.Supplies.Add(item);
         }
 
-        return supplies;
+        character.Inventory.Provisions = dice.Roll_100_noReroll();
     }
 
     private static string SetFame(string culture, string classes)
@@ -158,41 +117,70 @@ internal class CharacterCreateLogic
         return $"Known as the {culture} {classes.ToLower()}";
     }
 
-    private int SetWealth()
+    private void SetWealthAndWorth(Character character)
     {
+        var sumOfSkills = character.Sheet.Skills.Combat
+            + character.Sheet.Skills.Arcane
+            + character.Sheet.Skills.Psionics
+            + character.Sheet.Skills.Hide
+            + character.Sheet.Skills.Traps
+            + character.Sheet.Skills.Tactics
+            + character.Sheet.Skills.Social
+            + character.Sheet.Skills.Apothecary
+            + character.Sheet.Skills.Travel
+            + character.Sheet.Skills.Sail;
+
+        var wealth = 10;
         var rollTimes = dice.Roll_1_to_n(6);
-        var total = 10;
         for (int i = 0; i < rollTimes; i++)
         {
-            total += dice.Roll_1_to_n(100);
+            wealth += dice.Roll_1_to_n(100);
         }
 
-        return total;
+        character.Status.Worth = (int)((sumOfSkills + wealth) * 0.25);
+        character.Status.Wealth = wealth;
     }
 
-    private static CharacterInfo CreateCharacterInfo(CharacterOrigins origins, CharacterStub stub)
+    private void SetSheet(CharacterStub stub, Character character)
     {
-        return new CharacterInfo
+        sheetLogic.SetCharacterSheet(stub.StatPoints, stub.SkillPoints, character);
+    }
+
+    private static void SetStatus(CharacterTraits traits, CharacterStub stub, Character character)
+    {
+        character.Status = new()
         {
-            Name = $"The {origins.Culture.ToLower()}",
-
+            Name = $"The {traits.Culture.ToLower()}",
             EntityLevel = stub!.EntityLevel,
-
-            Origins = new CharacterOrigins
-            {
-                Race = origins.Race,
-                Culture = origins.Culture,
-                Tradition = origins.Tradition,
-                Class = origins.Class,
-            },
-
             DateOfBirth = DateTime.Now.ToShortDateString(),
-
-            Fame = SetFame(origins.Culture, origins.Class),
+            Traits = new CharacterTraits
+            {
+                Race = traits.Race,
+                Culture = traits.Culture,
+                Tradition = traits.Tradition,
+                Class = traits.Class,
+            },
+            Gameplay = new CharacterGameplay
+            {
+                ArenaId = string.Empty,
+                QuestId = string.Empty,
+                StoryId = string.Empty,
+            },
+            // all characters start from Arada due to it's travel dinstance logic
+            // moreover the story focuses on Danar as starting position
+            Position = new Position
+            {
+                Region = GameplayLore.Locations.Dragonmaw.RegionName,
+                Subregion = GameplayLore.Locations.Dragonmaw.Farlindor.SubregionName,
+                Land = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.LandName,
+                Location = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName
+            },
             IsAlive = true,
             IsNpc = false,
-
+            IsLockedToModify = false,
+            Worth = 0,
             Wealth = 0,
+            Fame = SetFame(traits.Culture, traits.Class),
             NrOfQuestsFinished = 0,
             QuestsFinished = new List<string>()
         };
