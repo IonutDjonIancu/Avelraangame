@@ -4,28 +4,35 @@ namespace Service_Delegators;
 
 public static class Utils
 {
-    public static string GetLocationFullName(Position position)
+    public static Location GetLocationByLocationName(string locationName)
+    {
+        var locationFullName = GameplayLore.Locations.All.Select(s => s.FullName).ToList().Find(s => s.Contains(locationName)) ?? throw new Exception("Location not found.");
+
+        return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
+    }
+
+    public static Location GetLocationByLocationFullName(string locationFullName)
+    {
+        return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
+    }
+
+    public static Location GetLocationByPosition(Position position)
+    {
+        return GameplayLore.Locations.All.Find(s => s.Position == position)!;
+    }
+
+    public static string GetLocationFullNameFromPosition(Position position)
     {
         return $"{position.Region}_{position.Subregion}_{position.Land}_{position.Location}";
     }
 
-    public static Position GetLocationPosition(string fullName)
+    public static Position GetPositionByLocationFullName(string fullName)
     {
-        var substrings = fullName.Split('_');
-
-        return new Position
-        {
-            Region = substrings[0],
-            Subregion = substrings[1],
-            Land = substrings[2],
-            Location = substrings[3]
-        };
+        return GameplayLore.Locations.All.Find(s => s.FullName == fullName)!.Position ?? throw new Exception("Location not found.");
     }
 
-    public static Character GetPlayerCharacter(IDatabaseService dbs, CharacterIdentity identity)
+    public static Character GetPlayerCharacter(Snapshot snapshot, CharacterIdentity identity)
     {
-        return dbs.Snapshot.Players.Find(s => s.Identity.Id == identity.PlayerId)!.Characters.Find(s => s.Identity.Id == identity.Id)!;
+        return snapshot.Players.Find(s => s.Identity.Id == identity.PlayerId)!.Characters.Find(s => s.Identity.Id == identity.Id)!;
     }
-
-
 }

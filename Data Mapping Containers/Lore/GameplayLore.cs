@@ -2,26 +2,7 @@
 
 public class GameplayLore
 {
-    public static class Npcs 
-    {
-        public static class Races
-        {
-            public const string Animal      = "Animal";
-            public const string Monster     = "Monster";
-            public const string Humanoid    = "Humanoid";
-            public const string Undead      = "Undead";
-            public const string Fiend       = "Fiend";
-            public const string Elemental   = "Elemental";
-
-            public static readonly List<string> All = new()
-            {
-                Monster, Undead, Animal, Humanoid, Fiend, Elemental
-            };
-        }
-    }
-
-
-    public static class Map
+    public static class Locations
     {
         public static class Dragonmaw
         {
@@ -130,7 +111,7 @@ public class GameplayLore
             EffortRequired = Effort.Normal,
             AvailableAt = new List<string>
             {
-                Map.Dragonmaw.Farlindor.Danar.LandName,
+                Locations.Dragonmaw.Farlindor.Danar.LandName,
             },
             Reward = new QuestReward
             {
@@ -154,7 +135,7 @@ public class GameplayLore
             EffortRequired = Effort.Normal,
             AvailableAt = new List<string>
             {
-                Map.Dragonmaw.Farlindor.Danar.LandName,
+                Locations.Dragonmaw.Farlindor.Danar.LandName,
             },
             Reward = new QuestReward
             {
@@ -179,7 +160,7 @@ public class GameplayLore
             EffortRequired = Effort.Gifted,
             AvailableAt = new List<string>
             {
-                Map.Dragonmaw.Farlindor.Danar.LandName,
+                Locations.Dragonmaw.Farlindor.Danar.LandName,
             },
             Reward = new QuestReward
             {

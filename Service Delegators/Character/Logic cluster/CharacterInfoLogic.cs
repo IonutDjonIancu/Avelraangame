@@ -16,7 +16,7 @@ internal class CharacterInfoLogic
     {
         var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
-        storedChar.Info!.Name = name;
+        storedChar.Status!.Name = name;
 
         dbs.PersistPlayer(player.Identity.Id);
 
@@ -27,7 +27,7 @@ internal class CharacterInfoLogic
     {
         var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
-        storedChar.Info!.Fame = string.Concat(storedChar.Info.Fame, $"\n{fame}");
+        storedChar.Status!.Fame = string.Concat(storedChar.Status.Fame, $"\n{fame}");
 
         dbs.PersistPlayer(player.Identity.Id);
 
@@ -38,7 +38,7 @@ internal class CharacterInfoLogic
     {
         var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
-        storedChar.Info!.Wealth += wealth;
+        storedChar.Status!.Wealth += wealth;
 
         dbs.PersistPlayer(player.Identity.Id);
 
@@ -49,7 +49,7 @@ internal class CharacterInfoLogic
     {
         var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
 
-        storedChar.Info!.IsAlive = false;
+        storedChar.Status!.IsAlive = false;
 
         dbs.PersistPlayer(player.Identity.Id);
     }

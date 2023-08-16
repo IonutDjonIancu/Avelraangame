@@ -1,6 +1,15 @@
-﻿namespace Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Pocos;
 
-public class Character : CharacterBase, ICharacter
+namespace Data_Mapping_Containers.Dtos;
+
+public class Character : ICharacter
 {
-    public List<NpcCharacter> Mercenaries { get; set; } = new();
+    public CharacterIdentity Identity { get; set; } = new();
+    public CharacterStatus Status { get; set; } = new();
+    
+    public CharacterLevelUp LevelUp { get; set; } = new();
+    public CharacterSheet Sheet { get; set; } = new();
+
+    public CharacterInventory Inventory { get; set; } = new();
+    public List<Character> Mercenaries { get; set; } = new();
 }

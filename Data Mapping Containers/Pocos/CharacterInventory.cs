@@ -16,6 +16,7 @@ public class CharacterInventory
     public List<Item>? Heraldry { get; set; } = new();
 
     public int Provisions { get; set; }
+    public List<Item> Supplies { get; set; } = new();
 
     public List<Item> GetAllEquipedItems()
     {

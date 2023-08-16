@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class HeroicTraitIdentity
+public class SpecialSkillIdentity
 {
     public string Id { get; set; }
     public string Name { get; set; }
