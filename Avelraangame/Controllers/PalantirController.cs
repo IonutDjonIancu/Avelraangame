@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Avelraangame.Controllers.Validators;
-using Service_Delegators;
 
 namespace Avelraangame.Controllers;
 
