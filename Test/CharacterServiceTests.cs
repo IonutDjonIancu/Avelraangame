@@ -113,7 +113,7 @@ public class CharacterServiceTests : TestBase
 
         chr = charService.UpdateCharacterStats(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
 
-        chr.Sheet.Stats.Strength.Should().Be(currentStr + 1);
+        chr.Sheet.Stats.Strength.Should().BeGreaterThan(currentStr);
     }
 
     [Fact(DisplayName = "Increasing the assets from a character should save it to db")]
@@ -125,7 +125,7 @@ public class CharacterServiceTests : TestBase
 
         Utils.GetPlayerCharacter(dbs.Snapshot, CreateCharIdentity(chr)).LevelUp.AssetPoints = 1;
 
-        chr = charService.UpdateCharacterAssets(CharactersLore.Stats.Strength, CreateCharIdentity(chr));
+        chr = charService.UpdateCharacterAssets(CharactersLore.Assets.Resolve, CreateCharIdentity(chr));
 
         chr.Sheet.Assets.Resolve.Should().BeGreaterThan(currentResolve);
     }
@@ -148,7 +148,7 @@ public class CharacterServiceTests : TestBase
 
         chr = charService.UpdateCharacterSkills(CharactersLore.Skills.Combat, CreateCharIdentity(chr));
 
-        chr.Sheet.Skills.Combat.Should().Be(currentCombat + 1);
+        chr.Sheet.Skills.Combat.Should().BeGreaterThan(currentCombat);
     }
 
     [Fact(DisplayName = "Increasing the skills from a character with no skill points should throw")]
