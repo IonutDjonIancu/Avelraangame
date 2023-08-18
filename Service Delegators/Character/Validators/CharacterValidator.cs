@@ -219,7 +219,7 @@ internal class CharacterValidator : ValidatorBase
     internal void ValidateAssetExists(string asset)
     {
         ValidateString(asset);
-        if (!CharactersLore.Assets.All.Contains(asset)) throw new Exception($"Ssset {asset} does not math any possible character assets.");
+        if (!CharactersLore.Assets.All.Contains(asset)) throw new Exception($"Asset {asset} does not math any possible character assets.");
     }
 
     internal void ValidateCharacterHasStatsPoints(CharacterIdentity chr)

@@ -18,7 +18,6 @@ internal class CharacterSheetLogic
         else if (character.Status.Traits.Race == CharactersLore.Races.Playable.Elf)   SetCharacterSheetForElf(statPoints, skillPoints, character);
         else if (character.Status.Traits.Race == CharactersLore.Races.Playable.Dwarf) SetCharacterSheetForDwarf(statPoints, skillPoints, character);
         else if (character.Status.Traits.Race == CharactersLore.Races.Playable.Orc)   SetCharacterSheetForOrc(statPoints, skillPoints, character);
-        throw new NotImplementedException();
     }
 
     #region private methods

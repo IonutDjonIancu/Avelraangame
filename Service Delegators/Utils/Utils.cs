@@ -18,7 +18,7 @@ public static class Utils
 
     public static Location GetLocationByPosition(Position position)
     {
-        return GameplayLore.Locations.All.Find(s => s.Position == position)!;
+        return GameplayLore.Locations.All.Find(s => s.FullName == position.GetPositionFullName())!;
     }
 
     public static string GetLocationFullNameFromPosition(Position position)
