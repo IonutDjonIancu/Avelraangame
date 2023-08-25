@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 internal class ItemValidator : ValidatorBase
 {
-    internal ItemValidator(Snapshot snapshot) 
+    internal ItemValidator(SnapshotOld snapshot) 
         : base(snapshot)
     { }
 

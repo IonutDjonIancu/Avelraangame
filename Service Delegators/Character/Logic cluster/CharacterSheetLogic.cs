@@ -276,7 +276,7 @@ internal class CharacterSheetLogic
     {
         while (statPoints != 0)
         {
-            var roll = dice.Roll_100_noReroll();
+            var roll = dice.Roll_d100_noReroll();
             string chosenStat;
 
             if (roll <= 70)
@@ -305,7 +305,7 @@ internal class CharacterSheetLogic
     {
         while (skillPoints != 0)
         {
-            var roll = dice.Roll_100_noReroll();
+            var roll = dice.Roll_d100_noReroll();
             string chosenSkill;
 
             if (roll <= 70)

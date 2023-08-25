@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class Snapshot
+public class SnapshotOld
 {
     public DateTime LastAction { get; set; }
     public List<string> Admins { get; set; }

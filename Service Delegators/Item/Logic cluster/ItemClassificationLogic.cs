@@ -16,7 +16,7 @@ internal class ItemClassificationLogic
 
     internal void SetItemLevelAndLevelName(Item item)
     {
-        var roll = dice.Roll_20_withReroll();
+        var roll = dice.Roll_d20_withReroll();
 
         if      (roll >= 100)   { item.Level = 6; item.LevelName = ItemsLore.LevelNames.Relic; }
         else if (roll >=  80)   { item.Level = 5; item.LevelName = ItemsLore.LevelNames.Artifact; }
@@ -28,7 +28,7 @@ internal class ItemClassificationLogic
 
     internal void SetItemTypeAndSubtype(Item item)
     {
-        var roll = dice.Roll_20_noReroll();
+        var roll = dice.Roll_d20_noReroll();
 
         if      (roll >= 17)    { item.Type = ItemsLore.Types.Protection; SetProtectionSubtype(item); }
         else if (roll >=  5)    { item.Type = ItemsLore.Types.Weapon; SetWeaponSubtype(item); }
@@ -44,7 +44,7 @@ internal class ItemClassificationLogic
 
     internal void TaintItem(Item item)
     {
-        item.HasTaint = item.Level >= 3 && dice.Roll_20_noReroll() % 2 == 0;
+        item.HasTaint = item.Level >= 3 && dice.Roll_d20_noReroll() % 2 == 0;
     }
 
     internal void SetItemInventoryLocation(Item item)
@@ -167,7 +167,7 @@ internal class ItemClassificationLogic
 
     private void SetProtectionSubtype(Item item)
     {
-        var roll = dice.Roll_20_noReroll();
+        var roll = dice.Roll_d20_noReroll();
 
         if      (roll >= 15)    item.Subtype = ItemsLore.Subtypes.Protections.Armour;
         else if (roll >= 8)     item.Subtype = ItemsLore.Subtypes.Protections.Helm;
@@ -176,7 +176,7 @@ internal class ItemClassificationLogic
 
     private void SetWeaponSubtype(Item item)
     {
-        var roll = dice.Roll_20_noReroll();
+        var roll = dice.Roll_d20_noReroll();
 
         if      (roll >= 18)    item.Subtype = ItemsLore.Subtypes.Weapons.Sword;
         else if (roll >= 17)    item.Subtype = ItemsLore.Subtypes.Weapons.Pike;
@@ -192,7 +192,7 @@ internal class ItemClassificationLogic
 
     private void SetWealthSubtype(Item item)
     {
-        var roll = dice.Roll_20_noReroll();
+        var roll = dice.Roll_d20_noReroll();
 
         if      (roll >= 17)    item.Subtype = ItemsLore.Subtypes.Wealth.Gems;
         else if (roll >= 15)    item.Subtype = ItemsLore.Subtypes.Wealth.Trinket;

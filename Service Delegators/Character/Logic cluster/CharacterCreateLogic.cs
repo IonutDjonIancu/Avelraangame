@@ -77,7 +77,7 @@ internal class CharacterCreateLogic
     #region private methods
     private int RandomizeEntityLevel()
     {
-        var roll = dice.Roll_20_withReroll();
+        var roll = dice.Roll_d20_withReroll();
 
         if      (roll >= 100)   return 6;
         else if (roll >= 80)    return 5;
@@ -89,13 +89,13 @@ internal class CharacterCreateLogic
 
     private int RandomizeStatPoints(int entityLevel)
     {
-        var roll = dice.Roll_20_withReroll();
+        var roll = dice.Roll_d20_withReroll();
         return roll * entityLevel;
     }
 
     private int RandomizeSkillPoints(int entityLevel)
     {
-        var roll = dice.Roll_20_withReroll();
+        var roll = dice.Roll_d20_withReroll();
         return roll * entityLevel;
     }
 
@@ -109,7 +109,7 @@ internal class CharacterCreateLogic
             character.Inventory.Supplies.Add(item);
         }
 
-        character.Inventory.Provisions = dice.Roll_100_noReroll();
+        character.Inventory.Provisions = dice.Roll_d100_noReroll();
     }
 
     private static string SetFame(string culture, string classes)

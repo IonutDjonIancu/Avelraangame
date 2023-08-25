@@ -1,5 +1,6 @@
 using Avelraangame;
 using Avelraangame.Factories;
+using Avelraangame.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,13 +35,19 @@ builder.Services.AddCors(options =>
 });
 #endregion
 
+
 #region services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IAppSettingsConfigManager, AppSettingsConfigManager>();
-builder.Services.AddSingleton<IFactoryManager, FactoryManager>();
+DIServices.LoadAppSettings(builder);
+DIServices.LoadSnapshotSystem(builder);
+DIServices.LoadAvelraanServices(builder);
+
+builder.Services.AddSingleton<IAppSettingsConfigManager, AppSettingsConfigManager>(); // TODO: to remove
+builder.Services.AddSingleton<IFactoryManager, FactoryManager>(); // TODO: to remove
+
 #endregion
 
 var app = builder.Build();

@@ -4,9 +4,9 @@ namespace Service_Delegators;
 
 internal class CharacterValidator : ValidatorBase
 {
-    private readonly Snapshot snapshot;
+    private readonly SnapshotOld snapshot;
 
-    internal CharacterValidator(Snapshot snapshot)
+    internal CharacterValidator(SnapshotOld snapshot)
         : base(snapshot)
     {
         this.snapshot = snapshot;

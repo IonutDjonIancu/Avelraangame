@@ -8,7 +8,7 @@ public class DatabaseService : IDatabaseService
     private readonly DatabaseValidator validator;
     private readonly DatabaseLogicDelegator logic;
 
-    public Snapshot Snapshot { get; set; } // This is the overall Avelraan cache, and will be the ONLY public property
+    public SnapshotOld Snapshot { get; set; } // This is the overall Avelraan cache, and will be the ONLY public property
 
     private DatabaseService() { }
     public DatabaseService(IDatabaseManager databaseManager)

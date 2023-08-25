@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface IDatabaseService
 {
-    Snapshot Snapshot { get; set; }
+    SnapshotOld Snapshot { get; set; }
 
     void PersistDatabase();
     void PersistPlayer(string playerId);

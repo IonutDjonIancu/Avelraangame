@@ -4,9 +4,9 @@ namespace Service_Delegators;
 
 internal class GameplayValidator : ValidatorBase
 {
-    private readonly Snapshot snapshot;
+    private readonly SnapshotOld snapshot;
 
-    internal GameplayValidator(Snapshot snapshot)
+    internal GameplayValidator(SnapshotOld snapshot)
         : base(snapshot)
     {
         this.snapshot = snapshot;

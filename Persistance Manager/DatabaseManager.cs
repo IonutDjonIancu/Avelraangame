@@ -18,7 +18,7 @@ public class DatabaseManager : IDatabaseManager
     #endregion
 
     public DatabaseManagerInfo Info { get; init; }
-    public Snapshot Snapshot { get; set; }
+    public SnapshotOld Snapshot { get; set; }
 
     public DatabaseManager(DatabaseManagerConfig dbmconfig)
     {
@@ -41,12 +41,12 @@ public class DatabaseManager : IDatabaseManager
         };
     }
 
-    private static Snapshot SetUpSnaphot(DatabaseManagerInfo info)
+    private static SnapshotOld SetUpSnaphot(DatabaseManagerInfo info)
     {
         var avDbDiskFile = File.ReadAllText(info.DbPath);
         var avDatabase = JsonConvert.DeserializeObject<Database>(avDbDiskFile);
 
-        return new Snapshot
+        return new SnapshotOld
         {
             LastAction = avDatabase.DbDate,
             Admins = admins,

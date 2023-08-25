@@ -33,21 +33,21 @@ internal class ItemEnchantsLogic
     #region private methods
     private void Imbue(Item item)
     {
-        IncreaseRandomSkill(dice.Roll_20_withReroll() * item.Level, item);
-        IncreaseRandomAsset(dice.Roll_20_withReroll() * item.Level, item);
-        IncreaseRandomStat(dice.Roll_20_withReroll() * item.Level, item);
+        IncreaseRandomSkill(dice.Roll_d20_withReroll() * item.Level, item);
+        IncreaseRandomAsset(dice.Roll_d20_withReroll() * item.Level, item);
+        IncreaseRandomStat(dice.Roll_d20_withReroll() * item.Level, item);
 
-        item.Sheet.Skills.Psionics -= dice.Roll_20_withReroll() * item.Level;
-        item.Sheet.Assets.Purge -= dice.Roll_20_withReroll() * item.Level;
+        item.Sheet.Skills.Psionics -= dice.Roll_d20_withReroll() * item.Level;
+        item.Sheet.Assets.Purge -= dice.Roll_d20_withReroll() * item.Level;
     }
 
     private void Strengthen(Item item)
     {
-        if      (item.Type == ItemsLore.Types.Weapon)       item.Sheet.Assets.Harm += dice.Roll_20_withReroll() * item.Level;
+        if      (item.Type == ItemsLore.Types.Weapon)       item.Sheet.Assets.Harm += dice.Roll_d20_withReroll() * item.Level;
         else if (item.Type == ItemsLore.Types.Protection)   item.Sheet.Assets.Defense += dice.Roll_1_to_n(6) * item.Level;
         else  /*(item.Type == ItemsLore.Types.Wealth)*/     item.Value *= item.Level;
 
-        if (item.Level >= 3) item.Sheet.Assets.Purge += dice.Roll_20_withReroll();
+        if (item.Level >= 3) item.Sheet.Assets.Purge += dice.Roll_d20_withReroll();
     }
 
     private void SetForCommons(Item item)
@@ -57,7 +57,7 @@ internal class ItemEnchantsLogic
 
         if (item.Type == ItemsLore.Types.Weapon)
         {
-            var bonus = dice.Roll_20_noReroll();
+            var bonus = dice.Roll_d20_noReroll();
             item.Sheet.Assets.Harm += bonus;
             item.Value += bonus * 2;
         }
@@ -69,7 +69,7 @@ internal class ItemEnchantsLogic
         }
         else /* Wealth */
         {
-            var bonus = dice.Roll_20_withReroll() + 10;
+            var bonus = dice.Roll_d20_withReroll() + 10;
             item.Value += bonus;
         }
     }
@@ -81,7 +81,7 @@ internal class ItemEnchantsLogic
 
         if (item.Type == ItemsLore.Types.Weapon)
         {
-            var bonus = dice.Roll_20_withReroll();
+            var bonus = dice.Roll_d20_withReroll();
             item.Sheet.Assets.Harm += bonus;
             item.Value += bonus * 5;
         }
@@ -93,7 +93,7 @@ internal class ItemEnchantsLogic
         }
         else /* Wealth */
         {
-            var bonus = dice.Roll_20_withReroll() + 10;
+            var bonus = dice.Roll_d20_withReroll() + 10;
             item.Value += bonus;
         }
     }
@@ -105,19 +105,19 @@ internal class ItemEnchantsLogic
 
         if (item.Type == ItemsLore.Types.Weapon)
         {
-            var bonus = dice.Roll_20_withReroll() * 2;
+            var bonus = dice.Roll_d20_withReroll() * 2;
             item.Sheet.Assets.Harm += bonus;
             item.Value += bonus * 5;
         }
         else if (item.Type == ItemsLore.Types.Protection)
         {
-            var bonus = dice.Roll_20_noReroll() + dice.Roll_1_to_n(6);
+            var bonus = dice.Roll_d20_noReroll() + dice.Roll_1_to_n(6);
             item.Sheet.Assets.Defense += bonus;
             item.Value += bonus * 10;
         }
         else /* Wealth */
         {
-            var bonus = dice.Roll_20_withReroll() + 500;
+            var bonus = dice.Roll_d20_withReroll() + 500;
             item.Value += bonus;
         }
     }

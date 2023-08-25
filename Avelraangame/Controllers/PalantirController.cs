@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Avelraangame.Controllers.Validators;
+using Service_Delegators;
 
 namespace Avelraangame.Controllers;
 
@@ -16,10 +17,18 @@ public class PalantirController : ControllerBase
     private readonly IFactoryManager factory;
     private readonly ControllerValidator validator;
 
-    public PalantirController(IFactoryManager factory)
+    private readonly IItemDelegator items;
+    private readonly IDiceDelegator dice;
+
+    public PalantirController(
+        IFactoryManager factory, // TODO: to remove the factory
+        IItemDelegator items, // TODO: to remove
+        IDiceDelegator dice)  // TODO: to remove
     {
         validator = new ControllerValidator(factory.ServiceFactory.DatabaseService);
-        this.factory = factory;
+        this.factory = factory; // TODO: to remove
+        this.items = items; // TODO: to remove
+        this.dice = dice; // TODO: to remove
     }
 
     #region ConnectionTest
@@ -27,7 +36,16 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        return Ok("Okay");
+        var a = dice.Roll_d100_withReroll();
+        return Ok(a);
+    }
+
+    // GET: /api/palantir/Test/GetOk2
+    [HttpGet("Test/GetOk2")]
+    public IActionResult GetOk2()
+    {
+        var a = items.DoSomeRoll();
+        return Ok(a);
     }
     #endregion
 

@@ -52,7 +52,7 @@ internal class NpcLogicDelegator
         character.Status.Gameplay = new CharacterGameplay();
         character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
         character.Status.Worth = location.Effort;
-        character.Status.Wealth = dice.Roll_100_noReroll();
+        character.Status.Wealth = dice.Roll_d100_noReroll();
         character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this person.";
         character.Status.NrOfQuestsFinished = 0;
 
@@ -102,7 +102,7 @@ internal class NpcLogicDelegator
 
     private string DecideClass()
     {
-        var roll = dice.Roll_100_noReroll();
+        var roll = dice.Roll_d100_noReroll();
 
         return roll <= 80 ? CharactersLore.Classes.Warrior : CharactersLore.Classes.Mage;
     }
@@ -116,7 +116,7 @@ internal class NpcLogicDelegator
     {
         string GetGoodRace()
         {
-            var roll = dice.Roll_100_noReroll();
+            var roll = dice.Roll_d100_noReroll();
 
             if (roll <= 70) return CharactersLore.Races.Playable.Human;
             else if (roll <= 95) return CharactersLore.Races.Playable.Elf;
@@ -125,11 +125,11 @@ internal class NpcLogicDelegator
 
         string GetBadRace()
         {
-            var roll = dice.Roll_100_noReroll();
+            var roll = dice.Roll_d100_noReroll();
 
             if (roll <= 70)
             {
-                var roll2nd = dice.Roll_100_noReroll();
+                var roll2nd = dice.Roll_d100_noReroll();
 
                 if (roll2nd <= 30) return CharactersLore.Races.Playable.Human;
                 else if (roll2nd <= 55) return CharactersLore.Races.Playable.Orc;
@@ -137,7 +137,7 @@ internal class NpcLogicDelegator
             }
             else
             {
-                var roll2nd = dice.Roll_100_noReroll();
+                var roll2nd = dice.Roll_d100_noReroll();
 
                 if (roll2nd <= 75) return CharactersLore.Races.Playable.Orc;
                 else return CharactersLore.Races.NonPlayable.Undead;
@@ -190,7 +190,7 @@ internal class NpcLogicDelegator
 
     private int DecideEntityLevel()
     {
-        var roll = dice.Roll_20_withReroll();
+        var roll = dice.Roll_d20_withReroll();
         var level = roll / 20;
 
         return ++level;
@@ -312,15 +312,15 @@ internal class NpcLogicDelegator
             return inventory;
         }
 
-        if (dice.Roll_par_impar()) inventory.Head = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
-        if (dice.Roll_par_impar()) inventory.Body = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
-        if (dice.Roll_par_impar()) inventory.Shield = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
-        if (dice.Roll_par_impar()) inventory.Offhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+        if (dice.Roll_true_false()) inventory.Head = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
+        if (dice.Roll_true_false()) inventory.Body = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
+        if (dice.Roll_true_false()) inventory.Shield = itemsService.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+        if (dice.Roll_true_false()) inventory.Offhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
 
 
         if (character.Status.Traits.Race == CharactersLore.Races.Playable.Human)
         {
-            if (dice.Roll_par_impar())
+            if (dice.Roll_true_false())
             {
                 inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
             }
@@ -331,7 +331,7 @@ internal class NpcLogicDelegator
         }
         else
         {
-            if (dice.Roll_par_impar()) 
+            if (dice.Roll_true_false()) 
             { 
                 inventory.Mainhand = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Axe);
             }
@@ -347,7 +347,7 @@ internal class NpcLogicDelegator
         }
         else
         {
-            if (dice.Roll_par_impar()) inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
+            if (dice.Roll_true_false()) inventory.Ranged = itemsService.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
         }
 
         if (character.Status.EntityLevel >= 2)
@@ -356,11 +356,11 @@ internal class NpcLogicDelegator
 
             for (int i = 0; i < rollHeraldry; i++)
             {
-                if (dice.Roll_par_impar()) inventory.Heraldry!.Add(itemsService.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
+                if (dice.Roll_true_false()) inventory.Heraldry!.Add(itemsService.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
             }
         }
 
-        inventory.Provisions = dice.Roll_100_withReroll();
+        inventory.Provisions = dice.Roll_d100_withReroll();
 
         return inventory;
     }

@@ -1,4 +1,4 @@
-﻿namespace Avelraangame;
+﻿namespace Avelraangame.Services;
 
 public interface IAppSettingsConfigManager
 {

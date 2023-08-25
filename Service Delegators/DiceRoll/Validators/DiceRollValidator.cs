@@ -4,9 +4,9 @@ namespace Service_Delegators;
 
 internal class DiceRollValidator : ValidatorBase
 {
-    private readonly Snapshot snapshot;
+    private readonly SnapshotOld snapshot;
 
-    internal DiceRollValidator(Snapshot snapshot)
+    internal DiceRollValidator(SnapshotOld snapshot)
         : base(snapshot)
     {
         this.snapshot = snapshot;

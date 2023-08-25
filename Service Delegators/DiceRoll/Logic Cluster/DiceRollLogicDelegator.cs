@@ -6,26 +6,6 @@ internal class DiceRollLogicDelegator
 {
     private readonly Random random = new();
 
-    #region d20 rolls
-    internal int Roll20noReroll()
-    {
-        return random.Next(1, 21);
-    }
-
-    internal int Roll20withReroll(int roll = 0) 
-    {
-        var handRoll = random.Next(1, 21);
-        var totalRoll = roll + handRoll;
-
-        if (handRoll % 20 == 0)
-        {
-            totalRoll = Roll20withReroll(totalRoll);
-        }
-
-        return totalRoll;
-    }
-    #endregion
-
     #region d100 rolls
     internal int Roll100noReroll()
     {
@@ -65,9 +45,11 @@ internal class DiceRollLogicDelegator
     #region gameplay rolls
     internal int RollGameplayDice(bool isOffense, string attribute, Character character)
     {
-        var grade = character.Status.Traits.Tradition == GameplayLore.Tradition.Martial
-            ? 1 + Roll20withReroll() / 4
-            : 1 + Roll100withReroll() / 20;
+        //var grade = character.Status.Traits.Tradition == GameplayLore.Tradition.Martial
+        //    ? 1 + Roll20withReroll() / 4
+        //    : 1 + Roll100withReroll() / 20;
+
+        var grade = 25;
 
         return GetRollGradeAndLevelup(grade, isOffense, attribute, character);
     }

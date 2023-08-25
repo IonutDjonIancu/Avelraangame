@@ -4,9 +4,9 @@ namespace Service_Delegators;
 
 internal class DatabaseValidator : ValidatorBase
 {
-    private readonly Snapshot snapshot;
+    private readonly SnapshotOld snapshot;
 
-    internal DatabaseValidator(Snapshot snapshot)
+    internal DatabaseValidator(SnapshotOld snapshot)
         : base(snapshot)
     {
         this.snapshot = snapshot;

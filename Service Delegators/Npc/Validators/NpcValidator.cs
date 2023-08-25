@@ -4,7 +4,7 @@ namespace Service_Delegators.Validators;
 
 internal class NpcValidator : ValidatorBase
 {
-    internal NpcValidator(Snapshot snapshot) 
+    internal NpcValidator(SnapshotOld snapshot) 
         : base(snapshot)
     { }
 

@@ -95,7 +95,7 @@ public class CharacterServiceTests : TestBase
         var chr = CreateHumanCharacter("Jax");
 
         charService.DeleteCharacter(CreateCharIdentity(chr));
-
+        
         var characters = charService.GetPlayerCharacters(chr.Identity.PlayerId);
 
         characters.CharactersList.Should().NotContain(chr);

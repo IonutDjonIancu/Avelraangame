@@ -5,7 +5,7 @@ public class DiceServiceTests : TestBase
     [Fact(DisplayName = "Roll a number between 1 and 20")]
     public void Roll_simple_d20_test()
     {
-        var roll = diceService.Roll_20_noReroll();
+        var roll = diceService.Roll_d20_noReroll();
 
         roll.Should().BeLessThan(21);
     }
@@ -13,7 +13,7 @@ public class DiceServiceTests : TestBase
     [Fact(DisplayName = "Roll a number between 1 and 20, with a reroll")]
     public void Roll_complex_d20_test()
     {
-        var roll = diceService.Roll_20_withReroll();
+        var roll = diceService.Roll_d20_withReroll();
 
         roll.Should().BeLessThan(101);
     }
@@ -21,7 +21,7 @@ public class DiceServiceTests : TestBase
     [Fact(DisplayName = "Roll a number between 1 and 100")]
     public void Roll_simple_d100_test()
     {
-        var roll = diceService.Roll_100_noReroll();
+        var roll = diceService.Roll_d100_noReroll();
 
         roll.Should().BeLessThan(101);
     }
@@ -29,7 +29,7 @@ public class DiceServiceTests : TestBase
     [Fact(DisplayName = "Roll a number between 1 and 100, with a reroll")]
     public void Roll_complex_d100_test()
     {
-        var roll = diceService.Roll_100_withReroll();
+        var roll = diceService.Roll_d100_withReroll();
 
         roll.Should().BeLessThan(1000);
     }

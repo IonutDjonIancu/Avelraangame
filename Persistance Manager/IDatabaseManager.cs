@@ -5,5 +5,5 @@ namespace Persistance_Manager;
 public interface IDatabaseManager
 {
     DatabaseManagerInfo Info { get; init; }
-    Snapshot Snapshot { get; set; }
+    SnapshotOld Snapshot { get; set; }
 }

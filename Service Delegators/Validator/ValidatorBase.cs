@@ -6,10 +6,10 @@ namespace Service_Delegators;
 
 internal class ValidatorBase
 {
-    private readonly Snapshot snapshot;
+    private readonly SnapshotOld snapshot;
 
     private ValidatorBase() { }
-    internal ValidatorBase(Snapshot snapshot)
+    internal ValidatorBase(SnapshotOld snapshot)
     {
         this.snapshot = snapshot;
     }

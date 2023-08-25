@@ -2,7 +2,7 @@
 
 namespace Service_Delegators;
 
-public interface IDiceRollService
+public interface IDiceDelegator
 {
     int Roll_d20_noReroll();
     int Roll_d20_withReroll();
