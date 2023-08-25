@@ -44,7 +44,7 @@ public class DIServices : IDIServices
     private static void LoadDiceService(WebApplicationBuilder builder)
     {
         // delegator
-        builder.Services.AddTransient<IDiceDelegator, DiceDelegator>();
+        builder.Services.AddTransient<IDiceLogicDelegator, DiceLogicDelegator>();
         // subservices
         builder.Services.AddTransient<IDiceD20Logic, DiceD20RollsLogic>();
         builder.Services.AddTransient<IDiceD100Logic, DiceD100RollsLogic>();

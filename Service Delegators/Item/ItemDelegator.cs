@@ -1,4 +1,4 @@
-﻿using Data_Mapping_Containers.Pocos;
+﻿using Data_Mapping_Containers.Dtos.ApplicationGeneral;
 
 namespace Service_Delegators;
 

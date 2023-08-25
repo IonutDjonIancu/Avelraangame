@@ -2,9 +2,9 @@
 
 public class ItemLogic : IItemLogic
 {
-    private readonly IDiceDelegator dice;
+    private readonly IDiceLogicDelegator dice;
 
-    public ItemLogic(IDiceDelegator dice)
+    public ItemLogic(IDiceLogicDelegator dice)
     {
         this.dice = dice;
     }

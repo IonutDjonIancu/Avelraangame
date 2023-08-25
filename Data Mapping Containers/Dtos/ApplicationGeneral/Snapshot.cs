@@ -1,12 +1,14 @@
-﻿using Data_Mapping_Containers.Dtos;
-
-namespace Data_Mapping_Containers.Pocos;
+﻿namespace Data_Mapping_Containers.Dtos;
 
 public class Snapshot
 {
     public List<CharacterStub> Stubs { get; set; } = new();
+
     public List<Player> Players { get; set; } = new();
+
     public List<Location> Locations { get; set; } = new();
+
+
 
 
 

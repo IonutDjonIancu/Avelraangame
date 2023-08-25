@@ -1,25 +1,34 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Pocos;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
-public class DiceDelegator : IDiceDelegator
+public interface IDiceLogicDelegator
 {
-    private Snapshot snapshot;
+    int Roll_d20_noReroll();
+    int Roll_d20_withReroll();
 
+    int Roll_d100_noReroll();
+    int Roll_d100_withReroll();
+
+    bool Roll_true_false();
+    int Roll_1_to_n(int upperLimit);
+    int Roll_n_to_n(int lowerLimit, int upperLimit);
+
+    int Roll_character_gameplay_dice(bool isOffense, string attribute, Character character);
+}
+
+public class DiceLogicDelegator : IDiceLogicDelegator
+{
     private readonly IDiceD20Logic d20RollsLogic;
     private readonly IDiceD100Logic d100RollsLogic;
     private readonly IDiceCustomRollsLogic customRollsLogic;
 
-    public DiceDelegator(
-        Snapshot snapshot,
-        IPersistenceService persistence,
+    public DiceLogicDelegator(
         IDiceD20Logic d20RollsLogic,
         IDiceD100Logic d100RollsLogic,
         IDiceCustomRollsLogic customRollsLogic)
     {
-        this.snapshot = snapshot;
         this.d20RollsLogic = d20RollsLogic;
         this.d100RollsLogic = d100RollsLogic;
         this.customRollsLogic = customRollsLogic;
@@ -64,12 +73,9 @@ public class DiceDelegator : IDiceDelegator
     {
         return customRollsLogic.RollTrueFalse();
     }
-    #endregion
-
-
-
     public int Roll_character_gameplay_dice(bool isOffense, string attribute, Character character)
     {
-        throw new NotImplementedException();
+        return customRollsLogic.RollGameplayDice(isOffense, attribute, character);
     }
+    #endregion
 }

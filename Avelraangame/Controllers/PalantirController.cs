@@ -1,11 +1,11 @@
 ﻿using Serilog;
-using Avelraangame.Factories;
 using Data_Mapping_Containers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Avelraangame.Controllers.Validators;
 using Service_Delegators;
+using Persistance_Manager;
 
 namespace Avelraangame.Controllers;
 
@@ -14,21 +14,20 @@ namespace Avelraangame.Controllers;
 [EnableCors("allowSpecificOrigins")]
 public class PalantirController : ControllerBase
 {
-    private readonly IFactoryManager factory;
     private readonly ControllerValidator validator;
-
     private readonly IItemDelegator items;
-    private readonly IDiceDelegator dice;
+    private readonly IDiceLogicDelegator dice;
+    private readonly IPersistenceService persist;
 
     public PalantirController(
-        IFactoryManager factory, // TODO: to remove the factory
+        IPersistenceService persist, // TODO: to remove
         IItemDelegator items, // TODO: to remove
-        IDiceDelegator dice)  // TODO: to remove
+        IDiceLogicDelegator dice)  // TODO: to remove
     {
         validator = new ControllerValidator(factory.ServiceFactory.DatabaseService);
-        this.factory = factory; // TODO: to remove
         this.items = items; // TODO: to remove
         this.dice = dice; // TODO: to remove
+        this.persist = persist;
     }
 
     #region ConnectionTest
@@ -36,15 +35,17 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        var a = dice.Roll_d100_withReroll();
-        return Ok(a);
-    }
+        var a = new Player
+        {
+            Identity = new PlayerIdentity
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = $"test_{DateTime.Now.Millisecond}"
+            }
+        };
 
-    // GET: /api/palantir/Test/GetOk2
-    [HttpGet("Test/GetOk2")]
-    public IActionResult GetOk2()
-    {
-        var a = items.DoSomeRoll();
+        persist.PersistPlayer(a);
+
         return Ok(a);
     }
     #endregion
