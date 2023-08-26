@@ -2,11 +2,11 @@
 
 public class Snapshot
 {
-    public List<CharacterStub> Stubs { get; set; } = new();
+    public List<CharacterStub> Stubs { get; init; } = new();
 
-    public List<Player> Players { get; set; } = new();
+    public List<Player> Players { get; init; } = new();
 
-    public List<Location> Locations { get; set; } = new();
+    public List<Location> Locations { get; init; } = new();
 
 
 

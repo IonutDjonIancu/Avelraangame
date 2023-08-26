@@ -40,8 +40,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 DIServices.LoadAppSettings(builder);
-DIServices.LoadSnapshotSystem(builder);
-DIServices.LoadAvelraanServices(builder);
+DIServices.LoadAppSnapshot(builder);
+DIServices.LoadValidationsService(builder);
+DIServices.LoadBusinessLogicServices(builder);
 #endregion
 
 var app = builder.Build();

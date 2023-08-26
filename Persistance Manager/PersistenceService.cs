@@ -6,6 +6,7 @@ namespace Persistance_Manager;
 public interface IPersistenceService
 {
     void PersistPlayer(Player player);
+    void RemovePlayer(string playerId);
 }
 
 public class PersistenceService : IPersistenceService
@@ -25,6 +26,20 @@ public class PersistenceService : IPersistenceService
         SaveFileOnDisk(playerJson, path);
     }
 
+    public void RemovePlayer(string playerId)
+    {
+        var path = $"{Directory.GetCurrentDirectory()}{appSettings.DbPlayersPath}\\Player{playerId}.json";
+
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+        else
+        {
+            throw new Exception("Player file not found to remove.");
+        }
+    }
+
     #region private methods
     private static void SaveFileOnDisk(string json, string path, int tries = 0)
     {
@@ -33,6 +48,8 @@ public class PersistenceService : IPersistenceService
         try
         {
             tries++;
+            if (File.Exists(path)) File.Delete(path);
+
             File.WriteAllTextAsync(path, json);
         }
         catch (Exception)

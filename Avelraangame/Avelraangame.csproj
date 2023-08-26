@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Service Delegators\Service Delegators.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Database files\Players\" />
+  </ItemGroup>
+
 </Project>

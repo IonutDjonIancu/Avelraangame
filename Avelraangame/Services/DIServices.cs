@@ -1,5 +1,4 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using Data_Mapping_Containers.Pocos;
 using Persistance_Manager;
 using Service_Delegators;
 
@@ -21,18 +20,25 @@ public class DIServices : IDIServices
     }
 
     // this is the cache system
-    public static void LoadSnapshotSystem(WebApplicationBuilder builder)
+    public static void LoadAppSnapshot(WebApplicationBuilder builder)
     {
         var snapshot = new Snapshot();
         builder.Services.AddSingleton(snapshot);
     }
 
+    // this is the validations service for all consequent services
+    public static void LoadValidationsService(WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<IValidations, Validations>();
+    }
+
     // these will be the general services that will contain the business logic of the app
-    public static void LoadAvelraanServices(WebApplicationBuilder builder)
+    public static void LoadBusinessLogicServices(WebApplicationBuilder builder)
     {
         LoadPersistenceService(builder);
         LoadDiceService(builder);
         LoadItemsService(builder);
+        LoadPlayerService(builder);
     }
 
     #region private methods
@@ -57,6 +63,15 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<IItemDelegator, ItemDelegator>();
         // subservices
         builder.Services.AddTransient<IItemLogic, ItemLogic>();
+    }
+
+    private static void LoadPlayerService(WebApplicationBuilder builder)
+    {
+        // delegator
+        builder.Services.AddTransient<IPlayerLogicDelegator, PlayerLogicDelegator>();
+        // subservices
+        builder.Services.AddTransient<IPlayerAuthLogic, PlayerAuthLogic>();
+        builder.Services.AddTransient<IPlayerOperationsLogic, PlayerOperationsLogic>();
     }
     #endregion
 }
