@@ -1,41 +1,76 @@
-﻿#pragma warning disable CA1822 // Mark members as static
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 
 namespace Service_Delegators;
 
-internal class ItemCreateLogic
+public interface IItemCreateLogic
 {
-    private readonly IDiceRollService dice;
+    Item CreateItem(string type = "", string subtype = "");
+}
 
-    private ItemCreateLogic() { }
-    internal ItemCreateLogic(IDiceRollService dice)
+public class ItemCreateLogic : IItemCreateLogic
+{
+    private readonly IDiceLogicDelegator dice;
+
+    public ItemCreateLogic(IDiceLogicDelegator dice)
     {
         this.dice = dice;
     }
 
-    internal Item CreateItem()
+    public Item CreateItem(string type = "", string subtype = "")
     {
-        return new()
+        var item = new Item
         {
-            Identity = new ItemIdentity
+            Identity = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                CharacterId = "",
-            },
-            Sheet = new CharacterSheet
-            {
-                Stats = new CharacterStats(),
-                Assets = new CharacterAssets(),
-                Skills = new CharacterSkills()
+                CharacterId = Guid.Empty.ToString(),
             }
         };
+
+        SetItemLevelAndLevelName(item, dice);
+        
+        if (type.Length > 0)
+        {
+            item.Type = type;
+            item.Subtype = subtype;
+        }
+        else
+        {
+            ItemTypesAndSubtypes.SetItemTypeAndSubtype(item, dice);
+        }
+
+        ItemTypesAndSubtypes.SetItemInventoryLocation(item);
+        ItemCategoriesAndSubcategories.SetItemCategoryAndDescription(item, dice);
+        ItemCategoriesAndSubcategories.SetItemSubcategory(item);
+        TaintItem(item, dice);
+        ItemBonuses.SetItemBonuses(item, dice);
+        ItemBonuses.StrengthenOrImbue(item, dice);
+        ItemUpgrades.UpgradeItem(item, dice);
+        NameItem(item);
+
+        return item;
     }
 
-    internal void NameItem(Item item)
+    #region private methods
+    private static void SetItemLevelAndLevelName(Item item, IDiceLogicDelegator dice)
+    {
+        var roll = dice.Roll_d20_withReroll();
+
+        if (roll >= 100) { item.Level = 6; item.LevelName = ItemsLore.LevelNames.Relic; }
+        else if (roll >= 80) { item.Level = 5; item.LevelName = ItemsLore.LevelNames.Artifact; }
+        else if (roll >= 50) { item.Level = 4; item.LevelName = ItemsLore.LevelNames.Heirloom; }
+        else if (roll >= 40) { item.Level = 3; item.LevelName = ItemsLore.LevelNames.Masterwork; }
+        else if (roll >= 20) { item.Level = 2; item.LevelName = ItemsLore.LevelNames.Refined; }
+        else  /*(roll >=   1)*/ { item.Level = 1; item.LevelName = ItemsLore.LevelNames.Common; }
+    }
+    private static void TaintItem(Item item, IDiceLogicDelegator dice)
+    {
+        item.HasTaint = item.Level >= 3 && dice.Roll_d20_noReroll() % 2 == 0;
+    }
+
+    private static void NameItem(Item item)
     {
         item.Name = item.Level >= 5 ? item.Quality : $"{item.Quality} {item.Category.ToLowerInvariant()}";
     }
+    #endregion
 }
-
-#pragma warning restore CA1822 // Mark members as static

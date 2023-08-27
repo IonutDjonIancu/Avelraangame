@@ -49,7 +49,6 @@ public class Validations : IValidations
             return player.Identity.Id;
         }
     }
-
     #endregion
 
     #region database validations
@@ -112,6 +111,18 @@ public class Validations : IValidations
     }
     #endregion
 
+    #region item validations
+    public void CreateItemWithTypeAndSubtype(string type, string subtype)
+    {
+        ValidateString(type); 
+        ValidateString(subtype);
+
+        if (!ItemsLore.Types.All.Contains(type)) throw new Exception("Wrong item type.");
+        if (!ItemsLore.Subtypes.All.Contains(subtype)) throw new Exception("Wrong item subtype.");
+    } 
+
+
+    #endregion
 
     #region private methods
     private static void ValidateString(string str, string message = "")
@@ -124,12 +135,12 @@ public class Validations : IValidations
         if (obj == null) throw new Exception(message.Length > 0 ? message : $"Object found null.");
     }
 
-    private void ValidateNumberGreaterThanZero(int num, string message = "")
+    private static void ValidateNumberGreaterThanZero(int num, string message = "")
     {
         if (num <= 0) throw new Exception(message.Length > 0 ? message : "Number cannot be smaller or equal to zero.");
     }
 
-    private void ValidateGuid(string str, string message = "")
+    private static void ValidateGuid(string str, string message = "")
     {
         ValidateString(str);
 

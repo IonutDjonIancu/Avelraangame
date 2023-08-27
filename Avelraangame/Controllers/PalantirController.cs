@@ -14,12 +14,12 @@ public class PalantirController : ControllerBase
     private readonly Validations validations;
     private readonly IDatabaseLogicDelegator database;
     private readonly IPlayerLogicDelegator players;
-    private readonly IItemDelegator items;
+    private readonly IItemLogicDelegator items;
 
     public PalantirController(
         IDatabaseLogicDelegator database,
         IPlayerLogicDelegator players,
-        IItemDelegator items) 
+        IItemLogicDelegator items) 
     {
         this.database = database;
         this.players = players;
@@ -212,7 +212,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Item/GenerateRandomItem")]
     public IActionResult GenerateRandomItem()
     {
-        var item = factory.ServiceFactory.ItemService.GenerateRandomItem();
+        var item = items.GenerateRandomItem();
 
         return Ok(item);
     }
@@ -223,7 +223,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var item = factory.ServiceFactory.ItemService.GenerateSpecificItem(type, subtype);
+            var item = items.GenerateSpecificItem(type, subtype);
 
             return Ok(item);
         }
@@ -238,39 +238,39 @@ public class PalantirController : ControllerBase
     #region Characters
     // GET: /api/palantir/Character/GetPlayerCharacters
     [HttpGet("Character/GetPlayerCharacters")]
-    public IActionResult GetPlayerCharacters([FromQuery] Request request)
+    public IActionResult GetPlayerCharacters([FromQuery] Request request) // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request); // TODO: this should be moved to METADATA
 
-            var characters = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId);
+            var characters = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId); // TODO: this should be moved to METADATA
 
-            return Ok(characters);
+            return Ok(characters); // TODO: this should be moved to METADATA
         }
-        catch (Exception ex)
+        catch (Exception ex) // TODO: this should be moved to METADATA
         {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
+            Log.Error(ex, ex.Message); // TODO: this should be moved to METADATA
+            return BadRequest(ex.Message); // TODO: this should be moved to METADATA
         }
     }
 
-    // GET: /api/palantir/Character/GetPlayerCharacter
-    [HttpGet("Character/GetPlayerCharacter")]
-    public IActionResult GetPlayerCharacter([FromQuery] Request request, string characterId)
+    // GET: /api/palantir/Character/GetPlayerCharacter // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA
+    [HttpGet("Character/GetPlayerCharacter")] // TODO: this should be moved to METADATA
+    public IActionResult GetPlayerCharacter([FromQuery] Request request, string characterId) // TODO: this should be moved to METADATA
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var playerId = MatchTokensForPlayer(request); // TODO: this should be moved to METADATA
 
-            var character = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId);
+            var character = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId); // TODO: this should be moved to METADATA
 
-            return Ok(character);
+            return Ok(character); // TODO: this should be moved to METADATA
         }
-        catch (Exception ex)
+        catch (Exception ex) // TODO: this should be moved to METADATA
         {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
+            Log.Error(ex, ex.Message); // TODO: this should be moved to METADATA
+            return BadRequest(ex.Message); // TODO: this should be moved to METADATA
         }
     }
 

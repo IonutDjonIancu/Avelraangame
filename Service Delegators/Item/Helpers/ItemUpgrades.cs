@@ -1,27 +1,19 @@
 ﻿using Data_Mapping_Containers.Dtos;
 
-namespace Service_Delegators.Logic_Cluster;
+namespace Service_Delegators;
 
-internal class ItemUpgradesLogic
+internal static class ItemUpgrades
 {
-    private readonly IDiceRollService dice;
-
-    internal ItemUpgradesLogic(IDiceRollService dice)
+    internal static void UpgradeItem(Item item, IDiceLogicDelegator dice)
     {
-        this.dice = dice;
-    }
-
-    internal void UpgradeItem(Item item)
-    {
-        if      (item.Level <= 3)   item.Lore = "Not much can be said about this item.";
-        else if (item.Level == 4)   UpgradeItemToHeirloom(item);
-        else if (item.Level == 5)   UpgrageItemToArtifact(item);
-        else  /*(item.Level >= 6)*/ UpgradeItemToRelic(item);
+        if (item.Level <= 3) item.Lore = "Not much can be said about this item.";
+        else if (item.Level == 4) UpgradeItemToHeirloom(item, dice);
+        else if (item.Level == 5) UpgrageItemToArtifact(item, dice);
+        else  /*(item.Level >= 6)*/ UpgradeItemToRelic(item, dice);
     }
 
     #region private methods
-    #region heirloom
-    private void UpgradeItemToHeirloom(Item item)
+    private static void UpgradeItemToHeirloom(Item item, IDiceLogicDelegator dice)
     {
         var randomHeirloom = dice.Roll_1_to_n(ItemsLore.Heirlooms.All.Count) - 1;
         var heirloom = ItemsLore.Heirlooms.All[randomHeirloom];
@@ -32,11 +24,11 @@ internal class ItemUpgradesLogic
         item.Quality = heirloom.Quality;
         item.Lore = heirloom.Lore;
 
-        if      (heirloom.Quality == ItemsLore.Heirlooms.Meteoric)      UpgradeItemToMeteoric(item);
-        else if (heirloom.Quality == ItemsLore.Heirlooms.Dragon)        UpgradeItemToDragon(item);
-        else if (heirloom.Quality == ItemsLore.Heirlooms.Galvron)       UpgradeItemToGalvron(item);
-        else if (heirloom.Quality == ItemsLore.Heirlooms.Ectoquartz)    UpgradeItemToEctoquartz(item);
-        else if (heirloom.Quality == ItemsLore.Heirlooms.Kemheil)       UpgradeItemToKemheil(item);
+        if (heirloom.Quality == ItemsLore.Heirlooms.Meteoric) UpgradeItemToMeteoric(item);
+        else if (heirloom.Quality == ItemsLore.Heirlooms.Dragon) UpgradeItemToDragon(item);
+        else if (heirloom.Quality == ItemsLore.Heirlooms.Galvron) UpgradeItemToGalvron(item);
+        else if (heirloom.Quality == ItemsLore.Heirlooms.Ectoquartz) UpgradeItemToEctoquartz(item);
+        else if (heirloom.Quality == ItemsLore.Heirlooms.Kemheil) UpgradeItemToKemheil(item);
         else  /*(heirloom.Quality == ItemsLore.Heirlooms.Mithril)*/     UpgradeItemToMithril(item);
     }
 
@@ -222,10 +214,8 @@ internal class ItemUpgradesLogic
             item.Value += 1500;
         }
     }
-    #endregion
-
-    #region artifact
-    private void UpgrageItemToArtifact(Item item)
+    
+    private static void UpgrageItemToArtifact(Item item, IDiceLogicDelegator dice)
     {
         var randomArtifact = dice.Roll_1_to_n(ItemsLore.Artifacts.All.Count) - 1;
         var artifact = ItemsLore.Artifacts.All[randomArtifact];
@@ -281,10 +271,8 @@ internal class ItemUpgradesLogic
         // NEGATIVE PERKS
         // reduces spellcast around it
     }
-    #endregion
 
-    #region relic
-    private void UpgradeItemToRelic(Item item)
+    private static void UpgradeItemToRelic(Item item, IDiceLogicDelegator dice)
     {
         var randomRelic = dice.Roll_1_to_n(ItemsLore.Relics.All.Count) - 1;
         var relic = ItemsLore.Relics.All[randomRelic];
@@ -334,7 +322,6 @@ internal class ItemUpgradesLogic
         // HEROIC TRAITS
         // ignores 50% of armour
     }
-    #endregion
 
     private static void DoubleStats(Item item)
     {

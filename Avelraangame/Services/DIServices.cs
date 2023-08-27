@@ -58,7 +58,6 @@ public class DIServices : IDIServices
 
     }
 
-
     private static void LoadDiceService(WebApplicationBuilder builder)
     {
         // delegator
@@ -72,9 +71,9 @@ public class DIServices : IDIServices
     private static void LoadItemsService(WebApplicationBuilder builder)
     {
         // delegator
-        builder.Services.AddTransient<IItemDelegator, ItemDelegator>();
+        builder.Services.AddTransient<IItemLogicDelegator, ItemLogicDelegator>();
         // subservices
-        builder.Services.AddTransient<IItemLogic, ItemLogic>();
+        builder.Services.AddTransient<IItemCreateLogic, ItemCreateLogic>();
     }
 
     private static void LoadPlayerService(WebApplicationBuilder builder)
