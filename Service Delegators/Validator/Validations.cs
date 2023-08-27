@@ -1,10 +1,19 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace Service_Delegators;
 
 public interface IValidations
 {
+    #region api
+    string ApiRequest(Request request);
+    #endregion
+
+    #region database
+    void AtDatabaseExportImportOperations(string requesterId);
+    void AtPlayerImport(string requesterId, string playerJson);
+    #endregion
+
     #region player
     void CreatePlayer(string playerName);
     void LoginPlayer(PlayerLogin login);
@@ -15,13 +24,54 @@ public interface IValidations
 
 public class Validations : IValidations
 {
+    private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
     private readonly object playersLock = new();
 
-    public Validations(Snapshot snapshot)
+    public Validations(
+        Snapshot snapshot,
+        AppSettings appSettings)
     {
         this.snapshot = snapshot;
+        this.appSettings = appSettings;
     }
+
+    #region api validations
+    public string ApiRequest(Request request)
+    {
+        lock (playersLock)
+        {
+            var player = snapshot.Players.Find(p => p.Identity.Name == request.PlayerName) ?? throw new Exception("Player not found.");
+
+            if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
+            if (request.Token != player.Identity.Token) throw new Exception("Token mismatch.");
+
+            return player.Identity.Id;
+        }
+    }
+
+    #endregion
+
+    #region database validations
+    public void AtDatabaseExportImportOperations(string requesterId)
+    {
+        ValidatePlayerIsAdmin(requesterId);
+    }
+
+    public void AtPlayerImport(string requesterId, string playerJson)
+    {
+        AtDatabaseExportImportOperations(requesterId);
+
+        try
+        {
+            JsonConvert.DeserializeObject<Player>(playerJson);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
+        }
+    }
+    #endregion
 
     #region player validations
     public void CreatePlayer(string playerName)
@@ -100,5 +150,16 @@ public class Validations : IValidations
         }
     }
 
+    private void ValidatePlayerIsAdmin(string playerId)
+    {
+        ValidatePlayerExists(playerId);
+
+        lock(playersLock)
+        {
+            var playerName = snapshot.Players.Find(s => s.Identity.Id == playerId)!.Identity.Name;
+
+            if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
+        }
+    }
     #endregion
 }

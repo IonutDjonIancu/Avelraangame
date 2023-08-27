@@ -1,11 +1,8 @@
 ﻿using Serilog;
-using Data_Mapping_Containers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
-using Avelraangame.Controllers.Validators;
 using Service_Delegators;
-using Persistance_Manager;
 
 namespace Avelraangame.Controllers;
 
@@ -14,20 +11,16 @@ namespace Avelraangame.Controllers;
 [EnableCors("allowSpecificOrigins")]
 public class PalantirController : ControllerBase
 {
-    private readonly ControllerValidator validator;
+    private readonly Validations validations;
+    private readonly IDatabaseLogicDelegator database;
     private readonly IItemDelegator items;
-    private readonly IDiceLogicDelegator dice;
-    private readonly IPersistenceService persist;
 
     public PalantirController(
-        IPersistenceService persist, // TODO: to remove
-        IItemDelegator items, // TODO: to remove
-        IDiceLogicDelegator dice)  // TODO: to remove
+        IDatabaseLogicDelegator database,
+        IItemDelegator items) // TODO: to remove
     {
-        validator = new ControllerValidator(factory.ServiceFactory.DatabaseService);
+        this.database = database;
         this.items = items; // TODO: to remove
-        this.dice = dice; // TODO: to remove
-        this.persist = persist;
     }
 
     #region ConnectionTest
@@ -35,18 +28,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        var a = new Player
-        {
-            Identity = new PlayerIdentity
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = $"test_{DateTime.Now.Millisecond}"
-            }
-        };
-
-        persist.PersistPlayer(a);
-
-        return Ok(a);
+        return Ok();
     }
     #endregion
 
@@ -113,9 +95,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var playerId = validations.ApiRequest(request);
 
-            factory.ServiceFactory.DatabaseService.ExportDatabase(playerId);
+            database.ExportDatabase(playerId);
 
             return Ok("Database exported successfully.");
         }
@@ -132,30 +114,11 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var playerId = validations.ApiRequest(request);
 
-            factory.ServiceFactory.DatabaseService.ExportLogs(days, playerId);
+            database.ExportLogs(playerId, days);
 
             return Ok("Logs exported successfully.");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Database/ImportDatabase
-    [HttpPut("Database/ImportDatabase")]
-    public IActionResult ImportDatabase([FromQuery] Request request, [FromBody] string databaseJsonString)
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request);
-
-            throw new NotImplementedException();
-
-            //return Ok("Logs exported successfully.");
         }
         catch (Exception ex)
         {
@@ -170,11 +133,11 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var playerId = validations.ApiRequest(request);
 
-            throw new NotImplementedException();
+            database.ImportPlayer(playerId, playerJsonString);
 
-            //return Ok("Logs exported successfully.");
+            return Ok("Player imported successfully.");
         }
         catch (Exception ex)
         {
@@ -532,15 +495,6 @@ public class PalantirController : ControllerBase
             Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
-    }
-    #endregion
-
-    #region private methods
-    private string MatchTokensForPlayer(Request request)
-    {
-        validator.ValidateRequestObject(request);
-
-        return validator.ValidateRequesterAndReturnId(request);
     }
     #endregion
 }

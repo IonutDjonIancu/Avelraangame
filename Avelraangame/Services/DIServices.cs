@@ -26,7 +26,7 @@ public class DIServices : IDIServices
         builder.Services.AddSingleton(snapshot);
     }
 
-    // this is the validations service for all consequent services
+    // this is the validations service for all subsequent services
     public static void LoadValidationsService(WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<IValidations, Validations>();
@@ -36,6 +36,7 @@ public class DIServices : IDIServices
     public static void LoadBusinessLogicServices(WebApplicationBuilder builder)
     {
         LoadPersistenceService(builder);
+        LoadDatabaseService(builder);
         LoadDiceService(builder);
         LoadItemsService(builder);
         LoadPlayerService(builder);
@@ -46,6 +47,17 @@ public class DIServices : IDIServices
     {
         builder.Services.AddTransient<IPersistenceService, PersistenceService>();
     }
+
+    private static void LoadDatabaseService(WebApplicationBuilder builder)
+    {
+        // delegator
+        builder.Services.AddTransient<IDatabaseLogicDelegator, DatabaseLogicDelegator>();
+        // subservices
+        builder.Services.AddTransient<IDatabaseExportLogic, DatabaseExportLogic>();
+        builder.Services.AddTransient<IDatabaseImportLogic, DatabaseImportLogic>();
+
+    }
+
 
     private static void LoadDiceService(WebApplicationBuilder builder)
     {
