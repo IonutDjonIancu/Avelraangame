@@ -13,14 +13,17 @@ public class PalantirController : ControllerBase
 {
     private readonly Validations validations;
     private readonly IDatabaseLogicDelegator database;
+    private readonly IPlayerLogicDelegator players;
     private readonly IItemDelegator items;
 
     public PalantirController(
         IDatabaseLogicDelegator database,
-        IItemDelegator items) // TODO: to remove
+        IPlayerLogicDelegator players,
+        IItemDelegator items) 
     {
         this.database = database;
-        this.items = items; // TODO: to remove
+        this.players = players;
+        this.items = items; 
     }
 
     #region ConnectionTest
@@ -154,7 +157,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var autheticatorSetupInfo = factory.ServiceFactory.PlayerService.CreatePlayer(playerName);
+            var autheticatorSetupInfo = players.CreatePlayer(playerName);
 
             if (autheticatorSetupInfo == null) return Conflict("Unable to create player."); 
             
@@ -173,7 +176,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var token = factory.ServiceFactory.PlayerService.LoginPlayer(login);
+            var token = players.LoginPlayer(login);
 
             return Ok(token);
         }
@@ -190,9 +193,9 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
+            var playerId = validations.ApiRequest(request);
 
-            factory.ServiceFactory.PlayerService.DeletePlayer(playerId);
+            players.DeletePlayer(playerId);
 
             return Ok("Player deleted successfully.");
         }
