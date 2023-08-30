@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Service_Delegators;
+using System.Data.Common;
 
 namespace Avelraangame.Controllers;
 
@@ -12,15 +13,22 @@ namespace Avelraangame.Controllers;
 public class PalantirController : ControllerBase
 {
     private readonly Validations validations;
+
+    private readonly IMetadataService metadata;
+
     private readonly IDatabaseLogicDelegator database;
     private readonly IPlayerLogicDelegator players;
     private readonly IItemLogicDelegator items;
 
     public PalantirController(
+        Validations validations,
+        IMetadataService metadata,
         IDatabaseLogicDelegator database,
         IPlayerLogicDelegator players,
         IItemLogicDelegator items) 
     {
+        this.validations = validations;
+        this.metadata = metadata;
         this.database = database;
         this.players = players;
         this.items = items; 
@@ -40,54 +48,52 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetPlayers")]
     public IActionResult GetPlayers()
     {
-        var response = factory.ServiceFactory.Metadata.GetPlayers();
-
-        return Ok(response);
+        return Ok(metadata.GetPlayers());
     }
 
-    // GET: /api/palantir/Metadata/GetHeroicTraits
-    [HttpGet("Metadata/GetHeroicTraits")]
-    public IActionResult GetHeroicTraits()
+    // GET: /api/palantir/Metadata/GetPlayer
+    [HttpGet("Metadata/GetPlayer")]
+    public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token)
     {
-        var response = factory.ServiceFactory.Metadata.GetHeroicTraits();
+        var playerId = validations.ApiRequest(new Request() { PlayerName = playerName, Token = token });
 
-        return Ok(response);
+        return Ok(metadata.GetPlayer(playerId));
+    }
+
+
+    // GET: /api/palantir/Metadata/GetSpecialSkills
+    [HttpGet("Metadata/GetSpecialSkills")]
+    public IActionResult GetSpecialSkills()
+    {
+        return Ok(metadata.GetSpecialSkills());
     }
 
     // GET: /api/palantir/Metadata/GetRaces
     [HttpGet("Metadata/GetRaces")]
     public IActionResult GetRaces()
     {
-        var response = factory.ServiceFactory.Metadata.GetRaces();
-
-        return Ok(response);
+        return Ok(metadata.GetRaces());
     }
 
     // GET: /api/palantir/Metadata/GetCultures
     [HttpGet("Metadata/GetCultures")]
     public IActionResult GetCultures()
     {
-        var response = factory.ServiceFactory.Metadata.GetCultures();
-
-        return Ok(response);
+        return Ok(metadata.GetCultures());
     }
 
     // GET: /api/palantir/Metadata/GetClasses
     [HttpGet("Metadata/GetClasses")]
     public IActionResult GetClasses()
     {
-        var response = factory.ServiceFactory.Metadata.GetClasses();
-
-        return Ok(response);
+        return Ok(metadata.GetClasses());
     }
 
-    // GET: /api/palantir/Metadata/GetAvelraanRegions
-    [HttpGet("Metadata/GetAvelraanRegions")]
-    public IActionResult GetAvelraanRegions()
+    // GET: /api/palantir/Metadata/GetAllLocations
+    [HttpGet("Metadata/GetAllLocations")]
+    public IActionResult GetAllLocations()
     {
-        var response = factory.ServiceFactory.Metadata.GetAvelraanRegions();
-
-        return Ok(response);
+        return Ok(metadata.GetAllLocations());
     }
     #endregion
 

@@ -32,6 +32,11 @@ public class DIServices : IDIServices
         builder.Services.AddSingleton<IValidations, Validations>();
     }
 
+    public static void LoadMetadataService(WebApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<IMetadataService, MetadataService>();
+    }
+
     // these will be the general services that will contain the business logic of the app
     public static void LoadBusinessLogicServices(WebApplicationBuilder builder)
     {

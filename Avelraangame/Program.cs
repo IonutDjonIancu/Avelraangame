@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen();
 DIServices.LoadAppSettings(builder);
 DIServices.LoadAppSnapshot(builder);
 DIServices.LoadValidationsService(builder);
+DIServices.LoadMetadataService(builder);
 DIServices.LoadBusinessLogicServices(builder);
 #endregion
 
