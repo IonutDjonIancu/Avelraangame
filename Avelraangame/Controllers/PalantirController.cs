@@ -60,6 +60,15 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetPlayer(playerId));
     }
 
+    // GET: /api/palantir/Metadata/GetPlayerCharacter
+    [HttpGet("Metadata/GetPlayerCharacter")]
+    public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
+    {
+        var playerId = validations.ApiRequest(new Request() { PlayerName = playerName, Token = token });
+
+        return Ok(metadata.GetPlayer(playerId).Characters.Find(s => s.Identity.Id == characterId));
+    }
+
 
     // GET: /api/palantir/Metadata/GetSpecialSkills
     [HttpGet("Metadata/GetSpecialSkills")]
@@ -242,44 +251,6 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Characters
-    // GET: /api/palantir/Character/GetPlayerCharacters
-    [HttpGet("Character/GetPlayerCharacters")]
-    public IActionResult GetPlayerCharacters([FromQuery] Request request) // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request); // TODO: this should be moved to METADATA
-
-            var characters = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId); // TODO: this should be moved to METADATA
-
-            return Ok(characters); // TODO: this should be moved to METADATA
-        }
-        catch (Exception ex) // TODO: this should be moved to METADATA
-        {
-            Log.Error(ex, ex.Message); // TODO: this should be moved to METADATA
-            return BadRequest(ex.Message); // TODO: this should be moved to METADATA
-        }
-    }
-
-    // GET: /api/palantir/Character/GetPlayerCharacter // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA // TODO: this should be moved to METADATA
-    [HttpGet("Character/GetPlayerCharacter")] // TODO: this should be moved to METADATA
-    public IActionResult GetPlayerCharacter([FromQuery] Request request, string characterId) // TODO: this should be moved to METADATA
-    {
-        try
-        {
-            var playerId = MatchTokensForPlayer(request); // TODO: this should be moved to METADATA
-
-            var character = factory.ServiceFactory.CharacterService.GetPlayerCharacters(playerId).CharactersList.Find(c => c.Identity!.Id == characterId); // TODO: this should be moved to METADATA
-
-            return Ok(character); // TODO: this should be moved to METADATA
-        }
-        catch (Exception ex) // TODO: this should be moved to METADATA
-        {
-            Log.Error(ex, ex.Message); // TODO: this should be moved to METADATA
-            return BadRequest(ex.Message); // TODO: this should be moved to METADATA
-        }
-    }
-
     // GET: /api/palantir/Character/CreateCharacter
     [HttpGet("Character/CreateCharacter")]
     public IActionResult CreateCharacter([FromQuery] Request request)
