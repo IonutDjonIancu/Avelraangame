@@ -5,25 +5,35 @@ namespace Persistance_Manager;
 
 public interface IPersistenceService
 {
-    void PersistPlayer(Player player);
+    void PersistPlayer(string playerId);
     void RemovePlayer(string playerId);
 }
 
 public class PersistenceService : IPersistenceService
 {
-    private readonly AppSettings appSettings;
+    private readonly object playersLock = new();
 
-    public PersistenceService(AppSettings appSettings)
+    private readonly AppSettings appSettings;
+    private readonly Snapshot snapshot;
+
+    public PersistenceService(
+        AppSettings appSettings,
+        Snapshot snapshot)
     {
         this.appSettings = appSettings;
+        this.snapshot = snapshot;   
     }
 
-    public void PersistPlayer(Player player)
+    public void PersistPlayer(string playerId)
     {
-        var playerJson = JsonConvert.SerializeObject(player);
-        var path = $"{Directory.GetCurrentDirectory()}{appSettings.DbPlayersPath}\\Player{player.Identity.Id}.json";
+        lock (playersLock)
+        {
+            var player = snapshot.Players.Find(s => s.Identity.Id == playerId);
+            var playerJson = JsonConvert.SerializeObject(player);
+            var path = $"{Directory.GetCurrentDirectory()}{appSettings.DbPlayersPath}\\Player{player!.Identity.Id}.json";
 
-        SaveFileOnDisk(playerJson, path);
+            SaveFileOnDisk(playerJson, path);
+        }
     }
 
     public void RemovePlayer(string playerId)

@@ -1,77 +1,84 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using Data_Mapping_Containers.Pocos;
 
 namespace Service_Delegators;
 
-internal class CharacterCreateLogic
+public interface ICharacterCreateLogic
 {
-    private readonly IDatabaseService dbs;
-    private readonly IDiceRollService dice;
-    private readonly IItemService items;
+    CharacterStub CreateStub(string playerId);
+    Character SaveStub(CharacterTraits traits, string playerId);
+}
 
-    private readonly CharacterSheetLogic sheetLogic;
+public class CharacterCreateLogic : ICharacterCreateLogic
+{
+    private readonly object stubsLock = new();
 
-    private CharacterCreateLogic() { }
-    internal CharacterCreateLogic(
-        IDatabaseService databaseService,
-        IDiceRollService diceService,
-        IItemService itemService,
-        CharacterSheetLogic characterSheetLogic)
+    private readonly Snapshot snapshot;
+    private readonly IDiceLogicDelegator dice;
+    private readonly IItemLogicDelegator items;
+    private readonly ICharacterSheetLogic characterSheet;
+
+    public CharacterCreateLogic(
+        Snapshot snapshot,
+        IDiceLogicDelegator dice,
+        IItemLogicDelegator items,
+        ICharacterSheetLogic characterSheet)
     {
-        dbs = databaseService;
-        dice = diceService;
-        items = itemService;
-
-        sheetLogic = characterSheetLogic;
+        this.snapshot = snapshot;
+        this.dice = dice;
+        this.items = items;
+        this.characterSheet = characterSheet;
     }
 
-    internal CharacterStub CreateStub(string playerId)
+    public CharacterStub CreateStub(string playerId)
     {
-        dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
-
-        var entityLevel = RandomizeEntityLevel();
-
-        var stub = new CharacterStub
+        lock (stubsLock)
         {
-            PlayerId = playerId,
-            EntityLevel = entityLevel,
-            StatPoints = RandomizeStatPoints(entityLevel),
-            SkillPoints = RandomizeSkillPoints(entityLevel),
-        };
+            snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
+            var entityLevel = RandomizeEntityLevel();
 
-        dbs.Snapshot.CharacterStubs.Add(stub);
-
-        return stub;
-    }
-
-    internal Character SaveStub(CharacterTraits traits, string playerId)
-    {
-        var stub = dbs.Snapshot.CharacterStubs!.Find(s => s.PlayerId == playerId)!;
-
-        Character character = new()
-        {
-            Identity = new CharacterIdentity
+            var stub = new CharacterStub
             {
-                Id = Guid.NewGuid().ToString(),
                 PlayerId = playerId,
-            }
-        };
+                EntityLevel = entityLevel,
+                StatPoints = RandomizeStatPoints(entityLevel),
+                SkillPoints = RandomizeSkillPoints(entityLevel),
+            };
 
-        SetStatus(traits, stub, character);
-        SetSheet(stub, character);
-        SetSuppliesAndProvisions(character);
-        SetWealthAndWorth(character);
+            snapshot.Stubs.Add(stub);
+            
+            return stub;
+        }
+    }
 
-        //TODO: set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
+    public Character SaveStub(CharacterTraits traits, string playerId)
+    {
+        lock (stubsLock)
+        {
+            var stub = snapshot.Stubs.Find(s => s.PlayerId == playerId)!;
+            
+            Character character = new()
+            {
+                Identity = new CharacterIdentity
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    PlayerId = playerId,
+                }
+            };
 
-        dbs.Snapshot.CharacterStubs.RemoveAll(s => s.PlayerId == playerId);
+            SetStatus(traits, stub, character);
+            SetSheet(stub, character);
+            SetSuppliesAndProvisions(character);
+            SetWealthAndWorth(character);
 
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!;
-        player.Characters!.Add(character);
+            //TODO: set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
 
-        dbs.PersistPlayer(playerId);
+            snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
 
-        return character;
+            var player = snapshot.Players.Find(p => p.Identity.Id == playerId)!;
+            player.Characters!.Add(character);
+
+            return character;
+        }
     }
 
     #region private methods
@@ -79,11 +86,11 @@ internal class CharacterCreateLogic
     {
         var roll = dice.Roll_d20_withReroll();
 
-        if      (roll >= 100)   return 6;
-        else if (roll >= 80)    return 5;
-        else if (roll >= 60)    return 4;
-        else if (roll >= 40)    return 3;
-        else if (roll >= 20)    return 2;
+        if (roll >= 100) return 6;
+        else if (roll >= 80) return 5;
+        else if (roll >= 60) return 4;
+        else if (roll >= 40) return 3;
+        else if (roll >= 20) return 2;
         else  /*(roll >= 1)*/   return 1;
     }
 
@@ -143,7 +150,7 @@ internal class CharacterCreateLogic
 
     private void SetSheet(CharacterStub stub, Character character)
     {
-        sheetLogic.SetCharacterSheet(stub.StatPoints, stub.SkillPoints, character);
+        characterSheet.SetCharacterSheet(stub.StatPoints, stub.SkillPoints, character);
     }
 
     private static void SetStatus(CharacterTraits traits, CharacterStub stub, Character character)

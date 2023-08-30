@@ -15,26 +15,26 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
 {
     private readonly IValidations validations;
     private readonly IPersistenceService persistence;
-    private readonly IPlayerAuthLogic playerAuthLogic;
-    private readonly IPlayerOperationsLogic playerOpsLogic;
+    private readonly IPlayerAuthLogic playerAuth;
+    private readonly IPlayerOperationsLogic playerOps;
 
 
     public PlayerLogicDelegator(
         IValidations validations,
         IPersistenceService persistence,
-        IPlayerAuthLogic playerAuthLogic,
-        IPlayerOperationsLogic playerOpsLogic)
+        IPlayerAuthLogic playerAuth,
+        IPlayerOperationsLogic playerOps)
     {
         this.validations = validations;
         this.persistence = persistence;
-        this.playerAuthLogic = playerAuthLogic;
-        this.playerOpsLogic = playerOpsLogic;
+        this.playerAuth = playerAuth;
+        this.playerOps = playerOps;
     }
 
     public Authenticator CreatePlayer(string playerName)
     {
         validations.CreatePlayer(playerName);
-        var (auth, player) = playerAuthLogic.AuthenticatePlayer(playerName);
+        var (auth, player) = playerAuth.AuthenticatePlayer(playerName);
         persistence.PersistPlayer(player);
 
         return auth;
@@ -43,7 +43,7 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
     public string LoginPlayer(PlayerLogin login)
     {
         validations.LoginPlayer(login);
-        var player = playerAuthLogic.AuthorizePlayer(login);
+        var player = playerAuth.AuthorizePlayer(login);
         persistence.PersistPlayer(player);
 
         return player.Identity.Token;
@@ -52,14 +52,14 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
     public void UpdatePlayerName(string newPlayerName, string playerId)
     {
         validations.UpdatePlayerName(newPlayerName, playerId);
-        var player = playerOpsLogic.UpdateName(newPlayerName, playerId);
+        var player = playerOps.UpdateName(newPlayerName, playerId);
         persistence.PersistPlayer(player);
     }
 
     public void DeletePlayer(string playerId)
     {
         validations.DeletePlayer(playerId);
-        playerOpsLogic.Remove(playerId);
+        playerOps.Remove(playerId);
         persistence.RemovePlayer(playerId);
     }
 }

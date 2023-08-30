@@ -45,6 +45,7 @@ public class DIServices : IDIServices
         LoadDiceService(builder);
         LoadItemsService(builder);
         LoadPlayerService(builder);
+        LoadCharacterService(builder);
     }
 
     #region private methods
@@ -88,6 +89,15 @@ public class DIServices : IDIServices
         // subservices
         builder.Services.AddTransient<IPlayerAuthLogic, PlayerAuthLogic>();
         builder.Services.AddTransient<IPlayerOperationsLogic, PlayerOperationsLogic>();
+    }
+
+    private static void LoadCharacterService(WebApplicationBuilder builder)
+    {
+        // delegator
+        builder.Services.AddTransient<ICharacterLogicDelegator, CharacterLogicDelegator>();
+        // subservices
+        builder.Services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
+        builder.Services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
     }
     #endregion
 }

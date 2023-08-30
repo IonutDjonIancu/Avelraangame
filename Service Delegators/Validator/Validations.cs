@@ -112,16 +112,46 @@ public class Validations : IValidations
     #endregion
 
     #region item validations
-    public void CreateItemWithTypeAndSubtype(string type, string subtype)
+    public static void CreateItemWithTypeAndSubtype(string type, string subtype)
     {
         ValidateString(type); 
         ValidateString(subtype);
 
         if (!ItemsLore.Types.All.Contains(type)) throw new Exception("Wrong item type.");
         if (!ItemsLore.Subtypes.All.Contains(subtype)) throw new Exception("Wrong item subtype.");
-    } 
+    }
 
 
+    #endregion
+
+    #region character validations
+    public void ValidateMaxNumberOfCharacters(string playerId)
+    {
+        lock (playersLock)
+        {
+            var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Status.IsAlive).ToList().Count;
+            
+            if (playerCharsCount >= 5) throw new Exception("Max number of alive characters reached (5 alive characters allowed per player).");
+        }
+    }
+
+    internal void ValidateTraitsOnSaveCharacter(CharacterTraits traits, string playerId)
+    {
+        ValidateObject(traits);
+
+        lock (playersLock)
+        {
+            if (!snapshot.Stubs!.Exists(s => s.PlayerId == playerId)) throw new Exception("No stub templates found for this player.");
+
+        }
+
+        ValidateRace(traits.Race);
+        ValidateCulture(traits.Culture);
+        ValidateTradition(traits.Tradition);
+        ValidateClass(traits.Class);
+
+        ValidateRaceCultureCombination(traits);
+    }
     #endregion
 
     #region private methods
@@ -170,6 +200,48 @@ public class Validations : IValidations
             var playerName = snapshot.Players.Find(s => s.Identity.Id == playerId)!.Identity.Name;
 
             if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
+        }
+    }
+
+    private void ValidateClass(string classes)
+    {
+        ValidateString(classes, "Invalid class string.");
+        if (!CharactersLore.Classes.All.Contains(classes)) throw new Exception($"Class {classes} not found.");
+    }
+
+    private void ValidateCulture(string culture)
+    {
+        ValidateString(culture, "Invalid culture string.");
+        if (!CharactersLore.Cultures.All.Contains(culture)) throw new Exception($"Culture {culture} not found.");
+    }
+
+    private void ValidateTradition(string tradition)
+    {
+        ValidateString(tradition, "Invalid tradition string.");
+        if (!CharactersLore.Tradition.All.Contains(tradition)) throw new Exception($"Tradition {tradition} not found.");
+    }
+
+    private void ValidateRace(string race)
+    {
+        ValidateString(race, "Invalid race string.");
+        if (!CharactersLore.Races.Playable.All.Contains(race)) throw new Exception($"Race {race} not found.");
+    }
+
+    private static void ValidateRaceCultureCombination(CharacterTraits origins)
+    {
+        string message = "Invalid race culture combination";
+
+        if (origins.Race == CharactersLore.Races.Playable.Human)
+        {
+            if (!CharactersLore.Cultures.Human.All.Contains(origins.Culture)) throw new Exception(message);
+        }
+        else if (origins.Race == CharactersLore.Races.Playable.Elf)
+        {
+            if (!CharactersLore.Cultures.Elf.All.Contains(origins.Culture)) throw new Exception(message);
+        }
+        else if (origins.Race == CharactersLore.Races.Playable.Dwarf)
+        {
+            if (!CharactersLore.Cultures.Dwarf.All.Contains(origins.Culture)) throw new Exception(message);
         }
     }
     #endregion
