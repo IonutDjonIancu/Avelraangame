@@ -29,22 +29,26 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public readonly Validations validations;
     public readonly IPersistenceService persistence;
     public readonly ICharacterCreateLogic characterCreate;
+    public readonly ICharacterInfoLogic characterInfo;
 
     public CharacterLogicDelegator(
         Snapshot snapshot,
         Validations validations,
         IPersistenceService persistence,
-        ICharacterCreateLogic characterCreate)
+        ICharacterCreateLogic characterCreate,
+        ICharacterInfoLogic characterInfo)
     {
         this.snapshot = snapshot;
         this.validations = validations;
         this.persistence = persistence;
         this.characterCreate = characterCreate;
+        this.characterInfo = characterInfo;
+
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
     {
-        validations.ValidateMaxNumberOfCharacters(playerId);
+        validations.ValidateCharacterMaxNrAllowed(playerId);
         var stub = characterCreate.CreateStub(playerId);
 
         return stub;
@@ -52,7 +56,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
     public Character SaveCharacterStub(CharacterTraits traits, string playerId)
     {
-        validations.ValidateTraitsOnSaveCharacter(traits, playerId);
+        validations.ValidateCharacterCreateTraits(traits, playerId);
         var character = characterCreate.SaveStub(traits, playerId);
         persistence.PersistPlayer(playerId);
 
@@ -61,10 +65,11 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
     public Character UpdateCharacterName(string name, CharacterIdentity identity)
     {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateCharacterName(name);
-        validator.ValidateIfCharacterIsLocked(identity);
-        return logic.ChangeName(name, identity);
+        validations.ValidateCharacterUpdateName(name, identity);
+        var character = characterInfo.ChangeName(name, identity);
+        persistence.PersistPlayer(identity.PlayerId);
+
+        return character;
     }
 
     public Character UpdateCharacterFame(string fame, CharacterIdentity identity)

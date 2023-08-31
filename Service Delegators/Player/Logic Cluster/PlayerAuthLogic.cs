@@ -11,7 +11,7 @@ public interface IPlayerAuthLogic
 
 public class PlayerAuthLogic : IPlayerAuthLogic
 {
-    private readonly object playersLock = new();
+    private readonly object _lock = new();
     private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
     private readonly IAuthenticatorModule authModule;
@@ -30,7 +30,7 @@ public class PlayerAuthLogic : IPlayerAuthLogic
         var id = Guid.NewGuid().ToString();
         var token = Guid.NewGuid().ToString();
 
-        lock (playersLock)
+        lock (_lock)
         {
             var player = new Player()
             {
@@ -60,7 +60,7 @@ public class PlayerAuthLogic : IPlayerAuthLogic
 
     public Player AuthorizePlayer(PlayerLogin login)
     {
-        lock (playersLock)
+        lock (_lock)
         {
             // nevermind the misspell errors from players
             // simply lowercase their names since they are unique at creation

@@ -19,19 +19,22 @@ public class PalantirController : ControllerBase
     private readonly IDatabaseLogicDelegator database;
     private readonly IPlayerLogicDelegator players;
     private readonly IItemLogicDelegator items;
+    private readonly ICharacterLogicDelegator chars;
 
     public PalantirController(
         Validations validations,
         IMetadataService metadata,
         IDatabaseLogicDelegator database,
         IPlayerLogicDelegator players,
-        IItemLogicDelegator items) 
+        IItemLogicDelegator items,
+        ICharacterLogicDelegator chars) 
     {
         this.validations = validations;
         this.metadata = metadata;
         this.database = database;
         this.players = players;
         this.items = items; 
+        this.chars = chars;
     }
 
     #region ConnectionTest
@@ -55,7 +58,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetPlayer")]
     public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token)
     {
-        var playerId = validations.ApiRequest(new Request() { PlayerName = playerName, Token = token });
+        var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
 
         return Ok(metadata.GetPlayer(playerId));
     }
@@ -64,7 +67,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetPlayerCharacter")]
     public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
     {
-        var playerId = validations.ApiRequest(new Request() { PlayerName = playerName, Token = token });
+        var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
 
         return Ok(metadata.GetPlayer(playerId).Characters.Find(s => s.Identity.Id == characterId));
     }
@@ -113,7 +116,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = validations.ApiRequest(request);
+            var playerId = validations.ValidateApiRequest(request);
 
             database.ExportDatabase(playerId);
 
@@ -132,7 +135,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = validations.ApiRequest(request);
+            var playerId = validations.ValidateApiRequest(request);
 
             database.ExportLogs(playerId, days);
 
@@ -151,7 +154,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = validations.ApiRequest(request);
+            var playerId = validations.ValidateApiRequest(request);
 
             database.ImportPlayer(playerId, playerJsonString);
 
@@ -208,7 +211,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = validations.ApiRequest(request);
+            var playerId = validations.ValidateApiRequest(request);
 
             players.DeletePlayer(playerId);
 
@@ -257,9 +260,8 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
-
-            var stub = factory.ServiceFactory.CharacterService.CreateCharacterStub(playerId);
+            var playerId = validations.ValidateApiRequest(request);
+            var stub = chars.CreateCharacterStub(playerId);
 
             return Ok(stub);
         }
@@ -272,13 +274,12 @@ public class PalantirController : ControllerBase
 
     // POST: /api/palantir/Character/SaveCharacter
     [HttpPost("Character/SaveCharacter")]
-    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterTraits origins)
+    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterTraits traits)
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
-
-            var character = factory.ServiceFactory.CharacterService.SaveCharacterStub(origins, playerId);
+            var playerId = validations.ValidateApiRequest(request);
+            var character = chars.SaveCharacterStub(traits, playerId);
 
             return Ok(character);
         }
@@ -295,9 +296,8 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
-
-            var character = factory.ServiceFactory.CharacterService.UpdateCharacterName(name, new CharacterIdentity() { Id = characterId, PlayerId = playerId});
+            var playerId = validations.ValidateApiRequest(request);
+            var character = chars.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
 
             return Ok(character);
         }

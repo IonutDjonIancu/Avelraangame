@@ -10,7 +10,7 @@ public interface ICharacterCreateLogic
 
 public class CharacterCreateLogic : ICharacterCreateLogic
 {
-    private readonly object stubsLock = new();
+    private readonly object _lock = new();
 
     private readonly Snapshot snapshot;
     private readonly IDiceLogicDelegator dice;
@@ -31,7 +31,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
 
     public CharacterStub CreateStub(string playerId)
     {
-        lock (stubsLock)
+        lock (_lock)
         {
             snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
             var entityLevel = RandomizeEntityLevel();
@@ -52,7 +52,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
 
     public Character SaveStub(CharacterTraits traits, string playerId)
     {
-        lock (stubsLock)
+        lock (_lock)
         {
             var stub = snapshot.Stubs.Find(s => s.PlayerId == playerId)!;
             

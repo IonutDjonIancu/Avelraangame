@@ -25,19 +25,19 @@ public class DatabaseLogicDelegator : IDatabaseLogicDelegator
 
     public void ExportDatabase(string requesterId)
     {
-        validations.AtDatabaseExportImportOperations(requesterId);
+        validations.ValidateDatabaseExportImportOperations(requesterId);
         exportLogic.ExportDatabase();
     }
 
     public void ExportLogs(string requesterId, int days)
     {
-        validations.AtDatabaseExportImportOperations(requesterId);
+        validations.ValidateDatabaseExportImportOperations(requesterId);
         exportLogic.ExportLogs(days);
     }
 
     public void ImportPlayer(string requesterId, string playerJsonString)
     {
-        validations.AtPlayerImport(requesterId, playerJsonString);
+        validations.ValidateDatabasePlayerImport(requesterId, playerJsonString);
         importLogic.ImportPlayer(playerJsonString);
     }
 }

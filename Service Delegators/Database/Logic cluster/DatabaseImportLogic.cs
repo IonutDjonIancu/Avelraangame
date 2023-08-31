@@ -15,7 +15,7 @@ public class DatabaseImportLogic : IDatabaseImportLogic
     private readonly IPersistenceService persistence;
     private readonly IPlayerLogicDelegator players;
 
-    private readonly object playersLock = new();
+    private readonly object _lock = new();
 
     public DatabaseImportLogic(
         Snapshot snapshot,
@@ -31,7 +31,7 @@ public class DatabaseImportLogic : IDatabaseImportLogic
     {
         var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString);
 
-        lock (playersLock)
+        lock (_lock)
         {
             var oldPlayer = snapshot.Players.Find(p => p.Identity.Id == newPlayer.Identity.Id);
 

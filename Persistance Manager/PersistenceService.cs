@@ -11,7 +11,7 @@ public interface IPersistenceService
 
 public class PersistenceService : IPersistenceService
 {
-    private readonly object playersLock = new();
+    private readonly object _lock = new();
 
     private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
@@ -26,7 +26,7 @@ public class PersistenceService : IPersistenceService
 
     public void PersistPlayer(string playerId)
     {
-        lock (playersLock)
+        lock (_lock)
         {
             var player = snapshot.Players.Find(s => s.Identity.Id == playerId);
             var playerJson = JsonConvert.SerializeObject(player);

@@ -15,7 +15,7 @@ public interface IMetadataService
 
 public class MetadataService : IMetadataService
 {
-    private readonly object playersLock = new();
+    private readonly object _lock = new();
     private readonly Snapshot snapshot;
 
     public MetadataService(Snapshot snapshot)
@@ -26,7 +26,7 @@ public class MetadataService : IMetadataService
     #region player data
     public Players GetPlayers()
     {
-        lock (playersLock)
+        lock (_lock)
         {
             return new Players
             {
@@ -38,7 +38,7 @@ public class MetadataService : IMetadataService
 
     public Player GetPlayer(string playerId)
     {
-        lock (playersLock)
+        lock (_lock)
         {
             return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("Player not found.");
         }

@@ -10,7 +10,7 @@ public interface IPlayerOperationsLogic
 
 public class PlayerOperationsLogic : IPlayerOperationsLogic
 {
-    private readonly object playersLock = new();
+    private readonly object _lock = new();
     private readonly Snapshot snapshot;
 
     public PlayerOperationsLogic(Snapshot snapshot)
@@ -20,7 +20,7 @@ public class PlayerOperationsLogic : IPlayerOperationsLogic
 
     public Player UpdateName(string newPlayerName, string playerId)
     {
-        lock (playersLock)
+        lock (_lock)
         {
             var player = snapshot.Players.Find(s => s.Identity.Id == playerId)!;
             player.Identity.Name = newPlayerName;
@@ -31,7 +31,7 @@ public class PlayerOperationsLogic : IPlayerOperationsLogic
 
     public void Remove(string playerId)
     {
-        lock(playersLock)
+        lock(_lock)
         {
             var player = snapshot.Players.Find(s => s.Identity.Id == playerId)!;
             snapshot.Players.Remove(player);

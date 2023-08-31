@@ -10,7 +10,6 @@ public class DIServices : IDIServices
 {
     private const string AppSettings = "AppSettings";
 
-
     // this is the appsettings.json file loaded in the memory for the resource strings
     public static void LoadAppSettings(WebApplicationBuilder builder)
     {
@@ -98,6 +97,7 @@ public class DIServices : IDIServices
         // subservices
         builder.Services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
         builder.Services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
+        builder.Services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
     }
     #endregion
 }

@@ -6,19 +6,19 @@ namespace Service_Delegators;
 public interface IValidations
 {
     #region api
-    string ApiRequest(Request request);
+    string ValidateApiRequest(Request request);
     #endregion
 
     #region database
-    void AtDatabaseExportImportOperations(string requesterId);
-    void AtPlayerImport(string requesterId, string playerJson);
+    void ValidateDatabaseExportImportOperations(string requesterId);
+    void ValidateDatabasePlayerImport(string requesterId, string playerJson);
     #endregion
 
     #region player
-    void CreatePlayer(string playerName);
-    void LoginPlayer(PlayerLogin login);
-    void UpdatePlayerName(string newPlayerName, string playerId);
-    void DeletePlayer(string playerId);
+    void ValidatePlayerCreate(string playerName);
+    void ValidatePlayerLogin(PlayerLogin login);
+    void ValidatePlayerUpdateName(string newPlayerName, string playerId);
+    void ValidatePlayerDelete(string playerId);
     #endregion
 }
 
@@ -26,7 +26,7 @@ public class Validations : IValidations
 {
     private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
-    private readonly object playersLock = new();
+    private readonly object _lock = new();
 
     public Validations(
         Snapshot snapshot,
@@ -37,9 +37,9 @@ public class Validations : IValidations
     }
 
     #region api validations
-    public string ApiRequest(Request request)
+    public string ValidateApiRequest(Request request)
     {
-        lock (playersLock)
+        lock (_lock)
         {
             var player = snapshot.Players.Find(p => p.Identity.Name == request.PlayerName) ?? throw new Exception("Player not found.");
 
@@ -52,14 +52,14 @@ public class Validations : IValidations
     #endregion
 
     #region database validations
-    public void AtDatabaseExportImportOperations(string requesterId)
+    public void ValidateDatabaseExportImportOperations(string requesterId)
     {
         ValidatePlayerIsAdmin(requesterId);
     }
 
-    public void AtPlayerImport(string requesterId, string playerJson)
+    public void ValidateDatabasePlayerImport(string requesterId, string playerJson)
     {
-        AtDatabaseExportImportOperations(requesterId);
+        ValidateDatabaseExportImportOperations(requesterId);
 
         try
         {
@@ -73,25 +73,25 @@ public class Validations : IValidations
     #endregion
 
     #region player validations
-    public void CreatePlayer(string playerName)
+    public void ValidatePlayerCreate(string playerName)
     {
         ValidateString(playerName);
         if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
 
-        lock (playersLock)
+        lock (_lock)
         {
             if (snapshot.Players.Count >= 20) throw new Exception("Server has reached the limit number of players, please contact admins.");
             if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) throw new Exception("Name unavailable.");
         }
     }
 
-    public void LoginPlayer(PlayerLogin login)
+    public void ValidatePlayerLogin(PlayerLogin login)
     {
         ValidateObject(login);
         ValidateString(login.PlayerName);
         ValidateString(login.Code);
 
-        lock (playersLock)
+        lock (_lock)
         {
             // we don't care for player misspelling their names
             // names will be unique anyway at creation
@@ -99,13 +99,13 @@ public class Validations : IValidations
         }
     }
 
-    public void UpdatePlayerName(string newPlayerName, string playerId)
+    public void ValidatePlayerUpdateName(string newPlayerName, string playerId)
     {
         ValidateString(newPlayerName);
         ValidatePlayerExists(playerId);
     }
 
-    public void DeletePlayer(string playerId)
+    public void ValidatePlayerDelete(string playerId)
     {
         ValidatePlayerExists(playerId);
     }
@@ -125,9 +125,18 @@ public class Validations : IValidations
     #endregion
 
     #region character validations
-    public void ValidateMaxNumberOfCharacters(string playerId)
+    public void ValidateCharacterUpdateName(string name, CharacterIdentity identity)
     {
-        lock (playersLock)
+        ValidateString(name);
+        if (name.Length >= 20) throw new Exception("Character name too long.");
+
+        ValidateCharacterPlayerCombination(identity);
+        ValidateCharacterIsLocked(identity);
+    }
+
+    public void ValidateCharacterMaxNrAllowed(string playerId)
+    {
+        lock (_lock)
         {
             var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Status.IsAlive).ToList().Count;
             
@@ -135,11 +144,11 @@ public class Validations : IValidations
         }
     }
 
-    internal void ValidateTraitsOnSaveCharacter(CharacterTraits traits, string playerId)
+    internal void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId)
     {
         ValidateObject(traits);
 
-        lock (playersLock)
+        lock (_lock)
         {
             if (!snapshot.Stubs!.Exists(s => s.PlayerId == playerId)) throw new Exception("No stub templates found for this player.");
 
@@ -185,7 +194,7 @@ public class Validations : IValidations
     {
         ValidateString(playerId);
 
-        lock (playersLock)
+        lock (_lock)
         {
             if (!snapshot.Players.Exists(p => p.Identity.Id == playerId)) throw new Exception("Player not found.");
         }
@@ -195,7 +204,7 @@ public class Validations : IValidations
     {
         ValidatePlayerExists(playerId);
 
-        lock(playersLock)
+        lock(_lock)
         {
             var playerName = snapshot.Players.Find(s => s.Identity.Id == playerId)!.Identity.Name;
 
@@ -242,6 +251,31 @@ public class Validations : IValidations
         else if (origins.Race == CharactersLore.Races.Playable.Dwarf)
         {
             if (!CharactersLore.Cultures.Dwarf.All.Contains(origins.Culture)) throw new Exception(message);
+        }
+    }
+
+    private Player GetPlayer(string playerId)
+    {
+        lock (_lock)
+        {
+            return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("Player not found.");
+        }
+    }
+
+    private void ValidateCharacterIsLocked(CharacterIdentity identity)
+    {
+        var player = GetPlayer(identity.PlayerId);
+
+        if (player.Characters.Find(s => s.Identity.Id == identity.Id)!.Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
+    }
+
+    private void ValidateCharacterPlayerCombination(CharacterIdentity identity)
+    {
+        var player = GetPlayer(identity.PlayerId);
+
+        lock (_lock)
+        {
+            if (!player.Characters.Exists(s => s.Identity.Id == identity.Id)) throw new Exception("Character does not match player.");
         }
     }
     #endregion

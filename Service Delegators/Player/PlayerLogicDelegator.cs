@@ -33,7 +33,7 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
 
     public Authenticator CreatePlayer(string playerName)
     {
-        validations.CreatePlayer(playerName);
+        validations.ValidatePlayerCreate(playerName);
         var (auth, player) = playerAuth.AuthenticatePlayer(playerName);
         persistence.PersistPlayer(player);
 
@@ -42,7 +42,7 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
 
     public string LoginPlayer(PlayerLogin login)
     {
-        validations.LoginPlayer(login);
+        validations.ValidatePlayerLogin(login);
         var player = playerAuth.AuthorizePlayer(login);
         persistence.PersistPlayer(player);
 
@@ -51,14 +51,14 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
 
     public void UpdatePlayerName(string newPlayerName, string playerId)
     {
-        validations.UpdatePlayerName(newPlayerName, playerId);
+        validations.ValidatePlayerUpdateName(newPlayerName, playerId);
         var player = playerOps.UpdateName(newPlayerName, playerId);
         persistence.PersistPlayer(player);
     }
 
     public void DeletePlayer(string playerId)
     {
-        validations.DeletePlayer(playerId);
+        validations.ValidatePlayerDelete(playerId);
         playerOps.Remove(playerId);
         persistence.RemovePlayer(playerId);
     }
