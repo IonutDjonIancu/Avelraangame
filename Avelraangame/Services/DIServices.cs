@@ -98,6 +98,7 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
         builder.Services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
         builder.Services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
+        builder.Services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
     }
     #endregion
 }

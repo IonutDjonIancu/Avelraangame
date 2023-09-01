@@ -19,7 +19,7 @@ public class PalantirController : ControllerBase
     private readonly IDatabaseLogicDelegator database;
     private readonly IPlayerLogicDelegator players;
     private readonly IItemLogicDelegator items;
-    private readonly ICharacterLogicDelegator chars;
+    private readonly ICharacterLogicDelegator characters;
 
     public PalantirController(
         Validations validations,
@@ -34,7 +34,7 @@ public class PalantirController : ControllerBase
         this.database = database;
         this.players = players;
         this.items = items; 
-        this.chars = chars;
+        this.characters = chars;
     }
 
     #region ConnectionTest
@@ -261,7 +261,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var stub = chars.CreateCharacterStub(playerId);
+            var stub = characters.CreateCharacterStub(playerId);
 
             return Ok(stub);
         }
@@ -279,7 +279,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var character = chars.SaveCharacterStub(traits, playerId);
+            var character = characters.SaveCharacterStub(traits, playerId);
 
             return Ok(character);
         }
@@ -297,7 +297,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var character = chars.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
+            var character = characters.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
 
             return Ok(character);
         }
@@ -314,9 +314,8 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var playerId = MatchTokensForPlayer(request);
-
-            factory.ServiceFactory.CharacterService.DeleteCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
+            var playerId = validations.ValidateApiRequest(request);
+            characters.DeleteCharacter(new CharacterIdentity() { Id = characterId, PlayerId = playerId });
 
             return Ok("Character deleted");
         }
@@ -333,9 +332,8 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            equip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
-
-            var character = factory.ServiceFactory.CharacterService.CharacterEquipItem(equip);
+            equip.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.CharacterEquipItem(equip);
 
             return Ok(character);
         }
@@ -352,9 +350,8 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            unequip.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
-
-            var character = factory.ServiceFactory.CharacterService.CharacterUnequipItem(unequip);
+            unequip.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.CharacterUnequipItem(unequip);
 
             return Ok(character);
         }

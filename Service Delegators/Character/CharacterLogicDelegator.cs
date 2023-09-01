@@ -1,26 +1,30 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service_Delegators;
 
 public interface ICharacterLogicDelegator
 {
-    Character CharacterEquipItem(CharacterEquip equip);
-    void CharacterHireMercenary(CharacterHireMercenary hireMercenary);
-    Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait);
-    void CharacterTravelToLocation(CharacterTravel positionTravel);
-    Character CharacterUnequipItem(CharacterEquip unequip);
+    Character SaveCharacterStub(CharacterTraits traits, string playerId);
     CharacterStub CreateCharacterStub(string playerId);
     void DeleteCharacter(CharacterIdentity identity);
-    Characters GetPlayerCharacters(string playerId);
-    void KillCharacter(CharacterIdentity identity);
-    Character SaveCharacterStub(CharacterTraits traits, string playerId);
+
+    Character CharacterEquipItem(CharacterEquip equip);
+    Character CharacterUnequipItem(CharacterEquip unequip);
+
+    Character UpdateCharacterName(string name, CharacterIdentity identity);
     Character UpdateCharacterAssets(string asset, CharacterIdentity identity);
     Character UpdateCharacterFame(string fame, CharacterIdentity identity);
-    Character UpdateCharacterName(string name, CharacterIdentity identity);
     Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
     Character UpdateCharacterStats(string stat, CharacterIdentity identity);
     Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
+    
+    void CharacterHireMercenary(CharacterHireMercenary hireMercenary);
+    Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait);
+    void CharacterTravelToLocation(CharacterTravel positionTravel);
+
+    void KillCharacter(CharacterIdentity identity);
 }
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
@@ -30,20 +34,22 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public readonly IPersistenceService persistence;
     public readonly ICharacterCreateLogic characterCreate;
     public readonly ICharacterInfoLogic characterInfo;
+    public readonly ICharacterItemsLogic characterItems;
 
     public CharacterLogicDelegator(
         Snapshot snapshot,
         Validations validations,
         IPersistenceService persistence,
         ICharacterCreateLogic characterCreate,
-        ICharacterInfoLogic characterInfo)
+        ICharacterInfoLogic characterInfo,
+        ICharacterItemsLogic characterItems)
     {
         this.snapshot = snapshot;
         this.validations = validations;
         this.persistence = persistence;
         this.characterCreate = characterCreate;
         this.characterInfo = characterInfo;
-
+        this.characterItems = characterItems;
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
@@ -63,6 +69,24 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return character;
     }
 
+    public void DeleteCharacter(CharacterIdentity identity)
+    {
+        validations.ValidateCharacterBeforeDelete(identity);
+        characterCreate.DeleteCharacter(identity);
+    }
+
+    public Character CharacterEquipItem(CharacterEquip equip)
+    {
+        validations.ValidateCharacterEquipUnequipItem(equip, true);
+        return characterItems.EquipItem(equip);
+    }
+
+    public Character CharacterUnequipItem(CharacterEquip unequip)
+    {
+        validations.ValidateCharacterEquipUnequipItem(unequip, true);
+        return characterItems.UnequipItem(unequip);
+    }
+
     public Character UpdateCharacterName(string name, CharacterIdentity identity)
     {
         validations.ValidateCharacterUpdateName(name, identity);
@@ -71,6 +95,22 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
         return character;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public Character UpdateCharacterFame(string fame, CharacterIdentity identity)
     {
@@ -120,34 +160,10 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         logic.KillChar(identity);
     }
 
-    public void DeleteCharacter(CharacterIdentity identity)
-    {
-        validator.ValidateIfCharacterIsLocked(identity);
-        logic.DeleteChar(identity);
-    }
+    
 
-    public Characters GetPlayerCharacters(string playerId)
-    {
-        var characters = dbs.Snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters;
 
-        return new Characters
-        {
-            Count = characters!.Count,
-            CharactersList = characters
-        };
-    }
-
-    public Character CharacterEquipItem(CharacterEquip equip)
-    {
-        validator.ValidateCharacterEquipUnequipItem(equip, true);
-        return logic.EquipItem(equip);
-    }
-
-    public Character CharacterUnequipItem(CharacterEquip unequip)
-    {
-        validator.ValidateCharacterEquipUnequipItem(unequip, false);
-        return logic.UnequipItem(unequip);
-    }
+   
 
     public Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
     {

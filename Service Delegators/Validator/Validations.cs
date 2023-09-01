@@ -41,7 +41,7 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            var player = snapshot.Players.Find(p => p.Identity.Name == request.PlayerName) ?? throw new Exception("Player not found.");
+            var player = GetPlayerByName(request.PlayerName);
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
             if (request.Token != player.Identity.Token) throw new Exception("Token mismatch.");
@@ -54,7 +54,10 @@ public class Validations : IValidations
     #region database validations
     public void ValidateDatabaseExportImportOperations(string requesterId)
     {
-        ValidatePlayerIsAdmin(requesterId);
+        lock (_lock)
+        {
+            ValidatePlayerIsAdmin(requesterId);
+        }
     }
 
     public void ValidateDatabasePlayerImport(string requesterId, string playerJson)
@@ -75,39 +78,47 @@ public class Validations : IValidations
     #region player validations
     public void ValidatePlayerCreate(string playerName)
     {
-        ValidateString(playerName);
-        if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
-
         lock (_lock)
         {
+            ValidateString(playerName);
+            if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
             if (snapshot.Players.Count >= 20) throw new Exception("Server has reached the limit number of players, please contact admins.");
+
+            // we don't care for player misspelling their names
+            // names will be unique during creation
             if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) throw new Exception("Name unavailable.");
         }
     }
 
     public void ValidatePlayerLogin(PlayerLogin login)
     {
-        ValidateObject(login);
-        ValidateString(login.PlayerName);
-        ValidateString(login.Code);
-
         lock (_lock)
         {
+            ValidateObject(login);
+            ValidateString(login.PlayerName);
+            ValidateString(login.Code);
+
             // we don't care for player misspelling their names
-            // names will be unique anyway at creation
+            // names will be unique during creation
             if (!snapshot.Players.Exists(p => p.Identity.Name.ToLower() == login.PlayerName.ToLower())) throw new Exception("Player does not exist.");
         }
     }
 
     public void ValidatePlayerUpdateName(string newPlayerName, string playerId)
     {
-        ValidateString(newPlayerName);
-        ValidatePlayerExists(playerId);
+        lock (_lock)
+        {
+            ValidateString(newPlayerName);
+            ValidatePlayerExists(playerId);
+        }
     }
 
     public void ValidatePlayerDelete(string playerId)
     {
-        ValidatePlayerExists(playerId);
+        lock (_lock)
+        {
+            ValidatePlayerExists(playerId);
+        }
     }
     #endregion
 
@@ -127,11 +138,14 @@ public class Validations : IValidations
     #region character validations
     public void ValidateCharacterUpdateName(string name, CharacterIdentity identity)
     {
-        ValidateString(name);
-        if (name.Length >= 20) throw new Exception("Character name too long.");
+        lock (_lock)
+        {
+            ValidateString(name);
+            if (name.Length >= 20) throw new Exception("Character name too long.");
 
-        ValidateCharacterPlayerCombination(identity);
-        ValidateCharacterIsLocked(identity);
+            ValidateCharacterPlayerCombination(identity);
+            ValidateCharacterIsLocked(identity);
+        }
     }
 
     public void ValidateCharacterMaxNrAllowed(string playerId)
@@ -146,20 +160,147 @@ public class Validations : IValidations
 
     internal void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId)
     {
-        ValidateObject(traits);
-
         lock (_lock)
         {
+            ValidateObject(traits);
+            
             if (!snapshot.Stubs!.Exists(s => s.PlayerId == playerId)) throw new Exception("No stub templates found for this player.");
 
+            ValidateRace(traits.Race);
+            ValidateCulture(traits.Culture);
+            ValidateTradition(traits.Tradition);
+            ValidateClass(traits.Class);
+
+            ValidateRaceCultureCombination(traits);
         }
+    }
 
-        ValidateRace(traits.Race);
-        ValidateCulture(traits.Culture);
-        ValidateTradition(traits.Tradition);
-        ValidateClass(traits.Class);
+    internal void ValidateCharacterBeforeDelete(CharacterIdentity charIdentity)
+    {
+        lock (_lock) 
+        { 
+            ValidateObject(charIdentity);
+            if (GetPlayerCharacter(charIdentity).Status.IsLockedToModify) throw new Exception("Unable to delete character at this time.");
+        }
+    }
 
-        ValidateRaceCultureCombination(traits);
+    internal void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
+    {
+        lock (_lock)
+        {
+            ValidateObject(equip);
+            ValidateGuid(equip.CharacterIdentity.Id);
+            ValidateGuid(equip.ItemId);
+            ValidateString(equip.InventoryLocation);
+
+            ValidateCharacterPlayerCombination(equip.CharacterIdentity);
+            ValidateCharacterIsLocked(equip.CharacterIdentity);
+
+            var character = GetPlayerCharacter(equip.CharacterIdentity);
+            if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) throw new Exception("Equipment location does not fit any possible slot in inventory.");
+
+            if (!toEquip) return;
+
+            var itemSubtype = (character!.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)?.Subtype) ?? throw new Exception("No such item found on this character.");
+            bool isItemAtCorrectLocation;
+
+            // protection
+            if (itemSubtype == ItemsLore.Subtypes.Protections.Helm)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Head;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Protections.Armour)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Body;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Protections.Shield)
+            {
+                isItemAtCorrectLocation =
+                     equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand;
+            }
+            //weapons
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sword)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Pike)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Crossbow)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Polearm)
+            {
+                isItemAtCorrectLocation =
+                   equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Mace)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Axe)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Dagger)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand ||
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Bow)
+            {
+                isItemAtCorrectLocation =
+                    equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Sling)
+            {
+                isItemAtCorrectLocation =
+                   equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                   equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+            }
+            else if (itemSubtype == ItemsLore.Subtypes.Weapons.Spear)
+            {
+                isItemAtCorrectLocation =
+                   equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand ||
+                   equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged;
+            }
+            // wealth
+            else if (itemSubtype == ItemsLore.Subtypes.Wealth.Gems ||
+                itemSubtype == ItemsLore.Subtypes.Wealth.Valuables ||
+                itemSubtype == ItemsLore.Subtypes.Wealth.Trinket)
+            {
+                isItemAtCorrectLocation =
+                   equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry;
+
+                if (character.Inventory!.Heraldry!.Count >= 5)
+                {
+                    throw new Exception("Heraldry is full, unequip some of the items first.");
+                }
+            }
+            else
+            {
+                isItemAtCorrectLocation = false;
+            }
+
+            if (!isItemAtCorrectLocation) throw new Exception("Item is being equipped at incorrect location.");
+        }
     }
     #endregion
 
@@ -193,23 +334,16 @@ public class Validations : IValidations
     private void ValidatePlayerExists(string playerId)
     {
         ValidateString(playerId);
-
-        lock (_lock)
-        {
-            if (!snapshot.Players.Exists(p => p.Identity.Id == playerId)) throw new Exception("Player not found.");
-        }
+        GetPlayer(playerId);
     }
 
     private void ValidatePlayerIsAdmin(string playerId)
     {
         ValidatePlayerExists(playerId);
 
-        lock(_lock)
-        {
-            var playerName = snapshot.Players.Find(s => s.Identity.Id == playerId)!.Identity.Name;
+        var playerName = GetPlayer(playerId)!.Identity.Name;
 
-            if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
-        }
+        if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
     }
 
     private void ValidateClass(string classes)
@@ -254,29 +388,30 @@ public class Validations : IValidations
         }
     }
 
-    private Player GetPlayer(string playerId)
-    {
-        lock (_lock)
-        {
-            return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("Player not found.");
-        }
-    }
-
     private void ValidateCharacterIsLocked(CharacterIdentity identity)
     {
-        var player = GetPlayer(identity.PlayerId);
-
-        if (player.Characters.Find(s => s.Identity.Id == identity.Id)!.Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
+        if (GetPlayerCharacter(identity).Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
     }
 
     private void ValidateCharacterPlayerCombination(CharacterIdentity identity)
     {
         var player = GetPlayer(identity.PlayerId);
+        if (!player.Characters.Exists(s => s.Identity.Id == identity.Id)) throw new Exception("Character does not match player.");
+    }
 
-        lock (_lock)
-        {
-            if (!player.Characters.Exists(s => s.Identity.Id == identity.Id)) throw new Exception("Character does not match player.");
-        }
+    private Player GetPlayer(string playerId)
+    {
+        return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("PLayer not found.");
+    }
+
+    private Player GetPlayerByName(string name)
+    {
+        return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
+    }
+
+    private Character GetPlayerCharacter(CharacterIdentity charIdentity)
+    {
+        return GetPlayer(charIdentity.PlayerId).Characters.Find(s => s.Identity.Id == charIdentity.Id) ?? throw new Exception("Character not found.");
     }
     #endregion
 }

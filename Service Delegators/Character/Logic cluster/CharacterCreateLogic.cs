@@ -6,6 +6,7 @@ public interface ICharacterCreateLogic
 {
     CharacterStub CreateStub(string playerId);
     Character SaveStub(CharacterTraits traits, string playerId);
+    void DeleteCharacter(CharacterIdentity charIdentity);
 }
 
 public class CharacterCreateLogic : ICharacterCreateLogic
@@ -78,6 +79,16 @@ public class CharacterCreateLogic : ICharacterCreateLogic
             player.Characters!.Add(character);
 
             return character;
+        }
+    }
+
+    public void DeleteCharacter(CharacterIdentity charIdentity)
+    {
+        lock ( _lock)
+        {
+            var player = snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!;
+            var character = player.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
+            player.Characters.Remove(character);
         }
     }
 
