@@ -21,7 +21,7 @@ public interface ICharacterLogicDelegator
     Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
     
     void CharacterHireMercenary(CharacterHireMercenary hireMercenary);
-    Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait);
+    Character CharacterLearnSpecialSkill(CharacterSpecialSkillAdd trait);
     void CharacterTravelToLocation(CharacterTravel positionTravel);
 
     void KillCharacter(CharacterIdentity identity);
@@ -35,6 +35,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public readonly ICharacterCreateLogic characterCreate;
     public readonly ICharacterInfoLogic characterInfo;
     public readonly ICharacterItemsLogic characterItems;
+    public readonly ICharacterSpecialSkillsLogic characterSpSk;
 
     public CharacterLogicDelegator(
         Snapshot snapshot,
@@ -42,7 +43,8 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         IPersistenceService persistence,
         ICharacterCreateLogic characterCreate,
         ICharacterInfoLogic characterInfo,
-        ICharacterItemsLogic characterItems)
+        ICharacterItemsLogic characterItems,
+        ICharacterSpecialSkillsLogic characterSpSk)
     {
         this.snapshot = snapshot;
         this.validations = validations;
@@ -50,6 +52,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         this.characterCreate = characterCreate;
         this.characterInfo = characterInfo;
         this.characterItems = characterItems;
+        this.characterSpSk = characterSpSk;
     }
 
     public CharacterStub CreateCharacterStub(string playerId)
@@ -96,28 +99,33 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return character;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public Character CharacterLearnSpecialSkill(CharacterSpecialSkillAdd trait)
+    {
+        validations.ValidateCharacterLearnHeroicTrait(trait);
+        persistence.PersistPlayer(trait.CharacterIdentity.PlayerId);
+        return characterSpSk.ApplySpecialSkill(trait);
+    }
 
     public Character UpdateCharacterFame(string fame, CharacterIdentity identity)
     {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateString(fame);
-        return logic.AddFame(fame, identity);
+        validations.ValidateCharacterAddFame(fame, identity);
+        persistence.PersistPlayer(identity.PlayerId);
+        return characterInfo.AddFame(fame, identity);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public Character UpdateCharacterWealth(int wealth, CharacterIdentity identity)
     {
@@ -165,11 +173,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
    
 
-    public Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
-    {
-        validator.ValidateCharacterLearnHeroicTrait(trait);
-        return logic.ApplyHeroicTrait(trait);
-    }
+    
 
     public void CharacterTravelToLocation(CharacterTravel positionTravel)
     {

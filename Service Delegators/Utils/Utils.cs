@@ -30,4 +30,10 @@ public static class Utils
     {
         return GameplayLore.Locations.All.Find(s => s.FullName == fullName)!.Position ?? throw new Exception("Location not found.");
     }
+
+    public static Character GetPlayerCharacter(CharacterIdentity identity, Snapshot snapshot)
+    {
+        var player = snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId) ?? throw new Exception("Player not found.");
+        return player.Characters.Find(p => p.Identity!.Id == identity.Id) ?? throw new Exception("Character not found."); 
+    }
 }

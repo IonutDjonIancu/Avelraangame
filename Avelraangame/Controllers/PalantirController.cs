@@ -362,15 +362,14 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Character/LearnHeroicTrait
-    [HttpPut("Character/LearnHeroicTrait")]
-    public IActionResult LearnHeroicTrait([FromQuery] Request request, [FromBody] CharacterSpecialSkillAdd trait)
+    // PUT: /api/palantir/Character/LearnSpecialSkill
+    [HttpPut("Character/LearnSpecialSkill")]
+    public IActionResult LearnSpecialSkill([FromQuery] Request request, [FromBody] CharacterSpecialSkillAdd trait)
     {
         try
         {
-            trait.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
-
-            var character = factory.ServiceFactory.CharacterService.CharacterLearnHeroicTrait(trait);
+            trait.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.CharacterLearnSpecialSkill(trait);
 
             return Ok(character);
         }

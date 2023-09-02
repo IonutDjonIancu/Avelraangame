@@ -23,7 +23,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     {
         lock (_lock)
         {
-            var character = GetPlayerCharacter(unequip.CharacterIdentity);
+            var character = Utils.GetPlayerCharacter(unequip.CharacterIdentity, snapshot);
             Item item;
 
             if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Head)
@@ -69,7 +69,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
         lock (_lock)
         {
-            var character = GetPlayerCharacter(equip.CharacterIdentity);
+            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId);
 
             if (item == null) hasToUnequip = true;
@@ -79,7 +79,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
         lock (_lock)
         {
-            var character = GetPlayerCharacter(equip.CharacterIdentity);
+            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
 
             if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head) character.Inventory.Head = item;
@@ -94,12 +94,4 @@ public class CharacterItemsLogic : ICharacterItemsLogic
             return character;
         }
     }
-
-    #region private methods
-    private Character GetPlayerCharacter(CharacterIdentity identity)
-    {
-        var player = snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId)!;
-        return player.Characters.Find(p => p.Identity!.Id == identity.Id)!;
-    }
-    #endregion
 }

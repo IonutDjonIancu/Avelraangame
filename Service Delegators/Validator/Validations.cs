@@ -143,7 +143,6 @@ public class Validations : IValidations
             ValidateString(name);
             if (name.Length >= 20) throw new Exception("Character name too long.");
 
-            ValidateCharacterPlayerCombination(identity);
             ValidateCharacterIsLocked(identity);
         }
     }
@@ -158,7 +157,7 @@ public class Validations : IValidations
         }
     }
 
-    internal void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId)
+    public void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId)
     {
         lock (_lock)
         {
@@ -175,16 +174,48 @@ public class Validations : IValidations
         }
     }
 
-    internal void ValidateCharacterBeforeDelete(CharacterIdentity charIdentity)
+    public void ValidateCharacterBeforeDelete(CharacterIdentity charIdentity)
     {
         lock (_lock) 
         { 
             ValidateObject(charIdentity);
-            if (GetPlayerCharacter(charIdentity).Status.IsLockedToModify) throw new Exception("Unable to delete character at this time.");
+            ValidateCharacterIsLocked(charIdentity);
         }
     }
 
-    internal void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
+    public void ValidateCharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
+    {
+        lock ( _lock)
+        {
+            var character = Utils.GetPlayerCharacter(trait.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked(trait.CharacterIdentity);
+            ValidateGuid(trait.SpecialSkillId);
+
+            if (trait.Subskill != null)
+            {
+                ValidateString(trait.Subskill);
+                if (!CharactersLore.Skills.All.Contains(trait.Subskill)) throw new Exception("No such Skill was found with the indicated skill name.");
+            }
+
+            var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == trait.SpecialSkillId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
+
+            if (specialSkill.DeedsCost > character.LevelUp.DeedsPoints) throw new Exception("Character does not have enough Deeds points to aquire said Heroic Trait.");
+
+            if (specialSkill.Subtype == SpecialSkillsLore.Subtype.Onetime
+                && character.Sheet.SpecialSkills.Exists(t => t.Identity.Id == specialSkill.Identity.Id)) throw new Exception("Character already has that Heroic Trait and it can only be learned once.");
+        }
+    }
+
+    public void ValidateCharacterAddFame(string fame, CharacterIdentity identity)
+    {
+        lock ( _lock)
+        {
+            ValidateString(fame);
+            _ = Utils.GetPlayerCharacter(identity, snapshot);
+        }
+    }
+
+    public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
     {
         lock (_lock)
         {
@@ -192,11 +223,9 @@ public class Validations : IValidations
             ValidateGuid(equip.CharacterIdentity.Id);
             ValidateGuid(equip.ItemId);
             ValidateString(equip.InventoryLocation);
-
-            ValidateCharacterPlayerCombination(equip.CharacterIdentity);
             ValidateCharacterIsLocked(equip.CharacterIdentity);
 
-            var character = GetPlayerCharacter(equip.CharacterIdentity);
+            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) throw new Exception("Equipment location does not fit any possible slot in inventory.");
 
             if (!toEquip) return;
@@ -390,13 +419,12 @@ public class Validations : IValidations
 
     private void ValidateCharacterIsLocked(CharacterIdentity identity)
     {
-        if (GetPlayerCharacter(identity).Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
+        if (Utils.GetPlayerCharacter(identity, snapshot).Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
     }
 
     private void ValidateCharacterPlayerCombination(CharacterIdentity identity)
     {
-        var player = GetPlayer(identity.PlayerId);
-        if (!player.Characters.Exists(s => s.Identity.Id == identity.Id)) throw new Exception("Character does not match player.");
+        _ = Utils.GetPlayerCharacter(identity, snapshot);
     }
 
     private Player GetPlayer(string playerId)
@@ -407,11 +435,6 @@ public class Validations : IValidations
     private Player GetPlayerByName(string name)
     {
         return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
-    }
-
-    private Character GetPlayerCharacter(CharacterIdentity charIdentity)
-    {
-        return GetPlayer(charIdentity.PlayerId).Characters.Find(s => s.Identity.Id == charIdentity.Id) ?? throw new Exception("Character not found.");
     }
     #endregion
 }
