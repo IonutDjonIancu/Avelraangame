@@ -18,23 +18,26 @@ public class PalantirController : ControllerBase
 
     private readonly IDatabaseLogicDelegator database;
     private readonly IPlayerLogicDelegator players;
-    private readonly IItemLogicDelegator items;
+    private readonly IItemsLogicDelegator items;
     private readonly ICharacterLogicDelegator characters;
+    private readonly INpcLogicDelegator npcs;
 
     public PalantirController(
         Validations validations,
         IMetadataService metadata,
         IDatabaseLogicDelegator database,
         IPlayerLogicDelegator players,
-        IItemLogicDelegator items,
-        ICharacterLogicDelegator chars) 
+        IItemsLogicDelegator items,
+        ICharacterLogicDelegator characters,
+        INpcLogicDelegator npcs) 
     {
         this.validations = validations;
         this.metadata = metadata;
         this.database = database;
         this.players = players;
         this.items = items; 
-        this.characters = chars;
+        this.characters = characters;
+        this.npcs = npcs;
     }
 
     #region ConnectionTest
@@ -474,11 +477,11 @@ public class PalantirController : ControllerBase
     #region Npcs
     // GET: /api/palantir/NPC/GenerateGoodGuyNPC
     [HttpGet("NPC/GenerateGoodGuyNPC")]
-    public IActionResult GenerateGoodGuyNPC(string location)
+    public IActionResult GenerateGoodGuyNPC(string locationName)
     {
         try
         {
-            var npc = npc
+            var npc = npcs.GenerateGoodGuy(locationName);
 
             return Ok(npc);
         }
@@ -491,11 +494,11 @@ public class PalantirController : ControllerBase
 
     // GET: /api/palantir/NPC/GenerateBadGuyNPC
     [HttpGet("NPC/GenerateBadGuyNPC")]
-    public IActionResult GenerateBadGuyNPC(string location)
+    public IActionResult GenerateBadGuyNPC(string locationName)
     {
         try
         {
-            var npc = factory.ServiceFactory.NpcService.GenerateBadGuyNpc(location);
+            var npc = npcs.GenerateBadGuy(locationName);
 
             return Ok(npc);
         }

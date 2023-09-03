@@ -1,4 +1,6 @@
-﻿using Data_Mapping_Containers.Dtos;
+﻿#pragma warning disable CA1822 // Mark members as static
+
+using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
 
 namespace Service_Delegators;
@@ -19,6 +21,25 @@ public interface IValidations
     void ValidatePlayerLogin(PlayerLogin login);
     void ValidatePlayerUpdateName(string newPlayerName, string playerId);
     void ValidatePlayerDelete(string playerId);
+    #endregion
+
+    #region character
+    void ValidateCharacterUpdateName(string name, CharacterIdentity identity);
+    void ValidateCharacterMaxNrAllowed(string playerId);
+    void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId);
+    void ValidateCharacterBeforeDelete(CharacterIdentity identity);
+    void ValidateCharacterLearnHeroicTrait(CharacterAddSpecialSkill trait);
+    void ValidateCharacterBeforeKill(CharacterIdentity identity);
+    void ValidateCharacterAddWealth(int wealth, CharacterIdentity identity);
+    void ValidateCharacterAddFame(string fame, CharacterIdentity identity);
+    void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip);
+    void ValidateAttributesBeforeIncrease(string attribute, string attributeType, CharacterIdentity identity);
+    void ValidateCharacterBeforeTravel(CharacterTravel travel);
+    void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary);
+    #endregion
+
+    #region gameplay
+    void ValidateLocation(string locationName);
     #endregion
 }
 
@@ -123,7 +144,7 @@ public class Validations : IValidations
     #endregion
 
     #region item validations
-    public static void CreateItemWithTypeAndSubtype(string type, string subtype)
+    public void CreateItemWithTypeAndSubtype(string type, string subtype)
     {
         ValidateString_p(type); 
         ValidateString_p(subtype);
@@ -131,8 +152,6 @@ public class Validations : IValidations
         if (!ItemsLore.Types.All.Contains(type)) throw new Exception("Wrong item type.");
         if (!ItemsLore.Subtypes.All.Contains(subtype)) throw new Exception("Wrong item subtype.");
     }
-
-
     #endregion
 
     #region character validations
@@ -419,6 +438,15 @@ public class Validations : IValidations
 
     #endregion
 
+    #region gameplay validations
+    public void ValidateLocation(string locationName)
+    {
+        ValidateString_p(locationName);
+        _ = Utils.GetLocationByLocationName(locationName) ?? throw new Exception("Wrong location name.");
+    }
+
+    #endregion
+
     #region private methods
 
     // the _p suffix represents these methods are private and do not use the lock
@@ -528,3 +556,5 @@ public class Validations : IValidations
     }
     #endregion
 }
+
+#pragma warning restore CA1822 // Mark members as static

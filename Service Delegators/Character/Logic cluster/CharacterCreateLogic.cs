@@ -17,13 +17,13 @@ public class CharacterCreateLogic : ICharacterCreateLogic
 
     private readonly Snapshot snapshot;
     private readonly IDiceLogicDelegator dice;
-    private readonly IItemLogicDelegator items;
+    private readonly IItemsLogicDelegator items;
     private readonly ICharacterSheetLogic characterSheet;
 
     public CharacterCreateLogic(
         Snapshot snapshot,
         IDiceLogicDelegator dice,
-        IItemLogicDelegator items,
+        IItemsLogicDelegator items,
         ICharacterSheetLogic characterSheet)
     {
         this.snapshot = snapshot;

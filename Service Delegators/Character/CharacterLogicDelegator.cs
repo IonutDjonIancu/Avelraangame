@@ -29,7 +29,7 @@ public interface ICharacterLogicDelegator
 public class CharacterLogicDelegator : ICharacterLogicDelegator
 {
     public readonly Snapshot snapshot;
-    public readonly Validations validations;
+    public readonly IValidations validations;
     public readonly IPersistenceService persistence;
     public readonly ICharacterCreateLogic createLogic;
     public readonly ICharacterInfoLogic infoLogic;
@@ -41,7 +41,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
     public CharacterLogicDelegator(
         Snapshot snapshot,
-        Validations validations,
+        IValidations validations,
         IPersistenceService persistence,
         ICharacterCreateLogic createLogic,
         ICharacterInfoLogic infoLogic,

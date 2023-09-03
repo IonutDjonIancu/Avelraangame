@@ -2,18 +2,18 @@
 
 namespace Service_Delegators;
 
-public interface IItemLogicDelegator
+public interface IItemsLogicDelegator
 {
     Item GenerateRandomItem();
     Item GenerateSpecificItem(string type, string subtype);
 }
 
-public class ItemLogicDelegator : IItemLogicDelegator
+public class ItemsLogicDelegator : IItemsLogicDelegator
 {
     private readonly Validations validations;
     private readonly IItemCreateLogic itemCreateLogic;
 
-    public ItemLogicDelegator(
+    public ItemsLogicDelegator(
         Validations validations,
         IItemCreateLogic itemCreateLogic)
     {

@@ -45,6 +45,7 @@ public class DIServices : IDIServices
         LoadItemsService(builder);
         LoadPlayerService(builder);
         LoadCharacterService(builder);
+        LoadNpcService(builder);
     }
 
     #region private methods
@@ -76,7 +77,7 @@ public class DIServices : IDIServices
     private static void LoadItemsService(WebApplicationBuilder builder)
     {
         // delegator
-        builder.Services.AddTransient<IItemLogicDelegator, ItemLogicDelegator>();
+        builder.Services.AddTransient<IItemsLogicDelegator, ItemsLogicDelegator>();
         // subservices
         builder.Services.AddTransient<IItemCreateLogic, ItemCreateLogic>();
     }
@@ -103,6 +104,14 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();
         builder.Services.AddTransient<ICharacterTravelLogic, CharacterTravelLogic>();
         builder.Services.AddTransient<ICharacterNpcInteraction, CharacterNpcInteraction>();
+    }
+
+    private static void LoadNpcService(WebApplicationBuilder builder)
+    {
+        // delegator
+        builder.Services.AddTransient<INpcLogicDelegator, NpcLogicDelegator>();
+        // subservices
+        builder.Services.AddTransient<INpcCreateLogic, NpcCreateLogic>();
     }
     #endregion
 }
