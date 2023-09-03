@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface ICharacterSpecialSkillsLogic
 {
-    Character ApplySpecialSkill(CharacterSpecialSkillAdd spsk);
+    Character ApplySpecialSkill(CharacterAddSpecialSkill spsk);
 }
 
 public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
@@ -18,7 +18,7 @@ public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
         this.snapshot = snapshot;
     }
 
-    public Character ApplySpecialSkill(CharacterSpecialSkillAdd spsk)
+    public Character ApplySpecialSkill(CharacterAddSpecialSkill spsk)
     {
         lock (_lock)
         {

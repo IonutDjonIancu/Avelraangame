@@ -259,7 +259,7 @@ public class CharacterServiceTests : TestBase
 
         var swordsman = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.BonusSpecialSkills.Swordsman.Identity.Name)!;
 
-        var trait = new CharacterSpecialSkillAdd
+        var trait = new CharacterAddSpecialSkill
         {
             CharacterIdentity = new CharacterIdentity
             {
@@ -289,7 +289,7 @@ public class CharacterServiceTests : TestBase
 
         var metachaos = SpecialSkillsLore.All.Find(t => t.Identity.Name == SpecialSkillsLore.ActivateSpecialSkills.MetachaosDaemonology.Identity.Name)!;
 
-        var trait = new CharacterSpecialSkillAdd
+        var trait = new CharacterAddSpecialSkill
         {
             CharacterIdentity = new CharacterIdentity
             {

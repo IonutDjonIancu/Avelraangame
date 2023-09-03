@@ -28,7 +28,7 @@ public class PersistenceService : IPersistenceService
     {
         lock (_lock)
         {
-            var player = snapshot.Players.Find(s => s.Identity.Id == playerId);
+            var player = snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("No player found to persist.");
             var playerJson = JsonConvert.SerializeObject(player);
             var path = $"{Directory.GetCurrentDirectory()}{appSettings.DbPlayersPath}\\Player{player!.Identity.Id}.json";
 

@@ -41,7 +41,7 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            var player = GetPlayerByName(request.PlayerName);
+            var player = GetPlayerByName_p(request.PlayerName);
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
             if (request.Token != player.Identity.Token) throw new Exception("Token mismatch.");
@@ -56,7 +56,7 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidatePlayerIsAdmin(requesterId);
+            ValidatePlayerIsAdmin_p(requesterId);
         }
     }
 
@@ -80,7 +80,7 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidateString(playerName);
+            ValidateString_p(playerName);
             if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
             if (snapshot.Players.Count >= 20) throw new Exception("Server has reached the limit number of players, please contact admins.");
 
@@ -94,9 +94,9 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidateObject(login);
-            ValidateString(login.PlayerName);
-            ValidateString(login.Code);
+            ValidateObject_p(login);
+            ValidateString_p(login.PlayerName);
+            ValidateString_p(login.Code);
 
             // we don't care for player misspelling their names
             // names will be unique during creation
@@ -108,8 +108,8 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidateString(newPlayerName);
-            ValidatePlayerExists(playerId);
+            ValidateString_p(newPlayerName);
+            ValidatePlayerExists_p(playerId);
         }
     }
 
@@ -117,7 +117,7 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidatePlayerExists(playerId);
+            ValidatePlayerExists_p(playerId);
         }
     }
     #endregion
@@ -125,8 +125,8 @@ public class Validations : IValidations
     #region item validations
     public static void CreateItemWithTypeAndSubtype(string type, string subtype)
     {
-        ValidateString(type); 
-        ValidateString(subtype);
+        ValidateString_p(type); 
+        ValidateString_p(subtype);
 
         if (!ItemsLore.Types.All.Contains(type)) throw new Exception("Wrong item type.");
         if (!ItemsLore.Subtypes.All.Contains(subtype)) throw new Exception("Wrong item subtype.");
@@ -140,10 +140,10 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidateString(name);
+            ValidateString_p(name);
             if (name.Length >= 20) throw new Exception("Character name too long.");
 
-            ValidateCharacterIsLocked(identity);
+            ValidateCharacterIsLocked_p(Utils.GetPlayerCharacter(identity, snapshot));
         }
     }
 
@@ -161,39 +161,39 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidateObject(traits);
+            ValidateObject_p(traits);
             
             if (!snapshot.Stubs!.Exists(s => s.PlayerId == playerId)) throw new Exception("No stub templates found for this player.");
 
-            ValidateRace(traits.Race);
-            ValidateCulture(traits.Culture);
-            ValidateTradition(traits.Tradition);
-            ValidateClass(traits.Class);
+            ValidateRace_p(traits.Race);
+            ValidateCulture_p(traits.Culture);
+            ValidateTradition_p(traits.Tradition);
+            ValidateClass_p(traits.Class);
 
-            ValidateRaceCultureCombination(traits);
+            ValidateRaceCultureCombination_p(traits);
         }
     }
 
-    public void ValidateCharacterBeforeDelete(CharacterIdentity charIdentity)
+    public void ValidateCharacterBeforeDelete(CharacterIdentity identity)
     {
         lock (_lock) 
         { 
-            ValidateObject(charIdentity);
-            ValidateCharacterIsLocked(charIdentity);
+            ValidateObject_p(identity);
+            ValidateCharacterIsLocked_p(Utils.GetPlayerCharacter(identity, snapshot));
         }
     }
 
-    public void ValidateCharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
+    public void ValidateCharacterLearnHeroicTrait(CharacterAddSpecialSkill trait)
     {
         lock ( _lock)
         {
             var character = Utils.GetPlayerCharacter(trait.CharacterIdentity, snapshot);
-            ValidateCharacterIsLocked(trait.CharacterIdentity);
-            ValidateGuid(trait.SpecialSkillId);
+            ValidateCharacterIsLocked_p(character);
+            ValidateGuid_p(trait.SpecialSkillId);
 
             if (trait.Subskill != null)
             {
-                ValidateString(trait.Subskill);
+                ValidateString_p(trait.Subskill);
                 if (!CharactersLore.Skills.All.Contains(trait.Subskill)) throw new Exception("No such Skill was found with the indicated skill name.");
             }
 
@@ -206,12 +206,31 @@ public class Validations : IValidations
         }
     }
 
+    public void ValidateCharacterBeforeKill(CharacterIdentity identity)
+    {
+        lock ( _lock)
+        {
+            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            if (!character.Status.IsAlive) throw new Exception("Character is already dead.");
+        }
+    }
+
+    public void ValidateCharacterAddWealth(int wealth, CharacterIdentity identity)
+    {
+        lock ( _lock)
+        {
+            ValidateNumberGreaterThanZero_p(wealth);
+            _ = Utils.GetPlayerCharacter(identity,snapshot);
+        }
+    }
+
     public void ValidateCharacterAddFame(string fame, CharacterIdentity identity)
     {
         lock ( _lock)
         {
-            ValidateString(fame);
-            _ = Utils.GetPlayerCharacter(identity, snapshot);
+            ValidateString_p(fame);
+            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            ValidateCharacterIsLocked_p(character);
         }
     }
 
@@ -219,13 +238,14 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            ValidateObject(equip);
-            ValidateGuid(equip.CharacterIdentity.Id);
-            ValidateGuid(equip.ItemId);
-            ValidateString(equip.InventoryLocation);
-            ValidateCharacterIsLocked(equip.CharacterIdentity);
-
+            ValidateObject_p(equip);
+            ValidateGuid_p(equip.CharacterIdentity.Id);
+            ValidateGuid_p(equip.ItemId);
+            ValidateString_p(equip.InventoryLocation);
+            
             var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
             if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) throw new Exception("Equipment location does not fit any possible slot in inventory.");
 
             if (!toEquip) return;
@@ -331,27 +351,97 @@ public class Validations : IValidations
             if (!isItemAtCorrectLocation) throw new Exception("Item is being equipped at incorrect location.");
         }
     }
+
+    public void ValidateAttributesBeforeIncrease(string attribute, string attributeType, CharacterIdentity identity)
+    {
+        lock (_lock)
+        {
+            ValidateString_p(attribute);
+            ValidateString_p(attributeType);
+            
+            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            if (!CharactersLore.AttributeTypes.All.Contains(attributeType)) throw new Exception("Wrong attribute type");
+
+            if (attributeType == CharactersLore.AttributeTypes.Stats)
+            {
+                if (!CharactersLore.Stats.All.Contains(attribute)) throw new Exception("This stat does not exist.");
+                if (character.LevelUp.StatPoints <= 0) throw new Exception("You have no stat points to use.");
+            } 
+            else if (attributeType == CharactersLore.AttributeTypes.Assets)
+            {
+                if (!CharactersLore.Assets.All.Contains(attribute)) throw new Exception("This asset does not exist.");
+                if (character.LevelUp.AssetPoints <= 0) throw new Exception("You have no asset points to use.");
+            } 
+            else if (attributeType == CharactersLore.AttributeTypes.Skills)
+            {
+                if (!CharactersLore.Skills.All.Contains(attribute)) throw new Exception("This skill does not exist.");
+                if (character.LevelUp.SkillPoints <= 0) throw new Exception("You have no skill points to use.");
+            }
+        }
+    }
+
+    public void ValidateCharacterBeforeTravel(CharacterTravel travel)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+            ValidateCharacterIsAlive_p(character);
+
+            if (character.Inventory.Provisions <= 0) throw new Exception("You don't have any provisions to travel.");
+            if (character.Mercenaries.Select(s => s.Inventory.Provisions).Any(s => s <= 0)) throw new Exception("One or more of your mercenaries does not have enough provisions to travel.");
+
+            var totalProvisions = character.Inventory.Provisions
+                + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
+
+            if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
+
+            var destinationFullName = Utils.GetLocationFullNameFromPosition(travel.Destination);
+            if (!GameplayLore.Locations.All.Select(s => s.FullName).ToList().Contains(destinationFullName)) throw new Exception("No such destination is known.");
+        }
+    }
+
+    public void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(hireMercenary.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position)) ?? throw new Exception("Location has not been visited yet.");
+            var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId) ?? throw new Exception("This mercenary does not exist at this location.");
+
+            if (merc.Status.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Status.Worth}, but your character's wealth is only about {character.Status.Wealth}.");
+        }
+    }
+
     #endregion
 
     #region private methods
-    private static void ValidateString(string str, string message = "")
+
+    // the _p suffix represents these methods are private and do not use the lock
+    // this is to prevent trying to use a locked resource
+
+    private static void ValidateString_p(string str, string message = "")
     {
         if (string.IsNullOrWhiteSpace(str)) throw new Exception(message.Length > 0 ? message : "The provided string is invalid.");
     }
 
-    private static void ValidateObject(object? obj, string message = "")
+    private static void ValidateObject_p(object? obj, string message = "")
     {
         if (obj == null) throw new Exception(message.Length > 0 ? message : $"Object found null.");
     }
 
-    private static void ValidateNumberGreaterThanZero(int num, string message = "")
+    private static void ValidateNumberGreaterThanZero_p(int num, string message = "")
     {
         if (num <= 0) throw new Exception(message.Length > 0 ? message : "Number cannot be smaller or equal to zero.");
     }
 
-    private static void ValidateGuid(string str, string message = "")
+    private static void ValidateGuid_p(string str, string message = "")
     {
-        ValidateString(str);
+        ValidateString_p(str);
 
         var isGuidValid = Guid.TryParse(str, out var id);
 
@@ -360,46 +450,46 @@ public class Validations : IValidations
         if (id == Guid.Empty) throw new Exception("Guid cannot be an empty guid.");
     }
 
-    private void ValidatePlayerExists(string playerId)
+    private void ValidatePlayerExists_p(string playerId)
     {
-        ValidateString(playerId);
-        GetPlayer(playerId);
+        ValidateString_p(playerId);
+        GetPlayer_p(playerId);
     }
 
-    private void ValidatePlayerIsAdmin(string playerId)
+    private void ValidatePlayerIsAdmin_p(string playerId)
     {
-        ValidatePlayerExists(playerId);
+        ValidatePlayerExists_p(playerId);
 
-        var playerName = GetPlayer(playerId)!.Identity.Name;
+        var playerName = GetPlayer_p(playerId)!.Identity.Name;
 
         if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
     }
 
-    private void ValidateClass(string classes)
+    private static void ValidateClass_p(string classes)
     {
-        ValidateString(classes, "Invalid class string.");
+        ValidateString_p(classes, "Invalid class string.");
         if (!CharactersLore.Classes.All.Contains(classes)) throw new Exception($"Class {classes} not found.");
     }
 
-    private void ValidateCulture(string culture)
+    private static void ValidateCulture_p(string culture)
     {
-        ValidateString(culture, "Invalid culture string.");
+        ValidateString_p(culture, "Invalid culture string.");
         if (!CharactersLore.Cultures.All.Contains(culture)) throw new Exception($"Culture {culture} not found.");
     }
 
-    private void ValidateTradition(string tradition)
+    private static void ValidateTradition_p(string tradition)
     {
-        ValidateString(tradition, "Invalid tradition string.");
+        ValidateString_p(tradition, "Invalid tradition string.");
         if (!CharactersLore.Tradition.All.Contains(tradition)) throw new Exception($"Tradition {tradition} not found.");
     }
 
-    private void ValidateRace(string race)
+    private static void ValidateRace_p(string race)
     {
-        ValidateString(race, "Invalid race string.");
+        ValidateString_p(race, "Invalid race string.");
         if (!CharactersLore.Races.Playable.All.Contains(race)) throw new Exception($"Race {race} not found.");
     }
 
-    private static void ValidateRaceCultureCombination(CharacterTraits origins)
+    private static void ValidateRaceCultureCombination_p(CharacterTraits origins)
     {
         string message = "Invalid race culture combination";
 
@@ -417,22 +507,22 @@ public class Validations : IValidations
         }
     }
 
-    private void ValidateCharacterIsLocked(CharacterIdentity identity)
+    private static void ValidateCharacterIsLocked_p(Character character)
     {
-        if (Utils.GetPlayerCharacter(identity, snapshot).Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
+        if (character.Status.IsLockedToModify) throw new Exception("Cannot modify character at this time");
     }
 
-    private void ValidateCharacterPlayerCombination(CharacterIdentity identity)
+    private static void ValidateCharacterIsAlive_p(Character character)
     {
-        _ = Utils.GetPlayerCharacter(identity, snapshot);
+        if (!character.Status.IsAlive) throw new Exception("Your character is dead.");
     }
 
-    private Player GetPlayer(string playerId)
+    private Player GetPlayer_p(string playerId)
     {
         return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("PLayer not found.");
     }
 
-    private Player GetPlayerByName(string name)
+    private Player GetPlayerByName_p(string name)
     {
         return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
     }

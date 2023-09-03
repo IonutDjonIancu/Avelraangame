@@ -1,4 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
+using System.Net;
 
 namespace Service_Delegators;
 
@@ -6,6 +7,7 @@ public interface ICharacterCreateLogic
 {
     CharacterStub CreateStub(string playerId);
     Character SaveStub(CharacterTraits traits, string playerId);
+    Character KillChar(CharacterIdentity charIdentity);
     void DeleteCharacter(CharacterIdentity charIdentity);
 }
 
@@ -77,6 +79,17 @@ public class CharacterCreateLogic : ICharacterCreateLogic
 
             var player = snapshot.Players.Find(p => p.Identity.Id == playerId)!;
             player.Characters!.Add(character);
+
+            return character;
+        }
+    }
+
+    public Character KillChar(CharacterIdentity charIdentity)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            character.Status!.IsAlive = false;
 
             return character;
         }

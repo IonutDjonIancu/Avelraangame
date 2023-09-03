@@ -202,4 +202,16 @@ public class CharactersLore
             Combat, Arcane, Psionics, Hide, Traps, Tactics, Social, Apothecary, Travel, Sail
         };
     }
+
+    public static class AttributeTypes
+    {
+        public const string Stats = "Stats";
+        public const string Assets = "Assets";
+        public const string Skills = "Skills";
+
+        public static readonly List<string> All = new() 
+        { 
+            Stats, Assets, Skills 
+        };
+    }
 }

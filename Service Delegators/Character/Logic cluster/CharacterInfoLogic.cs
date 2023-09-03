@@ -5,6 +5,7 @@ namespace Service_Delegators;
 public interface ICharacterInfoLogic
 {
     Character AddFame(string fame, CharacterIdentity charIdentity);
+    Character AddWealth(int wealth, CharacterIdentity charIdentity);
     Character ChangeName(string name, CharacterIdentity charIdentity);
 }
 
@@ -41,33 +42,14 @@ public class CharacterInfoLogic : ICharacterInfoLogic
         }
     }
 
-    internal Character AddWealth(int wealth, CharacterIdentity charIdentity)
+    public Character AddWealth(int wealth, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetPlayerCharacter(charIdentity);
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            character.Status!.Wealth += wealth;
 
-        storedChar.Status!.Wealth += wealth;
-
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return storedChar;
+            return character;
+        }
     }
-
-    internal void KillChar(CharacterIdentity charIdentity)
-    {
-        var (storedChar, player) = GetPlayerCharacter(charIdentity);
-
-        storedChar.Status!.IsAlive = false;
-
-        dbs.PersistPlayer(player.Identity.Id);
-    }
-
-    internal void DeleteChar(CharacterIdentity charIdentity)
-    {
-        var character = GetPlayerCharacter(charIdentity);
-
-        player.Characters.Remove(storedChar!);
-
-        dbs.PersistPlayer(player.Identity.Id);
-    }
-
 }

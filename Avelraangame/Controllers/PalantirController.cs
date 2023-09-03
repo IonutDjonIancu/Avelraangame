@@ -261,7 +261,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var stub = characters.CreateCharacterStub(playerId);
+            var stub = characters.CreateStub(playerId);
 
             return Ok(stub);
         }
@@ -279,7 +279,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var character = characters.SaveCharacterStub(traits, playerId);
+            var character = characters.SaveStub(traits, playerId);
 
             return Ok(character);
         }
@@ -297,7 +297,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var character = characters.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
+            var character = characters.UpdateName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
 
             return Ok(character);
         }
@@ -333,7 +333,7 @@ public class PalantirController : ControllerBase
         try
         {
             equip.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.CharacterEquipItem(equip);
+            var character = characters.EquipItem(equip);
 
             return Ok(character);
         }
@@ -351,7 +351,7 @@ public class PalantirController : ControllerBase
         try
         {
             unequip.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.CharacterUnequipItem(unequip);
+            var character = characters.UnequipItem(unequip);
 
             return Ok(character);
         }
@@ -364,12 +364,66 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/LearnSpecialSkill
     [HttpPut("Character/LearnSpecialSkill")]
-    public IActionResult LearnSpecialSkill([FromQuery] Request request, [FromBody] CharacterSpecialSkillAdd trait)
+    public IActionResult LearnSpecialSkill([FromQuery] Request request, [FromBody] CharacterAddSpecialSkill trait)
     {
         try
         {
             trait.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.CharacterLearnSpecialSkill(trait);
+            var character = characters.LearnSpecialSkill(trait);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/IncreaseStats
+    [HttpPut("Character/IncreaseStats")]
+    public IActionResult IncreaseStats([FromQuery] Request request, [FromBody] CharacterIncreaseAttributes attributes)
+    {
+        try
+        {
+            attributes.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.IncreaseStats(attributes.Stat, attributes.CharacterIdentity);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/IncreaseAssets
+    [HttpPut("Character/IncreaseAssets")]
+    public IActionResult IncreaseAssets([FromQuery] Request request, [FromBody] CharacterIncreaseAttributes attributes)
+    {
+        try
+        {
+            attributes.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.IncreaseAssets(attributes.Asset, attributes.CharacterIdentity);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/IncreaseSkills
+    [HttpPut("Character/IncreaseSkills")]
+    public IActionResult IncreaseSkills([FromQuery] Request request, [FromBody] CharacterIncreaseAttributes attributes)
+    {
+        try
+        {
+            attributes.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.IncreaseSkills(attributes.Skill, attributes.CharacterIdentity);
 
             return Ok(character);
         }
@@ -382,15 +436,14 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/TravelToLocation
     [HttpPut("Character/TravelToLocation")]
-    public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] CharacterTravel positionTravel)
+    public IActionResult TravelToLocation([FromQuery] Request request, [FromBody] CharacterTravel travel)
     {
         try
         {
-            positionTravel.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
+            travel.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.TravelToLocation(travel);
 
-            factory.ServiceFactory.CharacterService.CharacterTravelToLocation(positionTravel);
-
-            return Ok();
+            return Ok(character);
         }
         catch (Exception ex)
         {
@@ -405,11 +458,10 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            hireMercenary.CharacterIdentity.PlayerId = MatchTokensForPlayer(request);
+            hireMercenary.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.HireMercenary(hireMercenary);
 
-            factory.ServiceFactory.CharacterService.CharacterHireMercenary(hireMercenary);
-
-            return Ok();
+            return Ok(character);
         }
         catch (Exception ex)
         {
@@ -426,7 +478,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var npc = factory.ServiceFactory.NpcService.GenerateGoodGuyNpc(location);
+            var npc = npc
 
             return Ok(npc);
         }

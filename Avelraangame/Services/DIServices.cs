@@ -100,6 +100,9 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
         builder.Services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
         builder.Services.AddTransient<ICharacterSpecialSkillsLogic, CharacterSpecialSkillsLogic>();
+        builder.Services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();
+        builder.Services.AddTransient<ICharacterTravelLogic, CharacterTravelLogic>();
+        builder.Services.AddTransient<ICharacterNpcInteraction, CharacterNpcInteraction>();
     }
     #endregion
 }

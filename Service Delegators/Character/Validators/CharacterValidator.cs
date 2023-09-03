@@ -76,7 +76,7 @@ internal class CharacterValidator : ValidatorBase
         ValidateRaceCultureCombination(traits);
     }
 
-    internal void ValidateCharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
+    internal void ValidateCharacterLearnHeroicTrait(CharacterAddSpecialSkill trait)
     {
         ValidateCharacterPlayerCombination(trait.CharacterIdentity);
         ValidateIfCharacterIsLocked(trait.CharacterIdentity);

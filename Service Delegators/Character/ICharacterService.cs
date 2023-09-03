@@ -33,7 +33,7 @@ public interface ICharacterService
     #region character actions
     Character CharacterEquipItem(CharacterEquip equip);
     Character CharacterUnequipItem(CharacterEquip unequip);
-    Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait);
+    Character CharacterLearnHeroicTrait(CharacterAddSpecialSkill trait);
     void CharacterTravelToLocation(CharacterTravel positionTravel);
     void CharacterHireMercenary(CharacterHireMercenary hireMercenary);
     #endregion

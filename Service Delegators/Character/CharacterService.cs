@@ -115,7 +115,7 @@ public class CharacterService : ICharacterService
         return logic.UnequipItem(unequip);
     }
 
-    public Character CharacterLearnHeroicTrait(CharacterSpecialSkillAdd trait)
+    public Character CharacterLearnHeroicTrait(CharacterAddSpecialSkill trait)
     {
         validator.ValidateCharacterLearnHeroicTrait(trait);
         return logic.ApplyHeroicTrait(trait);

@@ -1,30 +1,29 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Persistance_Manager;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service_Delegators;
 
 public interface ICharacterLogicDelegator
 {
-    Character SaveCharacterStub(CharacterTraits traits, string playerId);
-    CharacterStub CreateCharacterStub(string playerId);
+    CharacterStub CreateStub(string playerId);
+    Character SaveStub(CharacterTraits traits, string playerId);
+    Character KillCharacter(CharacterIdentity identity);
     void DeleteCharacter(CharacterIdentity identity);
 
-    Character CharacterEquipItem(CharacterEquip equip);
-    Character CharacterUnequipItem(CharacterEquip unequip);
+    Character EquipItem(CharacterEquip equip);
+    Character UnequipItem(CharacterEquip unequip);
 
-    Character UpdateCharacterName(string name, CharacterIdentity identity);
-    Character UpdateCharacterAssets(string asset, CharacterIdentity identity);
-    Character UpdateCharacterFame(string fame, CharacterIdentity identity);
-    Character UpdateCharacterSkills(string skill, CharacterIdentity identity);
-    Character UpdateCharacterStats(string stat, CharacterIdentity identity);
-    Character UpdateCharacterWealth(int wealth, CharacterIdentity identity);
+    Character UpdateName(string name, CharacterIdentity identity);
+    Character AddFame(string fame, CharacterIdentity identity);
+    Character AddWealth(int wealth, CharacterIdentity identity);
+
+    Character IncreaseStats(string stat, CharacterIdentity identity);
+    Character IncreaseAssets(string asset, CharacterIdentity identity);
+    Character IncreaseSkills(string skill, CharacterIdentity identity);
     
-    void CharacterHireMercenary(CharacterHireMercenary hireMercenary);
-    Character CharacterLearnSpecialSkill(CharacterSpecialSkillAdd trait);
-    void CharacterTravelToLocation(CharacterTravel positionTravel);
-
-    void KillCharacter(CharacterIdentity identity);
+    Character HireMercenary(CharacterHireMercenary hireMercenary);
+    Character LearnSpecialSkill(CharacterAddSpecialSkill trait);
+    Character TravelToLocation(CharacterTravel travel);
 }
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
@@ -32,163 +31,159 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public readonly Snapshot snapshot;
     public readonly Validations validations;
     public readonly IPersistenceService persistence;
-    public readonly ICharacterCreateLogic characterCreate;
-    public readonly ICharacterInfoLogic characterInfo;
-    public readonly ICharacterItemsLogic characterItems;
-    public readonly ICharacterSpecialSkillsLogic characterSpSk;
+    public readonly ICharacterCreateLogic createLogic;
+    public readonly ICharacterInfoLogic infoLogic;
+    public readonly ICharacterItemsLogic itemsLogic;
+    public readonly ICharacterSpecialSkillsLogic specialSkillsLogic;
+    public readonly ICharacterLevelupLogic levelupLogic;
+    public readonly ICharacterTravelLogic travelLogic;
+    public readonly ICharacterNpcInteraction npcInteractionLogic;
 
     public CharacterLogicDelegator(
         Snapshot snapshot,
         Validations validations,
         IPersistenceService persistence,
-        ICharacterCreateLogic characterCreate,
-        ICharacterInfoLogic characterInfo,
-        ICharacterItemsLogic characterItems,
-        ICharacterSpecialSkillsLogic characterSpSk)
+        ICharacterCreateLogic createLogic,
+        ICharacterInfoLogic infoLogic,
+        ICharacterItemsLogic itemsLogic,
+        ICharacterSpecialSkillsLogic specialSkillsLogic,
+        ICharacterLevelupLogic levelupLogic,
+        ICharacterTravelLogic travelLogic,
+        ICharacterNpcInteraction npcInteractionLogic)
     {
         this.snapshot = snapshot;
         this.validations = validations;
         this.persistence = persistence;
-        this.characterCreate = characterCreate;
-        this.characterInfo = characterInfo;
-        this.characterItems = characterItems;
-        this.characterSpSk = characterSpSk;
+        this.createLogic = createLogic;
+        this.infoLogic = infoLogic;
+        this.itemsLogic = itemsLogic;
+        this.specialSkillsLogic = specialSkillsLogic;
+        this.levelupLogic = levelupLogic;
+        this.travelLogic = travelLogic;
+        this.npcInteractionLogic = npcInteractionLogic;
     }
 
-    public CharacterStub CreateCharacterStub(string playerId)
+    public CharacterStub CreateStub(string playerId)
     {
         validations.ValidateCharacterMaxNrAllowed(playerId);
-        var stub = characterCreate.CreateStub(playerId);
-
+        var stub = createLogic.CreateStub(playerId);
         return stub;
     }
 
-    public Character SaveCharacterStub(CharacterTraits traits, string playerId)
+    public Character SaveStub(CharacterTraits traits, string playerId)
     {
         validations.ValidateCharacterCreateTraits(traits, playerId);
-        var character = characterCreate.SaveStub(traits, playerId);
-        persistence.PersistPlayer(playerId);
-
-        return character;
+        var character = createLogic.SaveStub(traits, playerId);
+        return PersistAndReturn(character, playerId);
     }
 
     public void DeleteCharacter(CharacterIdentity identity)
     {
         validations.ValidateCharacterBeforeDelete(identity);
-        characterCreate.DeleteCharacter(identity);
+        createLogic.DeleteCharacter(identity);
+        PersistOnly(identity.PlayerId);
     }
 
-    public Character CharacterEquipItem(CharacterEquip equip)
+    public Character EquipItem(CharacterEquip equip)
     {
         validations.ValidateCharacterEquipUnequipItem(equip, true);
-        return characterItems.EquipItem(equip);
+        var character = itemsLogic.EquipItem(equip);
+        return PersistAndReturn(character, equip.CharacterIdentity.PlayerId);
     }
 
-    public Character CharacterUnequipItem(CharacterEquip unequip)
+    public Character UnequipItem(CharacterEquip unequip)
     {
         validations.ValidateCharacterEquipUnequipItem(unequip, true);
-        return characterItems.UnequipItem(unequip);
+        var character = itemsLogic.UnequipItem(unequip);
+        return PersistAndReturn(character, unequip.CharacterIdentity.PlayerId);
     }
 
-    public Character UpdateCharacterName(string name, CharacterIdentity identity)
+    public Character UpdateName(string name, CharacterIdentity identity)
     {
         validations.ValidateCharacterUpdateName(name, identity);
-        var character = characterInfo.ChangeName(name, identity);
-        persistence.PersistPlayer(identity.PlayerId);
+        var character = infoLogic.ChangeName(name, identity);
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+
+    public Character LearnSpecialSkill(CharacterAddSpecialSkill trait)
+    {
+        validations.ValidateCharacterLearnHeroicTrait(trait);
+        var character = specialSkillsLogic.ApplySpecialSkill(trait);
+        return PersistAndReturn(character, trait.CharacterIdentity.PlayerId);
+    }
+
+    public Character AddFame(string fame, CharacterIdentity identity)
+    {
+        validations.ValidateCharacterAddFame(fame, identity);
+        var character = infoLogic.AddFame(fame, identity);
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+
+    public Character AddWealth(int wealth, CharacterIdentity identity)
+    {
+        validations.ValidateCharacterAddWealth(wealth, identity);
+        var character = infoLogic.AddWealth(wealth, identity);
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+    
+    public Character KillCharacter(CharacterIdentity identity)
+    {
+        validations.ValidateCharacterBeforeKill(identity);
+        var character = createLogic.KillChar(identity);
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+
+    public Character IncreaseStats(string stat, CharacterIdentity identity)
+    {
+        validations.ValidateAttributesBeforeIncrease(stat, CharactersLore.AttributeTypes.Stats, identity);    
+        var character = levelupLogic.IncreaseStats(stat, identity);
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+    
+    public Character IncreaseAssets(string asset, CharacterIdentity identity)
+    {
+        validations.ValidateAttributesBeforeIncrease(asset, CharactersLore.AttributeTypes.Assets, identity);    
+        var character = levelupLogic.IncreaseAsset(asset, identity);
+
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+
+    public Character IncreaseSkills(string skill, CharacterIdentity identity)
+    {
+        validations.ValidateAttributesBeforeIncrease(skill, CharactersLore.AttributeTypes.Skills, identity);
+        var character = levelupLogic.IncreaseSkill(skill, identity);
+
+        return PersistAndReturn(character, identity.PlayerId);
+    }
+
+    public Character TravelToLocation(CharacterTravel travel)
+    {
+        validations.ValidateCharacterBeforeTravel(travel);
+        var character = travelLogic.MoveToLocation(travel);
+
+        return PersistAndReturn(character, travel.CharacterIdentity.PlayerId);
+    }
+
+    public Character HireMercenary(CharacterHireMercenary hireMercenary)
+    {
+        validations.ValidateMercenaryBeforeHire(hireMercenary);
+        var character = npcInteractionLogic.HireMercenary(hireMercenary);
+
+        return PersistAndReturn(character, hireMercenary.CharacterIdentity.PlayerId);
+    }
+
+    #region private methods
+    private Character PersistAndReturn(Character character, string playerId)
+    {
+        persistence.PersistPlayer(playerId);
 
         return character;
     }
 
-    public Character CharacterLearnSpecialSkill(CharacterSpecialSkillAdd trait)
+    private void PersistOnly(string playerId)
     {
-        validations.ValidateCharacterLearnHeroicTrait(trait);
-        persistence.PersistPlayer(trait.CharacterIdentity.PlayerId);
-        return characterSpSk.ApplySpecialSkill(trait);
+        persistence.PersistPlayer(playerId);
     }
 
-    public Character UpdateCharacterFame(string fame, CharacterIdentity identity)
-    {
-        validations.ValidateCharacterAddFame(fame, identity);
-        persistence.PersistPlayer(identity.PlayerId);
-        return characterInfo.AddFame(fame, identity);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public Character UpdateCharacterWealth(int wealth, CharacterIdentity identity)
-    {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterIsLocked(identity);
-        validator.ValidateNumber(wealth);
-        return logic.AddWealth(wealth, identity);
-    }
-
-    public Character UpdateCharacterStats(string stat, CharacterIdentity identity)
-    {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterIsLocked(identity);
-        validator.ValidateStatExists(stat);
-        validator.ValidateCharacterHasStatsPoints(identity);
-        return logic.IncreaseStats(stat, identity);
-    }
-
-    public Character UpdateCharacterAssets(string asset, CharacterIdentity identity)
-    {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterIsLocked(identity);
-        validator.ValidateAssetExists(asset);
-        validator.ValidateCharacterHasAssetsPoints(identity);
-        return logic.IncreaseAsset(asset, identity);
-    }
-
-    public Character UpdateCharacterSkills(string skill, CharacterIdentity identity)
-    {
-        validator.ValidateCharacterPlayerCombination(identity);
-        validator.ValidateIfCharacterIsLocked(identity);
-        validator.ValidateSkillExists(skill);
-        validator.ValidateCharacterHasSkillsPoints(identity);
-        return logic.IncreaseSkills(skill, identity);
-    }
-
-    public void KillCharacter(CharacterIdentity identity)
-    {
-        validator.ValidateCharacterPlayerCombination(identity);
-        logic.KillChar(identity);
-    }
-
-    
-
-
-   
-
-    
-
-    public void CharacterTravelToLocation(CharacterTravel positionTravel)
-    {
-        validator.ValidateBeforeTravel(positionTravel);
-        logic.MoveToLocation(positionTravel);
-    }
-
-    public void CharacterHireMercenary(CharacterHireMercenary hireMercenary)
-    {
-        validator.ValidateMercenaryBeforeHire(hireMercenary);
-        logic.HireMercenary(hireMercenary);
-    }
-
-
-
-
-
+    #endregion
 }
