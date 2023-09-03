@@ -2,74 +2,54 @@
 
 namespace Service_Delegators;
 
-internal class CharacterInfoLogic
+public interface ICharacterInfoLogic
 {
-    private readonly IDatabaseService dbs;
+    Character AddFame(string fame, CharacterIdentity charIdentity);
+    Character AddWealth(int wealth, CharacterIdentity charIdentity);
+    Character ChangeName(string name, CharacterIdentity charIdentity);
+}
 
-    private CharacterInfoLogic() { }
-    internal CharacterInfoLogic(IDatabaseService databaseService)
+public class CharacterInfoLogic : ICharacterInfoLogic
+{
+    private readonly object _lock = new();
+
+    private readonly Snapshot snapshot;
+
+    public CharacterInfoLogic(Snapshot snapshot)
     {
-        dbs = databaseService;
+        this.snapshot = snapshot;
     }
 
-    internal Character ChangeName(string name, CharacterIdentity charIdentity)
+    public Character ChangeName(string name, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            character.Status!.Name = name;
 
-        storedChar.Status!.Name = name;
-
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return storedChar;
+            return character;
+        }
     }
 
-    internal Character AddFame(string fame, CharacterIdentity charIdentity)
+    public Character AddFame(string fame, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
+        lock ( _lock)
+        {
+            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            character.Status!.Fame = string.Concat(character.Status.Fame, $"\n{fame}");
 
-        storedChar.Status!.Fame = string.Concat(storedChar.Status.Fame, $"\n{fame}");
-
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return storedChar;
+            return character;
+        }
     }
 
-    internal Character AddWealth(int wealth, CharacterIdentity charIdentity)
+    public Character AddWealth(int wealth, CharacterIdentity charIdentity)
     {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            character.Status!.Wealth += wealth;
 
-        storedChar.Status!.Wealth += wealth;
-
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return storedChar;
+            return character;
+        }
     }
-
-    internal void KillChar(CharacterIdentity charIdentity)
-    {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
-
-        storedChar.Status!.IsAlive = false;
-
-        dbs.PersistPlayer(player.Identity.Id);
-    }
-
-    internal void DeleteChar(CharacterIdentity charIdentity)
-    {
-        var (storedChar, player) = GetStoredCharacterAndPlayer(charIdentity);
-
-        player.Characters.Remove(storedChar!);
-
-        dbs.PersistPlayer(player.Identity.Id);
-    }
-
-    #region private methods
-    private (Character, Player) GetStoredCharacterAndPlayer(CharacterIdentity charIdentity)
-    {
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == charIdentity.PlayerId)!;
-        var character = player.Characters.Find(c => c.Identity.Id == charIdentity.Id)!;
-
-        return (character, player);
-    }
-    #endregion
 }

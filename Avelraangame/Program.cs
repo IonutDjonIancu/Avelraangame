@@ -1,5 +1,4 @@
 using Avelraangame;
-using Avelraangame.Factories;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,13 +33,17 @@ builder.Services.AddCors(options =>
 });
 #endregion
 
+
 #region services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IAppSettingsConfigManager, AppSettingsConfigManager>();
-builder.Services.AddSingleton<IFactoryManager, FactoryManager>();
+DIServices.LoadAppSettings(builder);
+DIServices.LoadAppSnapshot(builder);
+DIServices.LoadValidationsService(builder);
+DIServices.LoadMetadataService(builder);
+DIServices.LoadBusinessLogicServices(builder);
 #endregion
 
 var app = builder.Build();
