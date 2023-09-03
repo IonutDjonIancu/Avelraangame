@@ -2,28 +2,37 @@
 
 namespace Service_Delegators;
 
-internal class CharacterNpcInteraction
+public interface ICharacterNpcInteraction
 {
-    private readonly IDatabaseService dbs;
+    Character HireMercenary(CharacterHireMercenary hireMercenary);
+}
 
-    private CharacterNpcInteraction() { }
-    internal CharacterNpcInteraction(IDatabaseService databaseService)
+public class CharacterNpcInteraction : ICharacterNpcInteraction
+{
+    private readonly object _lock = new();
+
+    private readonly Snapshot snapshot;
+
+    public CharacterNpcInteraction(Snapshot snapshot)
     {
-        dbs = databaseService;
+        this.snapshot = snapshot;
     }
 
-    internal void HireMercenary(CharacterHireMercenary hireMercenary)
+    public Character HireMercenary(CharacterHireMercenary hireMercenary)
     {
-        var character = Utils.GetPlayerCharacter(dbs.Snapshot, hireMercenary.CharacterIdentity);
-        var location = dbs.Snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position))!;
-        var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId)!;
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(hireMercenary.CharacterIdentity, snapshot);
+            var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position))!;
+            var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId)!;
 
-        character.Status.Wealth -= merc.Status.Worth;
-        merc.Identity.PlayerId = character.Identity.PlayerId;
+            character.Status.Wealth -= merc.Status.Worth;
+            merc.Identity.PlayerId = character.Identity.PlayerId;
 
-        character.Mercenaries.Add(merc);
-        location.Mercenaries.Remove(merc);
+            character.Mercenaries.Add(merc);
+            location.Mercenaries.Remove(merc);
 
-        dbs.PersistPlayer(hireMercenary.CharacterIdentity.PlayerId);
+            return character;
+        }
     }
 }

@@ -1,34 +1,24 @@
 ﻿using System.Net.Mail;
+using Data_Mapping_Containers.Dtos;
 using Independent_Modules;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
-internal class DatabaseExportLogic
+public interface IDatabaseExportLogic
 {
-    private readonly IDatabaseManager dbm;
+    void ExportDatabase();
+    void ExportLogs(int days);
+}
+
+public class DatabaseExportLogic : IDatabaseExportLogic
+{
+    private readonly AppSettings appSettings;
     private readonly IMailingModule mailingModule;
 
-    private readonly List<string> listOfRecipients = new()
+    public DatabaseExportLogic(AppSettings appSettings)
     {
-        "iiancu85@gmail.com"
-    };
-
-    private DatabaseExportLogic() { }
-    internal DatabaseExportLogic(IDatabaseManager databaseManager)
-    {
-        dbm = databaseManager;
-        mailingModule = new MailingModule(dbm.Info.AvelraanEmail, dbm.Info.AvelraanPassword);
-    }
-
-    internal void ExportLogs(int days)
-    {
-        var logsLocation = dbm.Info.LogPath;
-        var attachments = GetLogFilesAsAttachments(logsLocation, days);
-
-        if (attachments.Count == 0) return;
-
-        SendEmails("Logs exported", attachments);
+        this.appSettings = appSettings;
+        mailingModule = new MailingModule(appSettings.AvelraanEmail, appSettings.AvelraanEmailPass);
     }
 
     public void ExportDatabase()
@@ -37,18 +27,29 @@ internal class DatabaseExportLogic
 
         if (attachments.Count == 0) return;
 
-        SendEmails("Database exported", attachments);
+        SendEmails("Avelraan DATABASE export", attachments);
     }
+
+    public void ExportLogs(int days)
+    {
+        var logsLocation = appSettings.LogPath;
+        var attachments = GetLogFilesAsAttachments(logsLocation, days);
+
+        if (attachments.Count == 0) return;
+
+        SendEmails("Avelraan LOGS export", attachments);
+    }
+
 
     #region private methods
     private void SendEmails(string subject, List<Attachment> attachments)
     {
-        var message = $"Export triggered on: {DateTime.Now.ToShortDateString()}";
+        var message = $"Export date: {DateTime.Now.ToShortDateString()}";
 
-        foreach (var email in listOfRecipients)
+        foreach (var email in appSettings.AdminData.Recipients)
         {
             mailingModule.SendEmail(email, subject, message, attachments);
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
         }
     }
 
@@ -56,12 +57,8 @@ internal class DatabaseExportLogic
     {
         var listOfAttachments = new List<Attachment>();
 
-        // database
-        var databaseAttachment = new Attachment(dbm.Info.DbPath);
-        listOfAttachments.Add(databaseAttachment);
-
         // players
-        var paths = Directory.GetFiles(dbm.Info.DbPlayersPath);
+        var paths = Directory.GetFiles(appSettings.DbPlayersPath);
         foreach (var path in paths)
         {
             var playerAttachment = new Attachment(path);

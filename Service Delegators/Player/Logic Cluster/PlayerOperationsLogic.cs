@@ -1,21 +1,40 @@
-﻿namespace Service_Delegators;
+﻿using Data_Mapping_Containers.Dtos;
 
-internal class PlayerOperationsLogic
+namespace Service_Delegators;
+
+public interface IPlayerOperationsLogic
 {
-    private readonly IDatabaseService dbs;
+    Player UpdateName(string newPlayerName, string playerId);
+    void Remove(string playerId);
+}
 
-    private PlayerOperationsLogic() { }
-    internal PlayerOperationsLogic(IDatabaseService databaseService)
+public class PlayerOperationsLogic : IPlayerOperationsLogic
+{
+    private readonly object _lock = new();
+    private readonly Snapshot snapshot;
+
+    public PlayerOperationsLogic(Snapshot snapshot)
     {
-        dbs = databaseService;
+        this.snapshot = snapshot;
     }
 
-    internal void RemovePlayer(string playerId)
+    public Player UpdateName(string newPlayerName, string playerId)
     {
-        var player = dbs.Snapshot.Players!.Find(p => p.Identity.Id == playerId);
+        lock (_lock)
+        {
+            var player = snapshot.Players.Find(s => s.Identity.Id == playerId)!;
+            player.Identity.Name = newPlayerName;
 
-        dbs.Snapshot.Players!.Remove(player!);
+            return player;
+        }
+    }
 
-        dbs.DeletePlayer(playerId);
+    public void Remove(string playerId)
+    {
+        lock(_lock)
+        {
+            var player = snapshot.Players.Find(s => s.Identity.Id == playerId)!;
+            snapshot.Players.Remove(player);
+        }
     }
 }

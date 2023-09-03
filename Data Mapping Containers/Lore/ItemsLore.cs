@@ -103,6 +103,29 @@ public class ItemsLore
                 Goods
             };
         }
+
+        public static readonly List<string> All = new()
+        {
+            Weapons.Sword,
+            Weapons.Pike,
+            Weapons.Crossbow,
+            Weapons.Polearm,
+            Weapons.Mace,
+            Weapons.Axe,
+            Weapons.Dagger,
+            Weapons.Bow,
+            Weapons.Sling,
+            Weapons.Spear,
+
+            Protections.Armour,
+            Protections.Helm,
+            Protections.Shield,
+
+            Wealth.Gems,
+            Wealth.Valuables,
+            Wealth.Trinket,
+            Wealth.Goods
+        };
     }
 
     public static class Categories

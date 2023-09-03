@@ -2,36 +2,42 @@
 
 namespace Service_Delegators;
 
-internal class CharacterSpecialSkillsLogic
+public interface ICharacterSpecialSkillsLogic
 {
-    private readonly IDatabaseService dbs;
+    Character ApplySpecialSkill(CharacterAddSpecialSkill spsk);
+}
 
-    private CharacterSpecialSkillsLogic() { }
-    internal CharacterSpecialSkillsLogic(IDatabaseService databaseService) 
+public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
+{
+    private readonly object _lock = new();
+
+    private readonly Snapshot snapshot;
+
+    public CharacterSpecialSkillsLogic(Snapshot snapshot)
     {
-        dbs = databaseService;
+        this.snapshot = snapshot;
     }
 
-    internal Character ApplySpecialSkill(CharacterSpecialSkillAdd spsk)
+    public Character ApplySpecialSkill(CharacterAddSpecialSkill spsk)
     {
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == spsk.CharacterIdentity.PlayerId)!;
-        var character = player.Characters.Find(c => c.Identity.Id == spsk.CharacterIdentity.Id)!;
-        var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId)!;
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
+            var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId)!;
 
-        character.Sheet.SpecialSkills.Add(specialSkill);
-        character.LevelUp.DeedsPoints -= specialSkill.DeedsCost;
+            character.Sheet.SpecialSkills.Add(specialSkill);
+            character.LevelUp.DeedsPoints -= specialSkill.DeedsCost;
 
-        if (specialSkill.Type == SpecialSkillsLore.Type.Bonus) ApplyBonusHeroicTraits(character, specialSkill.Identity.Name, spsk.Subskill);
+            if (specialSkill.Type == SpecialSkillsLore.Type.Bonus) ApplyBonusHeroicTraits(character, specialSkill.Identity.Name, spsk.Subskill);
 
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return character;
+            return character;
+        }
     }
 
     #region private methods
-    private void ApplyBonusHeroicTraits(Character character, string heroicTraitName, string skill = "")
+    private static void ApplyBonusHeroicTraits(Character character, string heroicTraitName, string skill = "")
     {
-        if      (heroicTraitName == SpecialSkillsLore.BonusSpecialSkills.Swordsman.Identity.Name) RunSwordsmanLogic(character);
+        if (heroicTraitName == SpecialSkillsLore.BonusSpecialSkills.Swordsman.Identity.Name) RunSwordsmanLogic(character);
         else if (heroicTraitName == SpecialSkillsLore.BonusSpecialSkills.Skillful.Identity.Name) RunSkillfulLogic(character, skill);
     }
 

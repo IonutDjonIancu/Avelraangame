@@ -2,108 +2,96 @@
 
 namespace Service_Delegators;
 
-internal class CharacterItemsLogic
+public interface ICharacterItemsLogic
 {
-    private readonly IDatabaseService dbs;
+    Character EquipItem(CharacterEquip equip);
+    Character UnequipItem(CharacterEquip unequip);
+}
 
-    private CharacterItemsLogic() { }
-    internal CharacterItemsLogic(IDatabaseService databaseService)
+public class CharacterItemsLogic : ICharacterItemsLogic
+{
+    private readonly object _lock = new();
+
+    private readonly Snapshot snapshot;
+
+    public CharacterItemsLogic(Snapshot snapshot)
     {
-        dbs = databaseService;
+        this.snapshot = snapshot;
     }
 
-    internal Character UnequipItem(CharacterEquip unequip)
+    public Character UnequipItem(CharacterEquip unequip)
     {
-        var (character, player) = GetStoredCharacterAndPlayer(unequip.CharacterIdentity);
-        Item item;
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(unequip.CharacterIdentity, snapshot);
+            Item item;
 
-        if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Head)
-        {
-            item = character.Inventory!.Head!;
-            character.Inventory.Head = null;
-        }
-        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Body)
-        {
-            item = character.Inventory!.Body!;
-            character.Inventory.Body = null;
-        }
-        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand)
-        {
-            item = character.Inventory!.Mainhand!;
-            character.Inventory.Mainhand = null;
-        }
-        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Offhand)
-        {
-            item = character.Inventory!.Offhand!;
-            character.Inventory.Offhand = null;
-        }
-        else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Ranged)
-        {
-            item = character.Inventory!.Ranged!;
-            character.Inventory.Ranged = null;
-        }
-        else
-        {
-            item = character.Inventory!.Heraldry!.Find(i => i.Identity.Id == unequip.ItemId)!;
-            character.Inventory.Heraldry.Remove(item);
-        }
+            if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Head)
+            {
+                item = character.Inventory!.Head!;
+                character.Inventory.Head = null;
+            }
+            else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Body)
+            {
+                item = character.Inventory!.Body!;
+                character.Inventory.Body = null;
+            }
+            else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand)
+            {
+                item = character.Inventory!.Mainhand!;
+                character.Inventory.Mainhand = null;
+            }
+            else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Offhand)
+            {
+                item = character.Inventory!.Offhand!;
+                character.Inventory.Offhand = null;
+            }
+            else if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Ranged)
+            {
+                item = character.Inventory!.Ranged!;
+                character.Inventory.Ranged = null;
+            }
+            else
+            {
+                item = character.Inventory!.Heraldry!.Find(i => i.Identity.Id == unequip.ItemId)!;
+                character.Inventory.Heraldry.Remove(item);
+            }
 
-        character.Inventory.Supplies!.Add(item);
+            character.Inventory.Supplies!.Add(item);
 
-        dbs.PersistPlayer(player.Identity.Id);
-
-        return character;
+            return character;
+        }
     }
 
-    internal Character EquipItem(CharacterEquip equip)
+    public Character EquipItem(CharacterEquip equip)
     {
-        var (character, player) = GetStoredCharacterAndPlayer(equip.CharacterIdentity); 
-        var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
+        var hasToUnequip = false;
 
-        if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head)
+        lock (_lock)
         {
-            if (character.Inventory!.Head != null) UnequipItem(equip);
-            character.Inventory.Head = item;
-        }
-        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Body)
-        {
-            if (character.Inventory!.Body != null) UnequipItem(equip);
-            character.Inventory.Body = item;
-        }
-        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand)
-        {
-            if (character.Inventory!.Mainhand != null) UnequipItem(equip);
-            character.Inventory.Mainhand = item;
-        }
-        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand)
-        {
-            if (character.Inventory!.Offhand != null) UnequipItem(equip);
-            character.Inventory.Offhand = item;
-        }
-        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged)
-        {
-            if (character.Inventory!.Ranged != null) UnequipItem(equip);
-            character.Inventory.Ranged = item;
-        }
-        else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry)
-        {
-            character.Inventory!.Heraldry!.Add(item);
+            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
+            var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId);
+
+            if (item == null) hasToUnequip = true;
         }
 
-        character.Inventory.Supplies.Remove(item);
+        if (hasToUnequip) UnequipItem(equip);
 
-        dbs.PersistPlayer(player.Identity.Id);
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
+            var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
 
-        return character;
+            if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head) character.Inventory.Head = item;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Body) character.Inventory.Body = item;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand) character.Inventory.Mainhand = item;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand) character.Inventory.Offhand = item;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged) character.Inventory.Ranged = item;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry) character.Inventory!.Heraldry!.Add(item);
+
+            character.Inventory.Supplies.Remove(item);
+
+            return character;
+        }
     }
-
-    #region private methods
-    private (Character, Player) GetStoredCharacterAndPlayer(CharacterIdentity identity)
-    {
-        var player = dbs.Snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId)!;
-        var character = player.Characters.Find(p => p.Identity!.Id == identity.Id)!;
-
-        return (character, player);
-    }
-    #endregion
 }
