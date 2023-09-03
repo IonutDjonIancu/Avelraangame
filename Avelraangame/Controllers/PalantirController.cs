@@ -21,6 +21,7 @@ public class PalantirController : ControllerBase
     private readonly IItemsLogicDelegator items;
     private readonly ICharacterLogicDelegator characters;
     private readonly INpcLogicDelegator npcs;
+    private readonly IGameplayLogicDelegator gameplay;
 
     public PalantirController(
         Validations validations,
@@ -29,7 +30,8 @@ public class PalantirController : ControllerBase
         IPlayerLogicDelegator players,
         IItemsLogicDelegator items,
         ICharacterLogicDelegator characters,
-        INpcLogicDelegator npcs) 
+        INpcLogicDelegator npcs,
+        IGameplayLogicDelegator gameplay) 
     {
         this.validations = validations;
         this.metadata = metadata;
@@ -38,6 +40,7 @@ public class PalantirController : ControllerBase
         this.items = items; 
         this.characters = characters;
         this.npcs = npcs;
+        this.gameplay = gameplay;
     }
 
     #region ConnectionTest
@@ -517,7 +520,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var location = factory.ServiceFactory.GameplayService.GetLocation(position);
+            var location = gameplay.GenerateLocation(position);
 
             return Ok(location);
         }
