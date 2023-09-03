@@ -10,11 +10,11 @@ public interface IItemsLogicDelegator
 
 public class ItemsLogicDelegator : IItemsLogicDelegator
 {
-    private readonly Validations validations;
+    private readonly IValidations validations;
     private readonly IItemCreateLogic itemCreateLogic;
 
     public ItemsLogicDelegator(
-        Validations validations,
+        IValidations validations,
         IItemCreateLogic itemCreateLogic)
     {
         this.validations = validations;

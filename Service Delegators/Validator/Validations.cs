@@ -41,6 +41,10 @@ public interface IValidations
     #region gameplay
     void ValidateLocation(string locationName);
     #endregion
+
+    #region items
+    void CreateItemWithTypeAndSubtype(string type, string subtype);
+    #endregion
 }
 
 public class Validations : IValidations

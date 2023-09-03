@@ -7,7 +7,7 @@ public interface IDiceCustomRollsLogic
     int Roll1dN(int upperLimit);
     int RollNdN(int lowerLimit, int upperLimit);
     bool RollTrueFalse();
-    int RollGameplayDice(bool isOffense, string attribute, Character character)
+    int RollGameplayDice(bool isOffense, string attribute, Character character);
 }
 
 public class DiceCustomRollsLogic : IDiceCustomRollsLogic

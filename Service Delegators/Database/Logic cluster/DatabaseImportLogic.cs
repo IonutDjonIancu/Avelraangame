@@ -41,7 +41,7 @@ public class DatabaseImportLogic : IDatabaseImportLogic
             }
 
             snapshot.Players.Add(newPlayer);
-            persistence.PersistPlayer(newPlayer);
+            persistence.PersistPlayer(newPlayer.Identity.Id);
         }
     }
 }

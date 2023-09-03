@@ -12,7 +12,7 @@ namespace Avelraangame.Controllers;
 [EnableCors("allowSpecificOrigins")]
 public class PalantirController : ControllerBase
 {
-    private readonly Validations validations;
+    private readonly IValidations validations;
 
     private readonly IMetadataService metadata;
 
@@ -24,7 +24,7 @@ public class PalantirController : ControllerBase
     private readonly IGameplayLogicDelegator gameplay;
 
     public PalantirController(
-        Validations validations,
+        IValidations validations,
         IMetadataService metadata,
         IDatabaseLogicDelegator database,
         IPlayerLogicDelegator players,

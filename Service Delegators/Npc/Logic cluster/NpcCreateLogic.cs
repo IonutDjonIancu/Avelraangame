@@ -309,52 +309,50 @@ public class NpcCreateLogic : INpcCreateLogic
     #endregion
 
     #region Inventory
-    private CharacterInventory SetInventory(Character character)
+    private void SetInventory(Character character)
     {
-        var inventory = new CharacterInventory();
-
         if (character.Status.Traits.Race == CharactersLore.Races.NonPlayable.Animal
             || character.Status.Traits.Race == CharactersLore.Races.NonPlayable.Undead)
         {
-            return inventory;
+            return;
         }
 
-        if (dice.Roll_true_false()) inventory.Head = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
-        if (dice.Roll_true_false()) inventory.Body = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
-        if (dice.Roll_true_false()) inventory.Shield = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
-        if (dice.Roll_true_false()) inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+        if (dice.Roll_true_false()) character.Inventory.Head = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
+        if (dice.Roll_true_false()) character.Inventory.Body = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
+        if (dice.Roll_true_false()) character.Inventory.Shield = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+        if (dice.Roll_true_false()) character.Inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
 
 
         if (character.Status.Traits.Race == CharactersLore.Races.Playable.Human)
         {
             if (dice.Roll_true_false())
             {
-                inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
+                character.Inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
             }
             else
             {
-                inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
+                character.Inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
             }
         }
         else
         {
             if (dice.Roll_true_false())
             {
-                inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Axe);
+                character.Inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Axe);
             }
             else
             {
-                inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
+                character.Inventory.Mainhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Spear);
             }
         }
 
         if (character.Status.Traits.Race == CharactersLore.Races.Playable.Elf)
         {
-            inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Bow);
+            character.Inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Bow);
         }
         else
         {
-            if (dice.Roll_true_false()) inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
+            if (dice.Roll_true_false()) character.Inventory.Ranged = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Crossbow);
         }
 
         if (character.Status.EntityLevel >= 2)
@@ -363,13 +361,11 @@ public class NpcCreateLogic : INpcCreateLogic
 
             for (int i = 0; i < rollHeraldry; i++)
             {
-                if (dice.Roll_true_false()) inventory.Heraldry!.Add(items.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
+                if (dice.Roll_true_false()) character.Inventory.Heraldry!.Add(items.GenerateSpecificItem(ItemsLore.Types.Wealth, ItemsLore.Subtypes.Wealth.Trinket));
             }
         }
 
-        inventory.Provisions = dice.Roll_d100_withReroll();
-
-        return inventory;
+        character.Inventory.Provisions = dice.Roll_d100_withReroll() + 10;
     }
     #endregion
 
