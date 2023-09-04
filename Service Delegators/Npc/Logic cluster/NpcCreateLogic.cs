@@ -1,5 +1,4 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using Data_Mapping_Containers.Pocos;
 
 namespace Service_Delegators;
 
@@ -30,6 +29,7 @@ public class NpcCreateLogic : INpcCreateLogic
         SetStatus(character, isGood, location);
         SetSheet(character, location);
         SetInventory(character);
+        SetBonusesByInventory(character);
         SetWorth(character, location);
 
         return character;
@@ -309,6 +309,54 @@ public class NpcCreateLogic : INpcCreateLogic
     #endregion
 
     #region Inventory
+    private static void SetBonusesByInventory(Character character)
+    {
+        var allWornItems = new List<Item>();
+
+        if (character.Inventory.Head != null) allWornItems.Add(character.Inventory.Head);
+        if (character.Inventory.Body != null) allWornItems.Add(character.Inventory.Body);
+        if (character.Inventory.Shield != null) allWornItems.Add(character.Inventory.Shield);
+        if (character.Inventory.Mainhand != null) allWornItems.Add(character.Inventory.Mainhand);
+        if (character.Inventory.Offhand != null) allWornItems.Add(character.Inventory.Offhand);
+        if (character.Inventory.Ranged != null) allWornItems.Add(character.Inventory.Ranged);
+        if (character.Inventory.Heraldry!.Count > 0) character.Inventory.Heraldry.ForEach(s => allWornItems.Add(s));
+
+        // stats
+        character.Sheet.Stats.Strength      += allWornItems.Select(s => s.Sheet.Stats.Strength).Sum();
+        character.Sheet.Stats.Constitution  += allWornItems.Select(s => s.Sheet.Stats.Constitution).Sum();
+        character.Sheet.Stats.Agility       += allWornItems.Select(s => s.Sheet.Stats.Agility).Sum();
+        character.Sheet.Stats.Willpower     += allWornItems.Select(s => s.Sheet.Stats.Willpower).Sum();
+        character.Sheet.Stats.Perception    += allWornItems.Select(s => s.Sheet.Stats.Perception).Sum();
+        character.Sheet.Stats.Abstract      += allWornItems.Select(s => s.Sheet.Stats.Abstract).Sum();
+
+        // assets
+        character.Sheet.Assets.Harm         += allWornItems.Select(s => s.Sheet.Assets.Harm).Sum();
+        character.Sheet.Assets.Spot         += allWornItems.Select(s => s.Sheet.Assets.Spot).Sum();
+        character.Sheet.Assets.Defense      += allWornItems.Select(s => s.Sheet.Assets.Defense).Sum();
+        character.Sheet.Assets.DefenseFinal = character.Sheet.Assets.Defense > 90 ? 90 : character.Sheet.Assets.Defense;
+        character.Sheet.Assets.Purge        += allWornItems.Select(s => s.Sheet.Assets.Purge).Sum();
+        character.Sheet.Assets.Resolve      += allWornItems.Select(s => s.Sheet.Assets.Resolve).Sum();
+        character.Sheet.Assets.ResolveLeft  = character.Sheet.Assets.Resolve;
+        character.Sheet.Assets.Mana         += allWornItems.Select(s => s.Sheet.Assets.Mana).Sum();
+        character.Sheet.Assets.ManaLeft     = character.Sheet.Assets.Mana;
+        character.Sheet.Assets.Actions      += allWornItems.Select(s => s.Sheet.Assets.Actions).Sum();
+        character.Sheet.Assets.ActionsLeft  = character.Sheet.Assets.Actions;
+
+        // skills
+        character.Sheet.Skills.Combat       += allWornItems.Select(s => s.Sheet.Skills.Combat).Sum();
+        character.Sheet.Skills.Arcane       += allWornItems.Select(s => s.Sheet.Skills.Arcane).Sum();
+        character.Sheet.Skills.Psionics     += allWornItems.Select(s => s.Sheet.Skills.Psionics).Sum();
+        character.Sheet.Skills.Hide         += allWornItems.Select(s => s.Sheet.Skills.Hide).Sum();
+        character.Sheet.Skills.Traps        += allWornItems.Select(s => s.Sheet.Skills.Traps).Sum();
+        character.Sheet.Skills.Tactics      += allWornItems.Select(s => s.Sheet.Skills.Tactics).Sum();
+        character.Sheet.Skills.Social       += allWornItems.Select(s => s.Sheet.Skills.Social).Sum();
+        character.Sheet.Skills.Apothecary   += allWornItems.Select(s => s.Sheet.Skills.Apothecary).Sum();
+        character.Sheet.Skills.Travel       += allWornItems.Select(s => s.Sheet.Skills.Travel).Sum();
+        character.Sheet.Skills.Sail         += allWornItems.Select(s => s.Sheet.Skills.Sail).Sum();
+    
+        // TODO: should also account for SpSk
+    }
+
     private void SetInventory(Character character)
     {
         if (character.Status.Traits.Race == CharactersLore.Races.NonPlayable.Animal

@@ -1,6 +1,4 @@
-﻿#pragma warning disable CA1822 // Mark members as static
-
-using Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
 
 namespace Service_Delegators;
@@ -560,5 +558,3 @@ public class Validations : IValidations
     }
     #endregion
 }
-
-#pragma warning restore CA1822 // Mark members as static
