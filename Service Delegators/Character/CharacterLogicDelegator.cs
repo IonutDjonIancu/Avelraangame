@@ -93,7 +93,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
     public Character UnequipItem(CharacterEquip unequip)
     {
-        validations.ValidateCharacterEquipUnequipItem(unequip, true);
+        validations.ValidateCharacterEquipUnequipItem(unequip, false);
         var character = itemsLogic.UnequipItem(unequip);
         return PersistAndReturn(character, unequip.CharacterIdentity.PlayerId);
     }
