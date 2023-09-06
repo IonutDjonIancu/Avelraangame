@@ -36,7 +36,6 @@ public class NpcCreateLogic : INpcCreateLogic
     }
 
     #region private methods
-
     #region Identity
     private static void SetIdentity(Character character)
     {
@@ -58,7 +57,7 @@ public class NpcCreateLogic : INpcCreateLogic
         character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
         character.Status.Worth = location.Effort;
         character.Status.Wealth = dice.Roll_d100_noReroll();
-        character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this person.";
+        character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this one.";
         character.Status.NrOfQuestsFinished = 0;
 
         character.Status.Name = ResolveName(character.Status.Traits.Race, isGood);
