@@ -8,7 +8,8 @@ public class TestBase : IDisposable
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _provider;
 
-    public readonly IPlayerLogicDelegator _playerLogicDelegator;
+    public readonly Snapshot _snapshot;
+    public readonly IPlayerLogicDelegator _players;
 
     public TestBase()
     {
@@ -19,7 +20,8 @@ public class TestBase : IDisposable
         _provider = services.BuildServiceProvider();
         _scope = _provider.CreateScope();
 
-        _playerLogicDelegator = _provider.GetRequiredService<IPlayerLogicDelegator>();
+        _snapshot = _provider.GetRequiredService<Snapshot>();
+        _players = _provider.GetRequiredService<IPlayerLogicDelegator>();
     }
 
     private static void ConfigureServices(IServiceCollection services)
