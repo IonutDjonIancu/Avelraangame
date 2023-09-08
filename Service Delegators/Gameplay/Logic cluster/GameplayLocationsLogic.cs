@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface IGameplayLocationsLogic
 {
-    Location GenerateLocation(Position position);
+    Location GetOrGenerateLocation(Position position);
 }
 
 public class GameplayLocationsLogic : IGameplayLocationsLogic
@@ -32,7 +32,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
     }
 
-    public Location GenerateLocation(Position position)
+    public Location GetOrGenerateLocation(Position position)
     {
         lock (_lock)
         {

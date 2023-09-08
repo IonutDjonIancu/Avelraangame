@@ -26,9 +26,9 @@ public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
             var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId)!;
 
             character.Sheet.SpecialSkills.Add(specialSkill);
-            character.LevelUp.DeedsPoints -= specialSkill.DeedsCost;
+            character.LevelUp.DeedPoints -= specialSkill.DeedsCost;
 
-            if (specialSkill.Type == SpecialSkillsLore.Type.Bonus) ApplyBonusHeroicTraits(character, specialSkill.Identity.Name, spsk.Subskill);
+            if (specialSkill.Type == SpecialSkillsLore.Type.Bonus) ApplyBonusHeroicTraits(character, specialSkill.Identity.Name, spsk.AppliesToSkill);
 
             return character;
         }

@@ -266,7 +266,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var stub = characters.CreateStub(playerId);
+            var stub = characters.CreateCharacterStub(playerId);
 
             return Ok(stub);
         }
@@ -284,7 +284,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var character = characters.SaveStub(traits, playerId);
+            var character = characters.SaveCharacterStub(traits, playerId);
 
             return Ok(character);
         }
@@ -302,7 +302,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var character = characters.UpdateName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
+            var character = characters.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
 
             return Ok(character);
         }
@@ -338,7 +338,7 @@ public class PalantirController : ControllerBase
         try
         {
             equip.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.EquipItem(equip);
+            var character = characters.EquipCharacterItem(equip);
 
             return Ok(character);
         }
@@ -356,7 +356,7 @@ public class PalantirController : ControllerBase
         try
         {
             unequip.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.UnequipItem(unequip);
+            var character = characters.UnequipCharacterItem(unequip);
 
             return Ok(character);
         }
@@ -374,7 +374,7 @@ public class PalantirController : ControllerBase
         try
         {
             trait.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.LearnSpecialSkill(trait);
+            var character = characters.LearnCharacterSpecialSkill(trait);
 
             return Ok(character);
         }
@@ -392,7 +392,7 @@ public class PalantirController : ControllerBase
         try
         {
             attributes.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.IncreaseStats(attributes.Stat, attributes.CharacterIdentity);
+            var character = characters.IncreaseCharacterStats(attributes.Stat, attributes.CharacterIdentity);
 
             return Ok(character);
         }
@@ -410,7 +410,7 @@ public class PalantirController : ControllerBase
         try
         {
             attributes.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.IncreaseAssets(attributes.Asset, attributes.CharacterIdentity);
+            var character = characters.IncreaseCharacterAssets(attributes.Asset, attributes.CharacterIdentity);
 
             return Ok(character);
         }
@@ -428,7 +428,7 @@ public class PalantirController : ControllerBase
         try
         {
             attributes.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.IncreaseSkills(attributes.Skill, attributes.CharacterIdentity);
+            var character = characters.IncreaseCharacterSkills(attributes.Skill, attributes.CharacterIdentity);
 
             return Ok(character);
         }
@@ -446,7 +446,7 @@ public class PalantirController : ControllerBase
         try
         {
             travel.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.TravelToLocation(travel);
+            var character = characters.TravelCharacterToLocation(travel);
 
             return Ok(character);
         }
@@ -464,7 +464,7 @@ public class PalantirController : ControllerBase
         try
         {
             hireMercenary.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.HireMercenary(hireMercenary);
+            var character = characters.HireMercenaryForCharacter(hireMercenary);
 
             return Ok(character);
         }
@@ -519,7 +519,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var location = gameplay.GenerateLocation(position);
+            var location = gameplay.GetLocation(position);
 
             return Ok(location);
         }

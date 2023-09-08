@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Tests;
@@ -10,6 +11,11 @@ public class TestBase : IDisposable
 
     public readonly Snapshot _snapshot;
     public readonly IPlayerLogicDelegator _players;
+    public readonly IDiceLogicDelegator _dice;
+    public readonly IItemsLogicDelegator _items;
+    public readonly ICharacterLogicDelegator _characters;
+    public readonly INpcLogicDelegator _npcs;
+    public readonly IGameplayLogicDelegator _gameplay;
 
     public TestBase()
     {
@@ -22,6 +28,11 @@ public class TestBase : IDisposable
 
         _snapshot = _provider.GetRequiredService<Snapshot>();
         _players = _provider.GetRequiredService<IPlayerLogicDelegator>();
+        _dice = _provider.GetRequiredService<IDiceLogicDelegator>();
+        _items = _provider.GetRequiredService<IItemsLogicDelegator>();
+        _characters = _provider.GetRequiredService<ICharacterLogicDelegator>();
+        _npcs = _provider.GetRequiredService<INpcLogicDelegator>();
+        _gameplay = _provider.GetRequiredService<IGameplayLogicDelegator>();
     }
 
     private static void ConfigureServices(IServiceCollection services)
@@ -36,6 +47,12 @@ public class TestBase : IDisposable
         LoadDatabaseService(services);
 
         LoadPlayerService(services);
+
+        LoadDiceService(services);
+        LoadItemsService(services);
+        LoadCharacterService(services);
+        LoadNpcService(services);
+        LoadGameplayService(services);
     }
 
     public void Dispose()
@@ -89,4 +106,52 @@ public class TestBase : IDisposable
         services.AddTransient<IPlayerOperationsLogic, PlayerOperationsLogic>();
     }
 
+    private static void LoadDiceService(IServiceCollection services)
+    {
+        // delegator
+        services.AddTransient<IDiceLogicDelegator, DiceLogicDelegator>();
+        // subservices
+        services.AddTransient<IDiceD20Logic, DiceD20RollsLogic>();
+        services.AddTransient<IDiceD100Logic, DiceD100RollsLogic>();
+        services.AddTransient<IDiceCustomRollsLogic, DiceCustomRollsLogic>();
+    }
+
+    private static void LoadItemsService(IServiceCollection services)
+    {
+        // delegator
+        services.AddTransient<IItemsLogicDelegator, ItemsLogicDelegator>();
+        // subservices
+        services.AddTransient<IItemCreateLogic, ItemCreateLogic>();
+    }
+
+    private static void LoadCharacterService(IServiceCollection services)
+    {
+        // delegator
+        services.AddTransient<ICharacterLogicDelegator, CharacterLogicDelegator>();
+        // subservices
+        services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
+        services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
+        services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
+        services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
+        services.AddTransient<ICharacterSpecialSkillsLogic, CharacterSpecialSkillsLogic>();
+        services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();
+        services.AddTransient<ICharacterTravelLogic, CharacterTravelLogic>();
+        services.AddTransient<ICharacterNpcInteraction, CharacterNpcInteraction>();
+    }
+
+    private static void LoadNpcService(IServiceCollection services)
+    {
+        // delegator
+        services.AddTransient<INpcLogicDelegator, NpcLogicDelegator>();
+        // subservices
+        services.AddTransient<INpcCreateLogic, NpcCreateLogic>();
+    }
+
+    private static void LoadGameplayService(IServiceCollection services)
+    {
+        // delegator
+        services.AddTransient<IGameplayLogicDelegator, GameplayLogicDelegator>();
+        // subservices
+        services.AddTransient<IGameplayLocationsLogic, GameplayLocationsLogic>();
+    }
 }

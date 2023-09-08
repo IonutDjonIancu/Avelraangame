@@ -74,7 +74,11 @@ public class CharacterItemsLogic : ICharacterItemsLogic
             var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId);
 
-            if (item == null) hasToUnequip = true;
+            if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand) hasToUnequip = character.Inventory.Mainhand != null;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand) hasToUnequip = character.Inventory.Offhand != null;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged) hasToUnequip = character.Inventory.Ranged != null;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Head) hasToUnequip = character.Inventory.Head != null;
+            else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Body) hasToUnequip = character.Inventory.Body != null;
         }
 
         if (hasToUnequip) UnequipItem(equip);
@@ -139,6 +143,5 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         character.Sheet.Skills.Travel       += multiplier * item.Sheet.Skills.Travel;
         character.Sheet.Skills.Sail         += multiplier * item.Sheet.Skills.Sail;
     }
-
     #endregion
 }

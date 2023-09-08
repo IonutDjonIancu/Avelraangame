@@ -33,7 +33,7 @@ public class SpecialSkillsLore
         public const string Rolls = "Rolls";
     }
 
-    public static class ActivateSpecialSkills
+    public static class ActiveSpecialSkills
     {
         // 1
         public static readonly SpecialSkill MetachaosDaemonology = new()
@@ -152,7 +152,7 @@ public class SpecialSkillsLore
 
     public static readonly List<SpecialSkill> All = new()
     {
-        ActivateSpecialSkills.MetachaosDaemonology,
+        ActiveSpecialSkills.MetachaosDaemonology,
 
         PassiveSpecialSkills.FatePoint,
         PassiveSpecialSkills.TheStrengthOfMany,

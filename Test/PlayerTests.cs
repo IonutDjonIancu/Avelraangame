@@ -1,14 +1,19 @@
 ﻿namespace Tests;
 
 [Collection("PlayerTests")]
-[Trait("Category", "PlayerTests")]
+[Trait("Category", "PlayerServiceTests")]
 public class PlayerTests : TestBase
 {
     [Fact(DisplayName = "Create player should exist in snapshot")]
     public void CreatePlayerTest()
     {
-        var result = _players.CreatePlayer("John");
+        // Arrange
+        var playerName = "JoeDoe";
 
+        // Act
+        var result = _players.CreatePlayer(playerName);
+
+        // Assert
         result.Should().NotBeNull();
         result.SetupCode.Length.Should().BeGreaterThan(0);
         result.SetupImage.Length.Should().BeGreaterThan(0);
