@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace Tests;
+﻿namespace Tests;
 
 public static class TestUtils
 {
