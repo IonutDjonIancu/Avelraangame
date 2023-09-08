@@ -1,5 +1,7 @@
 ﻿namespace Tests;
 
+[Collection("GameplayTests")]
+[Trait("Category", "GameplayServiceTests")]
 public class GameplayTests : TestBase
 {
     [Fact(DisplayName = "Generate location on visit should exist in snapshot")]
@@ -18,6 +20,4 @@ public class GameplayTests : TestBase
         location.FullName.Should().Be(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.FullName);
         location.LastTimeVisited.Should().Be(DateTime.Now.ToShortDateString());
     }
-
-
 }
