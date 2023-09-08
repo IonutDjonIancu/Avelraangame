@@ -1,5 +1,7 @@
 ﻿namespace Tests;
 
+[Collection("DiceTests")]
+[Trait("Category", "DiceServiceTests")]
 public class DiceTests : TestBase
 {
     [Fact(DisplayName = "Roll a number between 1 and 20")]
