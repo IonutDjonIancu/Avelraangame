@@ -26,7 +26,7 @@ public interface IValidations
     void ValidateCharacterMaxNrAllowed(string playerId);
     void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId);
     void ValidateCharacterBeforeDelete(CharacterIdentity identity);
-    void ValidateCharacterLearnHeroicTrait(CharacterAddSpecialSkill trait);
+    void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill trait);
     void ValidateCharacterBeforeKill(CharacterIdentity identity);
     void ValidateCharacterAddWealth(int wealth, CharacterIdentity identity);
     void ValidateCharacterAddFame(string fame, CharacterIdentity identity);
@@ -204,23 +204,23 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterLearnHeroicTrait(CharacterAddSpecialSkill trait)
+    public void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill spsk)
     {
         lock ( _lock)
         {
-            var character = Utils.GetPlayerCharacter(trait.CharacterIdentity, snapshot);
+            var character = Utils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
-            ValidateGuid_p(trait.SpecialSkillId);
+            ValidateGuid_p(spsk.SpecialSkillId);
 
-            if (trait.Subskill != null)
+            if (spsk.AppliesToSkill.Length > 0)
             {
-                ValidateString_p(trait.Subskill);
-                if (!CharactersLore.Skills.All.Contains(trait.Subskill)) throw new Exception("No such Skill was found with the indicated skill name.");
+                ValidateString_p(spsk.AppliesToSkill);
+                if (!CharactersLore.Skills.All.Contains(spsk.AppliesToSkill)) throw new Exception("No such Skill was found with the indicated skill name.");
             }
 
-            var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == trait.SpecialSkillId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
+            var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId) ?? throw new Exception("No such Heroic Trait found with the provided id.");
 
-            if (specialSkill.DeedsCost > character.LevelUp.DeedsPoints) throw new Exception("Character does not have enough Deeds points to aquire said Heroic Trait.");
+            if (specialSkill.DeedsCost > character.LevelUp.DeedPoints) throw new Exception("Character does not have enough Deeds points to aquire said Heroic Trait.");
 
             if (specialSkill.Subtype == SpecialSkillsLore.Subtype.Onetime
                 && character.Sheet.SpecialSkills.Exists(t => t.Identity.Id == specialSkill.Identity.Id)) throw new Exception("Character already has that Heroic Trait and it can only be learned once.");
@@ -241,7 +241,8 @@ public class Validations : IValidations
         lock ( _lock)
         {
             ValidateNumberGreaterThanZero_p(wealth);
-            _ = Utils.GetPlayerCharacter(identity,snapshot);
+            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            ValidateCharacterIsLocked_p(character);
         }
     }
 
@@ -250,8 +251,7 @@ public class Validations : IValidations
         lock ( _lock)
         {
             ValidateString_p(fame);
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
-            ValidateCharacterIsLocked_p(character);
+            _ = Utils.GetPlayerCharacter(identity, snapshot);
         }
     }
 
