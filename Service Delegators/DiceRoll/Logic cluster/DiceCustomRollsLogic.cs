@@ -65,7 +65,7 @@ public class DiceCustomRollsLogic : IDiceCustomRollsLogic
 
     private static void LevelUpCharacter(int crits, Character character)
     {
-        character.LevelUp.DeedsPoints += crits * (character.Status.EntityLevel);
+        character.LevelUp.DeedPoints += crits * (character.Status.EntityLevel);
         character.LevelUp.StatPoints += crits * (character.Status.EntityLevel + 1);
         character.LevelUp.AssetPoints += crits * (character.Status.EntityLevel + 2);
         character.LevelUp.SkillPoints += crits * (character.Status.EntityLevel + 3);

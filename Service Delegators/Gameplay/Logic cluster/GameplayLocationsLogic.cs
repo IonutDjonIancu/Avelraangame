@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface IGameplayLocationsLogic
 {
-    Location GenerateLocation(Position position);
+    Location GetOrGenerateLocation(Position position);
 }
 
 public class GameplayLocationsLogic : IGameplayLocationsLogic
@@ -32,7 +32,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
     }
 
-    public Location GenerateLocation(Position position)
+    public Location GetOrGenerateLocation(Position position)
     {
         lock (_lock)
         {
@@ -44,7 +44,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
             if (location != null)
             {
-                var isDateDifference = (location!.LastTimeVisited - DateTime.Now) > new TimeSpan(0);
+                var isDateDifference = (DateTime.Parse(location!.LastTimeVisited) - DateTime.Now) > new TimeSpan(0);
 
                 if (!isDateDifference)
                 {
@@ -54,7 +54,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
                 {
                     snapshot.Locations.Remove(location!);
 
-                    location.LastTimeVisited = DateTime.Now;
+                    location.LastTimeVisited = DateTime.Now.ToShortDateString();
 
                     location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
                     location.Market = GenerateMarketItems(location.Effort);
@@ -69,10 +69,11 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
                     Description = locationData.Description,
                     Effort = locationData.Effort,
                     TravelCostFromArada = locationData.TravelCostFromArada,
-                    LastTimeVisited = DateTime.Now,
+                    LastTimeVisited = DateTime.Now.ToShortDateString(),
                     PossibleQuests = GetPossibleQuests(position, locationData.Effort),
                     Market = GenerateMarketItems(locationData.Effort),
-                    Mercenaries = GenerateMercenaries(position, locationData.Effort)
+                    Mercenaries = GenerateMercenaries(position, locationData.Effort),
+                    Position = position
                 };
             }
 

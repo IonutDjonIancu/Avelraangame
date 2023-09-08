@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface IGameplayLogicDelegator
 {
-    Location GenerateLocation(Position position);
+    Location GetLocation(Position position);
 }
 
 public class GameplayLogicDelegator : IGameplayLogicDelegator
@@ -20,9 +20,9 @@ public class GameplayLogicDelegator : IGameplayLogicDelegator
         this.locations = locations;
     }
 
-    public Location GenerateLocation(Position position)
+    public Location GetLocation(Position position)
     {
         validations.ValidateLocation(position.Location);
-        return locations.GenerateLocation(position);
+        return locations.GetOrGenerateLocation(position);
     }
 }
