@@ -47,7 +47,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        return Ok();
+        return Ok("All okay!");
     }
     #endregion
 
