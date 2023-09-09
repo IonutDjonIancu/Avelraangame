@@ -7,7 +7,7 @@ public class GameplayTests : TestBase
     [Fact(DisplayName = "Generate location on visit should exist in snapshot")]
     public void GenerateLocation()
     {
-        var location = _gameplay.GetLocation(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Position);
+        var location = _gameplay.GetOrGenerateLocation(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Position);
 
         _snapshot.Locations.Count.Should().Be(1);
         location.Position.Should().Be(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Position);

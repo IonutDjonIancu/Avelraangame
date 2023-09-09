@@ -34,6 +34,7 @@ public interface IValidations
     void ValidateAttributesBeforeIncrease(string attribute, string attributeType, CharacterIdentity identity);
     void ValidateCharacterBeforeTravel(CharacterTravel travel);
     void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary);
+    void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem);
     #endregion
 
     #region gameplay
@@ -434,10 +435,22 @@ public class Validations : IValidations
             var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position)) ?? throw new Exception("Location has not been visited yet.");
             var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId) ?? throw new Exception("This mercenary does not exist at this location.");
 
-            if (merc.Status.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Status.Worth}, but your character's wealth is only about {character.Status.Wealth}.");
+            if (merc.Status.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Status.Worth}, but your character's wealth is {character.Status.Wealth}.");
         }
     }
 
+    public void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId) ?? throw new Exception("Item not found on character supplies.");
+
+            if (!snapshot.Locations.Exists(s => s.Position.Location == character.Status.Position.Location)) throw new Exception("Location has not been visited yet.");
+        }
+    }
     #endregion
 
     #region gameplay validations

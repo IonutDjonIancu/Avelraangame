@@ -24,6 +24,8 @@ public interface ICharacterLogicDelegator
     Character HireMercenaryForCharacter(CharacterHireMercenary hireMercenary);
     Character LearnCharacterSpecialSkill(CharacterAddSpecialSkill spskAdd);
     Character TravelCharacterToLocation(CharacterTravel travel);
+
+    Character SellItem(CharacterItemTrade tradeItem);
 }
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
@@ -172,6 +174,15 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return PersistAndReturn(character, hireMercenary.CharacterIdentity.PlayerId);
     }
 
+    public Character SellItem(CharacterItemTrade tradeItem)
+    {
+        validations.ValidateCharacterItemBeforeSell(tradeItem);
+        var character = itemsLogic.SellItem(tradeItem);
+
+        return PersistAndReturn(character, tradeItem.CharacterIdentity.PlayerId);
+    }
+
+
     #region private methods
     private Character PersistAndReturn(Character character, string playerId)
     {
@@ -184,6 +195,5 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     {
         persistence.PersistPlayer(playerId);
     }
-
     #endregion
 }

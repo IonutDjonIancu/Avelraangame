@@ -474,6 +474,24 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/SellItem
+    [HttpPut("Character/SellItem")]
+    public IActionResult SellItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.SellItem(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region Npcs
@@ -519,7 +537,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var location = gameplay.GetLocation(position);
+            var location = gameplay.GetOrGenerateLocation(position);
 
             return Ok(location);
         }

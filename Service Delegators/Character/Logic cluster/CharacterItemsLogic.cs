@@ -6,6 +6,7 @@ public interface ICharacterItemsLogic
 {
     Character EquipItem(CharacterEquip equip);
     Character UnequipItem(CharacterEquip unequip);
+    Character SellItem(CharacterItemTrade tradeItem);
 }
 
 public class CharacterItemsLogic : ICharacterItemsLogic
@@ -98,6 +99,25 @@ public class CharacterItemsLogic : ICharacterItemsLogic
             AddRemoveItemBonuses(character, item, true);
 
             character.Inventory.Supplies.Remove(item);
+
+            return character;
+        }
+    }
+
+    public Character SellItem(CharacterItemTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
+            var location = snapshot.Locations.Find(s => s.Position == character.Status.Position)!;
+
+            var moneyBack = item.Value + item.Value * character.Sheet.Skills.Social / 1000;
+            item.Value = (int)Math.Round(item.Value * 0.15);
+
+            location.Market.Add(item);
+            character.Inventory.Supplies.Remove(item);
+            character.Status.Wealth += moneyBack;
 
             return character;
         }

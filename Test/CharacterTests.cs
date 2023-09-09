@@ -330,7 +330,7 @@ public class CharacterTests : TestBase
         var character = CreateCharacter();
         character.Status.Wealth = 1000;
 
-        var location = _gameplay.GetLocation(character.Status.Position);
+        var location = _gameplay.GetOrGenerateLocation(character.Status.Position);
 
         var merc = location.Mercenaries.First();
 
@@ -377,7 +377,7 @@ public class CharacterTests : TestBase
             ItemId = item.Identity.Id
         };
 
-        var location = _gameplay.GetLocation(character.Status.Position);
+        var location = _gameplay.GetOrGenerateLocation(character.Status.Position);
         var merc = location.Mercenaries.First();
         var hireMerc = new CharacterHireMercenary
         {

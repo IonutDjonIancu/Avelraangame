@@ -19,17 +19,20 @@ public class CharacterCreateLogic : ICharacterCreateLogic
     private readonly IDiceLogicDelegator dice;
     private readonly IItemsLogicDelegator items;
     private readonly ICharacterSheetLogic characterSheet;
+    private readonly IGameplayLogicDelegator gameplayLogic;
 
     public CharacterCreateLogic(
         Snapshot snapshot,
         IDiceLogicDelegator dice,
         IItemsLogicDelegator items,
-        ICharacterSheetLogic characterSheet)
+        ICharacterSheetLogic characterSheet,
+        IGameplayLogicDelegator gameplayLogic)
     {
         this.snapshot = snapshot;
         this.dice = dice;
         this.items = items;
         this.characterSheet = characterSheet;
+        this.gameplayLogic = gameplayLogic;
     }
 
     public CharacterStub CreateStub(string playerId)
@@ -79,6 +82,8 @@ public class CharacterCreateLogic : ICharacterCreateLogic
 
             var player = snapshot.Players.Find(p => p.Identity.Id == playerId)!;
             player.Characters!.Add(character);
+
+            gameplayLogic.GetOrGenerateLocation(character.Status.Position);
 
             return character;
         }
