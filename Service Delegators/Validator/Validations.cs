@@ -35,6 +35,7 @@ public interface IValidations
     void ValidateCharacterBeforeTravel(CharacterTravel travel);
     void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary);
     void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem);
+    void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem);
     #endregion
 
     #region gameplay
@@ -449,6 +450,24 @@ public class Validations : IValidations
             var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId) ?? throw new Exception("Item not found on character supplies.");
 
             if (!snapshot.Locations.Exists(s => s.Position.Location == character.Status.Position.Location)) throw new Exception("Location has not been visited yet.");
+
+            tradeItem.IsToBuy = false;
+        }
+    }
+
+    public void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            var location = snapshot.Locations.Find(s => s.Position.Location == character.Status.Position.Location) ?? throw new Exception("Location has not been visited yet");
+            var item = location.Market.Find(s => s.Identity.Id == tradeItem.ItemId) ?? throw new Exception("Item not found on this market or has already been sold.");
+
+            if (character.Status.Wealth < item.Value) throw new Exception($"Unable to purchase item, item costs {item.Value}, your wealth is {character.Status.Wealth}");
+
+            tradeItem.IsToBuy = true;
         }
     }
     #endregion

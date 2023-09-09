@@ -475,6 +475,24 @@ public class PalantirController : ControllerBase
         }
     }
 
+    // PUT: /api/palantir/Character/BuyItem
+    [HttpPut("Character/BuyItem")]
+    public IActionResult BuyItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.SellItem(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
     // PUT: /api/palantir/Character/SellItem
     [HttpPut("Character/SellItem")]
     public IActionResult SellItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)

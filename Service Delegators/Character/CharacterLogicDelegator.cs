@@ -26,6 +26,7 @@ public interface ICharacterLogicDelegator
     Character TravelCharacterToLocation(CharacterTravel travel);
 
     Character SellItem(CharacterItemTrade tradeItem);
+    Character BuyItem(CharacterItemTrade tradeItem);
 }
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
@@ -177,11 +178,18 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public Character SellItem(CharacterItemTrade tradeItem)
     {
         validations.ValidateCharacterItemBeforeSell(tradeItem);
-        var character = itemsLogic.SellItem(tradeItem);
+        var character = itemsLogic.BuyOrSellItem(tradeItem);
 
         return PersistAndReturn(character, tradeItem.CharacterIdentity.PlayerId);
     }
 
+    public Character BuyItem(CharacterItemTrade tradeItem)
+    {
+        validations.ValidateCharacterItemBeforeBuy(tradeItem);
+        var character = itemsLogic.BuyOrSellItem(tradeItem);
+
+        return PersistAndReturn(character, tradeItem.CharacterIdentity.PlayerId);
+    }
 
     #region private methods
     private Character PersistAndReturn(Character character, string playerId)

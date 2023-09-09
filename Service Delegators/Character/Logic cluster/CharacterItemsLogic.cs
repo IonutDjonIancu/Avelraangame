@@ -1,4 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
+using System.Transactions;
 
 namespace Service_Delegators;
 
@@ -6,7 +7,7 @@ public interface ICharacterItemsLogic
 {
     Character EquipItem(CharacterEquip equip);
     Character UnequipItem(CharacterEquip unequip);
-    Character SellItem(CharacterItemTrade tradeItem);
+    Character BuyOrSellItem(CharacterItemTrade tradeItem);
 }
 
 public class CharacterItemsLogic : ICharacterItemsLogic
@@ -104,26 +105,50 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         }
     }
 
-    public Character SellItem(CharacterItemTrade tradeItem)
+    public Character BuyOrSellItem(CharacterItemTrade tradeItem)
     {
         lock (_lock)
         {
             var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
             var location = snapshot.Locations.Find(s => s.Position == character.Status.Position)!;
 
-            var moneyBack = item.Value + item.Value * character.Sheet.Skills.Social / 1000;
-            item.Value = (int)Math.Round(item.Value * 0.15);
-
-            location.Market.Add(item);
-            character.Inventory.Supplies.Remove(item);
-            character.Status.Wealth += moneyBack;
+            if (tradeItem.IsToBuy)
+            {
+                var item = location.Market.Find(s => s.Identity.Id == tradeItem.ItemId)!;
+                BuyItem(character, item, location);
+            }
+            else
+            {
+                var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
+                SellItem(character, item, location);
+            }
 
             return character;
         }
     }
 
+
     #region private methods
+    private static void SellItem(Character character, Item item, Location location)
+    {
+        var moneyBack = item.Value + item.Value * character.Sheet.Skills.Social / 1000;
+        item.Value = (int)Math.Round(item.Value * 0.15);
+
+        location.Market.Add(item);
+        character.Inventory.Supplies.Remove(item);
+        character.Status.Wealth += moneyBack;
+    }
+
+    private static void BuyItem(Character character, Item item, Location location)
+    {
+        var paySum = item.Value - item.Value * character.Sheet.Skills.Social / 1000;
+        var finalSum = paySum <= 0 ? 1 : paySum;
+
+        character.Inventory.Supplies.Add(item);
+        character.Status.Wealth -= finalSum;
+        location.Market.Remove(item);
+    }
+
     private static void AddRemoveItemBonuses(Character character, Item item, bool toAdd)
     {
         var multiplier = 1;
