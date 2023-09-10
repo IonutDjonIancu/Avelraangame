@@ -6,7 +6,7 @@ namespace Service_Delegators;
 public interface ICharacterCreateLogic
 {
     CharacterStub CreateStub(string playerId);
-    Character SaveStub(CharacterTraits traits, string playerId);
+    Character SaveStub(CharacterRacialTraits traits, string playerId);
     Character KillChar(CharacterIdentity charIdentity);
     void DeleteCharacter(CharacterIdentity charIdentity);
 }
@@ -56,7 +56,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
         }
     }
 
-    public Character SaveStub(CharacterTraits traits, string playerId)
+    public Character SaveStub(CharacterRacialTraits traits, string playerId)
     {
         lock (_lock)
         {
@@ -182,14 +182,14 @@ public class CharacterCreateLogic : ICharacterCreateLogic
         characterSheet.SetCharacterSheet(stub.StatPoints, stub.SkillPoints, character);
     }
 
-    private static void SetStatus(CharacterTraits traits, CharacterStub stub, Character character)
+    private static void SetStatus(CharacterRacialTraits traits, CharacterStub stub, Character character)
     {
         character.Status = new()
         {
             Name = $"The {traits.Culture.ToLower()}",
             EntityLevel = stub!.EntityLevel,
             DateOfBirth = DateTime.Now.ToShortDateString(),
-            Traits = new CharacterTraits
+            Traits = new CharacterRacialTraits
             {
                 Race = traits.Race,
                 Culture = traits.Culture,

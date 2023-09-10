@@ -26,7 +26,7 @@ public class CharacterTests : TestBase
 
         _characters.CreateCharacterStub(player.Identity.Id);
 
-        var charTraits = new CharacterTraits
+        var charTraits = new CharacterRacialTraits
         {
             Race = CharactersLore.Races.Playable.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
@@ -450,7 +450,7 @@ public class CharacterTests : TestBase
 
         _characters.CreateCharacterStub(playerId);
 
-        var charTraits = new CharacterTraits
+        var charTraits = new CharacterRacialTraits
         {
             Race = race,
             Culture = culture,

@@ -24,7 +24,7 @@ public interface IValidations
     #region character
     void ValidateCharacterUpdateName(string name, CharacterIdentity identity);
     void ValidateCharacterMaxNrAllowed(string playerId);
-    void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId);
+    void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId);
     void ValidateCharacterBeforeDelete(CharacterIdentity identity);
     void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill trait);
     void ValidateCharacterBeforeKill(CharacterIdentity identity);
@@ -181,7 +181,7 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId)
+    public void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId)
     {
         lock (_lock)
         {
@@ -563,7 +563,7 @@ public class Validations : IValidations
         if (!CharactersLore.Races.Playable.All.Contains(race)) throw new Exception($"Race {race} not found.");
     }
 
-    private static void ValidateRaceCultureCombination_p(CharacterTraits origins)
+    private static void ValidateRaceCultureCombination_p(CharacterRacialTraits origins)
     {
         string message = "Invalid race culture combination";
 

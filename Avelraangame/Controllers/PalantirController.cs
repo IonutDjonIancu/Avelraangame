@@ -279,7 +279,7 @@ public class PalantirController : ControllerBase
 
     // POST: /api/palantir/Character/SaveCharacter
     [HttpPost("Character/SaveCharacter")]
-    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterTraits traits)
+    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterRacialTraits traits)
     {
         try
         {

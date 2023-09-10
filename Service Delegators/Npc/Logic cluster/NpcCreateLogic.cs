@@ -88,14 +88,14 @@ public class NpcCreateLogic : INpcCreateLogic
         return isGood ? GoodName(race) : BadName(race);
     }
 
-    private CharacterTraits DecideTraits(bool isGood, Location location)
+    private CharacterRacialTraits DecideTraits(bool isGood, Location location)
     {
         var race = DecideRace(isGood);
         var culture = DecideCulture(race);
         var tradition = DecideTradition(location);
         var chosenClass = DecideClass();
 
-        return new CharacterTraits
+        return new CharacterRacialTraits
         {
             Race = race,
             Culture = culture,
