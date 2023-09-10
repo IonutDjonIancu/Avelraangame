@@ -146,7 +146,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     private static void SellItem(Character character, Item item, Location location)
     {
         var moneyBack = item.Value + item.Value * character.Sheet.Skills.Social / 1000;
-        item.Value = (int)Math.Round(item.Value * 0.15);
+        item.Value += (int)Math.Round(item.Value * 0.15);
 
         location.Market.Add(item);
         character.Inventory.Supplies.Remove(item);

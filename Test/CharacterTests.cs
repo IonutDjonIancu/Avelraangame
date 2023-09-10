@@ -1,4 +1,6 @@
-﻿namespace Tests;
+﻿using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+
+namespace Tests;
 
 [Collection("CharacterTests")]
 [Trait("Category", "CharacterServiceTests")]
@@ -20,7 +22,7 @@ public class CharacterTests : TestBase
     }
 
     [Fact(DisplayName = "Save character stub should exist as new character in player")]
-    public void RecreateCharacterStub()
+    public void SaveCharacterStub()
     {
         var player = TestUtils.CreateAndGetPlayer(PlayerName, _players, _snapshot);
 
@@ -67,6 +69,7 @@ public class CharacterTests : TestBase
         character.Inventory.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
         GameplayLore.Locations.All.Select(s => s.LocationName).Should().Contain(character.Status.Position.Location);
+        _snapshot.Locations.Exists(s => s.Position == character.Status.Position).Should().BeTrue();
     }
 
     [Fact(DisplayName = "Modifing character name should have the new name")]
@@ -400,7 +403,7 @@ public class CharacterTests : TestBase
 
         character.Status.IsLockedToModify = true;
 
-        // not allowed actions
+        // not allowed actions during character lock
         Assert.Throws<Exception>(() => _characters.DeleteCharacter(charIdentity));
         Assert.Throws<Exception>(() => _characters.EquipCharacterItem(equip));
         Assert.Throws<Exception>(() => _characters.UnequipCharacterItem(equip));
@@ -413,9 +416,121 @@ public class CharacterTests : TestBase
         Assert.Throws<Exception>(() => _characters.LearnCharacterSpecialSkill(specialSkillAdd));
         Assert.Throws<Exception>(() => _characters.TravelCharacterToLocation(charTravel));
 
-        // excepted action
+        // excepted actions during character lock
         _characters.KillCharacter(charIdentity);
         _characters.AddCharacterFame("This is the new fame.", charIdentity);
+    }
+
+    [Fact(DisplayName = "Character sell item from supplies should remove it")]
+    public void CharacterSellItemTest()
+    {
+        var initialWealth = 100;
+        var socSkill = 100;
+        var itemValue = 100;
+
+        var character = CreateCharacter();
+        character.Status.Wealth = initialWealth;
+        character.Sheet.Skills.Social = socSkill;
+        var item = _items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
+        item.Value = itemValue;
+        var location = _snapshot.Locations.Find(s => s.Position == character.Status.Position)!;
+
+        character.Inventory.Supplies.Clear();
+        character.Inventory.Supplies.Add(item);
+
+        var tradeItem = new CharacterItemTrade()
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            IsToBuy = false,
+            ItemId = item.Identity.Id
+        };
+
+        _characters.SellItem(tradeItem);
+
+        // item.Value + item.Value * character.Sheet.Skills.Social / 1000
+        character.Status.Wealth.Should().Be(210);
+        character.Inventory.Supplies.Count.Should().Be(0);
+
+        // (int)Math.Round(item.Value * 0.15)
+        item.Value.Should().Be(115);
+
+        location.Market.Should().Contain(item);
+    }
+
+    [Fact(DisplayName = "Character sell item from inventory should throw")]
+    public void CharacterSellInventoryItemTest()
+    {
+        var character = CreateCharacter();
+        var item = _items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
+
+        character.Inventory.Supplies.Add(item);
+
+        var equip = new CharacterEquip
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            InventoryLocation = ItemsLore.InventoryLocation.Mainhand,
+            ItemId = item.Identity.Id
+        };
+
+        _characters.EquipCharacterItem(equip);
+
+        var tradeItem = new CharacterItemTrade()
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            IsToBuy = false,
+            ItemId = item.Identity.Id
+        };
+
+        Assert.Throws<Exception>(() => _characters.SellItem(tradeItem));
+    }
+
+    [Fact(DisplayName = "Character buy item from market should display in supplies")]
+    public void CharacterBuyItemTest()
+    {
+        var initialWealth = 100;
+        var socSkill = 100;
+        var itemValue = 100;
+
+        var character = CreateCharacter();
+        character.Status.Wealth = initialWealth;
+        character.Sheet.Skills.Social = socSkill;
+        var location = _snapshot.Locations.Find(s => s.FullName == character.Status.Position.GetPositionFullName())!;
+        var item = location.Market.First();
+        item.Value = itemValue;
+
+        var tradeItem = new CharacterItemTrade()
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            IsToBuy = true,
+            ItemId = item.Identity.Id
+        };
+
+        _characters.BuyItem(tradeItem);
+
+        character.Inventory.Supplies.Should().Contain(item);
+        // item.Value - item.Value * character.Sheet.Skills.Social / 1000;
+        character.Status.Wealth.Should().Be(10);
+        location.Market.Exists(s => s.Identity.Id == item.Identity.Id).Should().BeFalse();
+    }
+
+    [Fact(DisplayName = "Character buy provision should display on character")]
+    public void CharacterBuyProvisions()
+    {
+        var initialWealth = 100;
+        var character = CreateCharacter();
+        character.Status.Wealth = initialWealth;
+        character.Inventory.Provisions = 0;
+
+        var provisions = new CharacterBuyProvisions
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            Amount = 10
+        };
+
+        _characters.BuyProvisions(provisions);
+
+        character.Inventory.Provisions.Should().Be(10);
+        character.Status.Wealth.Should().Be(80);
     }
 
     [Theory(DisplayName = "Character travel should move to new position")]
