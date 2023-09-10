@@ -279,7 +279,7 @@ public class PalantirController : ControllerBase
 
     // POST: /api/palantir/Character/SaveCharacter
     [HttpPost("Character/SaveCharacter")]
-    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterTraits traits)
+    public IActionResult SaveCharacter([FromQuery] Request request, [FromBody] CharacterRacialTraits traits)
     {
         try
         {
@@ -474,6 +474,60 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/BuyItem
+    [HttpPut("Character/BuyItem")]
+    public IActionResult BuyItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.SellItem(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/SellItem
+    [HttpPut("Character/SellItem")]
+    public IActionResult SellItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.SellItem(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/BuyProvisions
+    [HttpPut("Character/BuyProvisions")]
+    public IActionResult BuyProvisions([FromQuery] Request request, [FromBody] CharacterBuyProvisions buyProvisions)
+    {
+        try
+        {
+            buyProvisions.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.BuyProvisions(buyProvisions);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region Npcs
@@ -519,7 +573,7 @@ public class PalantirController : ControllerBase
     {
         try
         {
-            var location = gameplay.GetLocation(position);
+            var location = gameplay.GetOrGenerateLocation(position);
 
             return Ok(location);
         }

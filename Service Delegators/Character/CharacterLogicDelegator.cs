@@ -6,7 +6,7 @@ namespace Service_Delegators;
 public interface ICharacterLogicDelegator
 {
     CharacterStub CreateCharacterStub(string playerId);
-    Character SaveCharacterStub(CharacterTraits traits, string playerId);
+    Character SaveCharacterStub(CharacterRacialTraits traits, string playerId);
     Character KillCharacter(CharacterIdentity identity);
     void DeleteCharacter(CharacterIdentity identity);
 
@@ -24,6 +24,10 @@ public interface ICharacterLogicDelegator
     Character HireMercenaryForCharacter(CharacterHireMercenary hireMercenary);
     Character LearnCharacterSpecialSkill(CharacterAddSpecialSkill spskAdd);
     Character TravelCharacterToLocation(CharacterTravel travel);
+
+    Character SellItem(CharacterItemTrade tradeItem);
+    Character BuyItem(CharacterItemTrade tradeItem);
+    Character BuyProvisions(CharacterBuyProvisions buySupplies);
 }
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
@@ -70,7 +74,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return stub;
     }
 
-    public Character SaveCharacterStub(CharacterTraits traits, string playerId)
+    public Character SaveCharacterStub(CharacterRacialTraits traits, string playerId)
     {
         validations.ValidateCharacterCreateTraits(traits, playerId);
         var character = createLogic.SaveStub(traits, playerId);
@@ -172,6 +176,30 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return PersistAndReturn(character, hireMercenary.CharacterIdentity.PlayerId);
     }
 
+    public Character SellItem(CharacterItemTrade tradeItem)
+    {
+        validations.ValidateCharacterItemBeforeSell(tradeItem);
+        var character = itemsLogic.BuyOrSellItem(tradeItem);
+
+        return PersistAndReturn(character, tradeItem.CharacterIdentity.PlayerId);
+    }
+
+    public Character BuyItem(CharacterItemTrade tradeItem)
+    {
+        validations.ValidateCharacterItemBeforeBuy(tradeItem);
+        var character = itemsLogic.BuyOrSellItem(tradeItem);
+
+        return PersistAndReturn(character, tradeItem.CharacterIdentity.PlayerId);
+    }
+
+    public Character BuyProvisions(CharacterBuyProvisions buySupplies)
+    {
+        validations.ValidateCharacterBeforeBuyProvisions(buySupplies);
+        var character = itemsLogic.BuyProvisions(buySupplies);
+
+        return PersistAndReturn(character, buySupplies.CharacterIdentity.PlayerId);
+    }
+
     #region private methods
     private Character PersistAndReturn(Character character, string playerId)
     {
@@ -184,6 +212,5 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     {
         persistence.PersistPlayer(playerId);
     }
-
     #endregion
 }
