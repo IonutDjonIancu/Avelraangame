@@ -56,7 +56,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
                     location.LastTimeVisited = DateTime.Now.ToShortDateString();
 
-                    location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
+                    //location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
                     location.Market = GenerateMarketItems(location.Effort);
                     location.Mercenaries = GenerateMercenaries(position, location.Effort);
                 }
@@ -70,7 +70,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
                     Effort = locationData.Effort,
                     TravelCostFromArada = locationData.TravelCostFromArada,
                     LastTimeVisited = DateTime.Now.ToShortDateString(),
-                    PossibleQuests = GetPossibleQuests(position, locationData.Effort),
+                    //PossibleQuests = GetPossibleQuests(position, locationData.Effort),
                     Market = GenerateMarketItems(locationData.Effort),
                     Mercenaries = GenerateMercenaries(position, locationData.Effort),
                     Position = position
@@ -84,10 +84,10 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
     }
 
     #region private methods
-    private static List<string> GetPossibleQuests(Position position, int effortUpper)
-    {
-        return GameplayLore.Quests.All.Where(s => s.AvailableAt.Contains(position.Land) && s.EffortRequired <= effortUpper).Select(s => s.Name).ToList();
-    }
+    //private static List<string> GetPossibleQuests(Position position, int effortUpper)
+    //{
+    //    return GameplayLore.Quests.All.Where(s => s.AvailableAt.Contains(position.Land) && s.EffortRequired <= effortUpper).Select(s => s.Name).ToList();
+    //}
 
     private List<Item> GenerateMarketItems(int effortUpper)
     {
