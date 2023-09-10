@@ -27,6 +27,7 @@ public interface ICharacterLogicDelegator
 
     Character SellItem(CharacterItemTrade tradeItem);
     Character BuyItem(CharacterItemTrade tradeItem);
+    Character BuyProvisions(CharacterBuyProvisions buySupplies);
 }
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
@@ -189,6 +190,14 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         var character = itemsLogic.BuyOrSellItem(tradeItem);
 
         return PersistAndReturn(character, tradeItem.CharacterIdentity.PlayerId);
+    }
+
+    public Character BuyProvisions(CharacterBuyProvisions buySupplies)
+    {
+        validations.ValidateCharacterBeforeBuyProvisions(buySupplies);
+        var character = itemsLogic.BuyProvisions(buySupplies);
+
+        return PersistAndReturn(character, buySupplies.CharacterIdentity.PlayerId);
     }
 
     #region private methods

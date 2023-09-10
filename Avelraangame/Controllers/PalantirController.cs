@@ -510,6 +510,24 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Character/BuyProvisions
+    [HttpPut("Character/BuyProvisions")]
+    public IActionResult BuyProvisions([FromQuery] Request request, [FromBody] CharacterBuyProvisions buyProvisions)
+    {
+        try
+        {
+            buyProvisions.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.BuyProvisions(buyProvisions);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region Npcs

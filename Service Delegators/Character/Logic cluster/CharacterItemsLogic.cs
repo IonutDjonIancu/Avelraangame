@@ -8,6 +8,7 @@ public interface ICharacterItemsLogic
     Character EquipItem(CharacterEquip equip);
     Character UnequipItem(CharacterEquip unequip);
     Character BuyOrSellItem(CharacterItemTrade tradeItem);
+    Character BuyProvisions(CharacterBuyProvisions buySupplies);
 }
 
 public class CharacterItemsLogic : ICharacterItemsLogic
@@ -122,6 +123,19 @@ public class CharacterItemsLogic : ICharacterItemsLogic
                 var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
                 SellItem(character, item, location);
             }
+
+            return character;
+        }
+    }
+
+    public Character BuyProvisions(CharacterBuyProvisions buySupplies)
+    {
+        lock ( _lock)
+        {
+            var character = Utils.GetPlayerCharacter(buySupplies.CharacterIdentity, snapshot);
+
+            character.Inventory.Provisions += buySupplies.Amount;
+            character.Status.Wealth -= buySupplies.Amount * 2;
 
             return character;
         }

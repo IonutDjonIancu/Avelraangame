@@ -36,6 +36,7 @@ public interface IValidations
     void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary);
     void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem);
     void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem);
+    void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies);
     #endregion
 
     #region gameplay
@@ -468,6 +469,17 @@ public class Validations : IValidations
             if (character.Status.Wealth < item.Value) throw new Exception($"Unable to purchase item, item costs {item.Value}, your wealth is {character.Status.Wealth}");
 
             tradeItem.IsToBuy = true;
+        }
+    }
+
+    public void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(buySupplies.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            if (character.Status.Wealth < buySupplies.Amount * 2) throw new Exception($"Unable to buy supplies, item costs 2 wealth x {buySupplies.Amount} supplies requested, your wealth is {character.Status.Wealth}");
         }
     }
     #endregion
