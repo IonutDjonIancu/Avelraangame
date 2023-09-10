@@ -23,7 +23,7 @@ public static class TestUtils
 
     internal static Character CreateAndGetCharacter(string playerName, IPlayerLogicDelegator _players, ICharacterLogicDelegator _characters, Snapshot _snapshots)
     {
-        var traits = new CharacterTraits
+        var traits = new CharacterRacialTraits
         {
             Race = CharactersLore.Races.Playable.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,

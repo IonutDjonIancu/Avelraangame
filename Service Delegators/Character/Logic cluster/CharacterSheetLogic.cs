@@ -342,8 +342,11 @@ public class CharacterSheetLogic : ICharacterSheetLogic
     {
         sheet.Assets.Harm += RulebookLore.Formulae.Assets.CalculateHarm(sheet.Stats);
         sheet.Assets.Spot += RulebookLore.Formulae.Assets.CalculateSpot(sheet.Stats);
-        sheet.Assets.Defense += RulebookLore.Formulae.Assets.CalculateDefense(sheet.Stats);
         sheet.Assets.Purge += RulebookLore.Formulae.Assets.CalculatePurge(sheet.Stats);
+
+        var defense = RulebookLore.Formulae.Assets.CalculateDefense(sheet.Stats);
+        sheet.Assets.Defense += defense;
+        sheet.Assets.DefenseFinal += defense <= 90 ? defense : 90;
 
         var resolve = RulebookLore.Formulae.Assets.CalculateResolve(sheet.Stats);
         sheet.Assets.Resolve += resolve;

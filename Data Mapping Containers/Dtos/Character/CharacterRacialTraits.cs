@@ -1,6 +1,6 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class CharacterTraits
+public class CharacterRacialTraits
 {
     public string Race { get; set; }
     public string Culture { get; set; }

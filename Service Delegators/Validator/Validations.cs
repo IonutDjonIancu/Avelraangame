@@ -24,7 +24,7 @@ public interface IValidations
     #region character
     void ValidateCharacterUpdateName(string name, CharacterIdentity identity);
     void ValidateCharacterMaxNrAllowed(string playerId);
-    void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId);
+    void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId);
     void ValidateCharacterBeforeDelete(CharacterIdentity identity);
     void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill trait);
     void ValidateCharacterBeforeKill(CharacterIdentity identity);
@@ -34,6 +34,9 @@ public interface IValidations
     void ValidateAttributesBeforeIncrease(string attribute, string attributeType, CharacterIdentity identity);
     void ValidateCharacterBeforeTravel(CharacterTravel travel);
     void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary);
+    void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem);
+    void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem);
+    void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies);
     #endregion
 
     #region gameplay
@@ -178,7 +181,7 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterCreateTraits(CharacterTraits traits, string playerId)
+    public void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId)
     {
         lock (_lock)
         {
@@ -434,10 +437,51 @@ public class Validations : IValidations
             var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position)) ?? throw new Exception("Location has not been visited yet.");
             var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId) ?? throw new Exception("This mercenary does not exist at this location.");
 
-            if (merc.Status.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Status.Worth}, but your character's wealth is only about {character.Status.Wealth}.");
+            if (merc.Status.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Status.Worth}, but your character's wealth is {character.Status.Wealth}.");
         }
     }
 
+    public void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId) ?? throw new Exception("Item not found on character supplies.");
+
+            if (!snapshot.Locations.Exists(s => s.Position.Location == character.Status.Position.Location)) throw new Exception("Location has not been visited yet.");
+
+            tradeItem.IsToBuy = false;
+        }
+    }
+
+    public void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            var location = snapshot.Locations.Find(s => s.Position.Location == character.Status.Position.Location) ?? throw new Exception("Location has not been visited yet");
+            var item = location.Market.Find(s => s.Identity.Id == tradeItem.ItemId) ?? throw new Exception("Item not found on this market or has already been sold.");
+
+            if (character.Status.Wealth < item.Value) throw new Exception($"Unable to purchase item, item costs {item.Value}, your wealth is {character.Status.Wealth}");
+
+            tradeItem.IsToBuy = true;
+        }
+    }
+
+    public void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies)
+    {
+        lock (_lock)
+        {
+            var character = Utils.GetPlayerCharacter(buySupplies.CharacterIdentity, snapshot);
+            ValidateCharacterIsLocked_p(character);
+
+            if (character.Status.Wealth < buySupplies.Amount * 2) throw new Exception($"Unable to buy supplies, item costs 2 wealth x {buySupplies.Amount} supplies requested, your wealth is {character.Status.Wealth}");
+        }
+    }
     #endregion
 
     #region gameplay validations
@@ -519,7 +563,7 @@ public class Validations : IValidations
         if (!CharactersLore.Races.Playable.All.Contains(race)) throw new Exception($"Race {race} not found.");
     }
 
-    private static void ValidateRaceCultureCombination_p(CharacterTraits origins)
+    private static void ValidateRaceCultureCombination_p(CharacterRacialTraits origins)
     {
         string message = "Invalid race culture combination";
 

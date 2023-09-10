@@ -9,7 +9,7 @@ public class CharacterStatus
     public bool IsAlive { get; set; }
     public bool IsLockedToModify { get; set; }
 
-    public CharacterTraits Traits { get; set; } = new();
+    public CharacterRacialTraits Traits { get; set; } = new();
     public CharacterGameplay Gameplay { get; set; } = new();
     public Position Position { get; set; } = new();
 

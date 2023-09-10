@@ -98,86 +98,86 @@ public class GameplayLore
         };
     }
 
-    public static class Quests
-    {
-        public static readonly QuestDetails Patrol = new()
-        {
-            Name = "Patrol",
-            ShortDescription = $"Mudpaddlers and spears",
-            Description = $"An ordinary job for any sellsword in these lands. It doesn't shine, but it pays well. You are being handed a hand-drawn map on a rigid cyperus paper, probably of eastern origin. " +
-            $"The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. A couple of gold crowns are placed on a piece of " +
-            $"linnen cloth in front of you to illustrate your payment. After a long silence, you nod in agreement, the man rolls the paper into a salted hollow leather cylinder and hands it to you.",
-            IsRepeatable = true,
-            EffortRequired = Effort.Normal,
-            AvailableAt = new List<string>
-            {
-                Locations.Dragonmaw.Farlindor.Danar.LandName,
-            },
-            Reward = new QuestReward
-            {
-                HasWealth = true,
-                HasItem = false,
-                HasLoot = false,
-                HasStats = false,
-                HasSkills = false,
-                HasTraits = false,
-            }
-        };
+    //public static class Quests
+    //{
+    //    public static readonly QuestDetails Patrol = new()
+    //    {
+    //        Name = "Patrol",
+    //        ShortDescription = $"Mudpaddlers and spears",
+    //        Description = $"An ordinary job for any sellsword in these lands. It doesn't shine, but it pays well. You are being handed a hand-drawn map on a rigid cyperus paper, probably of eastern origin. " +
+    //        $"The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. A couple of gold crowns are placed on a piece of " +
+    //        $"linnen cloth in front of you to illustrate your payment. After a long silence, you nod in agreement, the man rolls the paper into a salted hollow leather cylinder and hands it to you.",
+    //        IsRepeatable = true,
+    //        EffortRequired = Effort.Normal,
+    //        AvailableAt = new List<string>
+    //        {
+    //            Locations.Dragonmaw.Farlindor.Danar.LandName,
+    //        },
+    //        Reward = new QuestReward
+    //        {
+    //            HasWealth = true,
+    //            HasItem = false,
+    //            HasLoot = false,
+    //            HasStats = false,
+    //            HasSkills = false,
+    //            HasTraits = false,
+    //        }
+    //    };
 
-        public static readonly QuestDetails KillGoblins = new()
-        {
-            Name = "Kill goblins",
-            ShortDescription = $"Goblins around",
-            Description = $"The lowest scum in the world, goblins are feared everywhere for their ways to terrorize settlements. You will find disemboweled, half eaten animals or people, burned crops, and destroyed viliges when these " +
-            $"hated creatures from Pel'Ravan mountains raid the lowlands. Therefore, the marshals have been giving rewards for all sellswords that can bring goblin heads to the gutters. " +
-            $"You are to find the camp, and remove it by any means necessary. This is easier said than done since goblins are known to be deceitful and shifty creatures.",
-            IsRepeatable = true,
-            EffortRequired = Effort.Normal,
-            AvailableAt = new List<string>
-            {
-                Locations.Dragonmaw.Farlindor.Danar.LandName,
-            },
-            Reward = new QuestReward
-            {
-                HasWealth = true,
-                HasItem = false,
-                HasLoot = false,
-                HasStats = false,
-                HasSkills = false,
-                HasTraits = false,
-            }
-        };
+    //    public static readonly QuestDetails KillGoblins = new()
+    //    {
+    //        Name = "Kill goblins",
+    //        ShortDescription = $"Goblins around",
+    //        Description = $"The lowest scum in the world, goblins are feared everywhere for their ways to terrorize settlements. You will find disemboweled, half eaten animals or people, burned crops, and destroyed viliges when these " +
+    //        $"hated creatures from Pel'Ravan mountains raid the lowlands. Therefore, the marshals have been giving rewards for all sellswords that can bring goblin heads to the gutters. " +
+    //        $"You are to find the camp, and remove it by any means necessary. This is easier said than done since goblins are known to be deceitful and shifty creatures.",
+    //        IsRepeatable = true,
+    //        EffortRequired = Effort.Normal,
+    //        AvailableAt = new List<string>
+    //        {
+    //            Locations.Dragonmaw.Farlindor.Danar.LandName,
+    //        },
+    //        Reward = new QuestReward
+    //        {
+    //            HasWealth = true,
+    //            HasItem = false,
+    //            HasLoot = false,
+    //            HasStats = false,
+    //            HasSkills = false,
+    //            HasTraits = false,
+    //        }
+    //    };
 
-        public static readonly QuestDetails RescueLordFromRansom = new()
-        {
-            Name = "Rescue lord from ransom",
-            ShortDescription = $"Rescue a lord from being ransomed.",
-            Description = $"Following an skirmish between the armies of two local noblemen, one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
-            $"people like you are called in to try to save the imprisoned knight from being ransomed. You have no involvement in the matter and it's a chance to build up a reputation... as well as get your hands on a hefty reward. " +
-            $"The man that brought this up to your attention, a member of the local clergy, asks for your discression, telling you that if you get caught there won't be anybody sent after you, and that the lord that hired you " +
-            $"will, as is customary, deny any involvement in the matter. If you fail you'll probably be publicly quartered and your head will end up on a pike at the entrance to a castle.",
-            IsRepeatable = false,
-            EffortRequired = Effort.Gifted,
-            AvailableAt = new List<string>
-            {
-                Locations.Dragonmaw.Farlindor.Danar.LandName,
-            },
-            Reward = new QuestReward
-            {
-                HasWealth = true,
-                HasItem = true,
-                HasLoot = false,
-                HasStats = false,
-                HasSkills = false,
-                HasTraits = false,
-            }
-        };
+    //    public static readonly QuestDetails RescueLordFromRansom = new()
+    //    {
+    //        Name = "Rescue lord from ransom",
+    //        ShortDescription = $"Rescue a lord from being ransomed.",
+    //        Description = $"Following an skirmish between the armies of two local noblemen, one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
+    //        $"people like you are called in to try to save the imprisoned knight from being ransomed. You have no involvement in the matter and it's a chance to build up a reputation... as well as get your hands on a hefty reward. " +
+    //        $"The man that brought this up to your attention, a member of the local clergy, asks for your discression, telling you that if you get caught there won't be anybody sent after you, and that the lord that hired you " +
+    //        $"will, as is customary, deny any involvement in the matter. If you fail you'll probably be publicly quartered and your head will end up on a pike at the entrance to a castle.",
+    //        IsRepeatable = false,
+    //        EffortRequired = Effort.Gifted,
+    //        AvailableAt = new List<string>
+    //        {
+    //            Locations.Dragonmaw.Farlindor.Danar.LandName,
+    //        },
+    //        Reward = new QuestReward
+    //        {
+    //            HasWealth = true,
+    //            HasItem = true,
+    //            HasLoot = false,
+    //            HasStats = false,
+    //            HasSkills = false,
+    //            HasTraits = false,
+    //        }
+    //    };
 
-        public static readonly List<QuestDetails> All = new()
-        {
-            RescueLordFromRansom,
-            KillGoblins,
-            Patrol
-        };
-    }
+    //    public static readonly List<QuestDetails> All = new()
+    //    {
+    //        RescueLordFromRansom,
+    //        KillGoblins,
+    //        Patrol
+    //    };
+    //}
 }
