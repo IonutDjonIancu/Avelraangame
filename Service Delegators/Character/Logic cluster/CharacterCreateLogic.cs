@@ -198,9 +198,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
             },
             Gameplay = new CharacterGameplay
             {
-                ArenaId = string.Empty,
-                QuestId = string.Empty,
-                StoryId = string.Empty,
+                BattleboardId = string.Empty
             },
             // all characters start from Arada due to it's travel dinstance logic
             // moreover the story focuses on Danar as starting position

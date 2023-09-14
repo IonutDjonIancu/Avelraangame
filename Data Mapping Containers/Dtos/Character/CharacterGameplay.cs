@@ -2,7 +2,5 @@
 
 public class CharacterGameplay
 {
-    public string QuestId { get; set; }
-    public string ArenaId { get; set; }
-    public string StoryId { get; set; }
+    public string BattleboardId { get; set; }
 }

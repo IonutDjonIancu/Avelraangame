@@ -47,6 +47,7 @@ public class DIServices : IDIServices
         LoadCharacterService(builder);
         LoadNpcService(builder);
         LoadGameplayService(builder);
+        LoadBattleboardService(builder);
     }
 
     #region private methods
@@ -121,6 +122,14 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<IGameplayLogicDelegator, GameplayLogicDelegator>();
         // subservices
         builder.Services.AddTransient<IGameplayLocationsLogic, GameplayLocationsLogic>();
+    }
+
+    private static void LoadBattleboardService(WebApplicationBuilder builder)
+    {
+        // delegator
+        builder.Services.AddTransient<IBattleboardLogicDelegator, BattleboardLogicDelegator>();
+        // subservices
+        builder.Services.AddTransient<IBattleboardCreateLogic, BattleboardCreateLogic>();
     }
     #endregion
 }
