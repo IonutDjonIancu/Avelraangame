@@ -1,6 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
-using System.Security.Principal;
 
 namespace Service_Delegators;
 
@@ -49,10 +48,12 @@ public interface IValidations
     #endregion
 
     #region battleboard
-    public void ValidateBeforeBattleboardCreate(CharacterIdentity characterIdentity);
-    public void ValidateBeforeBattleboardJoin(BattleboardCharacter battleboardCharacter);
-    public void ValidateBeforeBattleboardLeave(BattleboardCharacter battleboardCharacter);
-
+    void ValidateBeforeBattleboardGet(BattleboardCharacter battleboardCharacter);
+    void ValidateBeforeBattleboardCreate(BattleboardCharacter battleboardCharacter);
+    void ValidateBeforeBattleboardJoin(BattleboardCharacter battleboardCharacter);
+    void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter);
+    void ValidateBeforeBattleboardLeave(BattleboardCharacter battleboardCharacter);
+    void ValidateBattleFormationOnMoveTo(BattleboardCharacter battleboardCharacter);
     #endregion
 }
 
@@ -503,6 +504,34 @@ public class Validations : IValidations
     #endregion
 
     #region battleboard validations
+    public void ValidateBeforeBattleboardGet(BattleboardCharacter battleboardCharacter)
+    {
+        lock ( _lock)
+        {
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+
+            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+
+            if (battleboard == null)
+            {
+                character.Status.Gameplay.BattleboardId = string.Empty;
+                character.Status.Gameplay.IsBattleboardGoodGuy = false;
+                character.Status.Gameplay.IsInCombat = false;
+
+                character.Mercenaries.ForEach(s =>
+                {
+                    s.Status.Gameplay.BattleboardId = string.Empty;
+                    s.Status.Gameplay.IsBattleboardGoodGuy = false;
+                    s.Status.Gameplay.IsInCombat = false;
+                });
+
+                throw new Exception("Battleboard not found, character gameplay reset.");
+            }
+        }
+    }
+
     public void ValidateBeforeBattleboardCreate(CharacterIdentity characterIdentity)
     {
         lock (_lock)
@@ -520,14 +549,40 @@ public class Validations : IValidations
         {
             var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             ValidateCharacterIsAlive_p(character);
-            ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception("Character is already on a battleboard.");
 
-            var battleboard = snapshot.Battleboards.Find(s => s.Id == battleboardCharacter.BattleboardId) ?? throw new Exception("Battleboard not found.");
+            var battleboard = GetBattleboard_p(battleboardCharacter.BattleboardId);
 
-            if (battleboard.IsLocked) throw new Exception("Unable to join battleboard when it's locked.");
+            if (battleboard.IsInCombat) throw new Exception("Unable to join battleboard during combat.");
             if (battleboard.GoodGuys.Characters.Where(s => !s.Status.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Count() >= 1) throw new Exception("You cannot add more than 1 character that you own to the party.");
             if (battleboard.BadGuys.Characters.Where(s => !s.Status.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Count() >= 1) throw new Exception("You cannot add more than 1 character that you own to the party.");
+        }
+    }
+
+    public void ValidateBeforeBattleboardKick(CharacterIdentity characterIdentity, string characterIdKicked)
+    {
+        lock (_lock)
+        {
+            ValidateGuid_p(characterIdKicked);
+
+            var character = GetPlayerCharacter_p(characterIdentity);
+            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+
+            if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)
+                && !battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)) throw new Exception("Character not on this battleboard.");
+
+            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            {
+                if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == characterIdKicked)) throw new Exception("Character not on the good guys battleboard.");
+                if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can kick battleboard members.");
+                if (!battleboard.GoodGuys.Characters.Select(s => s.Identity.Id).Contains(characterIdKicked)) throw new Exception("Character to be kicked not found within your party.");
+            }
+            else
+            {
+                if (!battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == characterIdKicked)) throw new Exception("Character not on the good guys battleboard.");
+                if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can kick battleboard members.");
+                if (!battleboard.BadGuys.Characters.Select(s => s.Identity.Id).Contains(characterIdKicked)) throw new Exception("Character to be kicked not found within your party.");
+            }
         }
     }
 
@@ -538,11 +593,25 @@ public class Validations : IValidations
             var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             ValidateCharacterIsAlive_p(character);
 
-            var battleboard = snapshot.Battleboards.Find(s => s.Id == battleboardCharacter.BattleboardId) ?? throw new Exception("Battleboard not found.");
-            if (battleboard.IsLocked) throw new Exception("Unable to leave battleboard when it's locked.");
+            var battleboard = GetBattleboard_p(battleboardCharacter.BattleboardId);
 
             if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)
                 && !battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)) throw new Exception("Character not on this battleboard.");
+
+            if (battleboard.IsInCombat) throw new Exception("Unable to leave battleboard during combat.");
+        }
+    }
+
+    public void ValidateBattleFormationOnMoveTo(BattleboardCharacter battleboardCharacter)
+    {
+        lock (_lock)
+        {
+            var battleboard = snapshot.Battleboards.Find(s => s.Id == battleboardCharacter.BattleboardId) ?? throw new Exception("Battleboard not found.");
+            if (battleboard.g)
+            {
+                
+            }
+
         }
     }
 
@@ -659,6 +728,11 @@ public class Validations : IValidations
     private Character GetPlayerCharacter_p(CharacterIdentity characterIdentity)
     {
         return GetPlayer_p(characterIdentity.PlayerId).Characters.Find(s => s.Identity.Id == characterIdentity.Id) ?? throw new Exception("Character not found.");
+    }
+
+    private Battleboard GetBattleboard_p(string battleboardId)
+    {
+        return snapshot.Battleboards.Find(s => s.Id == battleboardId) ?? throw new Exception("Battlboard not found.");
     }
     #endregion
 }

@@ -2,20 +2,20 @@
 
 namespace Service_Delegators;
 
-public interface ICharacterInfoLogic
+public interface ICharacterUpdateLogic
 {
     Character AddFame(string fame, CharacterIdentity charIdentity);
     Character AddWealth(int wealth, CharacterIdentity charIdentity);
     Character ChangeName(string name, CharacterIdentity charIdentity);
 }
 
-public class CharacterInfoLogic : ICharacterInfoLogic
+public class CharacterUpdateLogic : ICharacterUpdateLogic
 {
     private readonly object _lock = new();
 
     private readonly Snapshot snapshot;
 
-    public CharacterInfoLogic(Snapshot snapshot)
+    public CharacterUpdateLogic(Snapshot snapshot)
     {
         this.snapshot = snapshot;
     }

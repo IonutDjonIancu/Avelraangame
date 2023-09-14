@@ -34,8 +34,8 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 {
     private readonly IValidations validations;
     private readonly IPersistenceService persistence;
-    private readonly ICharacterCreateLogic createLogic;
-    private readonly ICharacterInfoLogic infoLogic;
+    private readonly ICharacterCRUDLogic createLogic;
+    private readonly ICharacterUpdateLogic infoLogic;
     private readonly ICharacterItemsLogic itemsLogic;
     private readonly ICharacterSpecialSkillsLogic specialSkillsLogic;
     private readonly ICharacterLevelupLogic levelupLogic;
@@ -45,8 +45,8 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public CharacterLogicDelegator(
         IValidations validations,
         IPersistenceService persistence,
-        ICharacterCreateLogic createLogic,
-        ICharacterInfoLogic infoLogic,
+        ICharacterCRUDLogic createLogic,
+        ICharacterUpdateLogic infoLogic,
         ICharacterItemsLogic itemsLogic,
         ICharacterSpecialSkillsLogic specialSkillsLogic,
         ICharacterLevelupLogic levelupLogic,

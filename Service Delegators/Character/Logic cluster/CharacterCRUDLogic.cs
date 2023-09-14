@@ -1,9 +1,8 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using System.Net;
 
 namespace Service_Delegators;
 
-public interface ICharacterCreateLogic
+public interface ICharacterCRUDLogic
 {
     CharacterStub CreateStub(string playerId);
     Character SaveStub(CharacterRacialTraits traits, string playerId);
@@ -11,7 +10,7 @@ public interface ICharacterCreateLogic
     void DeleteCharacter(CharacterIdentity charIdentity);
 }
 
-public class CharacterCreateLogic : ICharacterCreateLogic
+public class CharacterCRUDLogic : ICharacterCRUDLogic
 {
     private readonly object _lock = new();
 
@@ -21,7 +20,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
     private readonly ICharacterSheetLogic characterSheet;
     private readonly IGameplayLogicDelegator gameplayLogic;
 
-    public CharacterCreateLogic(
+    public CharacterCRUDLogic(
         Snapshot snapshot,
         IDiceLogicDelegator dice,
         IItemsLogicDelegator items,

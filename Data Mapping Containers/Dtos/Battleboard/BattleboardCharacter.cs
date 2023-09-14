@@ -2,7 +2,10 @@
 
 public class BattleboardCharacter
 {
-    public string BattleboardId { get; set; }
-
     public CharacterIdentity CharacterIdentity { get; set; }
+    
+    public string BattleboardIdToJoin { get; set; }
+    public bool WantsToBeGood { get; set; }
+
+    public string TargettedCharacterId { get; set; }
 }

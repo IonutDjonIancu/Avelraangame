@@ -130,8 +130,8 @@ public class TestBase : IDisposable
         services.AddTransient<ICharacterLogicDelegator, CharacterLogicDelegator>();
         // subservices
         services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
-        services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
-        services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
+        services.AddTransient<ICharacterCRUDLogic, CharacterCRUDLogic>();
+        services.AddTransient<ICharacterUpdateLogic, CharacterUpdateLogic>();
         services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
         services.AddTransient<ICharacterSpecialSkillsLogic, CharacterSpecialSkillsLogic>();
         services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();

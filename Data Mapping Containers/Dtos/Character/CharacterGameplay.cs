@@ -3,4 +3,6 @@
 public class CharacterGameplay
 {
     public string BattleboardId { get; set; }
+    public bool IsBattleboardGoodGuy { get; set; }
+    public bool IsInCombat { get; set; }
 }

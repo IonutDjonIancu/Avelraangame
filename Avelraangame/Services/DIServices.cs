@@ -99,8 +99,8 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<ICharacterLogicDelegator, CharacterLogicDelegator>();
         // subservices
         builder.Services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
-        builder.Services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
-        builder.Services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
+        builder.Services.AddTransient<ICharacterCRUDLogic, CharacterCRUDLogic>();
+        builder.Services.AddTransient<ICharacterUpdateLogic, CharacterUpdateLogic>();
         builder.Services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
         builder.Services.AddTransient<ICharacterSpecialSkillsLogic, CharacterSpecialSkillsLogic>();
         builder.Services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();
@@ -129,7 +129,7 @@ public class DIServices : IDIServices
         // delegator
         builder.Services.AddTransient<IBattleboardLogicDelegator, BattleboardLogicDelegator>();
         // subservices
-        builder.Services.AddTransient<IBattleboardCreateLogic, BattleboardCreateLogic>();
+        builder.Services.AddTransient<IBattleboardCreateLogic, BattleboardCRUDLogic>();
     }
     #endregion
 }
