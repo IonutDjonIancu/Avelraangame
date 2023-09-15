@@ -129,7 +129,7 @@ public class DIServices : IDIServices
         // delegator
         builder.Services.AddTransient<IBattleboardLogicDelegator, BattleboardLogicDelegator>();
         // subservices
-        builder.Services.AddTransient<IBattleboardCreateLogic, BattleboardCRUDLogic>();
+        builder.Services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
     }
     #endregion
 }

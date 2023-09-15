@@ -19,43 +19,44 @@ public interface IBattleboardLogicDelegator
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 {
     private readonly IValidations validations;
-    private readonly IBattleboardCreateLogic createLogic;
+    private readonly IBattleboardCRUDLogic crudLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
-        IBattleboardCreateLogic createLogic)
+        IBattleboardCRUDLogic crudLogic)
     {
-        this.createLogic = createLogic;
+        this.crudLogic = crudLogic;
         this.validations = validations;
     }
 
     public Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter)
     {
-        validations.ValidateBeforeBattleboardGet(charIdentity);
-        return createLogic.GetBattleboard(charIdentity);
+        validations.ValidateBeforeBattleboardGet(battleboardCharacter);
+        return crudLogic.GetBattleboard(battleboardCharacter);
     }
 
     public Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter)
     {
-        validations.ValidateBeforeBattleboardCreate(partyLeadIdentity);
-        return createLogic.CreateBattleboard(partyLeadIdentity);
+        validations.ValidateBeforeBattleboardCreate(battleboardCharacter);
+        return crudLogic.CreateBattleboard(battleboardCharacter);
     }
 
     public Battleboard JoinBattleboard(BattleboardCharacter battleboardCharacter)
     {
         validations.ValidateBeforeBattleboardJoin(battleboardCharacter);
-        return createLogic.JoinBattleboard(battleboardCharacter, isGood);
+        return crudLogic.JoinBattleboard(battleboardCharacter);
     }
 
     public Battleboard KickFromBattleboard(BattleboardCharacter battleboardCharacter)
     {
-        validations.ValidateBeforeBattleboardKick(charIdentity, characterIdKicked);
+        validations.ValidateBeforeBattleboardKick(battleboardCharacter);
+        return crudLogic.KickFromBattleboard(battleboardCharacter);
     }
 
     public void LeaveBattleboard(BattleboardCharacter battleboardCharacter)
     {
         validations.ValidateBeforeBattleboardLeave(battleboardCharacter);
-        createLogic.LeaveBattleboard(battleboardCharacter);
+        crudLogic.LeaveBattleboard(battleboardCharacter);
     }
 
     public Battleboard MoveToBattleFormation(BattleboardCharacter battleboardCharacter)

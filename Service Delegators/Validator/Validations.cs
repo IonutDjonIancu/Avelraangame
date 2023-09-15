@@ -532,11 +532,14 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBeforeBattleboardCreate(CharacterIdentity characterIdentity)
+    public void ValidateBeforeBattleboardCreate(BattleboardCharacter battleboardCharacter)
     {
         lock (_lock)
         {
-            var character = GetPlayerCharacter_p(characterIdentity);
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+
+            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception("Character is already on a battleboard.");
@@ -547,11 +550,14 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+
             var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             ValidateCharacterIsAlive_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception("Character is already on a battleboard.");
 
-            var battleboard = GetBattleboard_p(battleboardCharacter.BattleboardId);
+            var battleboard = GetBattleboard_p(battleboardCharacter.BattleboardIdToJoin);
 
             if (battleboard.IsInCombat) throw new Exception("Unable to join battleboard during combat.");
             if (battleboard.GoodGuys.Characters.Where(s => !s.Status.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Count() >= 1) throw new Exception("You cannot add more than 1 character that you own to the party.");
@@ -559,13 +565,14 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBeforeBattleboardKick(CharacterIdentity characterIdentity, string characterIdKicked)
+    public void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter)
     {
         lock (_lock)
         {
-            ValidateGuid_p(characterIdKicked);
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
 
-            var character = GetPlayerCharacter_p(characterIdentity);
+            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
 
             if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)
@@ -573,15 +580,13 @@ public class Validations : IValidations
 
             if (character.Status.Gameplay.IsBattleboardGoodGuy)
             {
-                if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == characterIdKicked)) throw new Exception("Character not on the good guys battleboard.");
                 if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can kick battleboard members.");
-                if (!battleboard.GoodGuys.Characters.Select(s => s.Identity.Id).Contains(characterIdKicked)) throw new Exception("Character to be kicked not found within your party.");
+                if (!battleboard.GoodGuys.Characters.Select(s => s.Identity.Id).Contains(battleboardCharacter.TargettedCharacterId)) throw new Exception("Targetted character to be kicked not found in your party.");
             }
             else
             {
-                if (!battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == characterIdKicked)) throw new Exception("Character not on the good guys battleboard.");
                 if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can kick battleboard members.");
-                if (!battleboard.BadGuys.Characters.Select(s => s.Identity.Id).Contains(characterIdKicked)) throw new Exception("Character to be kicked not found within your party.");
+                if (!battleboard.BadGuys.Characters.Select(s => s.Identity.Id).Contains(battleboardCharacter.TargettedCharacterId)) throw new Exception("Targetted character to be kicked not found in your party.");
             }
         }
     }
@@ -590,10 +595,12 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+
             var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             ValidateCharacterIsAlive_p(character);
-
-            var battleboard = GetBattleboard_p(battleboardCharacter.BattleboardId);
+            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
 
             if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)
                 && !battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == character.Identity.Id)) throw new Exception("Character not on this battleboard.");
@@ -620,7 +627,7 @@ public class Validations : IValidations
     #region private methods
 
     // the _p suffix represents these methods are private and do not use the lock
-    // this is to prevent trying to use a locked resource
+    // this is to prevent trying to use a locked resource twice
 
     private static void ValidateString_p(string str, string message = "")
     {
