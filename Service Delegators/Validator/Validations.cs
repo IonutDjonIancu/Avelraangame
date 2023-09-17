@@ -613,12 +613,25 @@ public class Validations : IValidations
     {
         lock (_lock)
         {
-            var battleboard = snapshot.Battleboards.Find(s => s.Id == battleboardCharacter.BattleboardId) ?? throw new Exception("Battleboard not found.");
-            if (battleboard.g)
-            {
-                
-            }
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateString_p(battleboardCharacter.TargettedCharacterId);
 
+            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+
+            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            {
+                if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order to battle formation.");
+                if (battleboard.GoodGuys.BattleFormation.Count >= 6) throw new Exception("Battle formation full.");
+                _ = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargettedCharacterId) ?? throw new Exception("Targetted character is not in your party.");
+            }
+            else
+            {
+                if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order to battle formation.");
+                if (battleboard.BadGuys.BattleFormation.Count >= 6) throw new Exception("Battle formation full.");
+                _ = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargettedCharacterId) ?? throw new Exception("Targetted character is not in your party.");
+            }
         }
     }
 

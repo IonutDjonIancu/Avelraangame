@@ -20,13 +20,16 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 {
     private readonly IValidations validations;
     private readonly IBattleboardCRUDLogic crudLogic;
+    private readonly IBattleboardBattleFormationLogic formationLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
-        IBattleboardCRUDLogic crudLogic)
+        IBattleboardCRUDLogic crudLogic,
+        IBattleboardBattleFormationLogic battleFormationLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
+        this.formationLogic = battleFormationLogic;
     }
 
     public Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter)
@@ -61,9 +64,8 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 
     public Battleboard MoveToBattleFormation(BattleboardCharacter battleboardCharacter)
     {
-
-
-        throw new NotImplementedException();
+        validations.ValidateBattleFormationOnMoveTo(battleboardCharacter);
+        return formationLogic.MoveToBattleFormation(battleboardCharacter);
     }
 
     public Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter)
