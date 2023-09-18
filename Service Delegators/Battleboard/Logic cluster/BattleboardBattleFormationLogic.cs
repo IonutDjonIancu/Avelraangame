@@ -6,7 +6,7 @@ public interface IBattleboardBattleFormationLogic
 {
     Battleboard MoveToBattleFormation(BattleboardCharacter battleboardCharacter);
     Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter);
-    Battleboard LeaveBattleFormation(BattleboardCharacter battleboardCharacter);
+    Battleboard RemoveFromBattleFormation(BattleboardCharacter battleboardCharacter);
 }
 
 public class BattleboardBattleFormationLogic : IBattleboardBattleFormationLogic
@@ -28,25 +28,59 @@ public class BattleboardBattleFormationLogic : IBattleboardBattleFormationLogic
 
             if (character.Status.Gameplay.IsBattleboardGoodGuy)
             {
-                battleboard.GoodGuys.BattleFormation.Add(battleboardCharacter.TargettedCharacterId);
+                battleboard.GoodGuys.BattleFormation.Add(battleboardCharacter.FirstTargetId);
             }
             else
             {
-                battleboard.BadGuys.BattleFormation.Add(battleboardCharacter.TargettedCharacterId);
+                battleboard.BadGuys.BattleFormation.Add(battleboardCharacter.FirstTargetId);
             }
 
             return battleboard;
         }
     }
 
-    public Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter, CharacterIdentity characterIdentityToEnter)
+    public Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter)
     {
-        throw new NotImplementedException();
+        lock (_lock)
+        {
+            var (character, battleboard) = GetCharacterAndBattleboard(battleboardCharacter);
+            Character targettedCharacter;
+
+            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            {
+                battleboard.GoodGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+                battleboard.GoodGuys.BattleFormation.Add(battleboardCharacter.SecondTargetId);
+                targettedCharacter = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId)!;
+            }
+            else
+            {
+                battleboard.BadGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+                battleboard.BadGuys.BattleFormation.Add(battleboardCharacter.SecondTargetId);
+                targettedCharacter = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId)!;
+            }
+
+            targettedCharacter.Sheet.Assets.ActionsLeft -= 1;
+            return battleboard;
+        }
     }
 
-    public Battleboard LeaveBattleFormation(BattleboardCharacter battleboardCharacter)
+    public Battleboard RemoveFromBattleFormation(BattleboardCharacter battleboardCharacter)
     {
-        throw new NotImplementedException();
+        lock (_lock)
+        {
+            var (character, battleboard) = GetCharacterAndBattleboard(battleboardCharacter);
+
+            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            {
+                battleboard.GoodGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+            }
+            else
+            {
+                battleboard.BadGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+            }
+
+            return battleboard;
+        }
     }
 
     #region private methods

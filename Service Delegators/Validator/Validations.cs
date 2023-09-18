@@ -54,6 +54,8 @@ public interface IValidations
     void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter);
     void ValidateBeforeBattleboardLeave(BattleboardCharacter battleboardCharacter);
     void ValidateBattleFormationOnMoveTo(BattleboardCharacter battleboardCharacter);
+    void ValidateBattleFormationOnSwap(BattleboardCharacter battleboardCharacter);
+    void ValidateBattleFormationOnRemoveFrom(BattleboardCharacter battleboardCharacter);
     #endregion
 }
 
@@ -581,12 +583,12 @@ public class Validations : IValidations
             if (character.Status.Gameplay.IsBattleboardGoodGuy)
             {
                 if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can kick battleboard members.");
-                if (!battleboard.GoodGuys.Characters.Select(s => s.Identity.Id).Contains(battleboardCharacter.TargettedCharacterId)) throw new Exception("Targetted character to be kicked not found in your party.");
+                if (!battleboard.GoodGuys.Characters.Select(s => s.Identity.Id).Contains(battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character to be kicked not found in your party.");
             }
             else
             {
                 if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can kick battleboard members.");
-                if (!battleboard.BadGuys.Characters.Select(s => s.Identity.Id).Contains(battleboardCharacter.TargettedCharacterId)) throw new Exception("Targetted character to be kicked not found in your party.");
+                if (!battleboard.BadGuys.Characters.Select(s => s.Identity.Id).Contains(battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character to be kicked not found in your party.");
             }
         }
     }
@@ -615,26 +617,83 @@ public class Validations : IValidations
         {
             ValidateObject_p(battleboardCharacter);
             ValidateObject_p(battleboardCharacter.CharacterIdentity);
-            ValidateString_p(battleboardCharacter.TargettedCharacterId);
+            ValidateString_p(battleboardCharacter.FirstTargetId);
 
             var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
             var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
 
             if (character.Status.Gameplay.IsBattleboardGoodGuy)
             {
-                if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order to battle formation.");
+                if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order the battle formation.");
                 if (battleboard.GoodGuys.BattleFormation.Count >= 6) throw new Exception("Battle formation full.");
-                _ = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargettedCharacterId) ?? throw new Exception("Targetted character is not in your party.");
+                if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character is not in your party.");
             }
             else
             {
-                if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order to battle formation.");
+                if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order the battle formation.");
                 if (battleboard.BadGuys.BattleFormation.Count >= 6) throw new Exception("Battle formation full.");
-                _ = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargettedCharacterId) ?? throw new Exception("Targetted character is not in your party.");
+                if (!battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character is not in your party.");
             }
         }
     }
 
+    public void ValidateBattleFormationOnSwap(BattleboardCharacter battleboardCharacter)
+    {
+        lock (_lock)
+        {
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateString_p(battleboardCharacter.FirstTargetId);
+
+            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+
+            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            {
+                if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order the battle formation.");
+                if (battleboard.GoodGuys.BattleFormation.Contains(battleboardCharacter.SecondTargetId)) throw new Exception("Character to swap in already exists in the battle formation.");
+                var characterSwapped = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId) ?? throw new Exception("First targetted character is not in your party.");
+                if (characterSwapped.Sheet.Assets.ActionsLeft <= 0) throw new Exception("Unable to swap character, 0 action points left.");
+                if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == battleboardCharacter.SecondTargetId)) throw new Exception("Second targetted character is not in your party.");
+            }
+            else
+            {
+                if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order the battle formation.");
+                if (battleboard.BadGuys.BattleFormation.Contains(battleboardCharacter.SecondTargetId)) throw new Exception("Character to swap in already exists in the battle formation.");
+                var characterSwapped = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId) ?? throw new Exception("First targetted character is not in your party.");
+                if (characterSwapped.Sheet.Assets.ActionsLeft <= 0) throw new Exception("Unable to swap character, 0 action points left.");
+                if (!battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == battleboardCharacter.SecondTargetId)) throw new Exception("Second targetted character is not in your party.");
+            }
+        }
+    }
+
+    public void ValidateBattleFormationOnRemoveFrom(BattleboardCharacter battleboardCharacter)
+    {
+        lock (_lock)
+        {
+            ValidateObject_p(battleboardCharacter);
+            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateString_p(battleboardCharacter.FirstTargetId);
+
+            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+
+            if (battleboard.IsInCombat) throw new Exception("Cannot remove from formation during combat, only swap with any existing reinforcements.");
+
+            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            {
+                if (battleboard.GoodGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order the battle formation.");
+                if (!battleboard.GoodGuys.Characters.Exists(s => s.Identity.Id == battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character is not in your party.");
+                if (!battleboard.GoodGuys.BattleFormation.Contains(battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character is not in battle formation."); 
+            }
+            else
+            {
+                if (battleboard.BadGuys.PartyLeadId != character.Identity.Id) throw new Exception("Only party lead can order the battle formation.");
+                if (!battleboard.BadGuys.Characters.Exists(s => s.Identity.Id == battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character is not in your party.");
+                if (!battleboard.BadGuys.BattleFormation.Contains(battleboardCharacter.FirstTargetId)) throw new Exception("Targetted character is not in battle formation.");
+            }
+        }
+    }
     #endregion
 
     #region private methods

@@ -115,7 +115,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
 
             if (partyleadChar.Status.Gameplay.IsBattleboardGoodGuy)
             {
-                var characterToBeKicked = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargettedCharacterId)!;
+                var characterToBeKicked = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId)!;
                 characterToBeKicked.Status.Gameplay.BattleboardId = string.Empty;
                 battleboard.GoodGuys.Characters.Remove(characterToBeKicked);
                 battleboard.GoodGuys.BattleFormation.Remove(characterToBeKicked.Identity.Id);
@@ -129,7 +129,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
             }
             else
             {
-                var characterToBeKicked = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargettedCharacterId)!;
+                var characterToBeKicked = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId)!;
                 characterToBeKicked.Status.Gameplay.BattleboardId = string.Empty;
                 battleboard.BadGuys.Characters.Remove(characterToBeKicked);
                 battleboard.BadGuys.BattleFormation.Remove(characterToBeKicked.Identity.Id);

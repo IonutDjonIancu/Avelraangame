@@ -7,5 +7,6 @@ public class BattleboardCharacter
     public string BattleboardIdToJoin { get; set; }
     public bool WantsToBeGood { get; set; }
 
-    public string TargettedCharacterId { get; set; }
+    public string FirstTargetId { get; set; }
+    public string SecondTargetId { get; set; }
 }

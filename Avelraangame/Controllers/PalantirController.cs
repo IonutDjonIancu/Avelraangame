@@ -583,5 +583,7 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+
     #endregion
 }

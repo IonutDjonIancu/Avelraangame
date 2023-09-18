@@ -13,7 +13,7 @@ public interface IBattleboardLogicDelegator
 
     Battleboard MoveToBattleFormation(BattleboardCharacter battleboardCharacter);
     Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter);
-    Battleboard LeaveBattleFormation(BattleboardCharacter battleboardCharacter);
+    Battleboard RemoveFromBattleFormation(BattleboardCharacter battleboardCharacter);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -25,11 +25,11 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     public BattleboardLogicDelegator(
         IValidations validations,
         IBattleboardCRUDLogic crudLogic,
-        IBattleboardBattleFormationLogic battleFormationLogic)
+        IBattleboardBattleFormationLogic formationLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
-        this.formationLogic = battleFormationLogic;
+        this.formationLogic = formationLogic;
     }
 
     public Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter)
@@ -70,11 +70,13 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 
     public Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter)
     {
-        throw new NotImplementedException();
+        validations.ValidateBattleFormationOnSwap(battleboardCharacter);
+        return formationLogic.SwapInBattleFormation(battleboardCharacter);
     }
 
-    public Battleboard LeaveBattleFormation(BattleboardCharacter battleboardCharacter)
+    public Battleboard RemoveFromBattleFormation(BattleboardCharacter battleboardCharacter)
     {
-        throw new NotImplementedException();
+        validations.ValidateBattleFormationOnRemoveFrom(battleboardCharacter);
+        return formationLogic.RemoveFromBattleFormation(battleboardCharacter);
     }
 }
