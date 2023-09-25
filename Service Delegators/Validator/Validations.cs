@@ -49,6 +49,7 @@ public interface IValidations
 
     #region battleboard
     void ValidateBeforeBattleboardGet(BattleboardCharacter battleboardCharacter);
+    void ValidateBeforeBattleboardFind(string battleboardId);
     void ValidateBeforeBattleboardCreate(BattleboardCharacter battleboardCharacter);
     void ValidateBeforeBattleboardJoin(BattleboardCharacter battleboardCharacter);
     void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter);
@@ -506,9 +507,18 @@ public class Validations : IValidations
     #endregion
 
     #region battleboard validations
+    public void ValidateBeforeBattleboardFind(string battleboardId)
+    {
+        lock (_lock)
+        {
+            ValidateGuid_p(battleboardId);
+            if (!snapshot.Battleboards.Exists(s => s.Id == battleboardId)) throw new Exception("Battleboard not found.");
+        }
+    }
+
     public void ValidateBeforeBattleboardGet(BattleboardCharacter battleboardCharacter)
     {
-        lock ( _lock)
+        lock (_lock)
         {
             ValidateObject_p(battleboardCharacter);
             ValidateObject_p(battleboardCharacter.CharacterIdentity);
@@ -529,7 +539,7 @@ public class Validations : IValidations
                     s.Status.Gameplay.IsInCombat = false;
                 });
 
-                throw new Exception("Battleboard not found, character gameplay reset.");
+                throw new Exception("Battleboard not found.");
             }
         }
     }

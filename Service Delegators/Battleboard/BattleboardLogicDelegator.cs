@@ -4,7 +4,9 @@ namespace Service_Delegators;
 
 public interface IBattleboardLogicDelegator
 {
-    Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter);
+    List<Battleboard> GetBattleboards();
+    Battleboard FindBattleboard(string battleboardId);
+    Battleboard FindCharacterBattleboard(BattleboardCharacter battleboardCharacter);
 
     Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter);
     Battleboard JoinBattleboard(BattleboardCharacter battleboardCharacter);
@@ -32,7 +34,18 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         this.formationLogic = formationLogic;
     }
 
-    public Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter)
+    public List<Battleboard> GetBattleboards()
+    {
+        return crudLogic.GetBattleboards();
+    }
+
+    public Battleboard FindBattleboard(string battleboardId)
+    {
+        validations.ValidateBeforeBattleboardFind(battleboardId);
+        return crudLogic.FindBattleboard(battleboardId);
+    }
+
+    public Battleboard FindCharacterBattleboard(BattleboardCharacter battleboardCharacter)
     {
         validations.ValidateBeforeBattleboardGet(battleboardCharacter);
         return crudLogic.GetBattleboard(battleboardCharacter);

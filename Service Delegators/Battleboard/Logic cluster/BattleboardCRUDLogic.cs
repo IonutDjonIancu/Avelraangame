@@ -4,6 +4,8 @@ namespace Service_Delegators;
 
 public interface IBattleboardCRUDLogic
 {
+    List<Battleboard> GetBattleboards();
+    Battleboard FindBattleboard(string battleboardId);
     Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter);
 
     Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter);
@@ -21,6 +23,16 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
     public BattleboardCRUDLogic(Snapshot snapshot)
     {
         this.snapshot = snapshot;
+    }
+
+    public List<Battleboard> GetBattleboards()
+    {
+        return snapshot.Battleboards;
+    }
+
+    public Battleboard FindBattleboard(string battleboardId)
+    {
+        return GetBattleboards().Find(s => s.Id == battleboardId)!;
     }
 
     public Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter)
