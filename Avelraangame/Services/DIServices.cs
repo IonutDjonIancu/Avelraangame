@@ -63,7 +63,6 @@ public class DIServices : IDIServices
         // subservices
         builder.Services.AddTransient<IDatabaseExportLogic, DatabaseExportLogic>();
         builder.Services.AddTransient<IDatabaseImportLogic, DatabaseImportLogic>();
-
     }
 
     private static void LoadDiceService(WebApplicationBuilder builder)
@@ -131,6 +130,7 @@ public class DIServices : IDIServices
         // subservices
         builder.Services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
         builder.Services.AddTransient<IBattleboardBattleFormationLogic, BattleboardBattleFormationLogic>();
+        builder.Services.AddTransient<IBattleboardCombatLogic, BattleboardCombatLogic>();
     }
     #endregion
 }

@@ -3,10 +3,13 @@
 public class Battleboard
 {
     public string Id { get; set; }
+
     public bool IsInCombat { get; set; }
+    public List<string> BattleOrder { get; set; }
 
-    public Party GoodGuys { get; set; } = new();
-    public Party BadGuys { get; set; } = new();
+    public string GoodGuyPartyLead { get; set; }
+    public List<Character> GoodGuys { get; set; } = new();
 
-    public List<string> BattleOrder { get; set; } = new();
+    public string BadGuyPartyLead { get; set; }
+    public List<Character> BadGuys { get; set; } = new();
 }

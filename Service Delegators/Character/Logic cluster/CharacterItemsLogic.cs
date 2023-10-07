@@ -191,7 +191,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         character.Sheet.Assets.ActionsLeft  = character.Sheet.Assets.Actions;
 
         // skills
-        character.Sheet.Skills.Combat       += multiplier * item.Sheet.Skills.Combat;
+        character.Sheet.Skills.Melee       += multiplier * item.Sheet.Skills.Melee;
         character.Sheet.Skills.Arcane       += multiplier * item.Sheet.Skills.Arcane;
         character.Sheet.Skills.Psionics     += multiplier * item.Sheet.Skills.Psionics;
         character.Sheet.Skills.Hide         += multiplier * item.Sheet.Skills.Hide;

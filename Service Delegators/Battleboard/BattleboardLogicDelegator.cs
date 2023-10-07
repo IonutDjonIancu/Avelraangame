@@ -13,9 +13,18 @@ public interface IBattleboardLogicDelegator
     Battleboard KickFromBattleboard(BattleboardCharacter battleboardCharacter);
     void LeaveBattleboard(BattleboardCharacter battleboardCharacter);
 
-    Battleboard MoveToBattleFormation(BattleboardCharacter battleboardCharacter);
-    Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter);
-    Battleboard RemoveFromBattleFormation(BattleboardCharacter battleboardCharacter);
+    Battleboard MakeCamp(BattleboardCharacter battleboardCharacter);
+
+    Battleboard StartCombat(string battleboardId);
+    Battleboard EndCombat(Battleboard battleboard);
+    Battleboard Attack(tbd);
+    Battleboard Cast(tbd);
+    Battleboard Defend(tbd);
+    Battleboard Mend(tbd);
+    Battleboard Hide(tbd);
+    Battleboard Traps(tbd);
+    Battleboard Pass(tbd);
+    Battleboard LetAiAct(tbd);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -75,21 +84,10 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         crudLogic.LeaveBattleboard(battleboardCharacter);
     }
 
-    public Battleboard MoveToBattleFormation(BattleboardCharacter battleboardCharacter)
+    public Combat StartCombat(string battleboardId)
     {
-        validations.ValidateBattleFormationOnMoveTo(battleboardCharacter);
-        return formationLogic.MoveToBattleFormation(battleboardCharacter);
-    }
+        validations.ValidateBattleboardBeforeCombatCreate(battleboardId);
 
-    public Battleboard SwapInBattleFormation(BattleboardCharacter battleboardCharacter)
-    {
-        validations.ValidateBattleFormationOnSwap(battleboardCharacter);
-        return formationLogic.SwapInBattleFormation(battleboardCharacter);
-    }
 
-    public Battleboard RemoveFromBattleFormation(BattleboardCharacter battleboardCharacter)
-    {
-        validations.ValidateBattleFormationOnRemoveFrom(battleboardCharacter);
-        return formationLogic.RemoveFromBattleFormation(battleboardCharacter);
     }
 }

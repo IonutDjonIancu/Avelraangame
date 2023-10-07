@@ -154,7 +154,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
 
     private void SetWealthAndWorth(Character character)
     {
-        var sumOfSkills = character.Sheet.Skills.Combat
+        var sumOfSkills = character.Sheet.Skills.Melee
             + character.Sheet.Skills.Arcane
             + character.Sheet.Skills.Psionics
             + character.Sheet.Skills.Hide

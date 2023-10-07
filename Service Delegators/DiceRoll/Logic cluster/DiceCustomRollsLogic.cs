@@ -85,7 +85,7 @@ public class DiceCustomRollsLogic : IDiceCustomRollsLogic
         CharactersLore.Assets.Spot => character.Sheet.Assets.Spot,
 
         // skills
-        CharactersLore.Skills.Combat => character.Sheet.Skills.Combat,
+        CharactersLore.Skills.Melee => character.Sheet.Skills.Melee,
         CharactersLore.Skills.Arcane => character.Sheet.Skills.Arcane,
         CharactersLore.Skills.Psionics => character.Sheet.Skills.Psionics,
         CharactersLore.Skills.Hide => character.Sheet.Skills.Hide,

@@ -74,7 +74,7 @@ internal static class ItemBonuses
         var skillIndex = dice.Roll_1_to_n(CharactersLore.Skills.All.Count) - 1;
         var chosenSkill = CharactersLore.Skills.All[skillIndex];
 
-        if (chosenSkill == CharactersLore.Skills.Combat) item.Sheet.Skills.Combat += amount;
+        if (chosenSkill == CharactersLore.Skills.Melee) item.Sheet.Skills.Melee += amount;
         else if (chosenSkill == CharactersLore.Skills.Arcane) item.Sheet.Skills.Arcane += amount;
         else if (chosenSkill == CharactersLore.Skills.Psionics) item.Sheet.Skills.Psionics += amount;
         else if (chosenSkill == CharactersLore.Skills.Hide) item.Sheet.Skills.Hide += amount;

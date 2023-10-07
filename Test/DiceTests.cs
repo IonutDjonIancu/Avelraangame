@@ -67,7 +67,7 @@ public class DiceTests : TestBase
     {
         var character = TestUtils.CreateAndGetCharacter("playerName", _players, _characters, _snapshot);
 
-        var roll = _dice.Roll_character_gameplay_dice(true, CharactersLore.Skills.Combat, character);
+        var roll = _dice.Roll_character_gameplay_dice(true, CharactersLore.Skills.Melee, character);
 
         roll.Should().BeGreaterThanOrEqualTo(1);
     }

@@ -26,13 +26,13 @@ public class BattleboardBattleFormationLogic : IBattleboardBattleFormationLogic
         {
             var (character, battleboard) = GetCharacterAndBattleboard(battleboardCharacter);
 
-            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            if (character.Status.Gameplay.IsGoodGuy)
             {
-                battleboard.GoodGuys.BattleFormation.Add(battleboardCharacter.FirstTargetId);
+                battleboard.GoodGuys.BattleFormation.Add(battleboardCharacter.TargetId);
             }
             else
             {
-                battleboard.BadGuys.BattleFormation.Add(battleboardCharacter.FirstTargetId);
+                battleboard.BadGuys.BattleFormation.Add(battleboardCharacter.TargetId);
             }
 
             return battleboard;
@@ -46,17 +46,17 @@ public class BattleboardBattleFormationLogic : IBattleboardBattleFormationLogic
             var (character, battleboard) = GetCharacterAndBattleboard(battleboardCharacter);
             Character targettedCharacter;
 
-            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            if (character.Status.Gameplay.IsGoodGuy)
             {
-                battleboard.GoodGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+                battleboard.GoodGuys.BattleFormation.Remove(battleboardCharacter.TargetId);
                 battleboard.GoodGuys.BattleFormation.Add(battleboardCharacter.SecondTargetId);
-                targettedCharacter = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId)!;
+                targettedCharacter = battleboard.GoodGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargetId)!;
             }
             else
             {
-                battleboard.BadGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+                battleboard.BadGuys.BattleFormation.Remove(battleboardCharacter.TargetId);
                 battleboard.BadGuys.BattleFormation.Add(battleboardCharacter.SecondTargetId);
-                targettedCharacter = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.FirstTargetId)!;
+                targettedCharacter = battleboard.BadGuys.Characters.Find(s => s.Identity.Id == battleboardCharacter.TargetId)!;
             }
 
             targettedCharacter.Sheet.Assets.ActionsLeft -= 1;
@@ -70,13 +70,13 @@ public class BattleboardBattleFormationLogic : IBattleboardBattleFormationLogic
         {
             var (character, battleboard) = GetCharacterAndBattleboard(battleboardCharacter);
 
-            if (character.Status.Gameplay.IsBattleboardGoodGuy)
+            if (character.Status.Gameplay.IsGoodGuy)
             {
-                battleboard.GoodGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+                battleboard.GoodGuys.BattleFormation.Remove(battleboardCharacter.TargetId);
             }
             else
             {
-                battleboard.BadGuys.BattleFormation.Remove(battleboardCharacter.FirstTargetId);
+                battleboard.BadGuys.BattleFormation.Remove(battleboardCharacter.TargetId);
             }
 
             return battleboard;

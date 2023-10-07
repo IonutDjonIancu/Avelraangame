@@ -5,9 +5,6 @@ public class CharacterStatus
     public string Name { get; set; }
     public int EntityLevel { get; set; }
     public string DateOfBirth { get; set; }
-    public bool IsNpc { get; set; }
-    public bool IsAlive { get; set; }
-    public bool IsLockedToModify { get; set; }
 
     public CharacterRacialTraits Traits { get; set; } = new();
     public CharacterGameplay Gameplay { get; set; } = new();

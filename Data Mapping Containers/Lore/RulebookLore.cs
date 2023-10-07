@@ -91,7 +91,7 @@ public class RulebookLore
                 public const int Mana         = 0;
                 public const int Actions      = 0;    
                 // skills
-                public const int Combat       = 40;
+                public const int Melee        = 40;
                 public const int Arcane       = 10;
                 public const int Psionics     = 10;
                 public const int Hide         = -10;
@@ -124,7 +124,7 @@ public class RulebookLore
                 public const int Mana         = 40;
                 public const int Actions      = 1;    
                 // skills
-                public const int Combat       = 20;
+                public const int Melee        = 20;
                 public const int Arcane       = 40;
                 public const int Psionics     = 5;
                 public const int Hide         = 10;
@@ -157,7 +157,7 @@ public class RulebookLore
                 public const int Mana         = 0;
                 public const int Actions      = 0;    
                 // skills
-                public const int Combat       = 30;
+                public const int Melee        = 30;
                 public const int Arcane       = 0;
                 public const int Psionics     = 10;
                 public const int Hide         = -20;
@@ -190,7 +190,7 @@ public class RulebookLore
                 public const int Mana         = 0;
                 public const int Actions      = 0;    
                 // skills
-                public const int Combat       = 10;
+                public const int Melee        = 10;
                 public const int Arcane       = 0;
                 public const int Psionics     = 0;
                 public const int Hide         = 10;
@@ -236,7 +236,7 @@ public class RulebookLore
             };
             public static readonly List<string> LikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Melee,
                 CharactersLore.Skills.Travel,
             };
             public static readonly List<string> UnlikelySkills = new()
@@ -288,7 +288,7 @@ public class RulebookLore
             };
             public static readonly List<string> UnlikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Melee,
                 CharactersLore.Skills.Psionics,
                 CharactersLore.Skills.Hide,
                 CharactersLore.Skills.Traps,
@@ -327,7 +327,7 @@ public class RulebookLore
             };
             public static readonly List<string> LikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Melee,
                 CharactersLore.Skills.Travel,
                 CharactersLore.Skills.Traps,
                 CharactersLore.Skills.Hide,
@@ -373,7 +373,7 @@ public class RulebookLore
             };
             public static readonly List<string> LikelySkills = new()
             {
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Melee,
                 CharactersLore.Skills.Social,
                 CharactersLore.Skills.Travel,
             };
@@ -424,7 +424,7 @@ public class RulebookLore
             public static readonly List<string> UnlikelySkills = new()
             {
                 CharactersLore.Skills.Travel,
-                CharactersLore.Skills.Combat,
+                CharactersLore.Skills.Melee,
                 CharactersLore.Skills.Psionics,
                 CharactersLore.Skills.Hide,
                 CharactersLore.Skills.Traps,
@@ -479,7 +479,7 @@ public class RulebookLore
 
         public static class Skills
         {
-            public static int CalculateCombat(CharacterStats stats)
+            public static int CalculateMelee(CharacterStats stats)
             {
                 return stats.Strength + stats.Constitution + stats.Agility;
             }
