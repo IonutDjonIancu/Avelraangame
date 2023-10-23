@@ -42,13 +42,13 @@ public class CharacterTravelLogic : ICharacterTravelLogic
             var effort = dice.Roll_1_to_n(destination.Effort);
             var listOfRolls = new List<int>();
 
-            var characterRoll = dice.Roll_character_gameplay_dice(false, CharactersLore.Skills.Travel, character);
+            var characterRoll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, character);
             character.Status.Position = destination.Position;
             listOfRolls.Add(characterRoll);
 
             foreach (var npc in character.Mercenaries)
             {
-                var npcRoll = dice.Roll_character_gameplay_dice(false, CharactersLore.Skills.Travel, npc);
+                var npcRoll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, npc);
                 npc.Status.Position = destination.Position;
                 listOfRolls.Add(npcRoll);
             }

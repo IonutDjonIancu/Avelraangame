@@ -4,6 +4,7 @@ public class Battleboard
 {
     public string Id { get; set; }
 
+    public string LastActionResult { get; set; }
     public bool IsInCombat { get; set; }
     public List<string> BattleOrder { get; set; }
 
@@ -12,4 +13,13 @@ public class Battleboard
 
     public string BadGuyPartyLead { get; set; }
     public List<Character> BadGuys { get; set; } = new();
+
+    public List<Character> GetAllCharacters()
+    {
+        var combatants = new List<Character>();
+        GoodGuys.ForEach(s => combatants.Add(s));
+        BadGuys.ForEach(s => combatants.Add(s));
+
+        return combatants;
+    }
 }

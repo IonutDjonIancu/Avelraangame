@@ -95,6 +95,8 @@ public class CharacterSheetLogic : ICharacterSheetLogic
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
         CalculateAssets(character.Sheet);
         CalculateSkills(character.Sheet);
+
+        charsheet.Assets.Purge = 0;
     }
 
     private void SetCharacterSheetForDwarf(int statPoints, int skillPoints, Character character)

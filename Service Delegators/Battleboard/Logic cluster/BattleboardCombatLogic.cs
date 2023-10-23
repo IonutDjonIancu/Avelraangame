@@ -5,16 +5,16 @@ namespace Service_Delegators;
 
 public interface IBattleboardCombatLogic
 {
-    Combat CreateCombat(string battleboardId);
-    Combat Attack(tbd);
-    Combat Cast(tbd);
-    Combat Defend(tbd);
-    Combat Mend(tbd);
-    Combat Hide(tbd);
-    Combat Traps(tbd);
-    Combat Pass(tbd);
-    Combat LetAiAct(tbd);
-    void DeleteCombat(Battleboard battleboard);
+    Battleboard StartCombat(string battleboardId);
+    Battleboard Attack(tbd);
+    Battleboard Cast(tbd);
+    Battleboard Defend(tbd);
+    Battleboard Mend(tbd);
+    Battleboard Hide(tbd);
+    Battleboard Traps(tbd);
+    Battleboard Pass(tbd);
+    Battleboard LetAiAct(tbd);
+    Battleboard StopCombat(Battleboard battleboard);
 }
 
 public class BattleboardCombatLogic : IBattleboardCombatLogic
@@ -23,54 +23,164 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     private readonly Snapshot snapshot;
     private readonly IPersistenceService persistence;
+    private readonly IDiceLogicDelegator dice;
+    private readonly ICharacterLogicDelegator characters;
 
     public BattleboardCombatLogic(
         Snapshot snapshot,
-        IPersistenceService persistence)
+        IPersistenceService persistence,
+        IDiceLogicDelegator dice,
+        ICharacterLogicDelegator characters)
     {
         this.snapshot = snapshot;
+        this.persistence = persistence;
+        this.dice = dice;
+        this.characters = characters;
     }
 
-    public Combat CreateCombat(string battleboardId)
+    public Battleboard StartCombat(string battleboardId)
     {
         lock (_lock)
         {
             var board = snapshot.Battleboards.Find(s => s.Id == battleboardId)!;
             board.IsInCombat = true;
 
-            var listOfCombatants = new List<Character>();
-            board.GoodGuys.Characters.ForEach(s =>
-            {
-                s.Status.Gameplay.IsInCombat = true;
+            ApplyTacticalRoll(board);
 
-                if (board.GoodGuys.BattleFormation.Contains(s.Identity.Id))
-                {
-                    listOfCombatants.Add(s);
-                }
+            var combatants = board.GetAllCharacters()
+                .OrderByDescending(s => s.Sheet.Assets.Actions)
+                .ToList();
 
-            });
-            board.BadGuys.Characters.ForEach(s =>
-            {
-                s.Status.Gameplay.IsInCombat = true;
+            combatants.ForEach(s => s.Status.Gameplay.IsLocked = true);
+            board.BattleOrder = combatants.Select(s => s.Identity.Id).ToList();
 
-                if (board.BadGuys.BattleFormation.Contains(s.Identity.Id))
-                {
-                    listOfCombatants.Add(s);
-                }
-            });
-
-
-
-
-
-
-
-
-
-
+            return board;
         }
+    }
+
+    #region private methods
+    private void ApplyTacticalRoll(Battleboard board)
+    {
+        var goodGuyPartyLead = board.GoodGuys.First(s => s.Identity.Id == board.GoodGuyPartyLead).Status.Name;
+
+        var highestRollerGoodGuy = board.GoodGuys.OrderByDescending(s => s.Sheet.Skills.Tactics).First()!;
+        var highestRollerBadGuy = board.BadGuys.OrderByDescending(s => s.Sheet.Skills.Tactics).First()!;
+
+        var goodRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Tactics, highestRollerGoodGuy);
+        var badRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Tactics, highestRollerBadGuy);
+
+        var result = goodRoll - badRoll;
+
+        if (result <= -30)
+        {
+            board.LastActionResult = $"Disastrous tactical disadvantage for {goodGuyPartyLead}'s party.";
+            RemoveSomeItems(board.GoodGuys);
+            ReduceResolve(board.GoodGuys);
+            ReduceActions(board.GoodGuys);
+        }
+        else if (result <= -10 && result < -5)
+        {
+            board.LastActionResult = $"Unfavourable tactical disadvantage for {goodGuyPartyLead}'s party.";
+            ReduceResolve(board.GoodGuys);
+            ReduceActions(board.GoodGuys);
+        }
+        else if (result <= -5)
+        {
+            board.LastActionResult = $"Small tactical disadvantage for {goodGuyPartyLead}'s party.";
+            ReduceActions(board.GoodGuys);
+        }
+        else if (result >= 5 && result < 10)
+        {
+            board.LastActionResult = $"Slight tactical advantage for {goodGuyPartyLead}'s party.";
+            ReduceActions(board.BadGuys);
+        }
+        else if (result >= 10 && result < 30)
+        {
+            board.LastActionResult = $"Favourable tactical advantage for {goodGuyPartyLead}'s party.";
+            ReduceResolve(board.BadGuys);
+            ReduceActions(board.BadGuys);
+        }
+        else if (result >= 30)
+        {
+            board.LastActionResult = $"Masterly tactical disadvantage for {goodGuyPartyLead}'s party.";
+            RemoveSomeItems(board.BadGuys);
+            ReduceResolve(board.BadGuys);
+            ReduceActions(board.BadGuys);
+        }
+        else
+        {
+            board.LastActionResult = $"Inconclusive tactical roll, the fight is even.";
+        }
+
+        void RemoveSomeItems(List<Character> party)
+        {
+            foreach (var character in party)
+            {
+                var unequip = new CharacterEquip
+                {
+                    CharacterIdentity = character.Identity,
+                };
+
+                var roll = dice.Roll_d6_noReroll();
+
+                if (roll <= 1)
+                {
+                    unequip.InventoryLocation = ItemsLore.InventoryLocation.Body;
+                    unequip.ItemId = character.Inventory.Body!.Identity.Id;
+                    characters.UnequipCharacterItem(unequip);
+                }
+                if (roll <= 2)
+                {
+                    unequip.InventoryLocation = ItemsLore.InventoryLocation.Head;
+                    unequip.ItemId = character.Inventory.Head!.Identity.Id;
+                    characters.UnequipCharacterItem(unequip);
+                }
+                if (roll <= 3)
+                {
+                    unequip.InventoryLocation = ItemsLore.InventoryLocation.Mainhand;
+                    unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
+                    characters.UnequipCharacterItem(unequip);
+                }
+                if (roll <= 4)
+                {
+                    unequip.InventoryLocation = ItemsLore.InventoryLocation.Offhand;
+                    unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
+                    characters.UnequipCharacterItem(unequip);
+                }
+                if (roll <= 5)
+                {
+                    unequip.InventoryLocation = ItemsLore.InventoryLocation.Ranged;
+                    unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
+                    characters.UnequipCharacterItem(unequip);
+                }
+                if (roll <= 6)
+                {
+                    unequip.InventoryLocation = ItemsLore.InventoryLocation.Heraldry;
+                    unequip.ItemId = character.Inventory.Heraldry!.First().Identity.Id;
+                    characters.UnequipCharacterItem(unequip);
+                }
+            }
+        }
+
+        void ReduceResolve(List<Character> party)
+        {
+            foreach (var character in party)
+            {
+                character.Sheet.Assets.ResolveLeft = (int)(character.Sheet.Assets.Resolve * 0.5);
+            }
+        }
+
+        void ReduceActions(List<Character> party)
+        {
+            foreach (var character in party)
+            {
+                character.Sheet.Assets.ActionsLeft = (int)(character.Sheet.Assets.Actions * 0.5);
+            }
+        }
+
     }
 
 
 
+    #endregion
 }

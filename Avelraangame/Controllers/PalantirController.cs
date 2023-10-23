@@ -718,62 +718,7 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Gameplay/MoveToBattleFormation
-    [HttpPut("Gameplay/MoveToBattleFormation")]
-    public IActionResult MoveToBattleFormation([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
-    {
-        try
-        {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-
-            var battleboard = battleboards.MoveToBattleFormation(battleboardCharacter);
-
-            return Ok(battleboard);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Gameplay/SwapInBattleFormation
-    [HttpPut("Gameplay/SwapInBattleFormation")]
-    public IActionResult SwapInBattleFormation([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
-    {
-        try
-        {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-
-            var battleboard = battleboards.SwapInBattleFormation(battleboardCharacter);
-
-            return Ok(battleboard);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Gameplay/RemoveFromBattleFormation
-    [HttpPut("Gameplay/RemoveFromBattleFormation")]
-    public IActionResult RemoveFromBattleFormation([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
-    {
-        try
-        {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-
-            var battleboard = battleboards.RemoveFromBattleFormation(battleboardCharacter);
-
-            return Ok(battleboard);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
+    
 
     #endregion
 }

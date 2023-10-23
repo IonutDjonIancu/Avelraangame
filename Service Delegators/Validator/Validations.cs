@@ -54,7 +54,7 @@ public interface IValidations
     void ValidateBeforeBattleboardJoin(BattleboardCharacter battleboardCharacter);
     void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter);
     void ValidateBeforeBattleboardLeave(BattleboardCharacter battleboardCharacter);
-    void ValidateBattleboardBeforeCombatCreate(string battleboardId);
+    void ValidateBattleboardBeforeCombatStart(string battleboardId);
     #endregion
 }
 
@@ -633,7 +633,7 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBattleboardBeforeCombatCreate(string battleboardId)
+    public void ValidateBattleboardBeforeCombatStart(string battleboardId)
     {
         lock (_lock)
         {

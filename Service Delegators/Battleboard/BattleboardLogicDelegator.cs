@@ -31,16 +31,16 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 {
     private readonly IValidations validations;
     private readonly IBattleboardCRUDLogic crudLogic;
-    private readonly IBattleboardBattleFormationLogic formationLogic;
+    private readonly IBattleboardCombatLogic combatLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
         IBattleboardCRUDLogic crudLogic,
-        IBattleboardBattleFormationLogic formationLogic)
+        IBattleboardCombatLogic combatLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
-        this.formationLogic = formationLogic;
+        this.combatLogic = combatLogic;
     }
 
     public List<Battleboard> GetBattleboards()
@@ -75,19 +75,18 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     public Battleboard KickFromBattleboard(BattleboardCharacter battleboardCharacter)
     {
         validations.ValidateBeforeBattleboardKick(battleboardCharacter);
-        return crudLogic.KickFromBattleboard(battleboardCharacter);
+        return crudLogic.RemoveFromBattleboard(battleboardCharacter);
     }
 
     public void LeaveBattleboard(BattleboardCharacter battleboardCharacter)
     {
         validations.ValidateBeforeBattleboardLeave(battleboardCharacter);
-        crudLogic.LeaveBattleboard(battleboardCharacter);
+        crudLogic.RemoveFromBattleboard(battleboardCharacter);
     }
 
-    public Combat StartCombat(string battleboardId)
+    public Battleboard StartCombat(string battleboardId)
     {
-        validations.ValidateBattleboardBeforeCombatCreate(battleboardId);
-
-
+        validations.ValidateBattleboardBeforeCombatStart(battleboardId);
+        return combatLogic.StartCombat(battleboardId);
     }
 }
