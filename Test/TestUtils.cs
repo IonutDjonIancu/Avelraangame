@@ -21,7 +21,7 @@ public static class TestUtils
         return _snapshot.Players.Find(s => s.Identity.Id == id) ?? throw new Exception("Player not found.");
     }
 
-    internal static Character CreateAndGetCharacter(string playerName, IPlayerLogicDelegator _players, ICharacterLogicDelegator _characters, Snapshot _snapshots)
+    internal static Character CreateAndGetCharacter(string playerName, IPlayerLogicDelegator _players, ICharacterLogicDelegator _characters, Snapshot _snapshot)
     {
         var traits = new CharacterRacialTraits
         {
@@ -31,9 +31,16 @@ public static class TestUtils
             Tradition = CharactersLore.Tradition.Martial
         };
 
-        var playerId = CreatePlayer(playerName, _players, _snapshots);
+        var playerId = CreatePlayer(playerName, _players, _snapshot);
         _characters.CreateCharacterStub(playerId);
         return _characters.SaveCharacterStub(traits, playerId);
+    }
+
+    internal static Character GetCharacter(string characterId, string playerId, Snapshot snapshot)
+    {
+        var player = GetPlayer(playerId, snapshot);
+
+        return player.Characters.Find(s => s.Identity.Id == characterId) ?? throw new Exception("Character not found.");
     }
 
     internal static CharacterIdentity GetCharacterIdentity(Character character)

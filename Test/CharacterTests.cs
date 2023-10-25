@@ -9,7 +9,7 @@ public class CharacterTests : TestBase
     private const string PlayerName = "JoeDoe";
 
     [Fact(DisplayName = "Create character stub should exist in snapshot")]
-    public void CreateCharacterStub()
+    public void CreateCharacterStubTest()
     {
         // Arrange
         var playerId = TestUtils.CreatePlayer(PlayerName, _players, _snapshot);
@@ -22,7 +22,7 @@ public class CharacterTests : TestBase
     }
 
     [Fact(DisplayName = "Save character stub should exist as new character in player")]
-    public void SaveCharacterStub()
+    public void SaveCharacterStubTest()
     {
         var player = TestUtils.CreateAndGetPlayer(PlayerName, _players, _snapshot);
 
