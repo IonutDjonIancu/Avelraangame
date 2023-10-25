@@ -21,6 +21,7 @@ public class PalantirController : ControllerBase
     private readonly ICharacterLogicDelegator characters;
     private readonly INpcLogicDelegator npcs;
     private readonly IGameplayLogicDelegator gameplay;
+    private readonly IBattleboardLogicDelegator battleboards;
 
     public PalantirController(
         IValidations validations,
@@ -30,7 +31,8 @@ public class PalantirController : ControllerBase
         IItemsLogicDelegator items,
         ICharacterLogicDelegator characters,
         INpcLogicDelegator npcs,
-        IGameplayLogicDelegator gameplay) 
+        IGameplayLogicDelegator gameplay,
+        IBattleboardLogicDelegator battleboards) 
     {
         this.validations = validations;
         this.metadata = metadata;
@@ -40,6 +42,7 @@ public class PalantirController : ControllerBase
         this.characters = characters;
         this.npcs = npcs;
         this.gameplay = gameplay;
+        this.battleboards = battleboards;
     }
 
     #region ConnectionTest
@@ -567,9 +570,9 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // POST: /api/palantir/Gameplay/GetLocation
-    [HttpPost("Gameplay/GetLocation")]
-    public IActionResult GetLocation([FromBody] Position position)
+    // POST: /api/palantir/Gameplay/FindLocation
+    [HttpPost("Gameplay/FindLocation")]
+    public IActionResult FindLocation([FromBody] Position position)
     {
         try
         {
@@ -583,5 +586,139 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    #endregion
+
+    #region Battleboard
+    // GET: /api/palantir/Battleboards/GetBattleboards
+    [HttpGet("Battleboards/GetBattleboards")]
+    public IActionResult GetBattleboards()
+    {
+        try
+        {
+            var battleboardAll = battleboards.GetBattleboards();
+
+            return Ok(battleboardAll);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // POST: /api/palantir/Gameplay/FindBattleboard
+    [HttpPost("Gameplay/FindBattleboard")]
+    public IActionResult FindBattleboard(string battleboardId)
+    {
+        try
+        {
+            var battleboard = battleboards.FindBattleboard(battleboardId);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // POST: /api/palantir/Gameplay/FindCharacterBattleboard
+    [HttpPost("Gameplay/FindCharacterBattleboard")]
+    public IActionResult FindCharacterBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.FindCharacterBattleboard(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // POST: /api/palantir/Gameplay/CreateBattleboard
+    [HttpPost("Gameplay/CreateBattleboard")]
+    public IActionResult CreateBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.CreateBattleboard(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Gameplay/JoinBattleboard
+    [HttpPut("Gameplay/JoinBattleboard")]
+    public IActionResult JoinBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.JoinBattleboard(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Gameplay/KickFromBattleboard
+    [HttpPut("Gameplay/KickFromBattleboard")]
+    public IActionResult KickFromBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.KickFromBattleboard(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Gameplay/LeaveBattleboard
+    [HttpPut("Gameplay/LeaveBattleboard")]
+    public IActionResult LeaveBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            battleboards.LeaveBattleboard(actor);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    
+
     #endregion
 }

@@ -54,8 +54,8 @@ public class CharacterTests : TestBase
         character.Status.Wealth.Should().BeGreaterThanOrEqualTo(1);
         character.Status.Worth.Should().BeGreaterThanOrEqualTo(1);
         character.Status.DateOfBirth.Should().Be(DateTime.Now.ToShortDateString());
-        character.Status.IsAlive.Should().BeTrue();
-        character.Status.IsLockedToModify.Should().BeFalse();
+        character.Status.Gameplay.IsAlive.Should().BeTrue();
+        character.Status.Gameplay.IsLocked.Should().BeFalse();
 
         character.LevelUp.DeedPoints.Should().Be(0);
         character.LevelUp.StatPoints.Should().Be(0);
@@ -64,7 +64,7 @@ public class CharacterTests : TestBase
 
         character.Sheet.Stats.Strength.Should().BeGreaterThanOrEqualTo(1);
         character.Sheet.Assets.Harm.Should().BeGreaterThanOrEqualTo(1);
-        character.Sheet.Skills.Combat.Should().BeGreaterThanOrEqualTo(1);
+        character.Sheet.Skills.Melee.Should().BeGreaterThanOrEqualTo(1);
 
         character.Inventory.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
@@ -112,7 +112,7 @@ public class CharacterTests : TestBase
         var character = CreateCharacter();
         var oldStr = character.Sheet.Stats.Strength;
         var oldHar = character.Sheet.Assets.Harm;
-        var oldCom = character.Sheet.Skills.Combat;
+        var oldCom = character.Sheet.Skills.Melee;
 
         character.LevelUp.StatPoints = 100;
         character.LevelUp.AssetPoints = 100;
@@ -120,11 +120,11 @@ public class CharacterTests : TestBase
 
         _characters.IncreaseCharacterStats(CharactersLore.Stats.Strength, GetCharIdentity(character));
         _characters.IncreaseCharacterAssets(CharactersLore.Assets.Harm, GetCharIdentity(character));
-        _characters.IncreaseCharacterSkills(CharactersLore.Skills.Combat, GetCharIdentity(character));
+        _characters.IncreaseCharacterSkills(CharactersLore.Skills.Melee, GetCharIdentity(character));
 
         character.Sheet.Stats.Strength.Should().BeGreaterThan(oldStr);
         character.Sheet.Assets.Harm.Should().BeGreaterThan(oldHar);
-        character.Sheet.Skills.Combat.Should().BeGreaterThan(oldCom);
+        character.Sheet.Skills.Melee.Should().BeGreaterThan(oldCom);
     }
 
     [Fact(DisplayName = "Increasing the attributes from a character with no attributes points should throw")]
@@ -134,7 +134,7 @@ public class CharacterTests : TestBase
 
         Assert.Throws<Exception>(() => _characters.IncreaseCharacterStats(CharactersLore.Stats.Strength, GetCharIdentity(character)));
         Assert.Throws<Exception>(() => _characters.IncreaseCharacterAssets(CharactersLore.Assets.Harm, GetCharIdentity(character)));
-        Assert.Throws<Exception>(() => _characters.IncreaseCharacterSkills(CharactersLore.Skills.Combat, GetCharIdentity(character)));
+        Assert.Throws<Exception>(() => _characters.IncreaseCharacterSkills(CharactersLore.Skills.Melee, GetCharIdentity(character)));
     }
 
     [Fact(DisplayName = "Increasing the attributes from a character with wrong attribute name should throw")]
@@ -153,7 +153,7 @@ public class CharacterTests : TestBase
         var character = CreateCharacter();
         var oldStr = character.Sheet.Stats.Strength;
         var oldHar = character.Sheet.Assets.Harm;
-        var oldCom = character.Sheet.Skills.Combat;
+        var oldCom = character.Sheet.Skills.Melee;
 
         var strValue = 100;
         var harValue = 100;
@@ -162,7 +162,7 @@ public class CharacterTests : TestBase
         var item = _items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
         item.Sheet.Stats.Strength = strValue;
         item.Sheet.Assets.Harm = harValue;
-        item.Sheet.Skills.Combat = comValue;
+        item.Sheet.Skills.Melee = comValue;
 
         character.Inventory.Supplies.Clear();
         character.Inventory.Supplies.Add(item);
@@ -180,7 +180,7 @@ public class CharacterTests : TestBase
         character.Inventory.Mainhand.Should().Be(item);
         character.Sheet.Stats.Strength.Should().Be(oldStr + strValue);
         character.Sheet.Assets.Harm.Should().Be(oldHar + harValue);
-        character.Sheet.Skills.Combat.Should().Be(oldCom + comValue);
+        character.Sheet.Skills.Melee.Should().Be(oldCom + comValue);
     }
 
     [Fact(DisplayName = "Equipping an item in the wrong slot should throw")]
@@ -205,7 +205,7 @@ public class CharacterTests : TestBase
         var character = CreateCharacter();
         var oldStr = character.Sheet.Stats.Strength;
         var oldHar = character.Sheet.Assets.Harm;
-        var oldCom = character.Sheet.Skills.Combat;
+        var oldCom = character.Sheet.Skills.Melee;
 
         var strValue = 100;
         var harValue = 100;
@@ -214,7 +214,7 @@ public class CharacterTests : TestBase
         var item = _items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Sword);
         item.Sheet.Stats.Strength = strValue;
         item.Sheet.Assets.Harm = harValue;
-        item.Sheet.Skills.Combat = comValue;
+        item.Sheet.Skills.Melee = comValue;
 
         character.Inventory.Supplies.Clear();
         character.Inventory.Supplies.Add(item);
@@ -233,7 +233,7 @@ public class CharacterTests : TestBase
         character.Inventory.Mainhand.Should().BeNull();
         character.Sheet.Stats.Strength.Should().Be(oldStr);
         character.Sheet.Assets.Harm.Should().Be(oldHar);
-        character.Sheet.Skills.Combat.Should().Be(oldCom);
+        character.Sheet.Skills.Melee.Should().Be(oldCom);
     }
 
     [Fact(DisplayName = "Swap character item should display new item, old item goes to supplies")]
@@ -357,7 +357,7 @@ public class CharacterTests : TestBase
 
         _characters.KillCharacter(GetCharIdentity(character));
 
-        character.Status.IsAlive.Should().BeFalse();
+        character.Status.Gameplay.IsAlive.Should().BeFalse();
     }
 
     [Fact(DisplayName = "Locked character cannot be modified")]
@@ -401,7 +401,7 @@ public class CharacterTests : TestBase
             Destination = Utils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
         };
 
-        character.Status.IsLockedToModify = true;
+        character.Status.Gameplay.IsLocked = true;
 
         // not allowed actions during character lock
         Assert.Throws<Exception>(() => _characters.DeleteCharacter(charIdentity));
@@ -411,7 +411,7 @@ public class CharacterTests : TestBase
         Assert.Throws<Exception>(() => _characters.AddCharacterWealth(100, charIdentity));
         Assert.Throws<Exception>(() => _characters.IncreaseCharacterStats(CharactersLore.Stats.Strength, charIdentity));
         Assert.Throws<Exception>(() => _characters.IncreaseCharacterAssets(CharactersLore.Assets.Harm, charIdentity));
-        Assert.Throws<Exception>(() => _characters.IncreaseCharacterSkills(CharactersLore.Skills.Combat, charIdentity));
+        Assert.Throws<Exception>(() => _characters.IncreaseCharacterSkills(CharactersLore.Skills.Melee, charIdentity));
         Assert.Throws<Exception>(() => _characters.HireMercenaryForCharacter(hireMerc));
         Assert.Throws<Exception>(() => _characters.LearnCharacterSpecialSkill(specialSkillAdd));
         Assert.Throws<Exception>(() => _characters.TravelCharacterToLocation(charTravel));

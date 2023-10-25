@@ -1,9 +1,8 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using System.Net;
 
 namespace Service_Delegators;
 
-public interface ICharacterCreateLogic
+public interface ICharacterCRUDLogic
 {
     CharacterStub CreateStub(string playerId);
     Character SaveStub(CharacterRacialTraits traits, string playerId);
@@ -11,7 +10,7 @@ public interface ICharacterCreateLogic
     void DeleteCharacter(CharacterIdentity charIdentity);
 }
 
-public class CharacterCreateLogic : ICharacterCreateLogic
+public class CharacterCRUDLogic : ICharacterCRUDLogic
 {
     private readonly object _lock = new();
 
@@ -21,7 +20,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
     private readonly ICharacterSheetLogic characterSheet;
     private readonly IGameplayLogicDelegator gameplayLogic;
 
-    public CharacterCreateLogic(
+    public CharacterCRUDLogic(
         Snapshot snapshot,
         IDiceLogicDelegator dice,
         IItemsLogicDelegator items,
@@ -94,7 +93,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
         lock (_lock)
         {
             var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
-            character.Status!.IsAlive = false;
+            character.Status!.Gameplay.IsAlive = false;
 
             return character;
         }
@@ -155,7 +154,7 @@ public class CharacterCreateLogic : ICharacterCreateLogic
 
     private void SetWealthAndWorth(Character character)
     {
-        var sumOfSkills = character.Sheet.Skills.Combat
+        var sumOfSkills = character.Sheet.Skills.Melee
             + character.Sheet.Skills.Arcane
             + character.Sheet.Skills.Psionics
             + character.Sheet.Skills.Hide
@@ -198,9 +197,10 @@ public class CharacterCreateLogic : ICharacterCreateLogic
             },
             Gameplay = new CharacterGameplay
             {
-                ArenaId = string.Empty,
-                QuestId = string.Empty,
-                StoryId = string.Empty,
+                BattleboardId = string.Empty,
+                IsAlive = true,
+                IsNpc = false,
+                IsLocked = false,
             },
             // all characters start from Arada due to it's travel dinstance logic
             // moreover the story focuses on Danar as starting position
@@ -211,9 +211,6 @@ public class CharacterCreateLogic : ICharacterCreateLogic
                 Land = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.LandName,
                 Location = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName
             },
-            IsAlive = true,
-            IsNpc = false,
-            IsLockedToModify = false,
             Worth = 0,
             Wealth = 0,
             Fame = SetFame(traits.Culture, traits.Class),

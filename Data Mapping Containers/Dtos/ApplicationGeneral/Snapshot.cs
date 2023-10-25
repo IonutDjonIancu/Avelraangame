@@ -10,4 +10,6 @@ public class Snapshot
     public List<Player> Players { get; init; } = new();
 
     public List<Location> Locations { get; init; } = new();
+
+    public List<Battleboard> Battleboards { get; init; }
 }

@@ -186,7 +186,7 @@ public class CharactersLore
 
     public static class Skills
     {
-        public const string Combat = "Combat";
+        public const string Melee = "Melee";
         public const string Arcane = "Arcane";
         public const string Psionics = "Psionics";
         public const string Hide = "Hide";
@@ -199,7 +199,7 @@ public class CharactersLore
 
         public static readonly List<string> All = new()
         {
-            Combat, Arcane, Psionics, Hide, Traps, Tactics, Social, Apothecary, Travel, Sail
+            Melee, Arcane, Psionics, Hide, Traps, Tactics, Social, Apothecary, Travel, Sail
         };
     }
 

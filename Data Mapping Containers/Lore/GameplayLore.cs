@@ -98,6 +98,19 @@ public class GameplayLore
         };
     }
 
+    public static class Camping
+    {
+        public const string AsNightFalls = "As night falls, your party members gather around the crackling campfire. They share a hearty meal, the tantalizing aroma of roasted game filling the air.";
+        public const string AtTheCampFire = "Amidst the flickering flames of the campfire, a palpable silence hangs in the air. You observe your comrades, wrapped in solitude, meticulously inspecting and polishing their armor, sharpening weapons with unwavering focus, and performing personal, secretive tasks that speak to their unique backgrounds and skills.";
+        public const string LaughterAtNight = "As the evening descends upon your campsite, laughter and camaraderie fill the camp as stories and experiences are shared, bringing a sense of unity and warmth to your secluded wilderness campsite.";
+        public const string GettingReady = "As the rain continues to pour from the heavens, your party members huddle beneath the shelter of a makeshift canopy and tents, you are given a brief respite from the perils of your quest, offering a chance to recharge, bond, and reflect on the adventures that still lie ahead.";
+
+        public static readonly List<string> All = new()
+        {
+            AsNightFalls, AtTheCampFire, LaughterAtNight, GettingReady
+        };
+    }
+
     //public static class Quests
     //{
     //    public static readonly QuestDetails Patrol = new()

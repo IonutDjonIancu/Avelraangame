@@ -32,30 +32,27 @@ public interface ICharacterLogicDelegator
 
 public class CharacterLogicDelegator : ICharacterLogicDelegator
 {
-    public readonly Snapshot snapshot;
-    public readonly IValidations validations;
-    public readonly IPersistenceService persistence;
-    public readonly ICharacterCreateLogic createLogic;
-    public readonly ICharacterInfoLogic infoLogic;
-    public readonly ICharacterItemsLogic itemsLogic;
-    public readonly ICharacterSpecialSkillsLogic specialSkillsLogic;
-    public readonly ICharacterLevelupLogic levelupLogic;
-    public readonly ICharacterTravelLogic travelLogic;
-    public readonly ICharacterNpcInteraction npcInteractionLogic;
+    private readonly IValidations validations;
+    private readonly IPersistenceService persistence;
+    private readonly ICharacterCRUDLogic createLogic;
+    private readonly ICharacterUpdateLogic infoLogic;
+    private readonly ICharacterItemsLogic itemsLogic;
+    private readonly ICharacterSpecialSkillsLogic specialSkillsLogic;
+    private readonly ICharacterLevelupLogic levelupLogic;
+    private readonly ICharacterTravelLogic travelLogic;
+    private readonly ICharacterNpcInteraction npcInteractionLogic;
 
     public CharacterLogicDelegator(
-        Snapshot snapshot,
         IValidations validations,
         IPersistenceService persistence,
-        ICharacterCreateLogic createLogic,
-        ICharacterInfoLogic infoLogic,
+        ICharacterCRUDLogic createLogic,
+        ICharacterUpdateLogic infoLogic,
         ICharacterItemsLogic itemsLogic,
         ICharacterSpecialSkillsLogic specialSkillsLogic,
         ICharacterLevelupLogic levelupLogic,
         ICharacterTravelLogic travelLogic,
         ICharacterNpcInteraction npcInteractionLogic)
     {
-        this.snapshot = snapshot;
         this.validations = validations;
         this.persistence = persistence;
         this.createLogic = createLogic;

@@ -4,6 +4,8 @@ namespace Service_Delegators;
 
 public interface IDiceLogicDelegator
 {
+    int Roll_d6_noReroll();
+
     int Roll_d20_noReroll();
     int Roll_d20_withReroll();
 
@@ -14,7 +16,14 @@ public interface IDiceLogicDelegator
     int Roll_1_to_n(int upperLimit);
     int Roll_n_to_n(int lowerLimit, int upperLimit);
 
-    int Roll_character_gameplay_dice(bool isOffense, string attribute, Character character);
+    /// <summary>
+    /// Returns the grade of the roll.
+    /// </summary>
+    /// <param name="canLvlup">Will add level up points in case a crit is rolled.</param>
+    /// <param name="attribute">Which attribute is rolled (stats, assets, skills).</param>
+    /// <param name="character">The character ref on which it will be applied.</param>
+    /// <returns></returns>
+    int Roll_game_dice(bool canLvlup, string attribute, Character character);
 }
 
 public class DiceLogicDelegator : IDiceLogicDelegator
@@ -34,6 +43,11 @@ public class DiceLogicDelegator : IDiceLogicDelegator
     }
 
     #region d20Rolls
+    public int Roll_d6_noReroll()
+    {
+        return customRollsLogic.Roll1d6();
+    }
+
     public int Roll_d20_noReroll()
     {
         return d20RollsLogic.RollD20noReroll();
@@ -72,9 +86,9 @@ public class DiceLogicDelegator : IDiceLogicDelegator
     {
         return customRollsLogic.RollTrueFalse();
     }
-    public int Roll_character_gameplay_dice(bool isOffense, string attribute, Character character)
+    public int Roll_game_dice(bool canLvlup, string attribute, Character character)
     {
-        return customRollsLogic.RollGameplayDice(isOffense, attribute, character);
+        return customRollsLogic.RollGameplayDice(canLvlup, attribute, character);
     }
     #endregion
 }

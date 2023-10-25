@@ -95,6 +95,8 @@ public class CharacterSheetLogic : ICharacterSheetLogic
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
         CalculateAssets(character.Sheet);
         CalculateSkills(character.Sheet);
+
+        charsheet.Assets.Purge = 0;
     }
 
     private void SetCharacterSheetForDwarf(int statPoints, int skillPoints, Character character)
@@ -139,7 +141,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
         charsheet.Assets.Mana += RulebookLore.Cultures.Orcs.Greenskin.Mana;
         charsheet.Assets.Actions += RulebookLore.Cultures.Orcs.Greenskin.Actions;
         //skills
-        charsheet.Skills.Combat += RulebookLore.Cultures.Orcs.Greenskin.Combat;
+        charsheet.Skills.Melee += RulebookLore.Cultures.Orcs.Greenskin.Melee;
         charsheet.Skills.Arcane += RulebookLore.Cultures.Orcs.Greenskin.Arcane;
         charsheet.Skills.Psionics += RulebookLore.Cultures.Orcs.Greenskin.Psionics;
         charsheet.Skills.Hide += RulebookLore.Cultures.Orcs.Greenskin.Hide;
@@ -171,7 +173,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
         charsheet.Assets.Mana += RulebookLore.Cultures.Humans.Danarian.Mana;
         charsheet.Assets.Actions += RulebookLore.Cultures.Humans.Danarian.Actions;
         //skills
-        charsheet.Skills.Combat += RulebookLore.Cultures.Humans.Danarian.Combat;
+        charsheet.Skills.Melee += RulebookLore.Cultures.Humans.Danarian.Melee;
         charsheet.Skills.Arcane += RulebookLore.Cultures.Humans.Danarian.Arcane;
         charsheet.Skills.Psionics += RulebookLore.Cultures.Humans.Danarian.Psionics;
         charsheet.Skills.Hide += RulebookLore.Cultures.Humans.Danarian.Hide;
@@ -202,7 +204,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
         charsheet.Assets.Purge += RulebookLore.Cultures.Elves.Highborn.Purge;
         charsheet.Assets.Mana += RulebookLore.Cultures.Elves.Highborn.Mana;
         //skills
-        charsheet.Skills.Combat += RulebookLore.Cultures.Elves.Highborn.Combat;
+        charsheet.Skills.Melee += RulebookLore.Cultures.Elves.Highborn.Melee;
         charsheet.Skills.Arcane += RulebookLore.Cultures.Elves.Highborn.Arcane;
         charsheet.Skills.Psionics += RulebookLore.Cultures.Elves.Highborn.Psionics;
         charsheet.Skills.Hide += RulebookLore.Cultures.Elves.Highborn.Hide;
@@ -233,7 +235,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
         charsheet.Assets.Purge += RulebookLore.Cultures.Dwarves.Undermountain.Purge;
         charsheet.Assets.Mana += RulebookLore.Cultures.Dwarves.Undermountain.Mana;
         //skills                                             
-        charsheet.Skills.Combat += RulebookLore.Cultures.Dwarves.Undermountain.Combat;
+        charsheet.Skills.Melee += RulebookLore.Cultures.Dwarves.Undermountain.Melee;
         charsheet.Skills.Arcane += RulebookLore.Cultures.Dwarves.Undermountain.Arcane;
         charsheet.Skills.Psionics += RulebookLore.Cultures.Dwarves.Undermountain.Psionics;
         charsheet.Skills.Hide += RulebookLore.Cultures.Dwarves.Undermountain.Hide;
@@ -323,7 +325,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
                 chosenSkill = unlikeySkills[rollForStat - 1];
             }
 
-            if (chosenSkill == CharactersLore.Skills.Combat) sheet.Skills.Combat++;
+            if (chosenSkill == CharactersLore.Skills.Melee) sheet.Skills.Melee++;
             else if (chosenSkill == CharactersLore.Skills.Arcane) sheet.Skills.Arcane++;
             else if (chosenSkill == CharactersLore.Skills.Psionics) sheet.Skills.Psionics++;
             else if (chosenSkill == CharactersLore.Skills.Hide) sheet.Skills.Hide++;
@@ -363,7 +365,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
 
     private static void CalculateSkills(CharacterSheet sheet)
     {
-        sheet.Skills.Combat += RulebookLore.Formulae.Skills.CalculateCombat(sheet.Stats);
+        sheet.Skills.Melee += RulebookLore.Formulae.Skills.CalculateMelee(sheet.Stats);
         sheet.Skills.Arcane += RulebookLore.Formulae.Skills.CalculateArcane(sheet.Stats);
         sheet.Skills.Psionics += RulebookLore.Formulae.Skills.CalculatePsionics(sheet.Stats);
         sheet.Skills.Hide += RulebookLore.Formulae.Skills.CalculateHide(sheet.Stats);

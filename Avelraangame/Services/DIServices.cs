@@ -28,7 +28,7 @@ public class DIServices : IDIServices
     // this is the validations service for all subsequent services
     public static void LoadValidationsService(WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<IValidations, Validations>();
+        builder.Services.AddSingleton<IValidations, Validations>(); // TODO: this needs to be refactored and moved validations to each service itself
     }
 
     public static void LoadMetadataService(WebApplicationBuilder builder)
@@ -47,6 +47,7 @@ public class DIServices : IDIServices
         LoadCharacterService(builder);
         LoadNpcService(builder);
         LoadGameplayService(builder);
+        LoadBattleboardService(builder);
     }
 
     #region private methods
@@ -62,7 +63,6 @@ public class DIServices : IDIServices
         // subservices
         builder.Services.AddTransient<IDatabaseExportLogic, DatabaseExportLogic>();
         builder.Services.AddTransient<IDatabaseImportLogic, DatabaseImportLogic>();
-
     }
 
     private static void LoadDiceService(WebApplicationBuilder builder)
@@ -98,8 +98,8 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<ICharacterLogicDelegator, CharacterLogicDelegator>();
         // subservices
         builder.Services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
-        builder.Services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
-        builder.Services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
+        builder.Services.AddTransient<ICharacterCRUDLogic, CharacterCRUDLogic>();
+        builder.Services.AddTransient<ICharacterUpdateLogic, CharacterUpdateLogic>();
         builder.Services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
         builder.Services.AddTransient<ICharacterSpecialSkillsLogic, CharacterSpecialSkillsLogic>();
         builder.Services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();
@@ -121,6 +121,16 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<IGameplayLogicDelegator, GameplayLogicDelegator>();
         // subservices
         builder.Services.AddTransient<IGameplayLocationsLogic, GameplayLocationsLogic>();
+    }
+
+    private static void LoadBattleboardService(WebApplicationBuilder builder)
+    {
+        // delegator
+        builder.Services.AddTransient<IBattleboardLogicDelegator, BattleboardLogicDelegator>();
+        // subservices
+        builder.Services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
+        builder.Services.AddTransient<IBattleboardCombatLogic, BattleboardCombatLogic>();
+        builder.Services.AddTransient<IBattleboardNonCombatLogic, BattleboardNonCombatLogic>();
     }
     #endregion
 }
