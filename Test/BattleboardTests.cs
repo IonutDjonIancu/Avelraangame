@@ -218,6 +218,69 @@ public class BattleboardTests : TestBase
         _snapshot.Battleboards.Count.Should().Be(0);
     }
 
+    [Fact(DisplayName = "Joining a battleboard brings your mercs with you.")]
+    public void JoinBattleboardWithMercsTest()
+    {
+        var actor1 = CreateBattleboardActor(PlayerName1);
+        var actor1char = TestUtils.GetCharacter(actor1.MainActor.Id, actor1.MainActor.PlayerId, _snapshot);
+        actor1char.Status.Worth = 10000;
+        actor1char.Status.Wealth = 10000;
+        
+        var location = _snapshot.Locations.Find(s => s.FullName == actor1char.Status.Position.GetPositionFullName())!;
+
+        var hire = new CharacterHireMercenary
+        {
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = actor1.MainActor.Id,
+                PlayerId = actor1.MainActor.PlayerId,
+            },
+            MercenaryId = location.Mercenaries.First().Identity.Id
+        };
+
+        _characters.HireMercenaryForCharacter(hire);
+
+        var board = _battleboard.CreateBattleboard(actor1);
+        board.GoodGuys.Select(s => s.Identity.Id).Should().Contain(actor1char.Mercenaries.First().Identity.Id);
+    }
+
+    [Fact(DisplayName = "Leaving a battleboard takes your mercs with you.")]
+    public void LeaveBattleboardWithMercsTest()
+    {
+        var actor1 = CreateBattleboardActor(PlayerName1);
+        var board = _battleboard.CreateBattleboard(actor1);
+
+        var actor2 = CreateBattleboardActor("player 2");
+        actor2.BattleboardIdToJoin = board.Id;
+        actor2.WantsToBeGood = true;
+        var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
+        actor2char.Status.Worth = 10000;
+        actor2char.Status.Wealth = 10000;
+
+        var location = _snapshot.Locations.Find(s => s.FullName == actor2char.Status.Position.GetPositionFullName())!;
+
+        var hire = new CharacterHireMercenary
+        {
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = actor2.MainActor.Id,
+                PlayerId = actor2.MainActor.PlayerId,
+            },
+            MercenaryId = location.Mercenaries.First().Identity.Id
+        };
+        _characters.HireMercenaryForCharacter(hire);
+
+        _battleboard.JoinBattleboard(actor2);
+        board.GoodGuys.Select(s => s.Identity.Id).Should().Contain(actor2char.Mercenaries.First().Identity.Id);
+
+        _battleboard.LeaveBattleboard(actor2);
+        board.GoodGuys.Select(s => s.Identity.Id).Should().NotContain(actor2char.Mercenaries.First().Identity.Id);
+    }
+
+
+
+
+
 
 
 
