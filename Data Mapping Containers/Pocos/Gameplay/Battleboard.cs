@@ -6,13 +6,17 @@ public class Battleboard
 
     public string LastActionResult { get; set; }
     public bool IsInCombat { get; set; }
-    public List<string> BattleOrder { get; set; }
+    public bool CanLvlUp { get; set; }
+    public int RoundNr { get; set; }
+    public int EffortLvl { get; set; }
 
     public string GoodGuyPartyLead { get; set; }
     public List<Character> GoodGuys { get; set; } = new();
 
     public string BadGuyPartyLead { get; set; }
     public List<Character> BadGuys { get; set; } = new();
+    
+    public List<string> BattleOrder { get; set; }
 
     public List<Character> GetAllCharacters()
     {

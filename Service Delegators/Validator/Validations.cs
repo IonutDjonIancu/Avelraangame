@@ -15,7 +15,7 @@ public interface IValidations
     #endregion
 
     #region items
-    void CreateItemWithTypeAndSubtype(string type, string subtype);
+    void ValidateCreateItemWithTypeAndSubtype(string type, string subtype);
     #endregion
 
     #region player
@@ -48,19 +48,32 @@ public interface IValidations
     #endregion
 
     #region battleboard
-    void ValidateBeforeBattleboardGet(BattleboardCharacter battleboardCharacter);
+    void ValidateBeforeBattleboardGet(BattleboardActor actor);
     void ValidateBeforeBattleboardFind(string battleboardId);
-    void ValidateBeforeBattleboardCreate(BattleboardCharacter battleboardCharacter);
-    void ValidateBeforeBattleboardJoin(BattleboardCharacter battleboardCharacter);
-    void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter);
-    void ValidateBeforeBattleboardLeave(BattleboardCharacter battleboardCharacter);
-    void ValidateBattleboardBeforeCombatStart(string battleboardId);
+    void ValidateBeforeBattleboardCreate(BattleboardActor actor);
+    void ValidateBeforeBattleboardJoin(BattleboardActor actor);
+    void ValidateBeforeBattleboardKick(BattleboardActor actor);
+    void ValidateBeforeBattleboardLeave(BattleboardActor actor);
+    void ValidateBattleboardOnCombatStart(string battleboardId);
+    void ValidateBattleboardOnAttack(BattleboardActor actor);
+    void ValidateBattleboardOnCast(BattleboardActor actor);
+    void ValidateBattleboardOnMend(BattleboardActor actor);
+    void ValidateBattleboardOnHide(BattleboardActor actor);
+    void ValidateBattleboardOnTraps(BattleboardActor actor);
+    void ValidateBattleboardOnRest(BattleboardActor actor);
+    void ValidateBattleboardOnLetAiAct(BattleboardActor actor);
+    void ValidateBattleboardOnEndRound(BattleboardActor actor);
+    void ValidateBattleboardOnEndCombat(BattleboardActor actor);
     #endregion
 }
 
 public class Validations : IValidations
 {
-    private readonly object _lock = new();
+    private readonly object _lockApi = new();
+    private readonly object _lockDatabase = new();
+    private readonly object _lockPlayers = new();
+    private readonly object _lockCharacters = new();
+    private readonly object _lockBattleboards = new();
 
     private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
@@ -76,7 +89,7 @@ public class Validations : IValidations
     #region api validations
     public string ValidateApiRequest(Request request)
     {
-        lock (_lock)
+        lock (_lockApi)
         {
             var player = GetPlayerByName_p(request.PlayerName);
 
@@ -91,7 +104,7 @@ public class Validations : IValidations
     #region database validations
     public void ValidateDatabaseExportImportOperations(string requesterId)
     {
-        lock (_lock)
+        lock (_lockDatabase)
         {
             ValidatePlayerIsAdmin_p(requesterId);
         }
@@ -115,7 +128,7 @@ public class Validations : IValidations
     #region player validations
     public void ValidatePlayerCreate(string playerName)
     {
-        lock (_lock)
+        lock (_lockPlayers)
         {
             ValidateString_p(playerName);
             if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
@@ -129,7 +142,7 @@ public class Validations : IValidations
 
     public void ValidatePlayerLogin(PlayerLogin login)
     {
-        lock (_lock)
+        lock (_lockPlayers)
         {
             ValidateObject_p(login);
             ValidateString_p(login.PlayerName);
@@ -143,7 +156,7 @@ public class Validations : IValidations
 
     public void ValidatePlayerUpdateName(string newPlayerName, string playerId)
     {
-        lock (_lock)
+        lock (_lockPlayers)
         {
             ValidateString_p(newPlayerName);
             ValidatePlayerExists_p(playerId);
@@ -152,7 +165,7 @@ public class Validations : IValidations
 
     public void ValidatePlayerDelete(string playerId)
     {
-        lock (_lock)
+        lock (_lockPlayers)
         {
             ValidatePlayerExists_p(playerId);
         }
@@ -160,7 +173,7 @@ public class Validations : IValidations
     #endregion
 
     #region item validations
-    public void CreateItemWithTypeAndSubtype(string type, string subtype)
+    public void ValidateCreateItemWithTypeAndSubtype(string type, string subtype)
     {
         ValidateString_p(type); 
         ValidateString_p(subtype);
@@ -173,7 +186,7 @@ public class Validations : IValidations
     #region character validations
     public void ValidateCharacterUpdateName(string name, CharacterIdentity identity)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             ValidateString_p(name);
             if (name.Length >= 20) throw new Exception("Character name too long.");
@@ -184,7 +197,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterMaxNrAllowed(string playerId)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Status.Gameplay.IsAlive).ToList().Count;
             
@@ -194,7 +207,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             ValidateObject_p(traits);
             
@@ -211,16 +224,15 @@ public class Validations : IValidations
 
     public void ValidateCharacterBeforeDelete(CharacterIdentity identity)
     {
-        lock (_lock) 
+        lock (_lockCharacters) 
         { 
             ValidateObject_p(identity);
             ValidateCharacterIsLocked_p(GetPlayerCharacter_p(identity));
         }
     }
-
     public void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill spsk)
     {
-        lock ( _lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(spsk.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
@@ -240,10 +252,9 @@ public class Validations : IValidations
                 && character.Sheet.SpecialSkills.Exists(t => t.Identity.Id == specialSkill.Identity.Id)) throw new Exception("Character already has that Heroic Trait and it can only be learned once.");
         }
     }
-
     public void ValidateCharacterBeforeKill(CharacterIdentity identity)
     {
-        lock ( _lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(identity);
             if (!character.Status.Gameplay.IsAlive) throw new Exception("Character is already dead.");
@@ -252,7 +263,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterAddWealth(int wealth, CharacterIdentity identity)
     {
-        lock ( _lock)
+        lock (_lockCharacters)
         {
             ValidateNumberGreaterThanZero_p(wealth);
             var character = GetPlayerCharacter_p(identity);
@@ -262,7 +273,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterAddFame(string fame, CharacterIdentity identity)
     {
-        lock ( _lock)
+        lock (_lockCharacters)
         {
             ValidateString_p(fame);
             GetPlayerCharacter_p(identity);
@@ -271,7 +282,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterEquipUnequipItem(CharacterEquip equip, bool toEquip)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             ValidateObject_p(equip);
             ValidateGuid_p(equip.CharacterIdentity.Id);
@@ -389,7 +400,7 @@ public class Validations : IValidations
 
     public void ValidateAttributesBeforeIncrease(string attribute, string attributeType, CharacterIdentity identity)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             ValidateString_p(attribute);
             ValidateString_p(attributeType);
@@ -419,7 +430,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterBeforeTravel(CharacterTravel travel)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(travel.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
@@ -440,7 +451,7 @@ public class Validations : IValidations
 
     public void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(hireMercenary.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
@@ -454,7 +465,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(tradeItem.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
@@ -469,7 +480,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(tradeItem.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
@@ -485,7 +496,7 @@ public class Validations : IValidations
 
     public void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies)
     {
-        lock (_lock)
+        lock (_lockCharacters)
         {
             var character = GetPlayerCharacter_p(buySupplies.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
@@ -507,23 +518,23 @@ public class Validations : IValidations
     #region battleboard validations
     public void ValidateBeforeBattleboardFind(string battleboardId)
     {
-        lock (_lock)
+        lock (_lockBattleboards)
         {
             ValidateGuid_p(battleboardId);
             GetBattleboard_p(battleboardId);
         }
     }
 
-    public void ValidateBeforeBattleboardGet(BattleboardCharacter battleboardCharacter)
+    public void ValidateBeforeBattleboardGet(BattleboardActor actor)
     {
         var boardNotFound = "Battleboard not found, character unlocked.";
 
-        lock (_lock)
+        lock (_lockBattleboards)
         {
-            ValidateObject_p(battleboardCharacter);
-            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var character = GetPlayerCharacter_p(actor.MainActor);
             var battleboard = snapshot.Battleboards.Find(s => s.Id == character.Status.Gameplay.BattleboardId);
 
             if (battleboard == null)
@@ -544,39 +555,39 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBeforeBattleboardCreate(BattleboardCharacter battleboardCharacter)
+    public void ValidateBeforeBattleboardCreate(BattleboardActor actor)
     {
         var charAlreadyOnBoard = "Character is already on a battleboard.";
 
-        lock (_lock)
+        lock (_lockBattleboards)
         {
-            ValidateObject_p(battleboardCharacter);
-            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var character = GetPlayerCharacter_p(actor.MainActor);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
         }
     }
 
-    public void ValidateBeforeBattleboardJoin(BattleboardCharacter battleboardCharacter)
+    public void ValidateBeforeBattleboardJoin(BattleboardActor actor)
     {
         var charAlreadyOnBoard = "Character is already on a battleboard.";
         var boardInCombat = "Unable to join battleboard during combat";
         var cannotAddMoreThan1Char = "You cannot add more than 1 character that you own to the party.";
 
-        lock (_lock)
+        lock (_lockBattleboards)
         {
-            ValidateObject_p(battleboardCharacter);
-            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var character = GetPlayerCharacter_p(actor.MainActor);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
 
-            var battleboard = GetBattleboard_p(battleboardCharacter.BattleboardIdToJoin);
+            var battleboard = GetBattleboard_p(actor.BattleboardIdToJoin);
 
             if (battleboard.IsInCombat) throw new Exception(boardInCombat);
             if (battleboard.GoodGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
@@ -584,17 +595,17 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBeforeBattleboardKick(BattleboardCharacter battleboardCharacter)
+    public void ValidateBeforeBattleboardKick(BattleboardActor actor)
     {
         var onlyPartyLeadAction = "Only party lead can kick battleboard members.";
         var charNotInYourParty = "Targetted character to be kicked not found in your party.";
 
-        lock (_lock)
+        lock (_lockBattleboards)
         {
-            ValidateObject_p(battleboardCharacter);
-            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var character = GetPlayerCharacter_p(actor.MainActor);
             ValidateCharacterIsLocked_p(character);
 
             var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
@@ -603,26 +614,26 @@ public class Validations : IValidations
             if (character.Status.Gameplay.IsGoodGuy)
             {
                 if (battleboard.GoodGuyPartyLead != character.Identity.Id) throw new Exception(onlyPartyLeadAction);
-                if (!battleboard.GoodGuys.Select(s => s.Identity.Id).Contains(battleboardCharacter.TargetId)) throw new Exception(charNotInYourParty);
+                if (!battleboard.GoodGuys.Select(s => s.Identity.Id).Contains(actor.TargetId)) throw new Exception(charNotInYourParty);
             }
             else
             {
                 if (battleboard.BadGuyPartyLead != character.Identity.Id) throw new Exception(onlyPartyLeadAction);
-                if (!battleboard.BadGuys.Select(s => s.Identity.Id).Contains(battleboardCharacter.TargetId)) throw new Exception(charNotInYourParty);
+                if (!battleboard.BadGuys.Select(s => s.Identity.Id).Contains(actor.TargetId)) throw new Exception(charNotInYourParty);
             }
         }
     }
 
-    public void ValidateBeforeBattleboardLeave(BattleboardCharacter battleboardCharacter)
+    public void ValidateBeforeBattleboardLeave(BattleboardActor actor)
     {
         var boardInCombat = "Unable to leave battleboard during combat.";
 
-        lock (_lock)
+        lock (_lockBattleboards)
         {
-            ValidateObject_p(battleboardCharacter);
-            ValidateObject_p(battleboardCharacter.CharacterIdentity);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(battleboardCharacter.CharacterIdentity);
+            var character = GetPlayerCharacter_p(actor.MainActor);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
 
@@ -633,17 +644,144 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBattleboardBeforeCombatStart(string battleboardId)
+    public void ValidateBattleboardOnCombatStart(string battleboardId)
     {
-        lock (_lock)
+        lock (_lockBattleboards)
         {
             ValidateGuid_p(battleboardId);
-
             var battleboard = GetBattleboard_p(battleboardId);
 
             if (battleboard.IsInCombat) throw new Exception("Battleboard already in combat.");
         }
     }
+
+    public void ValidateBattleboardOnAttack(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board, defender) = ValidateAttackerBoardDefender(actor);
+            CheckIsAttackersTurn(attacker, board);
+
+            ValidateCharacterIsAlive_p(attacker);
+            ValidateTargetIsAlive_p(defender);
+            ValidateTargetIsNotHidden_p(defender);
+
+            var isTargetFriendly =
+                board.GoodGuys.Select(s => s.Identity.Id).ToList().Contains(attacker.Identity.Id) && board.GoodGuys.Select(s => s.Identity.Id).ToList().Contains(defender.Identity.Id)
+                || board.BadGuys.Select(s => s.Identity.Id).ToList().Contains(attacker.Identity.Id) && board.BadGuys.Select(s => s.Identity.Id).ToList().Contains(defender.Identity.Id);
+
+            if (isTargetFriendly) throw new Exception("Cannot attack a friendly target.");
+        }
+    }
+
+    public void ValidateBattleboardOnCast(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board, defender) = ValidateAttackerBoardDefender(actor);
+            CheckIsAttackersTurn(attacker, board);
+
+            ValidateCharacterIsAlive_p(attacker);
+            ValidateTargetIsAlive_p(defender);
+            ValidateTargetIsNotHidden_p(defender);
+
+            if (attacker.Sheet.Assets.ManaLeft <= 0) throw new Exception("No mana left to accrete for a spellcast.");
+        }
+    }
+
+    public void ValidateBattleboardOnMend(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board, defender) = ValidateAttackerBoardDefender(actor);
+            CheckIsAttackersTurn(attacker, board);
+
+            ValidateCharacterIsAlive_p(attacker);
+
+            if (!defender.Status.Gameplay.IsAlive) throw new Exception("Your target is dead, there's nothing more you can do about it.");
+            ValidateTargetIsNotHidden_p(defender);
+
+            var isTargetFriendly =
+                board.GoodGuys.Select(s => s.Identity.Id).ToList().Contains(attacker.Identity.Id) && board.GoodGuys.Select(s => s.Identity.Id).ToList().Contains(defender.Identity.Id)
+                || board.BadGuys.Select(s => s.Identity.Id).ToList().Contains(attacker.Identity.Id) && board.BadGuys.Select(s => s.Identity.Id).ToList().Contains(defender.Identity.Id);
+
+            if (!isTargetFriendly && board.IsInCombat) throw new Exception("Cannot mend an enemy during combat.");
+        }
+    }
+
+    public void ValidateBattleboardOnHide(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoard(actor);
+            CheckIsAttackersTurn(attacker, board);
+
+            ValidateCharacterIsAlive_p(attacker);
+            if (attacker.Status.Gameplay.IsHidden) throw new Exception("You're already hidden.");
+        }
+    }
+
+    public void ValidateBattleboardOnTraps(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoard(actor);
+            CheckIsAttackersTurn(attacker, board);
+
+            ValidateCharacterIsAlive_p(attacker);
+        }
+    }
+
+    public void ValidateBattleboardOnRest(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoard(actor);
+            CheckIsAttackersTurn(attacker, board);
+
+            ValidateCharacterIsAlive_p(attacker);
+        }
+    }
+
+    public void ValidateBattleboardOnLetAiAct(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoard(actor);
+
+            if (board.GoodGuyPartyLead != attacker.Identity.Id && board.BadGuyPartyLead != attacker.Identity.Id) throw new Exception("Only party leads can let Ai act.");
+            
+            var npc = board.GetAllCharacters().Find(s => s.Identity.Id == board.BattleOrder.First())!;
+
+            if (npc.Identity.PlayerId != Guid.Empty.ToString()) throw new Exception($"NPC is not owned by Ai.");
+
+            ValidateCharacterIsAlive_p(attacker);
+        }
+    }
+
+    public void ValidateBattleboardOnEndRound(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoard(actor);
+
+            if (board.BattleOrder.Count > 0) throw new Exception("There are still characters with actions.");
+        }
+    }
+
+    public void ValidateBattleboardOnEndCombat(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoard(actor);
+
+            if (board.GoodGuyPartyLead != attacker.Identity.Id && board.BadGuyPartyLead != attacker.Identity.Id) throw new Exception("Only party leads can end combat.");
+
+            if (board.GoodGuys.Where(s => s.Status.Gameplay.IsAlive).Any() 
+                || board.BadGuys.Where(s => s.Status.Gameplay.IsAlive).Any()) throw new Exception("Unable to leave combat, there are still enemies about.");
+        }
+    }
+
     #endregion
 
     #region private methods
@@ -651,7 +789,7 @@ public class Validations : IValidations
     // the _p suffix represents these methods are private and do not use the lock
     // this is to prevent trying to use the lock resource twice
 
-    #region generic private validations
+    #region generic
     private static void ValidateString_p(string str, string message = "")
     {
         if (string.IsNullOrWhiteSpace(str)) throw new Exception(message.Length > 0 ? message : "The provided string is invalid.");
@@ -679,7 +817,7 @@ public class Validations : IValidations
     }
     #endregion
 
-    #region player private validations
+    #region player
     private void ValidatePlayerExists_p(string playerId)
     {
         ValidateString_p(playerId);
@@ -696,7 +834,7 @@ public class Validations : IValidations
     }
     #endregion
 
-    #region character private validations
+    #region character
     private static void ValidateClass_p(string classes)
     {
         ValidateString_p(classes, "Invalid class string.");
@@ -758,6 +896,53 @@ public class Validations : IValidations
     {
         if (!character.Status.Gameplay.IsAlive) throw new Exception("Your character is dead.");
     }
+
+    private static void ValidateTargetIsAlive_p(Character character)
+    {
+        if (!character.Status.Gameplay.IsAlive) throw new Exception("Your target is dead.");
+    }
+
+    private static void ValidateTargetIsNotHidden_p(Character character)
+    {
+        if (character.Status.Gameplay.IsHidden) throw new Exception("Battleboard character is hidden.");
+    }
+    #endregion
+
+    #region battleboard 
+    private static void CheckIsAttackersTurn(Character attacker, Battleboard board)
+    {
+        if (board.BattleOrder.First() != attacker.Identity.Id) throw new Exception("Wait your turn.");
+    }
+
+    private static void CheckDefenderIsOnBoard(string defenderId, Battleboard board)
+    {
+        if (!board.GetAllCharacters().Select(s => s.Identity.Id).Contains(defenderId)) throw new Exception("Character not found on battleboard.");
+    }
+
+    private (Character attacker, Battleboard board, Character defender) ValidateAttackerBoardDefender(BattleboardActor actor)
+    {
+        var (attacker, board) = ValidateAttackerBoard(actor);
+
+        CheckDefenderIsOnBoard(actor.TargetId, board);
+        var defender = board.GetAllCharacters().Find(s => s.Identity.Id == actor.TargetId)!;
+
+        return (attacker, board, defender);
+    }
+
+    private (Character attacker, Battleboard board) ValidateAttackerBoard(BattleboardActor actor)
+    {
+        ValidateObject_p(actor);
+        ValidateObject_p(actor.MainActor);
+        ValidateString_p(actor.TargetId);
+
+        var attacker = GetPlayerCharacter_p(actor.MainActor);
+        var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
+
+        if (!board.BattleOrder.Contains(attacker.Identity.Id)) throw new Exception("Character is exhausted and has no action points left for round.");
+
+        return (attacker, board);
+    }
+
     #endregion
 
     #region getter methods
@@ -778,7 +963,7 @@ public class Validations : IValidations
 
     private Battleboard GetBattleboard_p(string battleboardId)
     {
-        var boardNotFound = "Battlboard not found.";
+        var boardNotFound = "Battleboard not found.";
 
         return snapshot.Battleboards.Find(s => s.Id == battleboardId) ?? throw new Exception(boardNotFound);
     }

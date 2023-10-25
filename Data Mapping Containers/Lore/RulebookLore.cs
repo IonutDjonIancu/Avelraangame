@@ -473,7 +473,7 @@ public class RulebookLore
             public static int CalculateActions(CharacterStats stats)
             {
                 // based on the Resolve formula
-                return (2 * stats.Strength + 3 * stats.Constitution + stats.Agility + 2 * stats.Willpower + stats.Perception + stats.Abstract) / 100;
+                return CalculateResolve(stats) / 100;
             }
         }
 

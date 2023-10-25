@@ -28,7 +28,7 @@ public class ItemsLogicDelegator : IItemsLogicDelegator
 
     public Item GenerateSpecificItem(string type, string subtype)
     {
-        validations.CreateItemWithTypeAndSubtype(type, subtype);
+        validations.ValidateCreateItemWithTypeAndSubtype(type, subtype);
         return itemCreateLogic.CreateItem(type, subtype);
     }
 }

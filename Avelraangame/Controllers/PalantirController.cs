@@ -625,13 +625,13 @@ public class PalantirController : ControllerBase
 
     // POST: /api/palantir/Gameplay/FindCharacterBattleboard
     [HttpPost("Gameplay/FindCharacterBattleboard")]
-    public IActionResult FindCharacterBattleboard([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
+    public IActionResult FindCharacterBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
         {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
 
-            var battleboard = battleboards.FindCharacterBattleboard(battleboardCharacter);
+            var battleboard = battleboards.FindCharacterBattleboard(actor);
 
             return Ok(battleboard);
         }
@@ -644,13 +644,13 @@ public class PalantirController : ControllerBase
 
     // POST: /api/palantir/Gameplay/CreateBattleboard
     [HttpPost("Gameplay/CreateBattleboard")]
-    public IActionResult CreateBattleboard([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
+    public IActionResult CreateBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
         {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
 
-            var battleboard = battleboards.CreateBattleboard(battleboardCharacter);
+            var battleboard = battleboards.CreateBattleboard(actor);
 
             return Ok(battleboard);
         }
@@ -663,13 +663,13 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Gameplay/JoinBattleboard
     [HttpPut("Gameplay/JoinBattleboard")]
-    public IActionResult JoinBattleboard([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
+    public IActionResult JoinBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
         {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
 
-            var battleboard = battleboards.JoinBattleboard(battleboardCharacter);
+            var battleboard = battleboards.JoinBattleboard(actor);
 
             return Ok(battleboard);
         }
@@ -682,13 +682,13 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Gameplay/KickFromBattleboard
     [HttpPut("Gameplay/KickFromBattleboard")]
-    public IActionResult KickFromBattleboard([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
+    public IActionResult KickFromBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
         {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
 
-            var battleboard = battleboards.KickFromBattleboard(battleboardCharacter);
+            var battleboard = battleboards.KickFromBattleboard(actor);
 
             return Ok(battleboard);
         }
@@ -701,13 +701,13 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Gameplay/LeaveBattleboard
     [HttpPut("Gameplay/LeaveBattleboard")]
-    public IActionResult LeaveBattleboard([FromQuery] Request request, [FromBody] BattleboardCharacter battleboardCharacter)
+    public IActionResult LeaveBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
         {
-            battleboardCharacter.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
 
-            battleboards.LeaveBattleboard(battleboardCharacter);
+            battleboards.LeaveBattleboard(actor);
 
             return Ok();
         }

@@ -1,8 +1,8 @@
 ﻿namespace Data_Mapping_Containers.Dtos;
 
-public class BattleboardCharacter
+public class BattleboardActor
 {
-    public CharacterIdentity CharacterIdentity { get; set; }
+    public CharacterIdentity MainActor { get; set; }
     
     public string BattleboardIdToJoin { get; set; }
     public bool WantsToBeGood { get; set; }

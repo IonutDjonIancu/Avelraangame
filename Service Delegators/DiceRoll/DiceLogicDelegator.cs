@@ -16,6 +16,13 @@ public interface IDiceLogicDelegator
     int Roll_1_to_n(int upperLimit);
     int Roll_n_to_n(int lowerLimit, int upperLimit);
 
+    /// <summary>
+    /// Returns the grade of the roll.
+    /// </summary>
+    /// <param name="canLvlup">Will add level up points in case a crit is rolled.</param>
+    /// <param name="attribute">Which attribute is rolled (stats, assets, skills).</param>
+    /// <param name="character">The character ref on which it will be applied.</param>
+    /// <returns></returns>
     int Roll_game_dice(bool canLvlup, string attribute, Character character);
 }
 

@@ -6,25 +6,25 @@ public interface IBattleboardLogicDelegator
 {
     List<Battleboard> GetBattleboards();
     Battleboard FindBattleboard(string battleboardId);
-    Battleboard FindCharacterBattleboard(BattleboardCharacter battleboardCharacter);
+    Battleboard FindCharacterBattleboard(BattleboardActor actor);
 
-    Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter);
-    Battleboard JoinBattleboard(BattleboardCharacter battleboardCharacter);
-    Battleboard KickFromBattleboard(BattleboardCharacter battleboardCharacter);
-    void LeaveBattleboard(BattleboardCharacter battleboardCharacter);
-
-    Battleboard MakeCamp(BattleboardCharacter battleboardCharacter);
+    Battleboard CreateBattleboard(BattleboardActor actor);
+    Battleboard JoinBattleboard(BattleboardActor actor);
+    Battleboard KickFromBattleboard(BattleboardActor actor);
+    void LeaveBattleboard(BattleboardActor actor);
 
     Battleboard StartCombat(string battleboardId);
-    Battleboard EndCombat(Battleboard battleboard);
-    Battleboard Attack(tbd);
-    Battleboard Cast(tbd);
-    Battleboard Defend(tbd);
-    Battleboard Mend(tbd);
-    Battleboard Hide(tbd);
-    Battleboard Traps(tbd);
-    Battleboard Pass(tbd);
-    Battleboard LetAiAct(tbd);
+    Battleboard Attack(BattleboardActor actor);
+    Battleboard Cast(BattleboardActor actor);
+    Battleboard Mend(BattleboardActor actor);
+    Battleboard Hide(BattleboardActor actor);
+    Battleboard Traps(BattleboardActor actor);
+    Battleboard Rest(BattleboardActor actor);
+    Battleboard LetAiAct(BattleboardActor actor);
+    Battleboard EndRound(BattleboardActor actor);
+    Battleboard EndCombat(BattleboardActor actor);
+    
+    Battleboard MakeCamp(tbd);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -54,39 +54,96 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         return crudLogic.FindBattleboard(battleboardId);
     }
 
-    public Battleboard FindCharacterBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard FindCharacterBattleboard(BattleboardActor actor)
     {
-        validations.ValidateBeforeBattleboardGet(battleboardCharacter);
-        return crudLogic.GetBattleboard(battleboardCharacter);
+        validations.ValidateBeforeBattleboardGet(actor);
+        return crudLogic.GetBattleboard(actor);
     }
 
-    public Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard CreateBattleboard(BattleboardActor actor)
     {
-        validations.ValidateBeforeBattleboardCreate(battleboardCharacter);
-        return crudLogic.CreateBattleboard(battleboardCharacter);
+        validations.ValidateBeforeBattleboardCreate(actor);
+        return crudLogic.CreateBattleboard(actor);
     }
 
-    public Battleboard JoinBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard JoinBattleboard(BattleboardActor actor)
     {
-        validations.ValidateBeforeBattleboardJoin(battleboardCharacter);
-        return crudLogic.JoinBattleboard(battleboardCharacter);
+        validations.ValidateBeforeBattleboardJoin(actor);
+        return crudLogic.JoinBattleboard(actor);
     }
 
-    public Battleboard KickFromBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard KickFromBattleboard(BattleboardActor actor)
     {
-        validations.ValidateBeforeBattleboardKick(battleboardCharacter);
-        return crudLogic.RemoveFromBattleboard(battleboardCharacter);
+        validations.ValidateBeforeBattleboardKick(actor);
+        return crudLogic.RemoveFromBattleboard(actor);
     }
 
-    public void LeaveBattleboard(BattleboardCharacter battleboardCharacter)
+    public void LeaveBattleboard(BattleboardActor actor)
     {
-        validations.ValidateBeforeBattleboardLeave(battleboardCharacter);
-        crudLogic.RemoveFromBattleboard(battleboardCharacter);
+        validations.ValidateBeforeBattleboardLeave(actor);
+        crudLogic.RemoveFromBattleboard(actor);
     }
 
     public Battleboard StartCombat(string battleboardId)
     {
-        validations.ValidateBattleboardBeforeCombatStart(battleboardId);
+        validations.ValidateBattleboardOnCombatStart(battleboardId);
         return combatLogic.StartCombat(battleboardId);
     }
+
+    public Battleboard Attack(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnAttack(actor);
+        return combatLogic.Attack(actor);
+    }
+
+    public Battleboard Cast(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnCast(actor);
+        return combatLogic.Cast(actor);
+    }
+
+    public Battleboard Mend(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnMend(actor);
+        return combatLogic.Mend(actor);
+    }
+
+    public Battleboard Hide(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnHide(actor);
+        return combatLogic.Hide(actor);
+    }
+
+    public Battleboard Traps(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnTraps(actor);
+        return combatLogic.Traps(actor);
+    }
+
+    public Battleboard Rest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnRest(actor);
+        return combatLogic.Rest(actor);
+    }
+
+    public Battleboard LetAiAct(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnLetAiAct(actor);
+        return combatLogic.LetAiAct(actor);
+    }
+
+    public Battleboard EndRound(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnEndRound(actor);
+        return combatLogic.EndRound(actor);
+    }
+
+    public Battleboard EndCombat(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnEndCombat(actor);
+        return combatLogic.EndCombat(actor);
+    }
+
+
+
 }

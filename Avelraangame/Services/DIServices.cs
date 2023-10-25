@@ -28,7 +28,7 @@ public class DIServices : IDIServices
     // this is the validations service for all subsequent services
     public static void LoadValidationsService(WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<IValidations, Validations>();
+        builder.Services.AddSingleton<IValidations, Validations>(); // TODO: this needs to be refactored and moved validations to each service itself
     }
 
     public static void LoadMetadataService(WebApplicationBuilder builder)

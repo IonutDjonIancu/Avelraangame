@@ -6,11 +6,11 @@ public interface IBattleboardCRUDLogic
 {
     List<Battleboard> GetBattleboards();
     Battleboard FindBattleboard(string battleboardId);
-    Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter);
+    Battleboard GetBattleboard(BattleboardActor battleboardCharacter);
 
-    Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter);
-    Battleboard JoinBattleboard(BattleboardCharacter battleboardCharacter);
-    Battleboard RemoveFromBattleboard(BattleboardCharacter battleboardCharacter);
+    Battleboard CreateBattleboard(BattleboardActor battleboardCharacter);
+    Battleboard JoinBattleboard(BattleboardActor battleboardCharacter);
+    Battleboard RemoveFromBattleboard(BattleboardActor battleboardCharacter);
 }
 
 public class BattleboardCRUDLogic : IBattleboardCRUDLogic
@@ -34,7 +34,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         return GetBattleboards().Find(s => s.Id == battleboardId)!;
     }
 
-    public Battleboard GetBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard GetBattleboard(BattleboardActor battleboardCharacter)
     {
         lock (_lock)
         {
@@ -43,7 +43,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         }
     }
 
-    public Battleboard CreateBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard CreateBattleboard(BattleboardActor battleboardCharacter)
     {
         lock (_lock)
         {
@@ -67,13 +67,15 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
                 battleboard.GoodGuys.Add(s);
             });
 
+            battleboard.EffortLvl = snapshot.Locations.Find(s => s.FullName == character.Status.Position.GetPositionFullName())!.Effort;
+
             snapshot.Battleboards.Add(battleboard);
 
             return battleboard;
         }
     }
 
-    public Battleboard JoinBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard JoinBattleboard(BattleboardActor battleboardCharacter)
     {
         lock (_lock)
         {
@@ -117,7 +119,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         }
     }
 
-    public Battleboard RemoveFromBattleboard(BattleboardCharacter battleboardCharacter)
+    public Battleboard RemoveFromBattleboard(BattleboardActor battleboardCharacter)
     {
         lock (_lock)
         {
