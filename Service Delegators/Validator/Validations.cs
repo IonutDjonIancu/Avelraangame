@@ -64,6 +64,7 @@ public interface IValidations
     void ValidateBattleboardOnLetAiAct(BattleboardActor actor);
     void ValidateBattleboardOnEndRound(BattleboardActor actor);
     void ValidateBattleboardOnEndCombat(BattleboardActor actor);
+    void ValidateBattleboardOnMakeCamp(BattleboardActor actor);
     #endregion
 }
 
@@ -782,6 +783,13 @@ public class Validations : IValidations
         }
     }
 
+    public void ValidateBattleboardOnMakeCamp(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = ValidateAttackerBoardOffCombat(actor);
+        }
+    }
     #endregion
 
     #region private methods
@@ -939,6 +947,18 @@ public class Validations : IValidations
         var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
 
         if (!board.BattleOrder.Contains(attacker.Identity.Id)) throw new Exception("Character is exhausted and has no action points left for round.");
+
+        return (attacker, board);
+    }
+
+    private (Character attacker, Battleboard board) ValidateAttackerBoardOffCombat(BattleboardActor actor)
+    {
+        ValidateObject_p(actor);
+        ValidateObject_p(actor.MainActor);
+        ValidateString_p(actor.TargetId);
+
+        var attacker = GetPlayerCharacter_p(actor.MainActor);
+        var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
 
         return (attacker, board);
     }

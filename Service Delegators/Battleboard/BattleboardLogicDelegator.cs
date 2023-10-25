@@ -24,7 +24,7 @@ public interface IBattleboardLogicDelegator
     Battleboard EndRound(BattleboardActor actor);
     Battleboard EndCombat(BattleboardActor actor);
     
-    Battleboard MakeCamp(tbd);
+    Battleboard MakeCamp(BattleboardActor actor);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -32,15 +32,18 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     private readonly IValidations validations;
     private readonly IBattleboardCRUDLogic crudLogic;
     private readonly IBattleboardCombatLogic combatLogic;
+    private readonly IBattleboardNonCombatLogic nonCombatLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
         IBattleboardCRUDLogic crudLogic,
-        IBattleboardCombatLogic combatLogic)
+        IBattleboardCombatLogic combatLogic,
+        IBattleboardNonCombatLogic nonCombatLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
         this.combatLogic = combatLogic;
+        this.nonCombatLogic = nonCombatLogic;
     }
 
     public List<Battleboard> GetBattleboards()
@@ -144,6 +147,9 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         return combatLogic.EndCombat(actor);
     }
 
-
-
+    public Battleboard MakeCamp(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnMakeCamp(actor);
+        return nonCombatLogic.MakeCamp(actor);
+    }
 }

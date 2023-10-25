@@ -93,7 +93,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         lock (_lock)
         {
             var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
-            character.Status!.IsAlive = false;
+            character.Status!.Gameplay.IsAlive = false;
 
             return character;
         }
@@ -197,7 +197,10 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
             },
             Gameplay = new CharacterGameplay
             {
-                BattleboardId = string.Empty
+                BattleboardId = string.Empty,
+                IsAlive = true,
+                IsNpc = false,
+                IsLocked = false,
             },
             // all characters start from Arada due to it's travel dinstance logic
             // moreover the story focuses on Danar as starting position
@@ -208,9 +211,6 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
                 Land = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.LandName,
                 Location = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName
             },
-            IsAlive = true,
-            IsNpc = false,
-            IsLockedToModify = false,
             Worth = 0,
             Wealth = 0,
             Fame = SetFame(traits.Culture, traits.Class),

@@ -49,11 +49,10 @@ public class NpcCreateLogic : INpcCreateLogic
     {
         character.Status.EntityLevel = DecideEntityLevel();
         character.Status.DateOfBirth = DateTime.Now.ToShortDateString();
-        character.Status.IsNpc = true;
-        character.Status.IsAlive = true;
-        character.Status.IsLockedToModify = false;
+        character.Status.Gameplay.IsNpc = true;
+        character.Status.Gameplay.IsAlive = true;
+        character.Status.Gameplay.IsLocked = false;
         character.Status.Traits = DecideTraits(isGood, location);
-        character.Status.Gameplay = new CharacterGameplay();
         character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
         character.Status.Worth = location.Effort;
         character.Status.Wealth = dice.Roll_d100_noReroll();

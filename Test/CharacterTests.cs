@@ -54,8 +54,8 @@ public class CharacterTests : TestBase
         character.Status.Wealth.Should().BeGreaterThanOrEqualTo(1);
         character.Status.Worth.Should().BeGreaterThanOrEqualTo(1);
         character.Status.DateOfBirth.Should().Be(DateTime.Now.ToShortDateString());
-        character.Status.IsAlive.Should().BeTrue();
-        character.Status.IsLockedToModify.Should().BeFalse();
+        character.Status.Gameplay.IsAlive.Should().BeTrue();
+        character.Status.Gameplay.IsLocked.Should().BeFalse();
 
         character.LevelUp.DeedPoints.Should().Be(0);
         character.LevelUp.StatPoints.Should().Be(0);
@@ -357,7 +357,7 @@ public class CharacterTests : TestBase
 
         _characters.KillCharacter(GetCharIdentity(character));
 
-        character.Status.IsAlive.Should().BeFalse();
+        character.Status.Gameplay.IsAlive.Should().BeFalse();
     }
 
     [Fact(DisplayName = "Locked character cannot be modified")]
@@ -401,7 +401,7 @@ public class CharacterTests : TestBase
             Destination = Utils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
         };
 
-        character.Status.IsLockedToModify = true;
+        character.Status.Gameplay.IsLocked = true;
 
         // not allowed actions during character lock
         Assert.Throws<Exception>(() => _characters.DeleteCharacter(charIdentity));

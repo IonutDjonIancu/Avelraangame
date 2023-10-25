@@ -10,8 +10,8 @@ public class NpcTests: TestBase
         var goodGuy = _npcs.GenerateGoodGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName);
 
         goodGuy.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
-        goodGuy.Status.IsNpc.Should().BeTrue();
-        goodGuy.Status.IsLockedToModify.Should().BeFalse();
+        goodGuy.Status.Gameplay.IsNpc.Should().BeTrue();
+        goodGuy.Status.Gameplay.IsLocked.Should().BeFalse();
         goodGuy.Status.Position.Should().Be(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Position);
 
         CharactersLore.Races.Playable.All.Should().Contain(goodGuy.Status.Traits.Race);
@@ -23,8 +23,8 @@ public class NpcTests: TestBase
         var badGuy = _npcs.GenerateBadGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName);
 
         badGuy.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
-        badGuy.Status.IsNpc.Should().BeTrue();
-        badGuy.Status.IsLockedToModify.Should().BeFalse();
+        badGuy.Status.Gameplay.IsNpc.Should().BeTrue();
+        badGuy.Status.Gameplay.IsLocked.Should().BeFalse();
         badGuy.Status.Position.Should().Be(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Position);
 
         var listOfRaces = new List<string>();
