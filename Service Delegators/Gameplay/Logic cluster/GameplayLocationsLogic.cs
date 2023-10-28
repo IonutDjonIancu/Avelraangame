@@ -65,6 +65,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
             {
                 location = new Location()
                 {
+                    Name = locationData.Name,
                     FullName = locationData.FullName,
                     Description = locationData.Description,
                     Effort = locationData.Effort,
@@ -110,7 +111,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
         for (int i = 0; i < nrOfMercs; i++)
         {
-            mercs.Add(npcs.GenerateGoodGuy(Utils.GetLocationByPosition(position).LocationName));
+            mercs.Add(npcs.GenerateGoodGuy(Utils.GetLocationByPosition(position).Name));
         }
 
         return mercs;

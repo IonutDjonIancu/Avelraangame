@@ -68,7 +68,7 @@ public class CharacterTests : TestBase
 
         character.Inventory.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
-        GameplayLore.Locations.All.Select(s => s.LocationName).Should().Contain(character.Status.Position.Location);
+        GameplayLore.Locations.All.Select(s => s.Name).Should().Contain(character.Status.Position.Location);
         _snapshot.Locations.Exists(s => s.Position == character.Status.Position).Should().BeTrue();
     }
 

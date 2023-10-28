@@ -6,7 +6,18 @@ internal class BattleboardHelpers
 {
     public static Character GetCharacter(BattleboardActor actor, Snapshot snapshot)
     {
-        return snapshot.Players.Find(s => s.Identity.Id == actor.MainActor.PlayerId)!.Characters.Find(s => s.Identity.Id == actor.MainActor.Id)!;
+        var player = snapshot.Players.Find(s => s.Identity.Id == actor.MainActor.PlayerId)!;
+
+        var character = player.Characters.Find(s => s.Identity.Id == actor.MainActor.Id);
+        if (character != null) return character;
+
+        foreach (var chara in player.Characters)
+        {
+            character = chara.Mercenaries.Find(s => s.Identity.Id == actor.MainActor.Id);
+            if (character != null) return character;
+        }
+
+        return null;
     }
 
     public static Battleboard GetBattleboard(string battleboardId, Snapshot snapshot)

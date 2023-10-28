@@ -277,6 +277,69 @@ public class BattleboardTests : TestBase
         board.GoodGuys.Select(s => s.Identity.Id).Should().NotContain(actor2char.Mercenaries.First().Identity.Id);
     }
 
+    [Fact(DisplayName = "Starting combat should lock all characters on battleboard.")]
+    public void BattleboardStartCombatTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        board.GetAllCharacters().Count.Should().Be(6);
+        board.IsInCombat.Should().BeTrue();
+        board.CanLvlUp.Should().BeTrue();
+        board.RoundNr.Should().Be(1);
+        board.EffortLvl.Should().Be(location.Effort);
+        board.GetAllCharacters().Select(s => s.Status.Gameplay.IsLocked).ToList().Should().NotContain(false);
+        board.BattleOrder.Count.Should().Be(6);
+        board.LastActionResult.Length.Should().BeGreaterThan(10);
+    }
+
+    [Fact(DisplayName = "Attacking in combat should display correctly.")]
+    public void BattleboardAttackTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+        
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        Character defender;
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            defender = board.BadGuys.First();
+        } 
+        else
+        {
+            defender = board.GoodGuys.First();
+        }
+
+        attacker.Sheet.Skills.Melee = 1000;
+        defender.Sheet.Skills.Melee = 10;
+        var attackerInitialResolve = attacker.Sheet.Assets.ResolveLeft;
+        var defenderInitialResolve = defender.Sheet.Assets.ResolveLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+            TargetId = defender.Identity.Id
+        };
+        _battleboard.Attack(actor);
+
+        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
+        defender.Sheet.Assets.ResolveLeft.Should().BeLessThan(defenderInitialResolve);
+
+
+
+    }
+
+
+
+
 
 
 
@@ -285,6 +348,69 @@ public class BattleboardTests : TestBase
 
 
     #region private methods
+    private Battleboard CreateBattleboardWithCombatants()
+    {
+        var actor1 = CreateBattleboardActor(PlayerName1);
+        var actor1char = TestUtils.GetCharacter(actor1.MainActor.Id, actor1.MainActor.PlayerId, _snapshot);
+        actor1char.Status.Worth = 10000;
+        actor1char.Status.Wealth = 10000;
+
+        var board = _battleboard.CreateBattleboard(actor1);
+
+        var location = _snapshot.Locations.Find(s => s.FullName == actor1char.Status.Position.GetPositionFullName())!;
+        var merc1 = _npcs.GenerateGoodGuy(location.Name);
+        var merc2 = _npcs.GenerateGoodGuy(location.Name);
+        location.Mercenaries.Clear();
+        location.Mercenaries.Add(merc1);
+        location.Mercenaries.Add(merc2);
+
+        var actor2 = CreateBattleboardActor("player 2");
+        actor2.BattleboardIdToJoin = board.Id;
+        actor2.WantsToBeGood = true;
+        var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
+        actor2char.Status.Wealth = 10000;
+
+        var hireFor2 = new CharacterHireMercenary
+        {
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = actor2.MainActor.Id,
+                PlayerId = actor2.MainActor.PlayerId,
+            },
+            MercenaryId = location.Mercenaries.First().Identity.Id
+        };
+        _characters.HireMercenaryForCharacter(hireFor2);
+        _battleboard.JoinBattleboard(actor2);
+
+        var actor3 = CreateBattleboardActor("player 3");
+        actor3.BattleboardIdToJoin = board.Id;
+        actor3.WantsToBeGood = false;
+        var actor3char = TestUtils.GetCharacter(actor3.MainActor.Id, actor3.MainActor.PlayerId, _snapshot);
+        actor3char.Status.Worth = 10000;
+        actor3char.Status.Wealth = 10000;
+        _battleboard.JoinBattleboard(actor3);
+
+        var actor4 = CreateBattleboardActor("player 4");
+        actor4.BattleboardIdToJoin = board.Id;
+        actor4.WantsToBeGood = false;
+        var actor4char = TestUtils.GetCharacter(actor4.MainActor.Id, actor4.MainActor.PlayerId, _snapshot);
+        actor4char.Status.Wealth = 10000;
+
+        var hireFor4 = new CharacterHireMercenary
+        {
+            CharacterIdentity = new CharacterIdentity
+            {
+                Id = actor4.MainActor.Id,
+                PlayerId = actor4.MainActor.PlayerId,
+            },
+            MercenaryId = location.Mercenaries.First().Identity.Id
+        };
+        _characters.HireMercenaryForCharacter(hireFor4);
+        _battleboard.JoinBattleboard(actor4);
+
+        return board;
+    }
+
     private BattleboardActor CreateBattleboardActor(string playerName)
     {
         var character = TestUtils.CreateAndGetCharacter(playerName, _players, _characters, _snapshot);

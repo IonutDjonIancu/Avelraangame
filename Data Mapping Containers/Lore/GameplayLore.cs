@@ -19,7 +19,7 @@ public class GameplayLore
                     private const string AradaName = "Arada";
                     public static readonly Location Arada = new()
                     {
-                        LocationName = AradaName,
+                        Name = AradaName,
                         FullName = $"{RegionName}_{SubregionName}_{LandName}_{AradaName}", // Arada
                         Position = new()
                         {
@@ -35,7 +35,7 @@ public class GameplayLore
                     private const string LanwickName = "Lanwick Province";
                     public static readonly Location Lanwick = new()
                     {
-                        LocationName = LanwickName,
+                        Name = LanwickName,
                         FullName = $"{RegionName}_{SubregionName}_{LandName}_{LanwickName}", // Lanwick
                         Position = new()
                         {
@@ -51,7 +51,7 @@ public class GameplayLore
                     private const string BelfordshireName = "Belfordshire";
                     public static readonly Location Belfordshire = new()
                     {
-                        LocationName = BelfordshireName,
+                        Name = BelfordshireName,
                         FullName = $"{RegionName}_{SubregionName}_{LandName}_{BelfordshireName}", // Belfordshire
                         Position = new()
                         {

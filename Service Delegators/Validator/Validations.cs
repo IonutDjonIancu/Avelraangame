@@ -976,9 +976,22 @@ public class Validations : IValidations
         return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
     }
 
-    private Character GetPlayerCharacter_p(CharacterIdentity characterIdentity)
+    private Character GetPlayerCharacter_p(CharacterIdentity identity)
     {
-        return GetPlayer_p(characterIdentity.PlayerId).Characters.Find(s => s.Identity.Id == characterIdentity.Id) ?? throw new Exception("Character not found.");
+        var player = GetPlayer_p(identity.PlayerId);
+
+        if (!player.Characters.Any()) throw new Exception("Player has no characters.");
+
+        var character = player.Characters.Find(s => s.Identity.Id == identity.Id);
+        if (character != null) return character;
+
+        foreach (var chara in player.Characters)
+        {
+            character = chara.Mercenaries.Find(s => s.Identity.Id == identity.Id);
+            if (character != null) return character;
+        }
+
+        throw new Exception("Neither the character, nor a mercenary was found with the supplied id.");
     }
 
     private Battleboard GetBattleboard_p(string battleboardId)

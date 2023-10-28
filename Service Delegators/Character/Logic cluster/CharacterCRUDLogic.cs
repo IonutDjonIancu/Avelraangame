@@ -209,7 +209,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
                 Region = GameplayLore.Locations.Dragonmaw.RegionName,
                 Subregion = GameplayLore.Locations.Dragonmaw.Farlindor.SubregionName,
                 Land = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.LandName,
-                Location = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName
+                Location = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Name
             },
             Worth = 0,
             Wealth = 0,

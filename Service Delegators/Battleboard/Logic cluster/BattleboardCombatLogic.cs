@@ -684,37 +684,37 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                 if (roll <= 1)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Body;
-                    unequip.ItemId = character.Inventory.Body!.Identity.Id;
+                    if (character.Inventory.Body != null) unequip.ItemId = character.Inventory.Body!.Identity.Id;
                     characters.UnequipCharacterItem(unequip);
                 }
                 if (roll <= 2)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Head;
-                    unequip.ItemId = character.Inventory.Head!.Identity.Id;
+                    if (character.Inventory.Head != null) unequip.ItemId = character.Inventory.Head!.Identity.Id;
                     characters.UnequipCharacterItem(unequip);
                 }
                 if (roll <= 3)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Mainhand;
-                    unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
+                    if (character.Inventory.Mainhand != null) unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
                     characters.UnequipCharacterItem(unequip);
                 }
                 if (roll <= 4)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Offhand;
-                    unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
+                    if (character.Inventory.Offhand != null) unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
                     characters.UnequipCharacterItem(unequip);
                 }
                 if (roll <= 5)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Ranged;
-                    unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
+                    if (character.Inventory.Ranged != null) unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
                     characters.UnequipCharacterItem(unequip);
                 }
                 if (roll <= 6)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Heraldry;
-                    unequip.ItemId = character.Inventory.Heraldry!.First().Identity.Id;
+                    if (character.Inventory.Heraldry!.First() != null) unequip.ItemId = character.Inventory.Heraldry!.First()!.Identity.Id;
                     characters.UnequipCharacterItem(unequip);
                 }
             }
