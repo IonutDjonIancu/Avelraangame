@@ -332,9 +332,92 @@ public class BattleboardTests : TestBase
 
         attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
         defender.Sheet.Assets.ResolveLeft.Should().BeLessThan(defenderInitialResolve);
+    }
 
+    [Fact(DisplayName = "Casting offensive arcane in combat should display correctly.")]
+    public void BattleboardCastTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
 
+        _battleboard.StartCombat(board.Id);
 
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        Character defender;
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            defender = board.BadGuys.First();
+        }
+        else
+        {
+            defender = board.GoodGuys.First();
+        }
+
+        attacker.Sheet.Skills.Arcane = 1000;
+        attacker.Sheet.Assets.ManaLeft = 1000;
+        var attackerInitialResolve = attacker.Sheet.Assets.ResolveLeft;
+        var attackerInitialMana = attacker.Sheet.Assets.ManaLeft;
+        var defenderInitialResolve = defender.Sheet.Assets.ResolveLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+            TargetId = defender.Identity.Id,
+        };
+
+        _battleboard.Cast(actor);
+
+        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
+        attacker.Sheet.Assets.ManaLeft.Should().BeLessThan(attackerInitialMana);
+        defender.Sheet.Assets.ResolveLeft.Should().BeLessThan(defenderInitialResolve);
+    }
+
+    [Fact(DisplayName = "Casting offensive arcane in combat against a stronger spellcaster should not deal damage.")]
+    public void BattleboardCastAgainstCasterTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        Character defender;
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            defender = board.BadGuys.First();
+        }
+        else
+        {
+            defender = board.GoodGuys.First();
+        }
+
+        attacker.Sheet.Skills.Arcane = 10;
+        attacker.Sheet.Assets.ManaLeft = 1000;
+        defender.Status.Traits.Class = CharactersLore.Classes.Mage;
+        defender.Sheet.Skills.Arcane = 1000;
+        var attackerInitialResolve = attacker.Sheet.Assets.ResolveLeft;
+        var attackerInitialMana = attacker.Sheet.Assets.ManaLeft;
+        var defenderInitialResolve = defender.Sheet.Assets.ResolveLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+            TargetId = defender.Identity.Id,
+        };
+
+        _battleboard.Cast(actor);
+
+        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
+        attacker.Sheet.Assets.ManaLeft.Should().BeLessThan(attackerInitialMana);
+        defender.Sheet.Assets.ResolveLeft.Should().Be(defenderInitialResolve);
     }
 
 

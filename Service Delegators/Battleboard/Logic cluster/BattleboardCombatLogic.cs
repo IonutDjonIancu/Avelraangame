@@ -515,6 +515,12 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     private Battleboard RunCastLogic(Character attacker, Battleboard board, Character defender)
     {
+        if (defender.Sheet.Assets.Purge >= 100)
+        {
+            board.LastActionResult = "Your target is immune to arcane and psionic effects.";
+            return board;
+        }
+
         var isPsionicsHigher = attacker.Sheet.Skills.Psionics >= attacker.Sheet.Skills.Arcane;
 
         var attackerRoll = 0;
@@ -543,26 +549,66 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
         var goodGuys = board.GoodGuys.Select(s => s.Identity.Id).ToList();
         var badGuys = board.BadGuys.Select(s => s.Identity.Id).ToList();
-        var sameTeam = goodGuys.Contains(attacker.Identity.Id) && goodGuys.Contains(defender.Identity.Id)
-            || badGuys.Contains(attacker.Identity.Id) && badGuys.Contains(defender.Identity.Id);
+        var sameTeam = attacker.Status.Gameplay.IsGoodGuy && defender.Status.Gameplay.IsGoodGuy
+            || !attacker.Status.Gameplay.IsGoodGuy && !defender.Status.Gameplay.IsGoodGuy;
 
-        if (sameTeam && defender.Sheet.Assets.Purge < 100)
+        if (sameTeam)
         {
-            var amountToHeal = (int)(attackerRoll * defender.Sheet.Assets.Purge / 100);
+            var effect = isPsionicsHigher
+                ? Energysurge(attackerRoll)
+                : Spellcast(attackerRoll);
+
+            var amountToHeal = (int)(effect * defender.Sheet.Assets.Purge / 100);
             defender.Sheet.Assets.ResolveLeft += amountToHeal;
 
             board.LastActionResult = $"{attacker.Status.Name} healed {defender.Status.Name} for {amountToHeal}.";
         }
         else
         {
-            var defenderRoll = dice.Roll_game_dice(true, CharactersLore.Stats.Willpower, defender);
-            var result = attackerRoll - defenderRoll;
+            var defenderRoll = 0;
 
-            var amountToDmg = defender.Sheet.Assets.Purge < 100 ? (int)(result * defender.Sheet.Assets.Purge / 100) : 0;
+            if (defender.Status.Traits.Class == CharactersLore.Classes.Mage
+                || defender.Status.Traits.Class == CharactersLore.Classes.Sorcerer)
+            {
+                defenderRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Arcane, defender);
+            }
+            // add psionist classes
+            //else if (defender.Status.Traits.Class == CharactersLore.Classes.Mage)
+            //{
+
+            //}
+            else
+            {
+                defenderRoll = dice.Roll_game_dice(true, CharactersLore.Stats.Willpower, defender);
+            }
+
+            var attackDiff = attackerRoll - defenderRoll;
+
+            if (attackDiff <= 0) 
+            {
+                board.LastActionResult = $"Your target has saved vs. your {(isPsionicsHigher ? "energy surge." : "spellcast.")}";
+                return board;
+            }
+
+            var effect = isPsionicsHigher
+                ? Energysurge(attackDiff)
+                : Spellcast(attackDiff);
+
+            var amountToDmg = defender.Sheet.Assets.Purge < 100 ? (int)(effect - effect * defender.Sheet.Assets.Purge / 100) : 0;
 
             defender.Sheet.Assets.ResolveLeft -= amountToDmg;
 
             board.LastActionResult = isPsionicsHigher ? $"{attacker.Status.Name}'s energy surge did {amountToDmg} dmg." : $"{attacker.Status.Name}'s spellcraft did {amountToDmg} dmg.";
+        }
+
+        int Energysurge(int roll)
+        {
+            return (int)(roll * attacker.Sheet.Assets.Purge / 100);
+        }
+
+        int Spellcast(int roll)
+        {
+            return attacker.Sheet.Stats.Abstract * attacker.Status.EntityLevel + (int)(roll * 0.1);
         }
 
         CheckDefenderIsDead(defender, board);
@@ -684,38 +730,56 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                 if (roll <= 1)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Body;
-                    if (character.Inventory.Body != null) unequip.ItemId = character.Inventory.Body!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Body != null)
+                    {
+                        unequip.ItemId = character.Inventory.Body!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
                 if (roll <= 2)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Head;
-                    if (character.Inventory.Head != null) unequip.ItemId = character.Inventory.Head!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Head != null)
+                    {
+                        unequip.ItemId = character.Inventory.Head!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
                 if (roll <= 3)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Mainhand;
-                    if (character.Inventory.Mainhand != null) unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Mainhand != null)
+                    {
+                        unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
                 if (roll <= 4)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Offhand;
-                    if (character.Inventory.Offhand != null) unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Offhand != null)
+                    {
+                        unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
                 if (roll <= 5)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Ranged;
-                    if (character.Inventory.Ranged != null) unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Ranged != null)
+                    {
+                        unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
                 if (roll <= 6)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Heraldry;
-                    if (character.Inventory.Heraldry!.First() != null) unequip.ItemId = character.Inventory.Heraldry!.First()!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Heraldry!.First() != null)
+                    {
+                        unequip.ItemId = character.Inventory.Heraldry!.First()!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
             }
         }
