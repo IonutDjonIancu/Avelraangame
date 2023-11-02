@@ -420,6 +420,187 @@ public class BattleboardTests : TestBase
         defender.Sheet.Assets.ResolveLeft.Should().Be(defenderInitialResolve);
     }
 
+    [Fact(DisplayName = "Mending characters should display correctly.")]
+    public void BattleboardMendTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        Character defender;
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            defender = board.GoodGuys.First();
+        }
+        else
+        {
+            defender = board.BadGuys.First();
+        }
+
+        attacker.Sheet.Skills.Apothecary = 1000;
+        var attackerInitialResolve = attacker.Sheet.Assets.ResolveLeft;
+        defender.Sheet.Assets.ResolveLeft = 10;
+        var defenderInitialResolve = defender.Sheet.Assets.ResolveLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+            TargetId = defender.Identity.Id,
+        };
+
+        _battleboard.Mend(actor);
+
+        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
+        defender.Sheet.Assets.ResolveLeft.Should().BeGreaterThan(defenderInitialResolve);
+    }
+
+    [Fact(DisplayName = "Mending an enemy should throw.")]
+    public void BattleboardMendEnemyTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        Character defender;
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            defender = board.BadGuys.First();
+        }
+        else
+        {
+            defender = board.GoodGuys.First();
+        }
+
+        attacker.Sheet.Skills.Apothecary = 1000;
+        var attackerInitialResolve = attacker.Sheet.Assets.ResolveLeft;
+        defender.Sheet.Assets.ResolveLeft = 10;
+        var defenderInitialResolve = defender.Sheet.Assets.ResolveLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+            TargetId = defender.Identity.Id,
+        };
+
+        Assert.Throws<Exception>(() => _battleboard.Mend(actor));
+    }
+
+    [Fact(DisplayName = "Hiding should display correctly.")]
+    public void BattleboardHideTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+
+        attacker.Sheet.Skills.Hide = 100000;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+        };
+
+        _battleboard.Hide(actor);
+
+        attacker.Status.Gameplay.IsHidden.Should().BeTrue();
+    }
+
+    [Fact(DisplayName = "Casting traps in combat should display correctly.")]
+    public void BattleboardTrapsTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        var defenderTotalResPool = 0;
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            defenderTotalResPool = board.BadGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum();
+        }
+        else
+        {
+            defenderTotalResPool = board.GoodGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum();
+        }
+
+        attacker.Sheet.Skills.Traps = 100000;
+        var attackerInitialResolve = attacker.Sheet.Assets.ResolveLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+        };
+
+        _battleboard.Traps(actor);
+
+        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
+        if (attacker.Status.Gameplay.IsGoodGuy)
+        {
+            board.BadGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThan(defenderTotalResPool);
+        }
+        else
+        {
+            board.GoodGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThan(defenderTotalResPool);
+        }
+    }
+
+    [Fact(DisplayName = "Resting in combat should display correctly.")]
+    public void BattleboardRestTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+
+        var initialResolveLeft = 10;
+        var initialManaLeft = 10;
+        attacker.Sheet.Assets.ResolveLeft = initialResolveLeft;
+        attacker.Sheet.Assets.ManaLeft = initialManaLeft;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+        };
+
+        _battleboard.Rest(actor);
+
+        var resolveToHeal = (int)((attacker.Sheet.Assets.Resolve - initialResolveLeft) * 0.1);
+        attacker.Sheet.Assets.ResolveLeft.Should().Be(initialResolveLeft + resolveToHeal);
+
+        var manaToHeal = (int)((attacker.Sheet.Assets.Mana - initialManaLeft) * 0.2);
+        attacker.Sheet.Assets.ManaLeft.Should().Be(initialManaLeft + manaToHeal);
+
+
+    }
 
 
 

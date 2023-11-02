@@ -930,6 +930,7 @@ public class Validations : IValidations
     private (Character attacker, Battleboard board, Character defender) ValidateAttackerBoardDefender(BattleboardActor actor)
     {
         var (attacker, board) = ValidateAttackerBoard(actor);
+        ValidateString_p(actor.TargetId);
 
         CheckDefenderIsOnBoard(actor.TargetId, board);
         var defender = board.GetAllCharacters().Find(s => s.Identity.Id == actor.TargetId)!;
@@ -941,7 +942,6 @@ public class Validations : IValidations
     {
         ValidateObject_p(actor);
         ValidateObject_p(actor.MainActor);
-        ValidateString_p(actor.TargetId);
 
         var attacker = GetPlayerCharacter_p(actor.MainActor);
         var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);

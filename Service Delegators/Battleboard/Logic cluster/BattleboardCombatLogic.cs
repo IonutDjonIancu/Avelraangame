@@ -111,7 +111,6 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             MoveOrRemoveFromBattleOrder(attacker, board);
 
             return board;
-
         }
     }
 
@@ -150,7 +149,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             }
 
             attacker.Status.Gameplay.IsHidden = spotters == 0;
-            board.LastActionResult = $"{attacker.Status.Name} is now hidden.";
+            board.LastActionResult = attacker.Status.Gameplay.IsHidden ? $"{attacker.Status.Name} is now hidden." : "Hide failed, you have been spotted.";
 
             MoveOrRemoveFromBattleOrder(attacker, board);
 
@@ -178,7 +177,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             attacker.Sheet.Assets.ResolveLeft += resolveToHeal;
 
             var manaToHeal = (int)((attacker.Sheet.Assets.Mana - attacker.Sheet.Assets.ManaLeft) * 0.2);
-            attacker.Sheet.Assets.Mana += manaToHeal;
+            attacker.Sheet.Assets.ManaLeft += manaToHeal;
 
             board.LastActionResult = $"You regain {resolveToHeal} Resolve, and {manaToHeal} Mana.";
 
