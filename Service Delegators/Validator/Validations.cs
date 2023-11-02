@@ -754,7 +754,7 @@ public class Validations : IValidations
             
             var npc = board.GetAllCharacters().Find(s => s.Identity.Id == board.BattleOrder.First())!;
 
-            if (npc.Identity.PlayerId != Guid.Empty.ToString()) throw new Exception($"NPC is not owned by Ai.");
+            if (npc.Identity.PlayerId != Guid.Empty.ToString()) throw new Exception($"This NPC is not owned by Ai.");
 
             ValidateCharacterIsAlive_p(attacker);
         }
@@ -764,7 +764,11 @@ public class Validations : IValidations
     {
         lock (_lockBattleboards)
         {
-            var (attacker, board) = ValidateAttackerBoard(actor);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
+
+            var attacker = GetPlayerCharacter_p(actor.MainActor);
+            var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
 
             if (board.BattleOrder.Count > 0) throw new Exception("There are still characters with actions.");
         }
@@ -778,8 +782,10 @@ public class Validations : IValidations
 
             if (board.GoodGuyPartyLead != attacker.Identity.Id && board.BadGuyPartyLead != attacker.Identity.Id) throw new Exception("Only party leads can end combat.");
 
-            if (board.GoodGuys.Where(s => s.Status.Gameplay.IsAlive).Any() 
-                || board.BadGuys.Where(s => s.Status.Gameplay.IsAlive).Any()) throw new Exception("Unable to leave combat, there are still enemies about.");
+            var areEnemiesAbout = (attacker.Status.Gameplay.IsGoodGuy && board.BadGuys.Where(s => s.Status.Gameplay.IsAlive).Any())
+                                || (!attacker.Status.Gameplay.IsGoodGuy && board.GoodGuys.Where(s => s.Status.Gameplay.IsAlive).Any());
+
+            if (areEnemiesAbout) throw new Exception("Unable to leave combat, there are enemies about.");
         }
     }
 

@@ -598,10 +598,127 @@ public class BattleboardTests : TestBase
 
         var manaToHeal = (int)((attacker.Sheet.Assets.Mana - initialManaLeft) * 0.2);
         attacker.Sheet.Assets.ManaLeft.Should().Be(initialManaLeft + manaToHeal);
-
-
     }
 
+    [Fact(DisplayName = "Let AiAct should display correctly.")]
+    public void BattleboardLetAiActTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var firstCharacter = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        var actor1 = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = firstCharacter.Identity.Id,
+                PlayerId = firstCharacter.Identity.PlayerId
+            },
+        };
+        if (board.BattleOrder.First() == board.GoodGuyPartyLead || board.BattleOrder.First() == board.BadGuyPartyLead) _battleboard.Rest(actor1);
+
+        var secondCharacter = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        var actor2 = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = secondCharacter.Identity.Id,
+                PlayerId = secondCharacter.Identity.PlayerId
+            },
+        };
+        // twice to make sure we exclude both party leader possibilities
+        if (board.BattleOrder.First() == board.GoodGuyPartyLead || board.BattleOrder.First() == board.BadGuyPartyLead) _battleboard.Rest(actor2);
+
+        var npc = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
+        npc.Identity.PlayerId = Guid.Empty.ToString();
+        var npcActor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead).Identity.Id,
+                PlayerId = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead).Identity.PlayerId
+            },
+        };
+
+        var totalEnemyResolve = 0;
+
+        if (npc.Status.Gameplay.IsGoodGuy)
+        {
+            totalEnemyResolve = board.BadGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum();
+        }
+        else
+        {
+            totalEnemyResolve = board.GoodGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum();
+        }
+
+        _battleboard.LetAiAct(npcActor);
+
+        if (npc.Status.Gameplay.IsGoodGuy)
+        {
+            board.BadGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThan(totalEnemyResolve);
+        }
+        else
+        {
+            board.GoodGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThan(totalEnemyResolve);
+        }
+    }
+
+
+    [Fact(DisplayName = "End round should increment battleboard round nr correctly.")]
+    public void BattleboardEndRoundTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var attacker = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = attacker.Identity.Id,
+                PlayerId = attacker.Identity.PlayerId
+            },
+        };
+
+        board.BattleOrder.Clear();
+
+        _battleboard.EndRound(actor);
+
+        board.RoundNr.Should().BeGreaterThan(1);
+    }
+
+    [Fact(DisplayName = "End combat should distribute the items to the party leader.")]
+    public void BattleboardEndCombatTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        _battleboard.StartCombat(board.Id);
+
+        var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = partyLead.Identity.Id,
+                PlayerId = partyLead.Identity.PlayerId
+            },
+        };
+
+        var anItem = board.BadGuys.SelectMany(s => s.Inventory.GetAllEquipedItems()).ToList().First();
+
+        board.BadGuys.ForEach(s => s.Status.Gameplay.IsAlive = false);
+
+        _battleboard.EndCombat(actor);
+
+        partyLead.Inventory.Supplies.Select(s => s.Identity.Id).Should().Contain(anItem.Identity.Id);
+    }
 
 
 

@@ -726,7 +726,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
                 var roll = dice.Roll_d6_noReroll();
 
-                if (roll <= 1)
+                if (roll >= 1)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Body;
                     if (character.Inventory.Body != null)
@@ -735,7 +735,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                         characters.UnequipCharacterItem(unequip);
                     }
                 }
-                if (roll <= 2)
+                if (roll >= 2)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Head;
                     if (character.Inventory.Head != null)
@@ -744,7 +744,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                         characters.UnequipCharacterItem(unequip);
                     }
                 }
-                if (roll <= 3)
+                if (roll >= 3)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Mainhand;
                     if (character.Inventory.Mainhand != null)
@@ -753,7 +753,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                         characters.UnequipCharacterItem(unequip);
                     }
                 }
-                if (roll <= 4)
+                if (roll >= 4)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Offhand;
                     if (character.Inventory.Offhand != null)
@@ -762,7 +762,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                         characters.UnequipCharacterItem(unequip);
                     }
                 }
-                if (roll <= 5)
+                if (roll >= 5)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Ranged;
                     if (character.Inventory.Ranged != null)
@@ -771,10 +771,10 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                         characters.UnequipCharacterItem(unequip);
                     }
                 }
-                if (roll <= 6)
+                if (roll >= 6)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Heraldry;
-                    if (character.Inventory.Heraldry!.First() != null)
+                    if (character.Inventory.Heraldry!.Count > 0)
                     {
                         unequip.ItemId = character.Inventory.Heraldry!.First()!.Identity.Id;
                         characters.UnequipCharacterItem(unequip);
