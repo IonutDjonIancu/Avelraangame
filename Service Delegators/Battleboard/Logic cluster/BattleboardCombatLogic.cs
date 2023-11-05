@@ -5,7 +5,7 @@ namespace Service_Delegators;
 
 public interface IBattleboardCombatLogic
 {
-    Battleboard StartCombat(string battleboardId);
+    Battleboard StartCombat(BattleboardActor actor);
     Battleboard Attack(BattleboardActor actor);
     Battleboard Cast(BattleboardActor actor);
     Battleboard Mend(BattleboardActor actor);
@@ -36,11 +36,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         this.characters = characters;
     }
 
-    public Battleboard StartCombat(string battleboardId)
+    public Battleboard StartCombat(BattleboardActor actor)
     {
         lock (_lock)
         {
-            var board = snapshot.Battleboards.Find(s => s.Id == battleboardId)!;
+            var (_, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
             board.IsInCombat = true;
             board.CanLvlUp = true;
             board.RoundNr = 1;
@@ -62,7 +62,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board, defender) = GetAttackerBoardDefender(actor, snapshot);
+            var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
 
             return RunAttackLogic(attacker, board, defender);
         }
@@ -72,7 +72,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board, defender) = GetAttackerBoardDefender(actor, snapshot);
+            var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
 
             return RunCastLogic(attacker, board, defender);
         }
@@ -82,7 +82,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board, defender) = GetAttackerBoardDefender(actor, snapshot);
+            var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
 
             var attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Apothecary, attacker);
 
@@ -111,7 +111,6 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             MoveOrRemoveFromBattleOrder(attacker, board);
 
             return board;
-
         }
     }
 
@@ -119,7 +118,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Hide, attacker);
             var spotters = 0;
@@ -150,7 +149,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             }
 
             attacker.Status.Gameplay.IsHidden = spotters == 0;
-            board.LastActionResult = $"{attacker.Status.Name} is now hidden.";
+            board.LastActionResult = attacker.Status.Gameplay.IsHidden ? $"{attacker.Status.Name} is now hidden." : "Hide failed, you have been spotted.";
 
             MoveOrRemoveFromBattleOrder(attacker, board);
 
@@ -162,7 +161,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             return RunTrapsLogic(attacker, board);
         }
@@ -172,13 +171,13 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var resolveToHeal = (int)((attacker.Sheet.Assets.Resolve - attacker.Sheet.Assets.ResolveLeft) * 0.1);
             attacker.Sheet.Assets.ResolveLeft += resolveToHeal;
 
             var manaToHeal = (int)((attacker.Sheet.Assets.Mana - attacker.Sheet.Assets.ManaLeft) * 0.2);
-            attacker.Sheet.Assets.Mana += manaToHeal;
+            attacker.Sheet.Assets.ManaLeft += manaToHeal;
 
             board.LastActionResult = $"You regain {resolveToHeal} Resolve, and {manaToHeal} Mana.";
 
@@ -192,7 +191,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var npc = board.GetAllCharacters().Find(s => s.Identity.Id == board.BattleOrder.First())!;
 
@@ -232,7 +231,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var combatants = board.GetAllCharacters().OrderByDescending(s => s.Sheet.Assets.Actions).ToList();
 
@@ -266,14 +265,17 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             ChooseNewPartyLeadIfPartyLeadDead(attacker, board);
 
             if (board.GoodGuyPartyLead == string.Empty && board.BadGuyPartyLead == string.Empty)
             {
                 ReturnNpcsHomeIfAllPlayersAreDead(attacker, board, snapshot);
-                return null;
+
+                snapshot.Battleboards.Remove(board);
+
+                return board;
             }
 
             if (attacker.Status.Gameplay.IsGoodGuy)
@@ -320,11 +322,8 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-
-
-
     #region private methods
-    private void ReturnNpcsHomeIfAllPlayersAreDead(Character attacker, Battleboard board, Snapshot snapshot)
+    private static void ReturnNpcsHomeIfAllPlayersAreDead(Character attacker, Battleboard board, Snapshot snapshot)
     {
         var surviors = board.GetAllCharacters().Where(s =>
             s.Status.Gameplay.IsAlive
@@ -346,9 +345,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
             location.Mercenaries.Add(s);
         });
+
+        board.LastActionResult = "All characters in this party have met their final demise.";
     }
 
-    private void RemoveDeadCharacters(Battleboard board)
+    private static void RemoveDeadCharacters(Battleboard board)
     {
         board.GoodGuys.Where(s => !s.Status.Gameplay.IsAlive).ToList().ForEach(s => board.GoodGuys.Remove(s));
         board.BadGuys.Where(s => !s.Status.Gameplay.IsAlive).ToList().ForEach(s => board.BadGuys.Remove(s));
@@ -370,7 +371,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-    private void LootWealth(Character partyLead, Battleboard board)
+    private static void LootWealth(Character partyLead, Battleboard board)
     {
         var totalLootWealth = board.GetAllCharacters().Where(s => !s.Status.Gameplay.IsAlive).ToList().Sum(s => s.Status.Wealth);
 
@@ -388,13 +389,13 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     }
 
-    private void LootDeadMan(Character deadMan, Character partyLead)
+    private static void LootDeadMan(Character deadMan, Character partyLead)
     {
         deadMan.Inventory.GetAllEquipedItems().ForEach(s => partyLead.Inventory.Supplies.Add(s));
         deadMan.Inventory.Supplies.ForEach(s => partyLead.Inventory.Supplies.Add(s));
     }
 
-    private string AiDecideOnHighestSkill(Character npc)
+    private static string AiDecideOnHighestSkill(Character npc)
     {
         var dictOfSkills = new Dictionary<string, int>
         {
@@ -407,23 +408,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         return dictOfSkills.OrderByDescending(s => s.Value).First().Key;
     }
 
-    private (Character attacker, Battleboard board) GetAttackerBoard(BattleboardActor actor, Snapshot snapshot)
-    {
-        var attacker = BattleboardHelpers.GetCharacter(actor, snapshot);
-        var board = BattleboardHelpers.GetBattleboard(attacker.Status.Gameplay.BattleboardId, snapshot);
-
-        return (attacker, board);
-    }
-
-    private (Character attacker, Battleboard board, Character defender) GetAttackerBoardDefender(BattleboardActor actor, Snapshot snapshot)
-    {
-        var (attacker, board) = GetAttackerBoard(actor, snapshot);  
-        var defender = board.GetAllCharacters().Find(s => s.Identity.Id == actor.TargetId)!;
-
-        return (attacker, board, defender); 
-    }
-
-    private void CheckDefenderIsDead(Character defender, Battleboard board)
+    private static void CheckDefenderIsDead(Character defender, Battleboard board)
     {
         if (defender.Sheet.Assets.ResolveLeft <= 0)
         {
@@ -432,7 +417,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-    private void MoveOrRemoveFromBattleOrder(Character attacker, Battleboard board)
+    private static void MoveOrRemoveFromBattleOrder(Character attacker, Battleboard board)
     {
         board.BattleOrder.RemoveAt(0);
         if (attacker.Sheet.Assets.ActionsLeft > 0)
@@ -515,6 +500,12 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     private Battleboard RunCastLogic(Character attacker, Battleboard board, Character defender)
     {
+        if (defender.Sheet.Assets.Purge >= 100)
+        {
+            board.LastActionResult = "Your target is immune to arcane and psionic effects.";
+            return board;
+        }
+
         var isPsionicsHigher = attacker.Sheet.Skills.Psionics >= attacker.Sheet.Skills.Arcane;
 
         var attackerRoll = 0;
@@ -543,26 +534,66 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
         var goodGuys = board.GoodGuys.Select(s => s.Identity.Id).ToList();
         var badGuys = board.BadGuys.Select(s => s.Identity.Id).ToList();
-        var sameTeam = goodGuys.Contains(attacker.Identity.Id) && goodGuys.Contains(defender.Identity.Id)
-            || badGuys.Contains(attacker.Identity.Id) && badGuys.Contains(defender.Identity.Id);
+        var sameTeam = attacker.Status.Gameplay.IsGoodGuy && defender.Status.Gameplay.IsGoodGuy
+            || !attacker.Status.Gameplay.IsGoodGuy && !defender.Status.Gameplay.IsGoodGuy;
 
-        if (sameTeam && defender.Sheet.Assets.Purge < 100)
+        if (sameTeam)
         {
-            var amountToHeal = (int)(attackerRoll * defender.Sheet.Assets.Purge / 100);
+            var effect = isPsionicsHigher
+                ? Energysurge(attackerRoll)
+                : Spellcast(attackerRoll);
+
+            var amountToHeal = (int)(effect * defender.Sheet.Assets.Purge / 100);
             defender.Sheet.Assets.ResolveLeft += amountToHeal;
 
             board.LastActionResult = $"{attacker.Status.Name} healed {defender.Status.Name} for {amountToHeal}.";
         }
         else
         {
-            var defenderRoll = dice.Roll_game_dice(true, CharactersLore.Stats.Willpower, defender);
-            var result = attackerRoll - defenderRoll;
+            var defenderRoll = 0;
 
-            var amountToDmg = defender.Sheet.Assets.Purge < 100 ? (int)(result * defender.Sheet.Assets.Purge / 100) : 0;
+            if (defender.Status.Traits.Class == CharactersLore.Classes.Mage
+                || defender.Status.Traits.Class == CharactersLore.Classes.Sorcerer)
+            {
+                defenderRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Arcane, defender);
+            }
+            // TODO: add psionist classes
+            //else if (defender.Status.Traits.Class == CharactersLore.Classes.Mage)
+            //{
+
+            //}
+            else
+            {
+                defenderRoll = dice.Roll_game_dice(true, CharactersLore.Stats.Willpower, defender);
+            }
+
+            var attackDiff = attackerRoll - defenderRoll;
+
+            if (attackDiff <= 0) 
+            {
+                board.LastActionResult = $"Your target has saved vs. your {(isPsionicsHigher ? "energy surge." : "spellcast.")}";
+                return board;
+            }
+
+            var effect = isPsionicsHigher
+                ? Energysurge(attackDiff)
+                : Spellcast(attackDiff);
+
+            var amountToDmg = defender.Sheet.Assets.Purge < 100 ? (int)(effect - effect * defender.Sheet.Assets.Purge / 100) : 0;
 
             defender.Sheet.Assets.ResolveLeft -= amountToDmg;
 
             board.LastActionResult = isPsionicsHigher ? $"{attacker.Status.Name}'s energy surge did {amountToDmg} dmg." : $"{attacker.Status.Name}'s spellcraft did {amountToDmg} dmg.";
+        }
+
+        int Energysurge(int roll)
+        {
+            return (int)(roll * attacker.Sheet.Assets.Purge / 100);
+        }
+
+        int Spellcast(int roll)
+        {
+            return attacker.Sheet.Stats.Abstract * attacker.Status.EntityLevel + (int)(roll * 0.1);
         }
 
         CheckDefenderIsDead(defender, board);
@@ -681,41 +712,59 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
                 var roll = dice.Roll_d6_noReroll();
 
-                if (roll <= 1)
+                if (roll >= 1)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Body;
-                    unequip.ItemId = character.Inventory.Body!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Body != null)
+                    {
+                        unequip.ItemId = character.Inventory.Body!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
-                if (roll <= 2)
+                if (roll >= 2)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Head;
-                    unequip.ItemId = character.Inventory.Head!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Head != null)
+                    {
+                        unequip.ItemId = character.Inventory.Head!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
-                if (roll <= 3)
+                if (roll >= 3)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Mainhand;
-                    unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Mainhand != null)
+                    {
+                        unequip.ItemId = character.Inventory.Mainhand!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
-                if (roll <= 4)
+                if (roll >= 4)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Offhand;
-                    unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Offhand != null)
+                    {
+                        unequip.ItemId = character.Inventory.Offhand!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
-                if (roll <= 5)
+                if (roll >= 5)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Ranged;
-                    unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Ranged != null)
+                    {
+                        unequip.ItemId = character.Inventory.Ranged!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
-                if (roll <= 6)
+                if (roll >= 6)
                 {
                     unequip.InventoryLocation = ItemsLore.InventoryLocation.Heraldry;
-                    unequip.ItemId = character.Inventory.Heraldry!.First().Identity.Id;
-                    characters.UnequipCharacterItem(unequip);
+                    if (character.Inventory.Heraldry!.Count > 0)
+                    {
+                        unequip.ItemId = character.Inventory.Heraldry!.First()!.Identity.Id;
+                        characters.UnequipCharacterItem(unequip);
+                    }
                 }
             }
         }
@@ -737,6 +786,5 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
 
     }
-
     #endregion
 }

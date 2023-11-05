@@ -9,7 +9,7 @@ public class CharacterTests : TestBase
     private const string PlayerName = "JoeDoe";
 
     [Fact(DisplayName = "Create character stub should exist in snapshot")]
-    public void CreateCharacterStub()
+    public void CreateCharacterStubTest()
     {
         // Arrange
         var playerId = TestUtils.CreatePlayer(PlayerName, _players, _snapshot);
@@ -22,7 +22,7 @@ public class CharacterTests : TestBase
     }
 
     [Fact(DisplayName = "Save character stub should exist as new character in player")]
-    public void SaveCharacterStub()
+    public void SaveCharacterStubTest()
     {
         var player = TestUtils.CreateAndGetPlayer(PlayerName, _players, _snapshot);
 
@@ -68,7 +68,7 @@ public class CharacterTests : TestBase
 
         character.Inventory.Supplies.Count.Should().BeGreaterThanOrEqualTo(1);
 
-        GameplayLore.Locations.All.Select(s => s.LocationName).Should().Contain(character.Status.Position.Location);
+        GameplayLore.Locations.All.Select(s => s.Name).Should().Contain(character.Status.Position.Location);
         _snapshot.Locations.Exists(s => s.Position == character.Status.Position).Should().BeTrue();
     }
 
@@ -398,7 +398,7 @@ public class CharacterTests : TestBase
         var charTravel = new CharacterTravel
         {
             CharacterIdentity = GetCharIdentity(character),
-            Destination = Utils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
+            Destination = ServicesUtils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
         };
 
         character.Status.Gameplay.IsLocked = true;
@@ -545,7 +545,7 @@ public class CharacterTests : TestBase
         var charTravel = new CharacterTravel
         {
             CharacterIdentity = GetCharIdentity(character),
-            Destination = Utils.GetPositionByLocationFullName(locationFullName),
+            Destination = ServicesUtils.GetPositionByLocationFullName(locationFullName),
         };
 
         _characters.TravelCharacterToLocation(charTravel);

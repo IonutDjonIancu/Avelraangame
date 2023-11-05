@@ -3,7 +3,7 @@
 public class Location
 {
     // hardcoded in the gameplay lore file
-    public string LocationName { get; set; }
+    public string Name { get; set; }
     public string FullName { get; set; }
     public Position Position { get; set; }
 

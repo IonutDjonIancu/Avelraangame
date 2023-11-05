@@ -34,16 +34,16 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         return GetBattleboards().Find(s => s.Id == battleboardId)!;
     }
 
-    public Battleboard GetBattleboard(BattleboardActor battleboardCharacter)
+    public Battleboard GetBattleboard(BattleboardActor actor)
     {
         lock (_lock)
         {
-            var character = BattleboardHelpers.GetCharacter(battleboardCharacter, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             return snapshot.Battleboards.Find(s => s.Id == character.Status.Gameplay.BattleboardId)!;
         }
     }
 
-    public Battleboard CreateBattleboard(BattleboardActor battleboardCharacter)
+    public Battleboard CreateBattleboard(BattleboardActor actor)
     {
         lock (_lock)
         {
@@ -52,7 +52,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
                 Id = Guid.NewGuid().ToString(),
             };
 
-            var character = BattleboardHelpers.GetCharacter(battleboardCharacter, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             character.Status.Gameplay.BattleboardId = battleboard.Id;
             character.Status.Gameplay.IsGoodGuy = true;
 
@@ -75,19 +75,23 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         }
     }
 
-    public Battleboard JoinBattleboard(BattleboardActor battleboardCharacter)
+    public Battleboard JoinBattleboard(BattleboardActor actor)
     {
         lock (_lock)
         {
-            var character = BattleboardHelpers.GetCharacter(battleboardCharacter, snapshot);
-            var board = snapshot.Battleboards.Find(s => s.Id == battleboardCharacter.BattleboardIdToJoin)!;
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
+            var board = snapshot.Battleboards.Find(s => s.Id == actor.BattleboardIdToJoin)!;
             character.Status.Gameplay.BattleboardId = board.Id;
-            character.Status.Gameplay.IsGoodGuy = battleboardCharacter.WantsToBeGood;
+            character.Status.Gameplay.IsGoodGuy = actor.WantsToBeGood;
 
-            if (battleboardCharacter.WantsToBeGood)
+            if (actor.WantsToBeGood)
             {
                 var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
-                if (character.Status.Worth > partyLead.Status.Worth) board.GoodGuyPartyLead = character.Identity.Id;
+
+                if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
+                {
+                    board.GoodGuyPartyLead = character.Identity.Id;
+                }
 
                 board.GoodGuys.Add(character);
 
@@ -102,7 +106,11 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
             else
             {
                 var partyLead = board.BadGuys.Find(s => s.Identity.Id == board.BadGuyPartyLead)!;
-                if (character.Status.Worth > partyLead.Status.Worth) board.BadGuyPartyLead = character.Identity.Id;
+
+                if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
+                {
+                    board.BadGuyPartyLead = character.Identity.Id;
+                }
 
                 board.BadGuys.Add(character);
 
@@ -119,25 +127,23 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         }
     }
 
-    public Battleboard RemoveFromBattleboard(BattleboardActor battleboardCharacter)
+    public Battleboard RemoveFromBattleboard(BattleboardActor actor)
     {
         lock (_lock)
         {
             Character charToRemove;
             Battleboard board;
 
-            if (battleboardCharacter.TargetId == string.Empty)
+            if (string.IsNullOrWhiteSpace(actor.TargetId))
             {
-                charToRemove = BattleboardHelpers.GetCharacter(battleboardCharacter, snapshot);
+                charToRemove = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
                 board = snapshot.Battleboards.Find(s => s.Id == charToRemove.Status.Gameplay.BattleboardId)!;
             } 
             else
             {
-                var partyLead = BattleboardHelpers.GetCharacter(battleboardCharacter, snapshot);
+                var partyLead = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
                 board = snapshot.Battleboards.Find(s => s.Id == partyLead.Status.Gameplay.BattleboardId)!;
-                charToRemove = partyLead.Status.Gameplay.IsGoodGuy 
-                    ? board.GoodGuys.Find(s => s.Identity.Id == battleboardCharacter.TargetId)! 
-                    : board.BadGuys.Find(s => s.Identity.Id == battleboardCharacter.TargetId)!;
+                charToRemove = board.GetAllCharacters().Find(s => s.Identity.Id == actor.TargetId)!;
             }
 
             if (charToRemove.Status.Gameplay.IsGoodGuy)

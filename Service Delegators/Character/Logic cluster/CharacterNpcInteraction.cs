@@ -22,8 +22,8 @@ public class CharacterNpcInteraction : ICharacterNpcInteraction
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(hireMercenary.CharacterIdentity, snapshot);
-            var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position))!;
+            var character = ServicesUtils.GetPlayerCharacter(hireMercenary.CharacterIdentity, snapshot);
+            var location = snapshot.Locations.Find(s => s.FullName == ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position))!;
             var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId)!;
 
             character.Status.Wealth -= merc.Status.Worth;

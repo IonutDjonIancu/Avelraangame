@@ -26,11 +26,11 @@ public class CharacterTravelLogic : ICharacterTravelLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
 
-            var currentLocationFullName = Utils.GetLocationFullNameFromPosition(character.Status.Position);
+            var currentLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position);
             var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
-            var destinationLocationFullName = Utils.GetLocationFullNameFromPosition(travel.Destination);
+            var destinationLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(travel.Destination);
             var destination = GameplayLore.Locations.All.Find(s => s.FullName == destinationLocationFullName)!;
 
             int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);

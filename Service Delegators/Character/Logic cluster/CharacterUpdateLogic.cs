@@ -24,7 +24,7 @@ public class CharacterUpdateLogic : ICharacterUpdateLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(charIdentity, snapshot);
             character.Status!.Name = name;
 
             return character;
@@ -35,7 +35,7 @@ public class CharacterUpdateLogic : ICharacterUpdateLogic
     {
         lock ( _lock)
         {
-            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(charIdentity, snapshot);
             character.Status!.Fame = string.Concat(character.Status.Fame, $"\n{fame}");
 
             return character;
@@ -46,7 +46,7 @@ public class CharacterUpdateLogic : ICharacterUpdateLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(charIdentity, snapshot);
             character.Status!.Wealth += wealth;
 
             return character;

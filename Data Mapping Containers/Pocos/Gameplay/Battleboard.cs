@@ -15,8 +15,8 @@ public class Battleboard
 
     public string BadGuyPartyLead { get; set; }
     public List<Character> BadGuys { get; set; } = new();
-    
-    public List<string> BattleOrder { get; set; }
+
+    public List<string> BattleOrder { get; set; } = new();
 
     public List<Character> GetAllCharacters()
     {

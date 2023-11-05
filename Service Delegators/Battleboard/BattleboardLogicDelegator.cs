@@ -13,7 +13,7 @@ public interface IBattleboardLogicDelegator
     Battleboard KickFromBattleboard(BattleboardActor actor);
     void LeaveBattleboard(BattleboardActor actor);
 
-    Battleboard StartCombat(string battleboardId);
+    Battleboard StartCombat(BattleboardActor actor);
     Battleboard Attack(BattleboardActor actor);
     Battleboard Cast(BattleboardActor actor);
     Battleboard Mend(BattleboardActor actor);
@@ -87,10 +87,10 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         crudLogic.RemoveFromBattleboard(actor);
     }
 
-    public Battleboard StartCombat(string battleboardId)
+    public Battleboard StartCombat(BattleboardActor actor)
     {
-        validations.ValidateBattleboardOnCombatStart(battleboardId);
-        return combatLogic.StartCombat(battleboardId);
+        validations.ValidateBattleboardOnCombatStart(actor);
+        return combatLogic.StartCombat(actor);
     }
 
     public Battleboard Attack(BattleboardActor actor)

@@ -22,7 +22,7 @@ public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
             var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId)!;
 
             character.Sheet.SpecialSkills.Add(specialSkill);

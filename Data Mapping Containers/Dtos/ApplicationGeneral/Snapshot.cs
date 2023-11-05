@@ -11,5 +11,5 @@ public class Snapshot
 
     public List<Location> Locations { get; init; } = new();
 
-    public List<Battleboard> Battleboards { get; init; }
+    public List<Battleboard> Battleboards { get; init; } = new();
 }

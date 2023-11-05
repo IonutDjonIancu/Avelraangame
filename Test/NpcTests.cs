@@ -7,7 +7,7 @@ public class NpcTests: TestBase
     [Fact(DisplayName = "Generating good guy Npc race should belong to playable")]
     public void GenerateGoodGuyTest()
     {
-        var goodGuy = _npcs.GenerateGoodGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName);
+        var goodGuy = _npcs.GenerateGoodGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Name);
 
         goodGuy.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
         goodGuy.Status.Gameplay.IsNpc.Should().BeTrue();
@@ -20,7 +20,7 @@ public class NpcTests: TestBase
     [Fact(DisplayName = "Generating bad guy Npc race should belong to non-playable")]
     public void GenerateBadGuyTest()
     {
-        var badGuy = _npcs.GenerateBadGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.LocationName);
+        var badGuy = _npcs.GenerateBadGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Name);
 
         badGuy.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
         badGuy.Status.Gameplay.IsNpc.Should().BeTrue();

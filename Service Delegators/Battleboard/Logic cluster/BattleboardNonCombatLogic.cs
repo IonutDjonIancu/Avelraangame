@@ -26,7 +26,7 @@ public class BattleboardNonCombatLogic : IBattleboardNonCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             foreach (var member in board.GetAllCharacters())
             {
@@ -44,14 +44,4 @@ public class BattleboardNonCombatLogic : IBattleboardNonCombatLogic
             return board;
         }
     }
-
-    #region private methods
-    private (Character attacker, Battleboard board) GetAttackerBoard(BattleboardActor actor, Snapshot snapshot)
-    {
-        var attacker = BattleboardHelpers.GetCharacter(actor, snapshot);
-        var board = BattleboardHelpers.GetBattleboard(attacker.Status.Gameplay.BattleboardId, snapshot);
-
-        return (attacker, board);
-    }
-    #endregion
 }
