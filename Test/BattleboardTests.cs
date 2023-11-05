@@ -280,10 +280,8 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Starting combat should lock all characters on battleboard.")]
     public void BattleboardStartCombatTest()
     {
-        var board = CreateBattleboardWithCombatants();
+        var board = CreateBattleboardAndStartCombat();
         var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
 
         board.GetAllCharacters().Count.Should().Be(6);
         board.IsInCombat.Should().BeTrue();
@@ -298,10 +296,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Attacking in combat should display correctly.")]
     public void BattleboardAttackTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-        
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         Character defender;
@@ -337,10 +332,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Casting offensive arcane in combat should display correctly.")]
     public void BattleboardCastTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         Character defender;
@@ -379,10 +371,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Casting offensive arcane in combat against a stronger spellcaster should not deal damage.")]
     public void BattleboardCastAgainstCasterTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         Character defender;
@@ -423,10 +412,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Mending characters should display correctly.")]
     public void BattleboardMendTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         Character defender;
@@ -463,10 +449,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Mending an enemy should throw.")]
     public void BattleboardMendEnemyTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         Character defender;
@@ -500,10 +483,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Hiding should display correctly.")]
     public void BattleboardHideTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
 
@@ -526,10 +506,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Casting traps in combat should display correctly.")]
     public void BattleboardTrapsTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         var defenderTotalResPool = 0;
@@ -570,10 +547,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Resting in combat should display correctly.")]
     public void BattleboardRestTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
 
@@ -603,10 +577,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Let AiAct should display correctly.")]
     public void BattleboardLetAiActTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var firstCharacter = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         var actor1 = new BattleboardActor
@@ -669,10 +640,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "End round should increment battleboard round nr correctly.")]
     public void BattleboardEndRoundTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var attacker = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
 
@@ -695,10 +663,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "End combat should distribute the items to the party leader.")]
     public void BattleboardEndCombatTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
-
-        _battleboard.StartCombat(board.Id);
+        var board = CreateBattleboardAndStartCombat();
 
         var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
 
@@ -723,8 +688,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Make camp should replenish mana and resolve to full.")]
     public void BattleboardMakeCampTest()
     {
-        var board = CreateBattleboardWithCombatants();
-        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+        var board = CreateBattleboardAndStartCombat();
 
         board.BadGuys.Clear();
         board.BadGuyPartyLead = string.Empty;
@@ -746,6 +710,8 @@ public class BattleboardTests : TestBase
             s.Sheet.Assets.ManaLeft = (int)(s.Sheet.Assets.ManaLeft * 0.5);
         });
 
+        _battleboard.EndCombat(actor);
+
         _battleboard.MakeCamp(actor);
 
         var fullResolve = board.GetAllCharacters().Select(s => s.Sheet.Assets.Resolve).Sum();
@@ -755,16 +721,17 @@ public class BattleboardTests : TestBase
         board.GetAllCharacters().Select(s => s.Sheet.Assets.ManaLeft).Sum().Should().Be(fullMana);
     }
 
-
-
-
-
-
-
-
-
     #region private methods
-    private Battleboard CreateBattleboardWithCombatants()
+    private Battleboard CreateBattleboardAndStartCombat()
+    {
+        var (board, mainActor) = CreateBattleboardWithCombatants();
+
+        _battleboard.StartCombat(mainActor);
+
+        return board;
+    }
+
+    private (Battleboard board, BattleboardActor mainActor) CreateBattleboardWithCombatants()
     {
         var actor1 = CreateBattleboardActor(PlayerName1);
         var actor1char = TestUtils.GetCharacter(actor1.MainActor.Id, actor1.MainActor.PlayerId, _snapshot);
@@ -824,7 +791,7 @@ public class BattleboardTests : TestBase
         _characters.HireMercenaryForCharacter(hireFor4);
         _battleboard.JoinBattleboard(actor4);
 
-        return board;
+        return (board, actor1);
     }
 
     private BattleboardActor CreateBattleboardActor(string playerName)
