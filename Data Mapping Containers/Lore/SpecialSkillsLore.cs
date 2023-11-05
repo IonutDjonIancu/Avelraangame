@@ -126,7 +126,7 @@ public class SpecialSkillsLore
                 Id = "ea91b5bb-c338-431d-bef5-915483aac4a0",
                 Name = "Swordsman",
             },
-            Description = "Increases the base Combat skill by 5 plus another 1% of the character's Paperdoll amount.",
+            Description = "Increases the base Melee skill by 5 plus another 1% of the character's Paperdoll amount.",
             Lore = "Steady arm and stout shield are the best teachers you have ever known.",
             Type = Type.Bonus,
             Subtype = Subtype.Multiple,

@@ -19,7 +19,7 @@ public class GameplayLore
                     private const string AradaName = "Arada";
                     public static readonly Location Arada = new()
                     {
-                        LocationName = AradaName,
+                        Name = AradaName,
                         FullName = $"{RegionName}_{SubregionName}_{LandName}_{AradaName}", // Arada
                         Position = new()
                         {
@@ -35,7 +35,7 @@ public class GameplayLore
                     private const string LanwickName = "Lanwick Province";
                     public static readonly Location Lanwick = new()
                     {
-                        LocationName = LanwickName,
+                        Name = LanwickName,
                         FullName = $"{RegionName}_{SubregionName}_{LandName}_{LanwickName}", // Lanwick
                         Position = new()
                         {
@@ -51,7 +51,7 @@ public class GameplayLore
                     private const string BelfordshireName = "Belfordshire";
                     public static readonly Location Belfordshire = new()
                     {
-                        LocationName = BelfordshireName,
+                        Name = BelfordshireName,
                         FullName = $"{RegionName}_{SubregionName}_{LandName}_{BelfordshireName}", // Belfordshire
                         Position = new()
                         {
@@ -95,6 +95,19 @@ public class GameplayLore
         public static readonly List<string> All = new()
         {
             Martial, Common
+        };
+    }
+
+    public static class Camping
+    {
+        public const string Nightfall = "Nigh falls and your party members gather around the crackling campfire. They share a hearty meal, the tantalizing aroma of roasted game filling the air.";
+        public const string Campfire = "Amidst the flickering flames of the campfire, a palpable silence hangs in the air. You observe your comrades, wrapped in solitude, meticulously inspecting and polishing their armor, sharpening weapons with unwavering focus, and performing personal, secretive tasks that speak to their unique backgrounds and skills.";
+        public const string Laughter = "From the shelter of your campsite, you watch the slow orange sun descend into the sunset. Laughter and camaraderie fill the camp as stories and experiences are shared, bringing a sense of unity and warmth to your secluded wilderness campsite.";
+        public const string Rainy = "As the rain continues to pour from the heavens, your party members huddle beneath the shelter of a makeshift canopy and tents, you are given a brief respite from the perils of your quest, offering a chance to recharge, bond, and reflect on the adventures that still lie ahead.";
+
+        public static readonly List<string> All = new()
+        {
+            Nightfall, Campfire, Laughter, Rainy
         };
     }
 

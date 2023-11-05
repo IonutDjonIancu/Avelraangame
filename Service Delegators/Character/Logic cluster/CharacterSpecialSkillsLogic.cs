@@ -22,7 +22,7 @@ public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
             var specialSkill = SpecialSkillsLore.All.Find(t => t.Identity.Id == spsk.SpecialSkillId)!;
 
             character.Sheet.SpecialSkills.Add(specialSkill);
@@ -43,16 +43,16 @@ public class CharacterSpecialSkillsLogic : ICharacterSpecialSkillsLogic
 
     private static void RunSwordsmanLogic(Character character)
     {
-        var value = 5 + (int)Math.Floor(character.Sheet.Skills.Combat * 0.01);
-        character.Sheet.Skills.Combat += value;
+        var value = 5 + (int)Math.Floor(character.Sheet.Skills.Melee * 0.01);
+        character.Sheet.Skills.Melee += value;
     }
 
     private static void RunSkillfulLogic(Character character, string skill)
     {
-        if (skill == CharactersLore.Skills.Combat)
+        if (skill == CharactersLore.Skills.Melee)
         {
-            var value = (int)Math.Floor(character.Sheet.Skills.Combat * 0.2);
-            character.Sheet.Skills.Combat += value;
+            var value = (int)Math.Floor(character.Sheet.Skills.Melee * 0.2);
+            character.Sheet.Skills.Melee += value;
         }
         else if (skill == CharactersLore.Skills.Arcane)
         {

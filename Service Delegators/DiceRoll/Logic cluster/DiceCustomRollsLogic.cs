@@ -4,10 +4,11 @@ namespace Service_Delegators;
 
 public interface IDiceCustomRollsLogic
 {
+    int Roll1d6();
     int Roll1dN(int upperLimit);
     int RollNdN(int lowerLimit, int upperLimit);
     bool RollTrueFalse();
-    int RollGameplayDice(bool isOffense, string attribute, Character character);
+    int RollGameplayDice(bool canLvlup, string attribute, Character character);
 }
 
 public class DiceCustomRollsLogic : IDiceCustomRollsLogic
@@ -26,6 +27,11 @@ public class DiceCustomRollsLogic : IDiceCustomRollsLogic
         this.d100RollsLogic = d100RollsLogic;
     }
 
+    public int Roll1d6() 
+    {
+        return random.Next(1, 7);
+    }
+
     public bool RollTrueFalse()
     {
         return random.Next(1, 3) == 1;
@@ -39,17 +45,17 @@ public class DiceCustomRollsLogic : IDiceCustomRollsLogic
         return random.Next(lowerLimit, upperLimit + 1);
     }
 
-    public int RollGameplayDice(bool isOffense, string attribute, Character character)
+    public int RollGameplayDice(bool canLvlup, string attribute, Character character)
     {
         var grade = character.Status.Traits.Tradition == GameplayLore.Tradition.Martial
             ? 1 + d20RollsLogic.RollD20withReroll() / 4
             : 1 + d100RollsLogic.RollD100withReroll() / 20;
 
-        return GetRollGradeAndLevelup(grade, isOffense, attribute, character);
+        return GetRollGradeAndLevelup(grade, canLvlup, attribute, character);
     }
 
     #region private methods
-    private static int GetRollGradeAndLevelup(int grade, bool isOffense, string attribute, Character character)
+    private static int GetRollGradeAndLevelup(int grade, bool canLvlup, string attribute, Character character)
     {
         var crit = grade / 5 - 1;
         var crits = crit > 0 ? crit : 0;
@@ -58,7 +64,7 @@ public class DiceCustomRollsLogic : IDiceCustomRollsLogic
         // this calculates that a 20 skill represents a 100%
         var grades = grade * attrValue * 5 / 100;
 
-        if (isOffense) LevelUpCharacter(crits, character);
+        if (canLvlup) LevelUpCharacter(crits, character);
 
         return grades;
     }
@@ -85,7 +91,7 @@ public class DiceCustomRollsLogic : IDiceCustomRollsLogic
         CharactersLore.Assets.Spot => character.Sheet.Assets.Spot,
 
         // skills
-        CharactersLore.Skills.Combat => character.Sheet.Skills.Combat,
+        CharactersLore.Skills.Melee => character.Sheet.Skills.Melee,
         CharactersLore.Skills.Arcane => character.Sheet.Skills.Arcane,
         CharactersLore.Skills.Psionics => character.Sheet.Skills.Psionics,
         CharactersLore.Skills.Hide => character.Sheet.Skills.Hide,

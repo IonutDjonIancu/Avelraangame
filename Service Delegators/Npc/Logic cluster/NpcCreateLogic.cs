@@ -22,7 +22,7 @@ public class NpcCreateLogic : INpcCreateLogic
 
     public Character GenerateNpcCharacter(string locationName, bool isGood)
     {
-        var location = Utils.GetLocationByLocationName(locationName);
+        var location = ServicesUtils.GetLocationByLocationName(locationName);
         var character = new Character();
 
         SetIdentity(character);
@@ -49,12 +49,11 @@ public class NpcCreateLogic : INpcCreateLogic
     {
         character.Status.EntityLevel = DecideEntityLevel();
         character.Status.DateOfBirth = DateTime.Now.ToShortDateString();
-        character.Status.IsNpc = true;
-        character.Status.IsAlive = true;
-        character.Status.IsLockedToModify = false;
+        character.Status.Gameplay.IsNpc = true;
+        character.Status.Gameplay.IsAlive = true;
+        character.Status.Gameplay.IsLocked = false;
         character.Status.Traits = DecideTraits(isGood, location);
-        character.Status.Gameplay = new CharacterGameplay();
-        character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
+        character.Status.Position = ServicesUtils.GetPositionByLocationFullName(location.FullName);
         character.Status.Worth = location.Effort;
         character.Status.Wealth = dice.Roll_d100_noReroll();
         character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this one.";
@@ -214,7 +213,7 @@ public class NpcCreateLogic : INpcCreateLogic
     {
         return new CharacterSkills
         {
-            Combat = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateCombat(stats),
+            Melee = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateMelee(stats),
             Arcane = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateArcane(stats),
             Psionics = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculatePsionics(stats),
             Hide = Randomize(effortUpper) + RulebookLore.Formulae.Skills.CalculateHide(stats),
@@ -342,7 +341,7 @@ public class NpcCreateLogic : INpcCreateLogic
         character.Sheet.Assets.ActionsLeft  = character.Sheet.Assets.Actions;
 
         // skills
-        character.Sheet.Skills.Combat       += allWornItems.Select(s => s.Sheet.Skills.Combat).Sum();
+        character.Sheet.Skills.Melee       += allWornItems.Select(s => s.Sheet.Skills.Melee).Sum();
         character.Sheet.Skills.Arcane       += allWornItems.Select(s => s.Sheet.Skills.Arcane).Sum();
         character.Sheet.Skills.Psionics     += allWornItems.Select(s => s.Sheet.Skills.Psionics).Sum();
         character.Sheet.Skills.Hide         += allWornItems.Select(s => s.Sheet.Skills.Hide).Sum();
@@ -418,7 +417,7 @@ public class NpcCreateLogic : INpcCreateLogic
 
     private void SetWorth(Character character, Location location)
     {
-        var skillsAverage = (character.Sheet.Skills.Combat
+        var skillsAverage = (character.Sheet.Skills.Melee
             + character.Sheet.Skills.Arcane
             + character.Sheet.Skills.Psionics
             + character.Sheet.Skills.Hide

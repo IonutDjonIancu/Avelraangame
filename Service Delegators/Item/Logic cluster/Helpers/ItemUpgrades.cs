@@ -343,7 +343,7 @@ internal static class ItemUpgrades
     }
     private static void DoubleSkills(Item item)
     {
-        item.Sheet.Skills.Combat *= 2;
+        item.Sheet.Skills.Melee *= 2;
         item.Sheet.Skills.Arcane *= 2;
         item.Sheet.Skills.Psionics *= 2;
         item.Sheet.Skills.Hide *= 2;

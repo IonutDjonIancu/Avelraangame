@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Tests;
@@ -16,6 +15,7 @@ public class TestBase : IDisposable
     public readonly ICharacterLogicDelegator _characters;
     public readonly INpcLogicDelegator _npcs;
     public readonly IGameplayLogicDelegator _gameplay;
+    public readonly IBattleboardLogicDelegator _battleboard;
 
     public TestBase()
     {
@@ -33,6 +33,7 @@ public class TestBase : IDisposable
         _characters = _provider.GetRequiredService<ICharacterLogicDelegator>();
         _npcs = _provider.GetRequiredService<INpcLogicDelegator>();
         _gameplay = _provider.GetRequiredService<IGameplayLogicDelegator>();
+        _battleboard = _provider.GetRequiredService<IBattleboardLogicDelegator>();
     }
 
     private static void ConfigureServices(IServiceCollection services)
@@ -53,6 +54,7 @@ public class TestBase : IDisposable
         LoadCharacterService(services);
         LoadNpcService(services);
         LoadGameplayService(services);
+        LoadBattleboardService(services);
     }
 
     public void Dispose()
@@ -130,8 +132,8 @@ public class TestBase : IDisposable
         services.AddTransient<ICharacterLogicDelegator, CharacterLogicDelegator>();
         // subservices
         services.AddTransient<ICharacterSheetLogic, CharacterSheetLogic>();
-        services.AddTransient<ICharacterCreateLogic, CharacterCreateLogic>();
-        services.AddTransient<ICharacterInfoLogic, CharacterInfoLogic>();
+        services.AddTransient<ICharacterCRUDLogic, CharacterCRUDLogic>();
+        services.AddTransient<ICharacterUpdateLogic, CharacterUpdateLogic>();
         services.AddTransient<ICharacterItemsLogic, CharacterItemsLogic>();
         services.AddTransient<ICharacterSpecialSkillsLogic, CharacterSpecialSkillsLogic>();
         services.AddTransient<ICharacterLevelupLogic, CharacterLevelupLogic>();
@@ -153,5 +155,15 @@ public class TestBase : IDisposable
         services.AddTransient<IGameplayLogicDelegator, GameplayLogicDelegator>();
         // subservices
         services.AddTransient<IGameplayLocationsLogic, GameplayLocationsLogic>();
+    }
+
+    private static void LoadBattleboardService(IServiceCollection services)
+    {
+        // delegator
+        services.AddTransient<IBattleboardLogicDelegator, BattleboardLogicDelegator>();
+        // subservices
+        services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
+        services.AddTransient<IBattleboardCombatLogic, BattleboardCombatLogic>();
+        services.AddTransient<IBattleboardNonCombatLogic, BattleboardNonCombatLogic>();
     }
 }

@@ -24,7 +24,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
 
             var levelupStatPts = 1;
             var likelyStatPts = 0;
@@ -56,7 +56,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
 
             var levelupAssetPts = 1;
             var likelyAssetPts = 0;
@@ -89,7 +89,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
 
             var levelupSkillPts = 1;
             var likelySkillPts = 0;
@@ -103,7 +103,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
 
             var total = levelupSkillPts + likelySkillPts;
 
-            if      (skill == CharactersLore.Skills.Combat && character.Sheet.Skills.Combat <= 1000) character.Sheet!.Skills.Combat += total + (int)(RulebookLore.Formulae.Skills.CalculateCombat(character.Sheet.Stats) * 0.02);
+            if      (skill == CharactersLore.Skills.Melee && character.Sheet.Skills.Melee <= 1000) character.Sheet!.Skills.Melee += total + (int)(RulebookLore.Formulae.Skills.CalculateMelee(character.Sheet.Stats) * 0.02);
             else if (skill == CharactersLore.Skills.Arcane && character.Sheet.Skills.Arcane <= 1000) character.Sheet!.Skills.Arcane += total + (int)(RulebookLore.Formulae.Skills.CalculateArcane(character.Sheet.Stats) * 0.02);
             else if (skill == CharactersLore.Skills.Psionics && character.Sheet.Skills.Psionics <= 1000) character.Sheet!.Skills.Psionics += total + (int)(RulebookLore.Formulae.Skills.CalculatePsionics(character.Sheet.Stats) * 0.02);
             else if (skill == CharactersLore.Skills.Hide && character.Sheet.Skills.Hide <= 1000) character.Sheet!.Skills.Hide += total + (int)(RulebookLore.Formulae.Skills.CalculateHide(character.Sheet.Stats) * 0.02);

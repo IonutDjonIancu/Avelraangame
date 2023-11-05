@@ -26,11 +26,11 @@ public class CharacterTravelLogic : ICharacterTravelLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
 
-            var currentLocationFullName = Utils.GetLocationFullNameFromPosition(character.Status.Position);
+            var currentLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position);
             var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
-            var destinationLocationFullName = Utils.GetLocationFullNameFromPosition(travel.Destination);
+            var destinationLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(travel.Destination);
             var destination = GameplayLore.Locations.All.Find(s => s.FullName == destinationLocationFullName)!;
 
             int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);
@@ -42,13 +42,13 @@ public class CharacterTravelLogic : ICharacterTravelLogic
             var effort = dice.Roll_1_to_n(destination.Effort);
             var listOfRolls = new List<int>();
 
-            var characterRoll = dice.Roll_character_gameplay_dice(false, CharactersLore.Skills.Travel, character);
+            var characterRoll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, character);
             character.Status.Position = destination.Position;
             listOfRolls.Add(characterRoll);
 
             foreach (var npc in character.Mercenaries)
             {
-                var npcRoll = dice.Roll_character_gameplay_dice(false, CharactersLore.Skills.Travel, npc);
+                var npcRoll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, npc);
                 npc.Status.Position = destination.Position;
                 listOfRolls.Add(npcRoll);
             }
