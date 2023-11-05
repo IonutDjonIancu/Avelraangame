@@ -1,5 +1,6 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
+using System.Security.Principal;
 
 namespace Service_Delegators;
 
@@ -54,7 +55,7 @@ public interface IValidations
     void ValidateBeforeBattleboardJoin(BattleboardActor actor);
     void ValidateBeforeBattleboardKick(BattleboardActor actor);
     void ValidateBeforeBattleboardLeave(BattleboardActor actor);
-    void ValidateBattleboardOnCombatStart(string battleboardId);
+    void ValidateBattleboardOnCombatStart(BattleboardActor actor);
     void ValidateBattleboardOnAttack(BattleboardActor actor);
     void ValidateBattleboardOnCast(BattleboardActor actor);
     void ValidateBattleboardOnMend(BattleboardActor actor);
@@ -192,7 +193,7 @@ public class Validations : IValidations
             ValidateString_p(name);
             if (name.Length >= 20) throw new Exception("Character name too long.");
 
-            ValidateCharacterIsLocked_p(GetPlayerCharacter_p(identity));
+            ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(identity, snapshot));
         }
     }
 
@@ -228,14 +229,14 @@ public class Validations : IValidations
         lock (_lockCharacters) 
         { 
             ValidateObject_p(identity);
-            ValidateCharacterIsLocked_p(GetPlayerCharacter_p(identity));
+            ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(identity, snapshot));
         }
     }
     public void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill spsk)
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(spsk.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(spsk.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
             ValidateGuid_p(spsk.SpecialSkillId);
 
@@ -257,7 +258,7 @@ public class Validations : IValidations
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(identity);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
             if (!character.Status.Gameplay.IsAlive) throw new Exception("Character is already dead.");
         }
     }
@@ -267,7 +268,7 @@ public class Validations : IValidations
         lock (_lockCharacters)
         {
             ValidateNumberGreaterThanZero_p(wealth);
-            var character = GetPlayerCharacter_p(identity);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
             ValidateCharacterIsLocked_p(character);
         }
     }
@@ -277,7 +278,7 @@ public class Validations : IValidations
         lock (_lockCharacters)
         {
             ValidateString_p(fame);
-            GetPlayerCharacter_p(identity);
+            ServicesUtils.GetPlayerCharacter(identity, snapshot);
         }
     }
 
@@ -290,7 +291,7 @@ public class Validations : IValidations
             ValidateGuid_p(equip.ItemId);
             ValidateString_p(equip.InventoryLocation);
             
-            var character = GetPlayerCharacter_p(equip.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
             if (!ItemsLore.InventoryLocation.All.Contains(equip.InventoryLocation)) throw new Exception("Equipment location does not fit any possible slot in inventory.");
@@ -406,7 +407,7 @@ public class Validations : IValidations
             ValidateString_p(attribute);
             ValidateString_p(attributeType);
             
-            var character = GetPlayerCharacter_p(identity);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
             if (!CharactersLore.AttributeTypes.All.Contains(attributeType)) throw new Exception("Wrong attribute type");
@@ -433,7 +434,7 @@ public class Validations : IValidations
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(travel.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
             ValidateCharacterIsAlive_p(character);
 
@@ -454,7 +455,7 @@ public class Validations : IValidations
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(hireMercenary.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(hireMercenary.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
             var location = snapshot.Locations.Find(s => s.FullName == ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position)) ?? throw new Exception("Location has not been visited yet.");
@@ -468,7 +469,7 @@ public class Validations : IValidations
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(tradeItem.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
             var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId) ?? throw new Exception("Item not found on character supplies.");
@@ -483,7 +484,7 @@ public class Validations : IValidations
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(tradeItem.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
             var location = snapshot.Locations.Find(s => s.Position.Location == character.Status.Position.Location) ?? throw new Exception("Location has not been visited yet");
@@ -495,14 +496,14 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies)
+    public void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buyProvisions)
     {
         lock (_lockCharacters)
         {
-            var character = GetPlayerCharacter_p(buySupplies.CharacterIdentity);
+            var character = ServicesUtils.GetPlayerCharacter(buyProvisions.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
-            if (character.Status.Wealth < buySupplies.Amount * 2) throw new Exception($"Unable to buy supplies, item costs 2 wealth x {buySupplies.Amount} supplies requested, your wealth is {character.Status.Wealth}");
+            if (character.Status.Wealth < buyProvisions.Amount * 2) throw new Exception($"Unable to buy supplies, item costs 2 wealth x {buyProvisions.Amount} supplies requested, your wealth is {character.Status.Wealth}");
         }
     }
     #endregion
@@ -535,7 +536,7 @@ public class Validations : IValidations
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(actor.MainActor);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             var battleboard = snapshot.Battleboards.Find(s => s.Id == character.Status.Gameplay.BattleboardId);
 
             if (battleboard == null)
@@ -565,7 +566,7 @@ public class Validations : IValidations
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(actor.MainActor);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
@@ -583,7 +584,7 @@ public class Validations : IValidations
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(actor.MainActor);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
@@ -606,7 +607,7 @@ public class Validations : IValidations
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(actor.MainActor);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsLocked_p(character);
 
             var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
@@ -634,7 +635,7 @@ public class Validations : IValidations
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
 
-            var character = GetPlayerCharacter_p(actor.MainActor);
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
 
@@ -645,14 +646,21 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateBattleboardOnCombatStart(string battleboardId)
+    public void ValidateBattleboardOnCombatStart(BattleboardActor actor)
     {
         lock (_lockBattleboards)
         {
-            ValidateGuid_p(battleboardId);
-            var battleboard = GetBattleboard_p(battleboardId);
+            ValidateObject_p(actor);
+            ValidateObject_p(actor.MainActor);
 
-            if (battleboard.IsInCombat) throw new Exception("Battleboard already in combat.");
+            var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
+            var board = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+
+            if (board.IsInCombat) throw new Exception("Battleboard already in combat.");
+            
+            if (board.GoodGuyPartyLead != actor.MainActor.Id
+                && board.BadGuyPartyLead != actor.MainActor.Id) throw new Exception("Only party leads can start combat.");
+
         }
     }
 
@@ -767,7 +775,7 @@ public class Validations : IValidations
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
 
-            var attacker = GetPlayerCharacter_p(actor.MainActor);
+            var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
 
             if (board.BattleOrder.Count > 0) throw new Exception("There are still characters with actions.");
@@ -953,7 +961,7 @@ public class Validations : IValidations
         ValidateObject_p(actor);
         ValidateObject_p(actor.MainActor);
 
-        var attacker = GetPlayerCharacter_p(actor.MainActor);
+        var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
         var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
 
         if (!board.BattleOrder.Contains(attacker.Identity.Id)) throw new Exception("Character is exhausted and has no action points left for round.");
@@ -967,7 +975,7 @@ public class Validations : IValidations
         ValidateObject_p(actor.MainActor);
         ValidateString_p(actor.TargetId);
 
-        var attacker = GetPlayerCharacter_p(actor.MainActor);
+        var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
         var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
 
         return (attacker, board);
@@ -986,24 +994,6 @@ public class Validations : IValidations
         return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
     }
 
-    private Character GetPlayerCharacter_p(CharacterIdentity identity)
-    {
-        var player = GetPlayer_p(identity.PlayerId);
-
-        if (!player.Characters.Any()) throw new Exception("Player has no characters.");
-
-        var character = player.Characters.Find(s => s.Identity.Id == identity.Id);
-        if (character != null) return character;
-
-        foreach (var chara in player.Characters)
-        {
-            character = chara.Mercenaries.Find(s => s.Identity.Id == identity.Id);
-            if (character != null) return character;
-        }
-
-        throw new Exception("Neither the character, nor a mercenary was found with the supplied id.");
-    }
-
     private Battleboard GetBattleboard_p(string battleboardId)
     {
         var boardNotFound = "Battleboard not found.";
@@ -1011,6 +1001,5 @@ public class Validations : IValidations
         return snapshot.Battleboards.Find(s => s.Id == battleboardId) ?? throw new Exception(boardNotFound);
     }
     #endregion
-
     #endregion
 }

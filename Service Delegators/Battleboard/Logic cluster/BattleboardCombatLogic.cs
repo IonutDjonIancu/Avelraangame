@@ -5,7 +5,7 @@ namespace Service_Delegators;
 
 public interface IBattleboardCombatLogic
 {
-    Battleboard StartCombat(string battleboardId);
+    Battleboard StartCombat(BattleboardActor actor);
     Battleboard Attack(BattleboardActor actor);
     Battleboard Cast(BattleboardActor actor);
     Battleboard Mend(BattleboardActor actor);
@@ -36,11 +36,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         this.characters = characters;
     }
 
-    public Battleboard StartCombat(string battleboardId)
+    public Battleboard StartCombat(BattleboardActor actor)
     {
         lock (_lock)
         {
-            var board = snapshot.Battleboards.Find(s => s.Id == battleboardId)!;
+            var (_, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
             board.IsInCombat = true;
             board.CanLvlUp = true;
             board.RoundNr = 1;

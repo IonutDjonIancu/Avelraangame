@@ -606,8 +606,8 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // POST: /api/palantir/Gameplay/FindBattleboard
-    [HttpPost("Gameplay/FindBattleboard")]
+    // POST: /api/palantir/Battleboards/FindBattleboard
+    [HttpPost("Battleboards/FindBattleboard")]
     public IActionResult FindBattleboard(string battleboardId)
     {
         try
@@ -623,8 +623,8 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // POST: /api/palantir/Gameplay/FindCharacterBattleboard
-    [HttpPost("Gameplay/FindCharacterBattleboard")]
+    // POST: /api/palantir/Battleboards/FindCharacterBattleboard
+    [HttpPost("Battleboards/FindCharacterBattleboard")]
     public IActionResult FindCharacterBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
@@ -642,8 +642,8 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // POST: /api/palantir/Gameplay/CreateBattleboard
-    [HttpPost("Gameplay/CreateBattleboard")]
+    // POST: /api/palantir/Battleboards/CreateBattleboard
+    [HttpPost("Battleboards/CreateBattleboard")]
     public IActionResult CreateBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
@@ -661,8 +661,8 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Gameplay/JoinBattleboard
-    [HttpPut("Gameplay/JoinBattleboard")]
+    // PUT: /api/palantir/Battleboards/JoinBattleboard
+    [HttpPut("Battleboards/JoinBattleboard")]
     public IActionResult JoinBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
@@ -680,8 +680,8 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Gameplay/KickFromBattleboard
-    [HttpPut("Gameplay/KickFromBattleboard")]
+    // PUT: /api/palantir/Battleboards/KickFromBattleboard
+    [HttpPut("Battleboards/KickFromBattleboard")]
     public IActionResult KickFromBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
@@ -699,8 +699,8 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Gameplay/LeaveBattleboard
-    [HttpPut("Gameplay/LeaveBattleboard")]
+    // PUT: /api/palantir/Battleboards/LeaveBattleboard
+    [HttpPut("Battleboards/LeaveBattleboard")]
     public IActionResult LeaveBattleboard([FromQuery] Request request, [FromBody] BattleboardActor actor)
     {
         try
@@ -718,7 +718,26 @@ public class PalantirController : ControllerBase
         }
     }
 
-    
+    // PUT: /api/palantir/Battleboards/StartCombat
+    [HttpPut("Battleboards/StartCombat")]
+    public IActionResult StartCombat([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.StartCombat(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+
 
     #endregion
 }
