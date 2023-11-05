@@ -26,7 +26,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(unequip.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(unequip.CharacterIdentity, snapshot);
             Item item;
 
             if (unequip.InventoryLocation == ItemsLore.InventoryLocation.Head)
@@ -74,7 +74,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId);
 
             if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand) hasToUnequip = character.Inventory.Mainhand != null;
@@ -88,7 +88,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
             var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
 
             if      (equip.InventoryLocation == ItemsLore.InventoryLocation.Head) character.Inventory.Head = item;
@@ -110,7 +110,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
             var location = snapshot.Locations.Find(s => s.Position == character.Status.Position)!;
 
             if (tradeItem.IsToBuy)
@@ -132,7 +132,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     {
         lock ( _lock)
         {
-            var character = Utils.GetPlayerCharacter(buySupplies.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(buySupplies.CharacterIdentity, snapshot);
 
             character.Inventory.Provisions += buySupplies.Amount;
             character.Status.Wealth -= buySupplies.Amount * 2;

@@ -445,7 +445,7 @@ public class Validations : IValidations
 
             if (totalProvisions == 0) throw new Exception("Not enough provisions to travel.");
 
-            var destinationFullName = Utils.GetLocationFullNameFromPosition(travel.Destination);
+            var destinationFullName = ServicesUtils.GetLocationFullNameFromPosition(travel.Destination);
             if (!GameplayLore.Locations.All.Select(s => s.FullName).ToList().Contains(destinationFullName)) throw new Exception("No such destination is known.");
         }
     }
@@ -457,7 +457,7 @@ public class Validations : IValidations
             var character = GetPlayerCharacter_p(hireMercenary.CharacterIdentity);
             ValidateCharacterIsLocked_p(character);
 
-            var location = snapshot.Locations.Find(s => s.FullName == Utils.GetLocationFullNameFromPosition(character.Status.Position)) ?? throw new Exception("Location has not been visited yet.");
+            var location = snapshot.Locations.Find(s => s.FullName == ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position)) ?? throw new Exception("Location has not been visited yet.");
             var merc = location.Mercenaries.Find(s => s.Identity.Id == hireMercenary.MercenaryId) ?? throw new Exception("This mercenary does not exist at this location.");
 
             if (merc.Status.Worth > character.Status.Wealth) throw new Exception($"Mercenary's worth is {merc.Status.Worth}, but your character's wealth is {character.Status.Wealth}.");
@@ -511,7 +511,7 @@ public class Validations : IValidations
     public void ValidateLocation(string locationName)
     {
         ValidateString_p(locationName);
-        _ = Utils.GetLocationByLocationName(locationName) ?? throw new Exception("Wrong location name.");
+        _ = ServicesUtils.GetLocationByLocationName(locationName) ?? throw new Exception("Wrong location name.");
     }
 
     #endregion
@@ -793,7 +793,11 @@ public class Validations : IValidations
     {
         lock (_lockBattleboards)
         {
-            var (attacker, board) = ValidateAttackerBoardOffCombat(actor);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
+
+            if (attacker == null || board == null) throw new Exception("Unable to find attacker board combination.");
+
+            if (board.GetAllCharacters().Where(s => s.Status.Gameplay.IsLocked).Any()) throw new Exception("Unable to make camp, some characters are still locked.");
         }
     }
     #endregion

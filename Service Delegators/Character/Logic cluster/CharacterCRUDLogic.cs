@@ -92,7 +92,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(charIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(charIdentity, snapshot);
             character.Status!.Gameplay.IsAlive = false;
 
             return character;

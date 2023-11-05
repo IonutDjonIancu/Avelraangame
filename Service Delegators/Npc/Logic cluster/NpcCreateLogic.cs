@@ -22,7 +22,7 @@ public class NpcCreateLogic : INpcCreateLogic
 
     public Character GenerateNpcCharacter(string locationName, bool isGood)
     {
-        var location = Utils.GetLocationByLocationName(locationName);
+        var location = ServicesUtils.GetLocationByLocationName(locationName);
         var character = new Character();
 
         SetIdentity(character);
@@ -53,7 +53,7 @@ public class NpcCreateLogic : INpcCreateLogic
         character.Status.Gameplay.IsAlive = true;
         character.Status.Gameplay.IsLocked = false;
         character.Status.Traits = DecideTraits(isGood, location);
-        character.Status.Position = Utils.GetPositionByLocationFullName(location.FullName);
+        character.Status.Position = ServicesUtils.GetPositionByLocationFullName(location.FullName);
         character.Status.Worth = location.Effort;
         character.Status.Wealth = dice.Roll_d100_noReroll();
         character.Status.Fame = isGood ? $"This person is known around {location.Position.Location}." : "You've heard nothing of this one.";

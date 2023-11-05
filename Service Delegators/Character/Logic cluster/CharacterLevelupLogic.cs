@@ -24,7 +24,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
 
             var levelupStatPts = 1;
             var likelyStatPts = 0;
@@ -56,7 +56,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
 
             var levelupAssetPts = 1;
             var likelyAssetPts = 0;
@@ -89,7 +89,7 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     {
         lock (_lock)
         {
-            var character = Utils.GetPlayerCharacter(identity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(identity, snapshot);
 
             var levelupSkillPts = 1;
             var likelySkillPts = 0;

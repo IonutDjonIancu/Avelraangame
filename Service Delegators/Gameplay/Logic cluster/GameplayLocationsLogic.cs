@@ -36,7 +36,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
     {
         lock (_lock)
         {
-            var fullName = Utils.GetLocationFullNameFromPosition(position);
+            var fullName = ServicesUtils.GetLocationFullNameFromPosition(position);
 
             var locationData = GameplayLore.Locations.All.Find(s => s.FullName == fullName)!;
 
@@ -111,7 +111,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
         for (int i = 0; i < nrOfMercs; i++)
         {
-            mercs.Add(npcs.GenerateGoodGuy(Utils.GetLocationByPosition(position).Name));
+            mercs.Add(npcs.GenerateGoodGuy(ServicesUtils.GetLocationByPosition(position).Name));
         }
 
         return mercs;

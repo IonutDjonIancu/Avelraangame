@@ -2,7 +2,7 @@
 
 namespace Service_Delegators;
 
-public static class Utils
+public static class ServicesUtils
 {
     public static Location GetLocationByLocationName(string locationName)
     {
@@ -33,7 +33,17 @@ public static class Utils
 
     public static Character GetPlayerCharacter(CharacterIdentity identity, Snapshot snapshot)
     {
-        var player = snapshot.Players.Find(p => p.Identity.Id == identity.PlayerId) ?? throw new Exception("Player not found.");
-        return player.Characters.Find(p => p.Identity!.Id == identity.Id) ?? throw new Exception("Character not found."); 
+        var player = snapshot.Players.Find(s => s.Identity.Id == identity.PlayerId) ?? throw new Exception("Player not found.");
+
+        var character = player.Characters.Find(s => s.Identity.Id == identity.Id);
+        if (character != null) return character;
+
+        foreach (var chara in player.Characters)
+        {
+            character = chara.Mercenaries.Find(s => s.Identity.Id == identity.Id);
+            if (character != null) return character;
+        }
+
+        throw new Exception("Character not found.");
     }
 }

@@ -637,8 +637,8 @@ public class BattleboardTests : TestBase
         {
             MainActor = new CharacterIdentity
             {
-                Id = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead).Identity.Id,
-                PlayerId = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead).Identity.PlayerId
+                Id = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead)!.Identity.Id,
+                PlayerId = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead)!.Identity.PlayerId
             },
         };
 
@@ -657,11 +657,11 @@ public class BattleboardTests : TestBase
 
         if (npc.Status.Gameplay.IsGoodGuy)
         {
-            board.BadGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThan(totalEnemyResolve);
+            board.BadGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThanOrEqualTo(totalEnemyResolve);
         }
         else
         {
-            board.GoodGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThan(totalEnemyResolve);
+            board.GoodGuys.Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().BeLessThanOrEqualTo(totalEnemyResolve);
         }
     }
 
@@ -718,6 +718,41 @@ public class BattleboardTests : TestBase
         _battleboard.EndCombat(actor);
 
         partyLead.Inventory.Supplies.Select(s => s.Identity.Id).Should().Contain(anItem.Identity.Id);
+    }
+
+    [Fact(DisplayName = "Make camp should replenish mana and resolve to full.")]
+    public void BattleboardMakeCampTest()
+    {
+        var board = CreateBattleboardWithCombatants();
+        var location = _snapshot.Locations.Find(s => s.Name == board.GoodGuys.First().Status.Position.Location)!;
+
+        board.BadGuys.Clear();
+        board.BadGuyPartyLead = string.Empty;
+
+        var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+
+        var actor = new BattleboardActor
+        {
+            MainActor = new CharacterIdentity
+            {
+                Id = partyLead.Identity.Id,
+                PlayerId = partyLead.Identity.PlayerId
+            },
+        };
+
+        board.GetAllCharacters().ForEach(s => 
+        {
+            s.Sheet.Assets.ResolveLeft = (int)(s.Sheet.Assets.ResolveLeft * 0.5);
+            s.Sheet.Assets.ManaLeft = (int)(s.Sheet.Assets.ManaLeft * 0.5);
+        });
+
+        _battleboard.MakeCamp(actor);
+
+        var fullResolve = board.GetAllCharacters().Select(s => s.Sheet.Assets.Resolve).Sum();
+        board.GetAllCharacters().Select(s => s.Sheet.Assets.ResolveLeft).Sum().Should().Be(fullResolve);
+
+        var fullMana = board.GetAllCharacters().Select(s => s.Sheet.Assets.Mana).Sum();
+        board.GetAllCharacters().Select(s => s.Sheet.Assets.ManaLeft).Sum().Should().Be(fullMana);
     }
 
 

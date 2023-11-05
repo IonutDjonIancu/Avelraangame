@@ -62,7 +62,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board, defender) = GetAttackerBoardDefender(actor, snapshot);
+            var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
 
             return RunAttackLogic(attacker, board, defender);
         }
@@ -72,7 +72,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board, defender) = GetAttackerBoardDefender(actor, snapshot);
+            var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
 
             return RunCastLogic(attacker, board, defender);
         }
@@ -82,7 +82,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board, defender) = GetAttackerBoardDefender(actor, snapshot);
+            var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
 
             var attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Apothecary, attacker);
 
@@ -118,7 +118,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Hide, attacker);
             var spotters = 0;
@@ -161,7 +161,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             return RunTrapsLogic(attacker, board);
         }
@@ -171,7 +171,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var resolveToHeal = (int)((attacker.Sheet.Assets.Resolve - attacker.Sheet.Assets.ResolveLeft) * 0.1);
             attacker.Sheet.Assets.ResolveLeft += resolveToHeal;
@@ -191,7 +191,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var npc = board.GetAllCharacters().Find(s => s.Identity.Id == board.BattleOrder.First())!;
 
@@ -231,7 +231,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             var combatants = board.GetAllCharacters().OrderByDescending(s => s.Sheet.Assets.Actions).ToList();
 
@@ -265,14 +265,17 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
     {
         lock (_lock)
         {
-            var (attacker, board) = GetAttackerBoard(actor, snapshot);
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
             ChooseNewPartyLeadIfPartyLeadDead(attacker, board);
 
             if (board.GoodGuyPartyLead == string.Empty && board.BadGuyPartyLead == string.Empty)
             {
                 ReturnNpcsHomeIfAllPlayersAreDead(attacker, board, snapshot);
-                return null;
+
+                snapshot.Battleboards.Remove(board);
+
+                return board;
             }
 
             if (attacker.Status.Gameplay.IsGoodGuy)
@@ -319,11 +322,8 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-
-
-
     #region private methods
-    private void ReturnNpcsHomeIfAllPlayersAreDead(Character attacker, Battleboard board, Snapshot snapshot)
+    private static void ReturnNpcsHomeIfAllPlayersAreDead(Character attacker, Battleboard board, Snapshot snapshot)
     {
         var surviors = board.GetAllCharacters().Where(s =>
             s.Status.Gameplay.IsAlive
@@ -345,9 +345,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
             location.Mercenaries.Add(s);
         });
+
+        board.LastActionResult = "All characters in this party have met their final demise.";
     }
 
-    private void RemoveDeadCharacters(Battleboard board)
+    private static void RemoveDeadCharacters(Battleboard board)
     {
         board.GoodGuys.Where(s => !s.Status.Gameplay.IsAlive).ToList().ForEach(s => board.GoodGuys.Remove(s));
         board.BadGuys.Where(s => !s.Status.Gameplay.IsAlive).ToList().ForEach(s => board.BadGuys.Remove(s));
@@ -369,7 +371,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-    private void LootWealth(Character partyLead, Battleboard board)
+    private static void LootWealth(Character partyLead, Battleboard board)
     {
         var totalLootWealth = board.GetAllCharacters().Where(s => !s.Status.Gameplay.IsAlive).ToList().Sum(s => s.Status.Wealth);
 
@@ -387,13 +389,13 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     }
 
-    private void LootDeadMan(Character deadMan, Character partyLead)
+    private static void LootDeadMan(Character deadMan, Character partyLead)
     {
         deadMan.Inventory.GetAllEquipedItems().ForEach(s => partyLead.Inventory.Supplies.Add(s));
         deadMan.Inventory.Supplies.ForEach(s => partyLead.Inventory.Supplies.Add(s));
     }
 
-    private string AiDecideOnHighestSkill(Character npc)
+    private static string AiDecideOnHighestSkill(Character npc)
     {
         var dictOfSkills = new Dictionary<string, int>
         {
@@ -406,23 +408,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         return dictOfSkills.OrderByDescending(s => s.Value).First().Key;
     }
 
-    private (Character attacker, Battleboard board) GetAttackerBoard(BattleboardActor actor, Snapshot snapshot)
-    {
-        var attacker = BattleboardHelpers.GetCharacter(actor, snapshot);
-        var board = BattleboardHelpers.GetBattleboard(attacker.Status.Gameplay.BattleboardId, snapshot);
-
-        return (attacker, board);
-    }
-
-    private (Character attacker, Battleboard board, Character defender) GetAttackerBoardDefender(BattleboardActor actor, Snapshot snapshot)
-    {
-        var (attacker, board) = GetAttackerBoard(actor, snapshot);  
-        var defender = board.GetAllCharacters().Find(s => s.Identity.Id == actor.TargetId)!;
-
-        return (attacker, board, defender); 
-    }
-
-    private void CheckDefenderIsDead(Character defender, Battleboard board)
+    private static void CheckDefenderIsDead(Character defender, Battleboard board)
     {
         if (defender.Sheet.Assets.ResolveLeft <= 0)
         {
@@ -431,7 +417,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-    private void MoveOrRemoveFromBattleOrder(Character attacker, Battleboard board)
+    private static void MoveOrRemoveFromBattleOrder(Character attacker, Battleboard board)
     {
         board.BattleOrder.RemoveAt(0);
         if (attacker.Sheet.Assets.ActionsLeft > 0)
@@ -571,7 +557,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             {
                 defenderRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Arcane, defender);
             }
-            // add psionist classes
+            // TODO: add psionist classes
             //else if (defender.Status.Traits.Class == CharactersLore.Classes.Mage)
             //{
 
@@ -800,6 +786,5 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
 
     }
-
     #endregion
 }

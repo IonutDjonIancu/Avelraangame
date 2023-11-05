@@ -398,7 +398,7 @@ public class CharacterTests : TestBase
         var charTravel = new CharacterTravel
         {
             CharacterIdentity = GetCharIdentity(character),
-            Destination = Utils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
+            Destination = ServicesUtils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
         };
 
         character.Status.Gameplay.IsLocked = true;
@@ -545,7 +545,7 @@ public class CharacterTests : TestBase
         var charTravel = new CharacterTravel
         {
             CharacterIdentity = GetCharIdentity(character),
-            Destination = Utils.GetPositionByLocationFullName(locationFullName),
+            Destination = ServicesUtils.GetPositionByLocationFullName(locationFullName),
         };
 
         _characters.TravelCharacterToLocation(charTravel);
