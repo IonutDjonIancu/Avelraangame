@@ -438,7 +438,7 @@ public class CharacterTests : TestBase
         character.Inventory.Supplies.Clear();
         character.Inventory.Supplies.Add(item);
 
-        var tradeItem = new CharacterItemTrade()
+        var tradeItem = new CharacterTrade()
         {
             CharacterIdentity = GetCharIdentity(character),
             IsToBuy = false,
@@ -474,7 +474,7 @@ public class CharacterTests : TestBase
 
         _characters.EquipCharacterItem(equip);
 
-        var tradeItem = new CharacterItemTrade()
+        var tradeItem = new CharacterTrade()
         {
             CharacterIdentity = GetCharIdentity(character),
             IsToBuy = false,
@@ -498,7 +498,7 @@ public class CharacterTests : TestBase
         var item = location.Market.First();
         item.Value = itemValue;
 
-        var tradeItem = new CharacterItemTrade()
+        var tradeItem = new CharacterTrade()
         {
             CharacterIdentity = GetCharIdentity(character),
             IsToBuy = true,

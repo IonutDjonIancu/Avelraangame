@@ -1,5 +1,4 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using System.Transactions;
 
 namespace Service_Delegators;
 
@@ -7,8 +6,11 @@ public interface ICharacterItemsLogic
 {
     Character EquipItem(CharacterEquip equip);
     Character UnequipItem(CharacterEquip unequip);
-    Character BuyOrSellItem(CharacterItemTrade tradeItem);
-    Character BuyProvisions(CharacterBuyProvisions buySupplies);
+    Character BuyOrSellItem(CharacterTrade tradeItem);
+    Character BuyProvisions(CharacterTrade tradeItem);
+    Character GiveProvisions(CharacterTrade tradeItem);
+    Character GiveWealth(CharacterTrade tradeItem);
+    Character GiveItem(CharacterTrade tradeItem);
 }
 
 public class CharacterItemsLogic : ICharacterItemsLogic
@@ -106,7 +108,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         }
     }
 
-    public Character BuyOrSellItem(CharacterItemTrade tradeItem)
+    public Character BuyOrSellItem(CharacterTrade tradeItem)
     {
         lock (_lock)
         {
@@ -128,19 +130,62 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         }
     }
 
-    public Character BuyProvisions(CharacterBuyProvisions buySupplies)
+    public Character BuyProvisions(CharacterTrade tradeItem)
     {
-        lock ( _lock)
+        lock (_lock)
         {
-            var character = ServicesUtils.GetPlayerCharacter(buySupplies.CharacterIdentity, snapshot);
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
 
-            character.Inventory.Provisions += buySupplies.Amount;
-            character.Status.Wealth -= buySupplies.Amount * 2;
+            character.Inventory.Provisions += tradeItem.Amount;
+            character.Status.Wealth -= tradeItem.Amount * 2;
 
             return character;
         }
     }
 
+    public Character GiveProvisions(CharacterTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+
+            character.Inventory.Provisions -= tradeItem.Amount;
+            target.Inventory.Provisions += tradeItem.Amount;
+
+            return character;
+        }
+    }
+
+    public Character GiveWealth(CharacterTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+
+            character.Status.Wealth -= tradeItem.Amount;
+            target.Status.Wealth += tradeItem.Amount;
+
+            return character;
+        }
+    }
+
+    public Character GiveItem(CharacterTrade tradeItem)
+    {
+        lock (_lock)
+        {
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+
+            var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
+
+            character.Inventory.Supplies.Remove(item);
+            target.Inventory.Supplies.Add(item);
+
+            return character;
+        }
+    }
 
     #region private methods
     private static void SellItem(Character character, Item item, Location location)

@@ -1,9 +1,9 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
-using System.Security.Principal;
 
 namespace Service_Delegators;
 
+//TODO: split class in multiple service level validations
 public interface IValidations
 {
     #region api
@@ -39,9 +39,12 @@ public interface IValidations
     void ValidateAttributesBeforeIncrease(string attribute, string attributeType, CharacterIdentity identity);
     void ValidateCharacterBeforeTravel(CharacterTravel travel);
     void ValidateMercenaryBeforeHire(CharacterHireMercenary hireMercenary);
-    void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem);
-    void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem);
-    void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buySupplies);
+    void ValidateCharacterItemBeforeSell(CharacterTrade tradeItem);
+    void ValidateCharacterItemBeforeBuy(CharacterTrade tradeItem);
+    void ValidateCharacterBeforeBuyProvisions(CharacterTrade tradeItem);
+    void ValidateCharacterBeforeGiveProvisions(CharacterTrade tradeItem);
+    void ValidateCharacterBeforeGiveWealth(CharacterTrade tradeItem);
+    void ValidateCharacterBeforeGiveItem(CharacterTrade tradeItem);
     #endregion
 
     #region gameplay
@@ -465,7 +468,7 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterItemBeforeSell(CharacterItemTrade tradeItem)
+    public void ValidateCharacterItemBeforeSell(CharacterTrade tradeItem)
     {
         lock (_lockCharacters)
         {
@@ -480,7 +483,7 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterItemBeforeBuy(CharacterItemTrade tradeItem)
+    public void ValidateCharacterItemBeforeBuy(CharacterTrade tradeItem)
     {
         lock (_lockCharacters)
         {
@@ -496,14 +499,85 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateCharacterBeforeBuyProvisions(CharacterBuyProvisions buyProvisions)
+    public void ValidateCharacterBeforeBuyProvisions(CharacterTrade tradeItem)
     {
         lock (_lockCharacters)
         {
-            var character = ServicesUtils.GetPlayerCharacter(buyProvisions.CharacterIdentity, snapshot);
+            ValidateObject_p(tradeItem);
+            ValidateObject_p(tradeItem.CharacterIdentity);
+            ValidateObject_p(tradeItem.TargetIdentity);
+
+
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);
 
-            if (character.Status.Wealth < buyProvisions.Amount * 2) throw new Exception($"Unable to buy supplies, item costs 2 wealth x {buyProvisions.Amount} supplies requested, your wealth is {character.Status.Wealth}");
+            if (character.Status.Wealth < tradeItem.Amount * 2) throw new Exception($"Unable to buy supplies, item costs 2 wealth x {tradeItem.Amount} supplies requested, your wealth is {character.Status.Wealth}");
+        }
+    }
+
+    public void ValidateCharacterBeforeGiveProvisions(CharacterTrade tradeItem)
+    {
+        lock (_lockCharacters)
+        {
+            ValidateObject_p(tradeItem);
+            ValidateObject_p(tradeItem.CharacterIdentity);
+            ValidateObject_p(tradeItem.TargetIdentity);
+
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+
+            ValidateCharacterIsAlive_p(character);
+            ValidateCharacterIsAlive_p(target);
+
+            ValidateCharacterIsLocked_p(character);
+            ValidateCharacterIsLocked_p(target);
+
+            if (character.Inventory.Provisions <= 0) throw new Exception("You have no provisions left to send.");
+            if (tradeItem.Amount > character.Inventory.Provisions) throw new Exception("You don't have that amount of provisions to give.");
+        }
+    }
+
+    public void ValidateCharacterBeforeGiveWealth(CharacterTrade tradeItem)
+    {
+        lock (_lockCharacters)
+        {
+            ValidateObject_p(tradeItem);
+            ValidateObject_p(tradeItem.CharacterIdentity);
+            ValidateObject_p(tradeItem.TargetIdentity);
+
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+
+            ValidateCharacterIsAlive_p(character);
+            ValidateCharacterIsAlive_p(target);
+
+            ValidateCharacterIsLocked_p(character);
+            ValidateCharacterIsLocked_p(target);
+
+            if (character.Status.Wealth <= 0) throw new Exception("You have no wealth to give.");
+            if (tradeItem.Amount > character.Status.Wealth) throw new Exception("You don't have that amount of wealth to give.");
+        }
+    }
+
+    public void ValidateCharacterBeforeGiveItem(CharacterTrade tradeItem)
+    {
+        lock (_lockCharacters)
+        {
+            ValidateObject_p(tradeItem);
+            ValidateObject_p(tradeItem.CharacterIdentity);
+            ValidateObject_p(tradeItem.TargetIdentity);
+            ValidateString_p(tradeItem.ItemId);
+
+            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+
+            ValidateCharacterIsAlive_p(character);
+            ValidateCharacterIsAlive_p(target);
+
+            ValidateCharacterIsLocked_p(character);
+            ValidateCharacterIsLocked_p(target);
+
+            if (!character.Inventory.Supplies.Exists(s => s.Identity.Id == tradeItem.ItemId)) throw new Exception("You have no such item among your supplies.");
         }
     }
     #endregion

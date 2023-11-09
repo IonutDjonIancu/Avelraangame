@@ -480,7 +480,7 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/BuyItem
     [HttpPut("Character/BuyItem")]
-    public IActionResult BuyItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)
+    public IActionResult BuyItem([FromQuery] Request request, [FromBody] CharacterTrade tradeItem)
     {
         try
         {
@@ -498,7 +498,7 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/SellItem
     [HttpPut("Character/SellItem")]
-    public IActionResult SellItem([FromQuery] Request request, [FromBody] CharacterItemTrade tradeItem)
+    public IActionResult SellItem([FromQuery] Request request, [FromBody] CharacterTrade tradeItem)
     {
         try
         {
