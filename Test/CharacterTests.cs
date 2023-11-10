@@ -508,20 +508,20 @@ public class CharacterTests : TestBase
         _characters.BuyItem(tradeItem);
 
         character.Inventory.Supplies.Should().Contain(item);
-        // item.Value - item.Value * character.Sheet.Skills.Social / 1000;
+        // item.Value - item.Value * character.Sheet.Skills.Social / 1000
         character.Status.Wealth.Should().Be(10);
         location.Market.Exists(s => s.Identity.Id == item.Identity.Id).Should().BeFalse();
     }
 
     [Fact(DisplayName = "Character buy provision should display on character")]
-    public void CharacterBuyProvisions()
+    public void CharacterBuyProvisionsTest()
     {
         var initialWealth = 100;
         var character = CreateCharacter();
         character.Status.Wealth = initialWealth;
         character.Inventory.Provisions = 0;
 
-        var provisions = new CharacterBuyProvisions
+        var provisions = new CharacterTrade
         {
             CharacterIdentity = GetCharIdentity(character),
             Amount = 10
@@ -531,6 +531,104 @@ public class CharacterTests : TestBase
 
         character.Inventory.Provisions.Should().Be(10);
         character.Status.Wealth.Should().Be(80);
+    }
+
+    [Fact(DisplayName = "Give provisions should transfer on other character")]
+    public void CharacterGiveProvisionsTest()
+    {
+        var character = CreateCharacter();
+        var target = CreateCharacter("Jane Doe");
+
+        character.Inventory.Provisions = 100;
+        target.Inventory.Provisions = 0;
+
+        var trade = new CharacterTrade
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            TargetIdentity = GetCharIdentity(target),
+            Amount = 10
+        };
+
+        _characters.GiveProvisions(trade);
+
+        character.Inventory.Provisions.Should().Be(90);
+        target.Inventory.Provisions.Should().Be(10);
+
+        var secondTrade = new CharacterTrade
+        {
+            CharacterIdentity = GetCharIdentity(target),
+            TargetIdentity = GetCharIdentity(character),
+            Amount = 20
+        };
+
+        Assert.Throws<Exception>(() => _characters.GiveProvisions(secondTrade));
+    }
+
+    [Fact(DisplayName = "Give wealth should transfer on other character")]
+    public void CharacterGiveWealthTest()
+    {
+        var character = CreateCharacter();
+        var target = CreateCharacter("Jane Doe");
+
+        character.Status.Wealth = 100;
+        target.Status.Wealth = 0;
+
+        var trade = new CharacterTrade
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            TargetIdentity = GetCharIdentity(target),
+            Amount = 10
+        };
+
+        _characters.GiveWealth(trade);
+
+        character.Status.Wealth.Should().Be(90);
+        target.Status.Wealth.Should().Be(10);
+
+        var secondTrade = new CharacterTrade
+        {
+            CharacterIdentity = GetCharIdentity(target),
+            TargetIdentity = GetCharIdentity(character),
+            Amount = 20
+        };
+
+        Assert.Throws<Exception>(() => _characters.GiveWealth(secondTrade));
+    }
+
+    [Fact(DisplayName = "Give item should transfer on other character")]
+    public void CharacterGiveItemTest()
+    {
+        var character = CreateCharacter();
+        var target = CreateCharacter("Jane Doe");
+
+        var item = _items.GenerateRandomItem();
+
+        character.Inventory.Supplies.Clear();
+        target.Inventory.Supplies.Clear();
+        character.Inventory.Supplies.Add(item);
+
+        var trade = new CharacterTrade
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            TargetIdentity = GetCharIdentity(target),
+            ItemId = item.Identity.Id
+        };
+
+        _characters.GiveItem(trade);
+
+        target.Inventory.Supplies.Count.Should().Be(1);
+        target.Inventory.Supplies.Exists(s => s.Identity.Id == item.Identity.Id).Should().BeTrue();
+        character.Inventory.Supplies.Should().BeEmpty();
+
+        character.Status.Gameplay.IsLocked = true;
+        var secondTrade = new CharacterTrade
+        {
+            CharacterIdentity = GetCharIdentity(target),
+            TargetIdentity = GetCharIdentity(character),
+            ItemId = item.Identity.Id
+        };
+
+        Assert.Throws<Exception>(() => _characters.GiveItem(secondTrade));
     }
 
     [Theory(DisplayName = "Character travel should move to new position")]
@@ -580,6 +678,11 @@ public class CharacterTests : TestBase
     private Character CreateCharacter()
     {
         return TestUtils.CreateAndGetCharacter(PlayerName, _players, _characters, _snapshot);
+    }
+
+    private Character CreateCharacter(string playerName)
+    {
+        return TestUtils.CreateAndGetCharacter(playerName, _players, _characters, _snapshot);
     }
 
     private static CharacterIdentity GetCharIdentity(Character character)

@@ -505,8 +505,6 @@ public class Validations : IValidations
         {
             ValidateObject_p(tradeItem);
             ValidateObject_p(tradeItem.CharacterIdentity);
-            ValidateObject_p(tradeItem.TargetIdentity);
-
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
             ValidateCharacterIsLocked_p(character);

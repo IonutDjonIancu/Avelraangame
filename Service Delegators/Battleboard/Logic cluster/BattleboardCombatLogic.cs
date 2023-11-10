@@ -251,7 +251,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             board.LastActionResult = "New round begins...";
             board.RoundNr++;
 
-            if (board.RoundNr > board.EffortLvl / 10)
+            if (board.RoundNr > board.Quest.EffortLvl / 10)
             {
                 board.CanLvlUp = false;
                 return board;

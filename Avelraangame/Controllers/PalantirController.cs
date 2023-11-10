@@ -516,12 +516,66 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/BuyProvisions
     [HttpPut("Character/BuyProvisions")]
-    public IActionResult BuyProvisions([FromQuery] Request request, [FromBody] CharacterBuyProvisions buyProvisions)
+    public IActionResult BuyProvisions([FromQuery] Request request, [FromBody] CharacterTrade tradeItem)
     {
         try
         {
-            buyProvisions.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.BuyProvisions(buyProvisions);
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.BuyProvisions(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/GiveProvisions
+    [HttpPut("Character/GiveProvisions")]
+    public IActionResult GiveProvisions([FromQuery] Request request, [FromBody] CharacterTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.GiveProvisions(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/GiveWealth
+    [HttpPut("Character/GiveWealth")]
+    public IActionResult GiveWealth([FromQuery] Request request, [FromBody] CharacterTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.GiveWealth(tradeItem);
+
+            return Ok(character);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Character/GiveItem
+    [HttpPut("Character/GiveItem")]
+    public IActionResult GiveItem([FromQuery] Request request, [FromBody] CharacterTrade tradeItem)
+    {
+        try
+        {
+            tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.GiveItem(tradeItem);
 
             return Ok(character);
         }
