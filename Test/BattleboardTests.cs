@@ -287,7 +287,7 @@ public class BattleboardTests : TestBase
         board.IsInCombat.Should().BeTrue();
         board.CanLvlUp.Should().BeTrue();
         board.RoundNr.Should().Be(1);
-        board.EffortLvl.Should().Be(location.Effort);
+        board.Quest.EffortLvl.Should().Be(location.Effort);
         board.GetAllCharacters().Select(s => s.Status.Gameplay.IsLocked).ToList().Should().NotContain(false);
         board.BattleOrder.Count.Should().Be(6);
         board.LastActionResult.Length.Should().BeGreaterThan(10);

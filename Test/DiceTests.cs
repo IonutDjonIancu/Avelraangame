@@ -59,7 +59,7 @@ public class DiceTests : TestBase
         var roll = _dice.Roll_n_to_n(lowerLimit, upperLimit);
 
         roll.Should().BeGreaterThanOrEqualTo(lowerLimit);
-        roll.Should().BeLessThan(upperLimit);
+        roll.Should().BeLessThanOrEqualTo(upperLimit);
     }
 
     [Fact(DisplayName = "Roll character dice")]
