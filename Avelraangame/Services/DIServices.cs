@@ -121,6 +121,7 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<IGameplayLogicDelegator, GameplayLogicDelegator>();
         // subservices
         builder.Services.AddTransient<IGameplayLocationsLogic, GameplayLocationsLogic>();
+        builder.Services.AddTransient<IGameplayCharactersLogic, GameplayCharactersLogic>();
     }
 
     private static void LoadBattleboardService(WebApplicationBuilder builder)

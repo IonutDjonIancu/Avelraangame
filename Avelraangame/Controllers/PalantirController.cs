@@ -624,6 +624,23 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
+    // POST: /api/palantir/Gameplay/GetLadder
+    [HttpPost("Gameplay/GetLadder")]
+    public IActionResult GetLadder()
+    {
+        try
+        {
+            var ladder = gameplay.GetLadder();
+
+            return Ok(ladder);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
     // POST: /api/palantir/Gameplay/FindLocation
     [HttpPost("Gameplay/FindLocation")]
     public IActionResult FindLocation([FromBody] Position position)
