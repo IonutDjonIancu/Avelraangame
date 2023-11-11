@@ -155,6 +155,7 @@ public class TestBase : IDisposable
         services.AddTransient<IGameplayLogicDelegator, GameplayLogicDelegator>();
         // subservices
         services.AddTransient<IGameplayLocationsLogic, GameplayLocationsLogic>();
+        services.AddTransient<IGameplayCharactersLogic, GameplayCharactersLogic>();
     }
 
     private static void LoadBattleboardService(IServiceCollection services)

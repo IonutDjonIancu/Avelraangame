@@ -251,7 +251,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             board.LastActionResult = "New round begins...";
             board.RoundNr++;
 
-            if (board.RoundNr > board.EffortLvl / 10)
+            if (board.RoundNr > board.Quest.EffortLvl / 10)
             {
                 board.CanLvlUp = false;
                 return board;
@@ -506,13 +506,14 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             return board;
         }
 
-        var isPsionicsHigher = attacker.Sheet.Skills.Psionics >= attacker.Sheet.Skills.Arcane;
+        var isAttackerPsionist = attacker.Sheet.Skills.Psionics >= attacker.Sheet.Skills.Arcane;
+        var isTargetPsionist = defender.Sheet.Skills.Psionics >= defender.Sheet.Skills.Arcane;
 
         var attackerRoll = 0;
 
         attacker.Status.Gameplay.IsHidden = false;
 
-        if (isPsionicsHigher)
+        if (isAttackerPsionist)
         {
             attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Psionics, attacker);
         }
@@ -539,11 +540,15 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
         if (sameTeam)
         {
-            var effect = isPsionicsHigher
+            var effect = isAttackerPsionist
                 ? Energysurge(attackerRoll)
                 : Spellcast(attackerRoll);
 
-            var amountToHeal = (int)(effect * defender.Sheet.Assets.Purge / 100);
+
+            var amountToHeal = (isAttackerPsionist && isTargetPsionist)
+                ? effect
+                : (int)(effect * defender.Sheet.Assets.Purge / 100);
+            
             defender.Sheet.Assets.ResolveLeft += amountToHeal;
 
             board.LastActionResult = $"{attacker.Status.Name} healed {defender.Status.Name} for {amountToHeal}.";
@@ -558,10 +563,10 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                 defenderRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Arcane, defender);
             }
             // TODO: add psionist classes
-            //else if (defender.Status.Traits.Class == CharactersLore.Classes.Mage)
-            //{
-
-            //}
+            else if (isTargetPsionist)
+            {
+                defenderRoll = dice.Roll_game_dice(true, CharactersLore.Skills.Psionics, defender);
+            }
             else
             {
                 defenderRoll = dice.Roll_game_dice(true, CharactersLore.Stats.Willpower, defender);
@@ -571,11 +576,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
             if (attackDiff <= 0) 
             {
-                board.LastActionResult = $"Your target has saved vs. your {(isPsionicsHigher ? "energy surge." : "spellcast.")}";
+                board.LastActionResult = $"Your target has saved vs. your {(isAttackerPsionist ? "energy surge." : "spellcast.")}";
                 return board;
             }
 
-            var effect = isPsionicsHigher
+            var effect = isAttackerPsionist
                 ? Energysurge(attackDiff)
                 : Spellcast(attackDiff);
 
@@ -583,7 +588,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
             defender.Sheet.Assets.ResolveLeft -= amountToDmg;
 
-            board.LastActionResult = isPsionicsHigher ? $"{attacker.Status.Name}'s energy surge did {amountToDmg} dmg." : $"{attacker.Status.Name}'s spellcraft did {amountToDmg} dmg.";
+            board.LastActionResult = isAttackerPsionist ? $"{attacker.Status.Name}'s energy surge did {amountToDmg} dmg." : $"{attacker.Status.Name}'s spellcraft did {amountToDmg} dmg.";
         }
 
         int Energysurge(int roll)

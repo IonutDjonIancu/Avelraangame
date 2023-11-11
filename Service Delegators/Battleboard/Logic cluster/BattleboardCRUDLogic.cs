@@ -67,7 +67,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
                 battleboard.GoodGuys.Add(s);
             });
 
-            battleboard.EffortLvl = snapshot.Locations.Find(s => s.FullName == character.Status.Position.GetPositionFullName())!.Effort;
+            battleboard.Quest.EffortLvl = snapshot.Locations.Find(s => s.FullName == character.Status.Position.GetPositionFullName())!.Effort;
 
             snapshot.Battleboards.Add(battleboard);
 
