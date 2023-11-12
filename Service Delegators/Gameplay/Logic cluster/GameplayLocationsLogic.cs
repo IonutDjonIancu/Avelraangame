@@ -1,4 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
+using Data_Mapping_Containers.Lore;
 
 namespace Service_Delegators;
 
@@ -29,7 +30,6 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
         this.dice = dice;
         this.items = items;
         this.npcs = npcs;
-
     }
 
     public Location GetOrGenerateLocation(Position position)

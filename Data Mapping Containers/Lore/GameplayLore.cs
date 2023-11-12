@@ -1,4 +1,6 @@
-﻿namespace Data_Mapping_Containers.Dtos;
+﻿using Data_Mapping_Containers.Dtos;
+
+namespace Data_Mapping_Containers.Lore;
 
 public class GameplayLore
 {
