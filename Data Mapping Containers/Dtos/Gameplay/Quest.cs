@@ -2,9 +2,13 @@
 
 public class Quest
 {
-    public string Id { get; set; }
+    public int EffortLevel { get; set; }
 
+    public string Description { get; set; }
 
-    public int EffortLvl { get; set; }
+    public int EncountersLeft { get; set; }
+
+    public bool IsRepeatable { get; set; }
+    public string Reward { get; set; }
 
 }

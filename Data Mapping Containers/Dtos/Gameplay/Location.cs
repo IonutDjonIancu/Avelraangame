@@ -13,7 +13,7 @@ public class Location
 
     // dynamically generated at player visit on get
     public string LastTimeVisited { get; set; }
-    public List<string> PossibleQuests { get; set; } = new();
     public List<Item> Market { get; set; } = new();
     public List<Character> Mercenaries { get; set; } = new();
+    public List<Quest> Quests { get; set; } = new();
 }
