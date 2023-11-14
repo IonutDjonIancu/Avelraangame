@@ -47,8 +47,6 @@ public class GameplayQuestLogic : IGameplayQuestLogic
             var index = dice.Roll_1_to_n(templates.Count) - 1;
             var template = templates[index];
 
-            var rewardIndex = dice.Roll_1_to_n(GameplayLore.QuestReward.All.Count) - 1;
-
             var quest = new Quest
             {
                 QuestType = template.QuestType,
@@ -58,11 +56,30 @@ public class GameplayQuestLogic : IGameplayQuestLogic
                 IsRepeatable = template.IsRepeatable,
                 EffortLvl = dice.Roll_1_to_n(effortLvl),
                 EncountersLeft = dice.Roll_1_to_n(effortLvl),
-                Reward = GameplayLore.QuestReward.All[rewardIndex]
+                Reward = GeneratePossibleReward(effortLvl)
             };
 
             quests.Add(quest);
         }
+    }
+
+    private string GeneratePossibleReward(int effortLvl)
+    {
+        var rewards = new List<string>();
+
+        var effort = dice.Roll_1_to_n(effortLvl);
+
+        if (effort >= GameplayLore.Effort.Normal) rewards.Add(GameplayLore.QuestReward.Loot);
+        if (effort >= GameplayLore.Effort.Gifted) rewards.Add(GameplayLore.QuestReward.Stats);
+        if (effort >= GameplayLore.Effort.Chosen) rewards.Add(GameplayLore.QuestReward.Skills);
+        if (effort >= GameplayLore.Effort.Hero) rewards.Add(GameplayLore.QuestReward.SpecialSkills);
+
+        rewards.Add(GameplayLore.QuestReward.Item);
+        rewards.Add(GameplayLore.QuestReward.Wealth);
+
+        var rewardIndex = dice.Roll_1_to_n(rewards.Count) - 1;
+
+        return rewards[rewardIndex];
     }
     #endregion
 }
