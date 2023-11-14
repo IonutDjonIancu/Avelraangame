@@ -2,13 +2,14 @@
 
 public class Quest
 {
-    public int EffortLevel { get; set; }
-
+    public string QuestType { get; set; }
+    public string Fame { get; set; }
     public string Description { get; set; }
-
-    public int EncountersLeft { get; set; }
-
+    public string Result { get; set; }
     public bool IsRepeatable { get; set; }
-    public string Reward { get; set; }
 
+    // dynamically generated when the party picks up the quest
+    public int EffortLvl { get; set; }
+    public int EncountersLeft { get; set; }
+    public string Reward { get; set; }
 }

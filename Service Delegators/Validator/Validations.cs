@@ -1,6 +1,7 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Lore;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace Service_Delegators;
 
@@ -50,6 +51,7 @@ public interface IValidations
 
     #region gameplay
     void ValidateLocation(string locationName);
+    void ValidateLocationEffortLevel(int locationEffortLevel);
     #endregion
 
     #region battleboard
@@ -586,6 +588,11 @@ public class Validations : IValidations
     {
         ValidateString_p(locationName);
         _ = ServicesUtils.GetLocationByLocationName(locationName) ?? throw new Exception("Wrong location name.");
+    }
+
+    public void ValidateLocationEffortLevel(int locationEffortLevel)
+    {
+        ValidateNumberGreaterThanZero_p(locationEffortLevel);
     }
 
     #endregion

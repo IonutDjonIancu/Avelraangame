@@ -1,5 +1,4 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using System.Data;
 
 namespace Data_Mapping_Containers.Lore;
 
@@ -140,6 +139,11 @@ public class GameplayLore
         public const string Stats = "Stats";
         public const string Skills = "Skills";
         public const string SpecialSkills = "SpecialSkills";
+
+        public static readonly List<string> All = new()
+        {
+            Wealth, Item, Loot, Stats, Skills, SpecialSkills,
+        };
     }
 
     public static class QuestType
@@ -226,7 +230,7 @@ public class GameplayLore
             {
                 QuestType = QuestType.Rescue,
                 Fame = QuestFame.Deliverance,
-                Description = "Following an skirmish between the armies of two local lords, a noble belonging to one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
+                Description = "Following a skirmish between the armies of two local lords, a noble belonging to one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
                 "people like you are called in to try to save the imprisoned knight from its captors. You have no involvement in the matter and it's a chance to build up reputation... as well as get your hands on a hefty reward. " +
                 "The man that brought this up to your attention, a member of the local clergy, asks for your discression, telling you that if you get caught there won't be anybody sent after you, and that the lord that hired you " +
                 "will, as is customary, deny any involvement in the matter. If you fail you'll likely be publicly quartered and your head will end up on a pike at the entrance to a castle.",
@@ -250,7 +254,7 @@ public class GameplayLore
             {
                 QuestType = QuestType.Cult,
                 Fame = QuestFame.BaneOfTheOccult,
-                Description = "Whispers of their unholy deeds have reached the ears of the devout abbot. You listen to his story about a cult steeped in darkness, performing unspeakable rituals and sacrificing innocents to unseen entities. " +
+                Description = "Whispers of unholy deeds have reached the ears of the devout abbot. You listen to his story about a cult steeped in darkness, performing unspeakable rituals and sacrificing innocents to unseen entities. " +
                 "The abbot provides a cryptic map leading to the cult's hidden sanctum. The path is treacherous, and you know the woods themselves seem to murmur with an otherworldly presence.",
                 Result = "You were never able to track down the abbot upon your arrival, but a monastery boy gives you a small linnen bag with your reward, inside you find a papyrus note thanking you.",
                 IsRepeatable = false,
