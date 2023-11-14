@@ -1,4 +1,4 @@
-﻿namespace Data_Mapping_Containers.Dtos;
+﻿namespace Data_Mapping_Containers.Lore;
 
 public class CharactersLore
 {

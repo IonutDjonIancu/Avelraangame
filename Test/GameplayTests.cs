@@ -15,7 +15,7 @@ public class GameplayTests : TestBase
         location.Market.Count.Should().BeGreaterThanOrEqualTo(1);
         location.Mercenaries.Count.Should().BeGreaterThanOrEqualTo(1);
         location.Effort.Should().BeLessThanOrEqualTo(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Effort);
-        //location.PossibleQuests.Count.Should().BeGreaterThanOrEqualTo(1);
+        location.Quests.Count.Should().BeGreaterThanOrEqualTo(1);
         location.Description.Should().NotBeNullOrWhiteSpace();
         location.FullName.Should().Be(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.FullName);
         location.LastTimeVisited.Should().Be(DateTime.Now.ToShortDateString());

@@ -1,4 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
+using Data_Mapping_Containers.Lore;
 
 namespace Service_Delegators;
 
@@ -16,20 +17,22 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
     public readonly IDiceLogicDelegator dice;
     public readonly IItemsLogicDelegator items;
     public readonly INpcLogicDelegator npcs;
+    public readonly IGameplayQuestLogic quests;
 
     public GameplayLocationsLogic(
         Snapshot snapshot,
         IValidations validations,
         IDiceLogicDelegator dice,
         IItemsLogicDelegator items,
-        INpcLogicDelegator npcs)
+        INpcLogicDelegator npcs,
+        IGameplayQuestLogic quests)
     {
         this.snapshot = snapshot;
         this.validations = validations;
         this.dice = dice;
         this.items = items;
         this.npcs = npcs;
-
+        this.quests = quests;
     }
 
     public Location GetOrGenerateLocation(Position position)
@@ -56,7 +59,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
                     location.LastTimeVisited = DateTime.Now.ToShortDateString();
 
-                    //location.PossibleQuests = GetPossibleQuests(position, locationData.Effort);
+                    location.Quests = quests.GenerateLocationQuests(location.Effort);
                     location.Market = GenerateMarketItems(location.Effort);
                     location.Mercenaries = GenerateMercenaries(position, location.Effort);
                 }
@@ -71,7 +74,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
                     Effort = locationData.Effort,
                     TravelCostFromArada = locationData.TravelCostFromArada,
                     LastTimeVisited = DateTime.Now.ToShortDateString(),
-                    //PossibleQuests = GetPossibleQuests(position, locationData.Effort),
+                    Quests = quests.GenerateLocationQuests(locationData.Effort),
                     Market = GenerateMarketItems(locationData.Effort),
                     Mercenaries = GenerateMercenaries(position, locationData.Effort),
                     Position = position
@@ -85,11 +88,6 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
     }
 
     #region private methods
-    //private static List<string> GetPossibleQuests(Position position, int effortUpper)
-    //{
-    //    return GameplayLore.Quests.All.Where(s => s.AvailableAt.Contains(position.Land) && s.EffortRequired <= effortUpper).Select(s => s.Name).ToList();
-    //}
-
     private List<Item> GenerateMarketItems(int effortUpper)
     {
         var itemsList = new List<Item>();
