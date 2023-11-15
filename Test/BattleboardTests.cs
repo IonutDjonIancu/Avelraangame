@@ -7,7 +7,7 @@ public class BattleboardTests : TestBase
     private const string PlayerName1 = "Test Player 1";
 
     [Fact(DisplayName = "Create battleboard should exist in snapshot.")]
-    public void CreateBattleboard()
+    public void CreateBattleboardTest()
     {
         var actor = CreateBattleboardActor(PlayerName1);
 
@@ -63,14 +63,14 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = true;
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         actor2char.Status.Worth = 1000;
         _battleboard.JoinBattleboard(actor2);
 
         var actor3 = CreateBattleboardActor("player 3");
         actor3.WantsToBeGood = false;
-        actor3.BattleboardIdToJoin = board.Id;
+        actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
         board.GoodGuys.Count.Should().Be(2);
@@ -87,7 +87,7 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = true;
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         actor2char.Status.Worth = 0;
         _battleboard.JoinBattleboard(actor2);
@@ -109,7 +109,7 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = false;
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         _battleboard.JoinBattleboard(actor2);
 
@@ -127,14 +127,14 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = false;
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         actor2char.Status.Worth = 1000;
         _battleboard.JoinBattleboard(actor2);
 
         var actor3 = CreateBattleboardActor("player 3");
         actor3.WantsToBeGood = false;
-        actor3.BattleboardIdToJoin = board.Id;
+        actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
         actor2.TargetId = actor3.MainActor.Id;
@@ -155,19 +155,19 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = true;
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor2);
 
         var actor3 = CreateBattleboardActor("player 3");
         var actor3char = TestUtils.GetCharacter(actor3.MainActor.Id, actor3.MainActor.PlayerId, _snapshot);
         actor3char.Status.Worth = 1000;
         actor3.WantsToBeGood = false;
-        actor3.BattleboardIdToJoin = board.Id;
+        actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
         var actor4 = CreateBattleboardActor("player 4");
         actor4.WantsToBeGood = false;
-        actor4.BattleboardIdToJoin = board.Id;
+        actor4.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor4);
 
         actor4.TargetId = actor3.MainActor.Id;
@@ -184,19 +184,19 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = true;
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor2);
 
         var actor3 = CreateBattleboardActor("player 3");
         var actor3char = TestUtils.GetCharacter(actor3.MainActor.Id, actor3.MainActor.PlayerId, _snapshot);
         actor3char.Status.Worth = 1000;
         actor3.WantsToBeGood = false;
-        actor3.BattleboardIdToJoin = board.Id;
+        actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
         var actor4 = CreateBattleboardActor("player 4");
         actor4.WantsToBeGood = false;
-        actor4.BattleboardIdToJoin = board.Id;
+        actor4.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor4);
 
         _battleboard.LeaveBattleboard(actor2);
@@ -251,7 +251,7 @@ public class BattleboardTests : TestBase
         var board = _battleboard.CreateBattleboard(actor1);
 
         var actor2 = CreateBattleboardActor("player 2");
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         actor2.WantsToBeGood = true;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         actor2char.Status.Worth = 10000;
@@ -721,6 +721,41 @@ public class BattleboardTests : TestBase
         board.GetAllCharacters().Select(s => s.Sheet.Assets.ManaLeft).Sum().Should().Be(fullMana);
     }
 
+    [Fact(DisplayName = "Start repeatable quest should reflect on the battleboard.")]
+    public void BattleboardStartQuestTest()
+    {
+        var actor = CreateBattleboardActor(PlayerName1);
+        var actorCharacter = TestUtils.GetCharacter(actor.MainActor.Id, actor.MainActor.PlayerId, _snapshot);
+        var location = _snapshot.Locations.Find(s => s.FullName == actorCharacter.Status.Position.GetPositionFullName())!;
+
+        var board = _battleboard.CreateBattleboard(actor);
+
+        var questId = location.Quests.First(s => s.IsRepeatable).Id;
+        actor.QuestId = questId;    
+
+        board = _battleboard.StartQuest(actor);
+
+        board.Quest.Id.Should().Be(questId);    
+    }
+
+    [Fact(DisplayName = "Start unique quest should remove it from location quests.")]
+    public void BattleboardStartUniqueQuestTest()
+    {
+        var actor = CreateBattleboardActor(PlayerName1);
+        var actorCharacter = TestUtils.GetCharacter(actor.MainActor.Id, actor.MainActor.PlayerId, _snapshot);
+        var location = _snapshot.Locations.Find(s => s.FullName == actorCharacter.Status.Position.GetPositionFullName())!;
+
+        var board = _battleboard.CreateBattleboard(actor);
+
+        var questId = location.Quests.First(s => s.IsRepeatable == false).Id;
+        actor.QuestId = questId;
+
+        board = _battleboard.StartQuest(actor);
+
+        board.Quest.Id.Should().Be(questId);
+        location.Quests.Should().NotContain(s => s.Id == questId);
+    }
+
     #region private methods
     private Battleboard CreateBattleboardAndStartCombat()
     {
@@ -748,7 +783,7 @@ public class BattleboardTests : TestBase
         location.Mercenaries.Add(merc2);
 
         var actor2 = CreateBattleboardActor("player 2");
-        actor2.BattleboardIdToJoin = board.Id;
+        actor2.BattleboardId = board.Id;
         actor2.WantsToBeGood = true;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         actor2char.Status.Wealth = 10000;
@@ -766,7 +801,7 @@ public class BattleboardTests : TestBase
         _battleboard.JoinBattleboard(actor2);
 
         var actor3 = CreateBattleboardActor("player 3");
-        actor3.BattleboardIdToJoin = board.Id;
+        actor3.BattleboardId = board.Id;
         actor3.WantsToBeGood = false;
         var actor3char = TestUtils.GetCharacter(actor3.MainActor.Id, actor3.MainActor.PlayerId, _snapshot);
         actor3char.Status.Worth = 10000;
@@ -774,7 +809,7 @@ public class BattleboardTests : TestBase
         _battleboard.JoinBattleboard(actor3);
 
         var actor4 = CreateBattleboardActor("player 4");
-        actor4.BattleboardIdToJoin = board.Id;
+        actor4.BattleboardId = board.Id;
         actor4.WantsToBeGood = false;
         var actor4char = TestUtils.GetCharacter(actor4.MainActor.Id, actor4.MainActor.PlayerId, _snapshot);
         actor4char.Status.Wealth = 10000;

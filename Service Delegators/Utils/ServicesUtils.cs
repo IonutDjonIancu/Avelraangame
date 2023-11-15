@@ -17,9 +17,14 @@ public static class ServicesUtils
         return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
     }
 
-    public static Location GetLocationByPosition(Position position)
+    public static Location GetLoreLocationByPosition(Position position)
     {
         return GameplayLore.Locations.All.Find(s => s.FullName == position.GetPositionFullName())!;
+    }
+
+    public static Location GetSnapshotLocationByPosition(Position position, Snapshot snapshot)
+    {
+        return snapshot.Locations.Find(s => s.FullName == GetLocationFullNameFromPosition(position)) ?? throw new Exception("Location not found.");
     }
 
     public static string GetLocationFullNameFromPosition(Position position)

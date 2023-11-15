@@ -54,6 +54,7 @@ public class GameplayQuestLogic : IGameplayQuestLogic
                 Description = template.Description,
                 Result = template.Result,
                 IsRepeatable = template.IsRepeatable,
+                Id = Guid.NewGuid().ToString(),
                 EffortLvl = dice.Roll_1_to_n(effortLvl),
                 EncountersLeft = dice.Roll_1_to_n(effortLvl),
                 Reward = GeneratePossibleReward(effortLvl)

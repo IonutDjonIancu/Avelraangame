@@ -4,15 +4,18 @@ namespace Service_Delegators;
 
 public interface IBattleboardLogicDelegator
 {
+    // gets
     List<Battleboard> GetBattleboards();
     Battleboard FindBattleboard(string battleboardId);
     Battleboard FindCharacterBattleboard(BattleboardActor actor);
 
+    // crud
     Battleboard CreateBattleboard(BattleboardActor actor);
     Battleboard JoinBattleboard(BattleboardActor actor);
     Battleboard KickFromBattleboard(BattleboardActor actor);
     void LeaveBattleboard(BattleboardActor actor);
 
+    // combat
     Battleboard StartCombat(BattleboardActor actor);
     Battleboard Attack(BattleboardActor actor);
     Battleboard Cast(BattleboardActor actor);
@@ -24,7 +27,11 @@ public interface IBattleboardLogicDelegator
     Battleboard EndRound(BattleboardActor actor);
     Battleboard EndCombat(BattleboardActor actor);
     
+    // non-combat
     Battleboard MakeCamp(BattleboardActor actor);
+
+    // quest
+    Battleboard StartQuest(BattleboardActor actor);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -33,17 +40,20 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     private readonly IBattleboardCRUDLogic crudLogic;
     private readonly IBattleboardCombatLogic combatLogic;
     private readonly IBattleboardNonCombatLogic nonCombatLogic;
+    private readonly IBattleboardQuestLogic questLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
         IBattleboardCRUDLogic crudLogic,
         IBattleboardCombatLogic combatLogic,
-        IBattleboardNonCombatLogic nonCombatLogic)
+        IBattleboardNonCombatLogic nonCombatLogic,
+        IBattleboardQuestLogic questLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
         this.combatLogic = combatLogic;
         this.nonCombatLogic = nonCombatLogic;
+        this.questLogic = questLogic;
     }
 
     public List<Battleboard> GetBattleboards()
@@ -151,5 +161,11 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     {
         validations.ValidateBattleboardOnMakeCamp(actor);
         return nonCombatLogic.MakeCamp(actor);
+    }
+
+    public Battleboard StartQuest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnStartQuest(actor);
+        return questLogic.StartQuest(actor);
     }
 }

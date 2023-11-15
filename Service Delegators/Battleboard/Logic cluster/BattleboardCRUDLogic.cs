@@ -80,11 +80,11 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         lock (_lock)
         {
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-            var board = snapshot.Battleboards.Find(s => s.Id == actor.BattleboardIdToJoin)!;
+            var board = snapshot.Battleboards.Find(s => s.Id == actor.BattleboardId)!;
             character.Status.Gameplay.BattleboardId = board.Id;
-            character.Status.Gameplay.IsGoodGuy = actor.WantsToBeGood;
+            character.Status.Gameplay.IsGoodGuy = actor.WantsToBeGood!.Value;
 
-            if (actor.WantsToBeGood)
+            if (actor.WantsToBeGood!.Value)
             {
                 var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
 

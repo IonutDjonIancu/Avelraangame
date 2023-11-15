@@ -71,6 +71,7 @@ public interface IValidations
     void ValidateBattleboardOnEndRound(BattleboardActor actor);
     void ValidateBattleboardOnEndCombat(BattleboardActor actor);
     void ValidateBattleboardOnMakeCamp(BattleboardActor actor);
+    void ValidateBattleboardOnStartQuest(BattleboardActor actor);
     #endregion
 }
 
@@ -662,13 +663,15 @@ public class Validations : IValidations
         {
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
+            ValidateString_p(actor.BattleboardId!);
+            ValidateBool_P(actor.WantsToBeGood);
 
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
 
-            var battleboard = GetBattleboard_p(actor.BattleboardIdToJoin);
+            var battleboard = GetBattleboard_p(actor.BattleboardId!);
 
             if (battleboard.IsInCombat) throw new Exception(boardInCombat);
             if (battleboard.GoodGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
@@ -887,6 +890,26 @@ public class Validations : IValidations
             if (board.GetAllCharacters().Where(s => s.Status.Gameplay.IsLocked).Any()) throw new Exception("Unable to make camp, some characters are still locked.");
         }
     }
+
+    public void ValidateBattleboardOnStartQuest(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
+            if (attacker == null || board == null) throw new Exception("Unable to find attacker board combination.");
+
+            if (!string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is already on a quest.");
+
+            ValidateIfCharacterIsGoodPartyLead(attacker, board);
+            ValidateCharacterIsAlive_p(attacker);
+            ValidateCharacterIsLocked_p(attacker);
+            ValidateString_p(actor.QuestId!);
+
+            var location = snapshot.Locations.Find(s => s.FullName == ServicesUtils.GetLocationFullNameFromPosition(attacker.Status.Position))!;
+
+            if (!location.Quests.Exists(s => s.Id == actor.QuestId)) throw new Exception("No such quest found at location.");
+        }
+    }
     #endregion
 
     #region private methods
@@ -895,6 +918,11 @@ public class Validations : IValidations
     // this is to prevent trying to use the lock resource twice
 
     #region generic
+    private static void ValidateBool_P(bool? value, string message = "")
+    {
+        if (value == null) throw new Exception("Bool value cannot be null.");
+    }
+
     private static void ValidateString_p(string str, string message = "")
     {
         if (string.IsNullOrWhiteSpace(str)) throw new Exception(message.Length > 0 ? message : "The provided string is invalid.");
@@ -992,7 +1020,7 @@ public class Validations : IValidations
 
     private static void ValidateCharacterIsLocked_p(Character character)
     {
-        var charIsLocked = "Cannot modify character at this time.";
+        var charIsLocked = "Character is locked.";
 
         if (character.Status.Gameplay.IsLocked) throw new Exception(charIsLocked);
     }
@@ -1027,9 +1055,9 @@ public class Validations : IValidations
     private (Character attacker, Battleboard board, Character defender) ValidateAttackerBoardDefender(BattleboardActor actor)
     {
         var (attacker, board) = ValidateAttackerBoard(actor);
-        ValidateString_p(actor.TargetId);
+        ValidateString_p(actor.TargetId!);
 
-        CheckDefenderIsOnBoard(actor.TargetId, board);
+        CheckDefenderIsOnBoard(actor.TargetId!, board);
         var defender = board.GetAllCharacters().Find(s => s.Identity.Id == actor.TargetId)!;
 
         return (attacker, board, defender);
@@ -1048,16 +1076,9 @@ public class Validations : IValidations
         return (attacker, board);
     }
 
-    private (Character attacker, Battleboard board) ValidateAttackerBoardOffCombat(BattleboardActor actor)
+    private static void ValidateIfCharacterIsGoodPartyLead(Character attacker, Battleboard board)
     {
-        ValidateObject_p(actor);
-        ValidateObject_p(actor.MainActor);
-        ValidateString_p(actor.TargetId);
-
-        var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-        var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
-
-        return (attacker, board);
+        if (board.GoodGuyPartyLead != attacker.Identity.Id) throw new Exception("You are not the party lead to initiate this action.");
     }
 
     #endregion

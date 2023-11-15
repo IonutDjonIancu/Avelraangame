@@ -167,5 +167,6 @@ public class TestBase : IDisposable
         services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
         services.AddTransient<IBattleboardCombatLogic, BattleboardCombatLogic>();
         services.AddTransient<IBattleboardNonCombatLogic, BattleboardNonCombatLogic>();
+        services.AddTransient<IBattleboardQuestLogic, BattleboardQuestLogic>();
     }
 }

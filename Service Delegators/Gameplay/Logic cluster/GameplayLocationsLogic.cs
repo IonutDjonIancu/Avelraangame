@@ -109,7 +109,7 @@ public class GameplayLocationsLogic : IGameplayLocationsLogic
 
         for (int i = 0; i < nrOfMercs; i++)
         {
-            mercs.Add(npcs.GenerateGoodGuy(ServicesUtils.GetLocationByPosition(position).Name));
+            mercs.Add(npcs.GenerateGoodGuy(ServicesUtils.GetLoreLocationByPosition(position).Name));
         }
 
         return mercs;
