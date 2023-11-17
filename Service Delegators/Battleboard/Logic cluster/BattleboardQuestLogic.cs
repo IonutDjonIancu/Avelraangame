@@ -5,6 +5,7 @@ namespace Service_Delegators;
 public interface IBattleboardQuestLogic
 {
     Battleboard StartQuest(BattleboardActor actor);
+    Battleboard StopQuest(BattleboardActor actor);
 }
 
 public class BattleboardQuestLogic : IBattleboardQuestLogic
@@ -12,14 +13,14 @@ public class BattleboardQuestLogic : IBattleboardQuestLogic
     private readonly object _lock = new();
 
     private readonly Snapshot snapshot;
-    private readonly IDiceLogicDelegator dice;
+    private readonly INpcGameplayLogic npcGameplayLogic;
 
     public BattleboardQuestLogic(
-        Snapshot snapshot,
-        IDiceLogicDelegator dice)
+        Snapshot snapshot, 
+        INpcGameplayLogic npcGameplayLogic)
     {
         this.snapshot = snapshot;
-        this.dice = dice;
+        this.npcGameplayLogic = npcGameplayLogic;
     }
 
     public Battleboard StartQuest(BattleboardActor actor)
@@ -38,6 +39,43 @@ public class BattleboardQuestLogic : IBattleboardQuestLogic
             if (!quest.IsRepeatable) location.Quests.Remove(quest);
 
             board.LastActionResult = quest.Description;
+
+            return board;
+        }
+    }
+
+    public Battleboard StopQuest(BattleboardActor actor)
+    {
+        lock (_lock)
+        {
+            var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
+            var location = ServicesUtils.GetSnapshotLocationByPosition(attacker.Status.Position, snapshot);
+
+            var board = BattleboardUtils.GetBattleboard(attacker, snapshot);
+
+            var quest = board.Quest;
+
+            if (!quest.IsRepeatable) 
+            {
+                quest.EncountersLeft = quest.Encounters;
+            }
+
+            location.Quests.Add(quest);
+
+            board.Quest = new Quest();
+
+            foreach (var character in board.GetAllCharacters())
+            {
+                character.Inventory.Provisions = (int)(character.Inventory.Provisions * 0.5);
+
+                if (character.Status.Gameplay.IsNpc)
+                {
+                    character.Status.Worth = npcGameplayLogic.CalculateNpcWorth(character, location.Effort);
+                    location.Mercenaries.Add(character);
+                }
+
+                character.Mercenaries.Clear();
+            }
 
             return board;
         }

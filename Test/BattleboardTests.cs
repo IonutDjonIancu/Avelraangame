@@ -733,7 +733,7 @@ public class BattleboardTests : TestBase
         var questId = location.Quests.First(s => s.IsRepeatable).Id;
         actor.QuestId = questId;    
 
-        board = _battleboard.StartQuest(actor);
+        board = _battleboard.SelectQuest(actor);
 
         board.Quest.Id.Should().Be(questId);    
     }
@@ -750,10 +750,16 @@ public class BattleboardTests : TestBase
         var questId = location.Quests.First(s => s.IsRepeatable == false).Id;
         actor.QuestId = questId;
 
-        board = _battleboard.StartQuest(actor);
+        board = _battleboard.SelectQuest(actor);
 
         board.Quest.Id.Should().Be(questId);
         location.Quests.Should().NotContain(s => s.Id == questId);
+    }
+
+    [Fact(DisplayName = "Abandon quest should return mercs to location.")]
+    public void BattleboardAbandonQuestReturnsMercsTest()
+    {
+        throw new NotImplementedException();
     }
 
     #region private methods

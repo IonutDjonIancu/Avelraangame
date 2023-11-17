@@ -11,7 +11,7 @@ public class Location
     public int Effort { get; set; }
     public int TravelCostFromArada { get; set; }
 
-    // dynamically generated at player visit on get
+    // dynamically generated at player first visit of the day
     public string LastTimeVisited { get; set; }
     public List<Item> Market { get; set; } = new();
     public List<Character> Mercenaries { get; set; } = new();

@@ -113,6 +113,7 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<INpcLogicDelegator, NpcLogicDelegator>();
         // subservices
         builder.Services.AddTransient<INpcCreateLogic, NpcCreateLogic>();
+        builder.Services.AddTransient<INpcGameplayLogic, NpcGameplayLogic>();
     }
 
     private static void LoadGameplayService(WebApplicationBuilder builder)

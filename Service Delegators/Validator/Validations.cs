@@ -51,6 +51,7 @@ public interface IValidations
     #region gameplay
     void ValidateLocation(string locationName);
     void ValidateLocationEffortLevel(int locationEffortLevel);
+    void ValidateBeforeNpcCalculateWorth(Character character, int locationEffortLvl);
     #endregion
 
     #region battleboard
@@ -71,7 +72,8 @@ public interface IValidations
     void ValidateBattleboardOnEndRound(BattleboardActor actor);
     void ValidateBattleboardOnEndCombat(BattleboardActor actor);
     void ValidateBattleboardOnMakeCamp(BattleboardActor actor);
-    void ValidateBattleboardOnStartQuest(BattleboardActor actor);
+    void ValidateBattleboardOnSelectQuest(BattleboardActor actor);
+    void ValidateBattleboardOnAbandonQuest(BattleboardActor actor);
     #endregion
 }
 
@@ -595,6 +597,12 @@ public class Validations : IValidations
         ValidateNumberGreaterThanZero_p(locationEffortLevel);
     }
 
+    public void ValidateBeforeNpcCalculateWorth(Character character, int locationEffortLvl)
+    {
+        ValidateObject_p(character);
+        ValidateNumberGreaterThanZero_p(locationEffortLvl);
+    }
+
     #endregion
 
     #region battleboard validations
@@ -883,20 +891,17 @@ public class Validations : IValidations
     {
         lock (_lockBattleboards)
         {
-            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
-
-            if (attacker == null || board == null) throw new Exception("Unable to find attacker board combination.");
+            var (attacker, board) = GetAttackerBoard(actor);
 
             if (board.GetAllCharacters().Where(s => s.Status.Gameplay.IsLocked).Any()) throw new Exception("Unable to make camp, some characters are still locked.");
         }
     }
 
-    public void ValidateBattleboardOnStartQuest(BattleboardActor actor)
+    public void ValidateBattleboardOnSelectQuest(BattleboardActor actor)
     {
         lock (_lockBattleboards)
         {
-            var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
-            if (attacker == null || board == null) throw new Exception("Unable to find attacker board combination.");
+            var (attacker, board) = GetAttackerBoard(actor);
 
             if (!string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is already on a quest.");
 
@@ -908,6 +913,20 @@ public class Validations : IValidations
             var location = snapshot.Locations.Find(s => s.FullName == ServicesUtils.GetLocationFullNameFromPosition(attacker.Status.Position))!;
 
             if (!location.Quests.Exists(s => s.Id == actor.QuestId)) throw new Exception("No such quest found at location.");
+        }
+    }
+
+    public void ValidateBattleboardOnAbandonQuest(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = GetAttackerBoard(actor);
+
+            if (string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is not doing a quest.");
+
+            ValidateIfCharacterIsGoodPartyLead(attacker, board);
+            ValidateCharacterIsAlive_p(attacker);
+            ValidateCharacterIsLocked_p(attacker);
         }
     }
     #endregion
@@ -1099,6 +1118,14 @@ public class Validations : IValidations
         var boardNotFound = "Battleboard not found.";
 
         return snapshot.Battleboards.Find(s => s.Id == battleboardId) ?? throw new Exception(boardNotFound);
+    }
+
+    private (Character attacker, Battleboard board) GetAttackerBoard(BattleboardActor actor)
+    {
+        var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
+        if (attacker == null || board == null) throw new Exception("Unable to find attacker board combination.");
+
+        return (attacker, board);
     }
     #endregion
     #endregion

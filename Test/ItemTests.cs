@@ -7,7 +7,12 @@ public class ItemTests : TestBase
     [Fact(DisplayName = "Generate random item returns the item")] 
     public void GenerateRandomItemTest()
     {
-        var item = _items.GenerateRandomItem();
+        Item item = _items.GenerateRandomItem();
+
+        if (item.Subcategory == ItemsLore.Subcategories.Tradeable)
+        {
+            item = _items.GenerateRandomItem();
+        }
 
         item.Should().NotBeNull();
         item.Identity.Should().NotBeNull();

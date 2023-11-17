@@ -31,7 +31,8 @@ public interface IBattleboardLogicDelegator
     Battleboard MakeCamp(BattleboardActor actor);
 
     // quest
-    Battleboard StartQuest(BattleboardActor actor);
+    Battleboard SelectQuest(BattleboardActor actor);
+    Battleboard AbandonQuest(BattleboardActor actor);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -163,9 +164,15 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         return nonCombatLogic.MakeCamp(actor);
     }
 
-    public Battleboard StartQuest(BattleboardActor actor)
+    public Battleboard SelectQuest(BattleboardActor actor)
     {
-        validations.ValidateBattleboardOnStartQuest(actor);
+        validations.ValidateBattleboardOnSelectQuest(actor);
         return questLogic.StartQuest(actor);
+    }
+
+    public Battleboard AbandonQuest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnAbandonQuest(actor);
+        return questLogic.StopQuest(actor);
     }
 }

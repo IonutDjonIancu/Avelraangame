@@ -11,6 +11,7 @@ public class Quest
     // dynamically generated when the party picks up the quest
     public string Id { get; set; }
     public int EffortLvl { get; set; }
+    public int Encounters { get; set; }
     public int EncountersLeft { get; set; }
     public string Reward { get; set; }
 }

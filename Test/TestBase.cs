@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Service_Delegators;
 
 namespace Tests;
 
@@ -147,6 +148,7 @@ public class TestBase : IDisposable
         services.AddTransient<INpcLogicDelegator, NpcLogicDelegator>();
         // subservices
         services.AddTransient<INpcCreateLogic, NpcCreateLogic>();
+        services.AddTransient<INpcGameplayLogic, NpcGameplayLogic>();
     }
 
     private static void LoadGameplayService(IServiceCollection services)
