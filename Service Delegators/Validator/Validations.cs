@@ -73,6 +73,7 @@ public interface IValidations
     void ValidateBattleboardOnEndCombat(BattleboardActor actor);
     void ValidateBattleboardOnMakeCamp(BattleboardActor actor);
     void ValidateBattleboardOnSelectQuest(BattleboardActor actor);
+    void ValidateBattleboardOnFinishQuest(BattleboardActor actor);
     void ValidateBattleboardOnAbandonQuest(BattleboardActor actor);
     #endregion
 }
@@ -674,16 +675,19 @@ public class Validations : IValidations
             ValidateString_p(actor.BattleboardId!);
             ValidateBool_P(actor.WantsToBeGood);
 
+
+
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
 
-            var battleboard = GetBattleboard_p(actor.BattleboardId!);
+            var board = GetBattleboard_p(actor.BattleboardId!);
 
-            if (battleboard.IsInCombat) throw new Exception(boardInCombat);
-            if (battleboard.GoodGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
-            if (battleboard.BadGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
+            if (!string.IsNullOrWhiteSpace(board.Quest.Id) && !actor.WantsToBeGood!.Value) throw new Exception("You can only join party as friendly during questing.");
+            if (board.IsInCombat) throw new Exception(boardInCombat);
+            if (board.GoodGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
+            if (board.BadGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
         }
     }
 
@@ -705,12 +709,12 @@ public class Validations : IValidations
 
             if (character.Status.Gameplay.IsGoodGuy)
             {
-                if (battleboard.GoodGuyPartyLead != character.Identity.Id) throw new Exception(onlyPartyLeadAction);
+                if (battleboard.GoodGuyPartyLeadId != character.Identity.Id) throw new Exception(onlyPartyLeadAction);
                 if (!battleboard.GoodGuys.Select(s => s.Identity.Id).Contains(actor.TargetId)) throw new Exception(charNotInYourParty);
             }
             else
             {
-                if (battleboard.BadGuyPartyLead != character.Identity.Id) throw new Exception(onlyPartyLeadAction);
+                if (battleboard.BadGuyPartyLeadId != character.Identity.Id) throw new Exception(onlyPartyLeadAction);
                 if (!battleboard.BadGuys.Select(s => s.Identity.Id).Contains(actor.TargetId)) throw new Exception(charNotInYourParty);
             }
         }
@@ -748,8 +752,8 @@ public class Validations : IValidations
 
             if (board.IsInCombat) throw new Exception("Battleboard already in combat.");
             
-            if (board.GoodGuyPartyLead != actor.MainActor.Id
-                && board.BadGuyPartyLead != actor.MainActor.Id) throw new Exception("Only party leads can start combat.");
+            if (board.GoodGuyPartyLeadId != actor.MainActor.Id
+                && board.BadGuyPartyLeadId != actor.MainActor.Id) throw new Exception("Only party leads can start combat.");
 
         }
     }
@@ -848,7 +852,7 @@ public class Validations : IValidations
         {
             var (attacker, board) = ValidateAttackerBoard(actor);
 
-            if (board.GoodGuyPartyLead != attacker.Identity.Id && board.BadGuyPartyLead != attacker.Identity.Id) throw new Exception("Only party leads can let Ai act.");
+            if (board.GoodGuyPartyLeadId != attacker.Identity.Id && board.BadGuyPartyLeadId != attacker.Identity.Id) throw new Exception("Only party leads can let Ai act.");
             
             var npc = board.GetAllCharacters().Find(s => s.Identity.Id == board.BattleOrder.First())!;
 
@@ -878,7 +882,7 @@ public class Validations : IValidations
         {
             var (attacker, board) = ValidateAttackerBoard(actor);
 
-            if (board.GoodGuyPartyLead != attacker.Identity.Id && board.BadGuyPartyLead != attacker.Identity.Id) throw new Exception("Only party leads can end combat.");
+            if (board.GoodGuyPartyLeadId != attacker.Identity.Id && board.BadGuyPartyLeadId != attacker.Identity.Id) throw new Exception("Only party leads can end combat.");
 
             var areEnemiesAbout = (attacker.Status.Gameplay.IsGoodGuy && board.BadGuys.Where(s => s.Status.Gameplay.IsAlive).Any())
                                 || (!attacker.Status.Gameplay.IsGoodGuy && board.GoodGuys.Where(s => s.Status.Gameplay.IsAlive).Any());
@@ -923,6 +927,22 @@ public class Validations : IValidations
             var (attacker, board) = GetAttackerBoard(actor);
 
             if (string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is not doing a quest.");
+
+            ValidateIfCharacterIsGoodPartyLead(attacker, board);
+            ValidateCharacterIsAlive_p(attacker);
+            ValidateCharacterIsLocked_p(attacker);
+        }
+    }
+
+    public void ValidateBattleboardOnFinishQuest(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = GetAttackerBoard(actor);
+
+            if (string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is not doing a quest.");
+
+            if (board.Quest.EncountersLeft > 0) throw new Exception("There are more encounters left before this quest is considered finished.");
 
             ValidateIfCharacterIsGoodPartyLead(attacker, board);
             ValidateCharacterIsAlive_p(attacker);
@@ -1097,7 +1117,7 @@ public class Validations : IValidations
 
     private static void ValidateIfCharacterIsGoodPartyLead(Character attacker, Battleboard board)
     {
-        if (board.GoodGuyPartyLead != attacker.Identity.Id) throw new Exception("You are not the party lead to initiate this action.");
+        if (board.GoodGuyPartyLeadId != attacker.Identity.Id) throw new Exception("You are not the party lead to initiate this action.");
     }
 
     #endregion

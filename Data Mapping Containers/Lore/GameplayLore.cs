@@ -138,11 +138,11 @@ public class GameplayLore
         public const string Loot = "Loot";
         public const string Stats = "Stats";
         public const string Skills = "Skills";
-        public const string SpecialSkills = "SpecialSkills";
+        public const string Deeds = "Deeds";
 
         public static readonly List<string> All = new()
         {
-            Wealth, Item, Loot, Stats, Skills, SpecialSkills,
+            Wealth, Item, Loot, Stats, Skills, Deeds,
         };
     }
 

@@ -270,7 +270,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
             ChooseNewPartyLeadIfPartyLeadDead(attacker, board);
 
-            if (board.GoodGuyPartyLead == string.Empty && board.BadGuyPartyLead == string.Empty)
+            if (board.GoodGuyPartyLeadId == string.Empty && board.BadGuyPartyLeadId == string.Empty)
             {
                 ReturnNpcsHomeIfAllPlayersAreDead(attacker, board, snapshot);
 
@@ -363,12 +363,12 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         if (partyLead.Status.Gameplay.IsGoodGuy)
         {
             var anySurvivor = board.GoodGuys.Where(s => s.Status.Gameplay.IsAlive && !s.Status.Gameplay.IsNpc).OrderByDescending(s => s.Status.Worth).FirstOrDefault();
-            board.GoodGuyPartyLead = anySurvivor != null ? anySurvivor.Identity.Id : string.Empty;
+            board.GoodGuyPartyLeadId = anySurvivor != null ? anySurvivor.Identity.Id : string.Empty;
         }
         else
         {
             var anySurvivor = board.BadGuys.Where(s => s.Status.Gameplay.IsAlive && !s.Status.Gameplay.IsNpc).OrderByDescending(s => s.Status.Worth).FirstOrDefault();
-            board.BadGuyPartyLead = anySurvivor != null ? anySurvivor.Identity.Id : string.Empty;
+            board.BadGuyPartyLeadId = anySurvivor != null ? anySurvivor.Identity.Id : string.Empty;
         }
     }
 
@@ -656,7 +656,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     private void ApplyTacticalRoll(Battleboard board)
     {
-        var goodGuyPartyLead = board.GoodGuys.First(s => s.Identity.Id == board.GoodGuyPartyLead).Status.Name;
+        var goodGuyPartyLead = board.GoodGuys.First(s => s.Identity.Id == board.GoodGuyPartyLeadId).Status.Name;
 
         var highestRollerGoodGuy = board.GoodGuys.OrderByDescending(s => s.Sheet.Skills.Tactics).First()!;
         var highestRollerBadGuy = board.BadGuys.OrderByDescending(s => s.Sheet.Skills.Tactics).First()!;

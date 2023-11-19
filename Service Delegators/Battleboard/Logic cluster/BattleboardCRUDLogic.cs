@@ -56,7 +56,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
             character.Status.Gameplay.BattleboardId = battleboard.Id;
             character.Status.Gameplay.IsGoodGuy = true;
 
-            battleboard.GoodGuyPartyLead = character.Identity.Id;
+            battleboard.GoodGuyPartyLeadId = character.Identity.Id;
             battleboard.GoodGuys.Add(character);
 
             character.Mercenaries.ForEach(s =>
@@ -86,11 +86,11 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
 
             if (actor.WantsToBeGood!.Value)
             {
-                var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+                var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
 
                 if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
                 {
-                    board.GoodGuyPartyLead = character.Identity.Id;
+                    board.GoodGuyPartyLeadId = character.Identity.Id;
                 }
 
                 board.GoodGuys.Add(character);
@@ -105,11 +105,11 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
             }
             else
             {
-                var partyLead = board.BadGuys.Find(s => s.Identity.Id == board.BadGuyPartyLead)!;
+                var partyLead = board.BadGuys.Find(s => s.Identity.Id == board.BadGuyPartyLeadId)!;
 
                 if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
                 {
-                    board.BadGuyPartyLead = character.Identity.Id;
+                    board.BadGuyPartyLeadId = character.Identity.Id;
                 }
 
                 board.BadGuys.Add(character);
@@ -148,9 +148,9 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
 
             if (charToRemove.Status.Gameplay.IsGoodGuy)
             {
-                if (board.GoodGuyPartyLead == charToRemove.Identity.Id)
+                if (board.GoodGuyPartyLeadId == charToRemove.Identity.Id)
                 {
-                    board.GoodGuyPartyLead = board.GoodGuys
+                    board.GoodGuyPartyLeadId = board.GoodGuys
                         .Where(s => !s.Status.Gameplay.IsNpc)
                         .OrderByDescending(s => s.Status.Worth)
                         .First().Identity.Id;
@@ -170,9 +170,9 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
             }
             else
             {
-                if (board.BadGuyPartyLead == charToRemove.Identity.Id)
+                if (board.BadGuyPartyLeadId == charToRemove.Identity.Id)
                 {
-                    board.BadGuyPartyLead = board.BadGuys
+                    board.BadGuyPartyLeadId = board.BadGuys
                         .Where(s => !s.Status.Gameplay.IsNpc)
                         .OrderByDescending(s => s.Status.Worth)
                         .First().Identity.Id;

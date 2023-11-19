@@ -32,6 +32,8 @@ public interface IBattleboardLogicDelegator
 
     // quest
     Battleboard SelectQuest(BattleboardActor actor);
+    Battleboard NextEncounter(BattleboardActor actor);
+    Battleboard FinishQuest(BattleboardActor actor);
     Battleboard AbandonQuest(BattleboardActor actor);
 }
 
@@ -170,9 +172,21 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
         return questLogic.StartQuest(actor);
     }
 
+    public Battleboard FinishQuest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnFinishQuest(actor);
+        return questLogic.EndQuest(actor);
+
+    }
+
     public Battleboard AbandonQuest(BattleboardActor actor)
     {
         validations.ValidateBattleboardOnAbandonQuest(actor);
         return questLogic.StopQuest(actor);
+    }
+
+    public Battleboard NextEncounter(BattleboardActor actor)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -14,7 +14,7 @@ public class BattleboardTests : TestBase
         var board = _battleboard.CreateBattleboard(actor);
 
         board.Should().NotBeNull();
-        board.GoodGuyPartyLead.Should().Be(actor.MainActor.Id);
+        board.GoodGuyPartyLeadId.Should().Be(actor.MainActor.Id);
         _snapshot.Battleboards.Count.Should().Be(1);
     }
 
@@ -74,9 +74,9 @@ public class BattleboardTests : TestBase
         _battleboard.JoinBattleboard(actor3);
 
         board.GoodGuys.Count.Should().Be(2);
-        board.GoodGuyPartyLead.Should().Be(actor2.MainActor.Id);
+        board.GoodGuyPartyLeadId.Should().Be(actor2.MainActor.Id);
         board.BadGuys.Count.Should().Be(1);
-        board.BadGuyPartyLead.Should().Be(actor3.MainActor.Id);
+        board.BadGuyPartyLeadId.Should().Be(actor3.MainActor.Id);
     }
 
     [Fact(DisplayName = "Being kicked from a battleboard should remove character from battleboard.")]
@@ -92,7 +92,7 @@ public class BattleboardTests : TestBase
         actor2char.Status.Worth = 0;
         _battleboard.JoinBattleboard(actor2);
 
-        board.GoodGuyPartyLead.Should().Be(actor1.MainActor.Id);
+        board.GoodGuyPartyLeadId.Should().Be(actor1.MainActor.Id);
 
         actor1.TargetId = actor2.MainActor.Id;
         _battleboard.KickFromBattleboard(actor1);
@@ -588,7 +588,7 @@ public class BattleboardTests : TestBase
                 PlayerId = firstCharacter.Identity.PlayerId
             },
         };
-        if (board.BattleOrder.First() == board.GoodGuyPartyLead || board.BattleOrder.First() == board.BadGuyPartyLead) _battleboard.Rest(actor1);
+        if (board.BattleOrder.First() == board.GoodGuyPartyLeadId || board.BattleOrder.First() == board.BadGuyPartyLeadId) _battleboard.Rest(actor1);
 
         var secondCharacter = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         var actor2 = new BattleboardActor
@@ -600,7 +600,7 @@ public class BattleboardTests : TestBase
             },
         };
         // twice to make sure we exclude both party leader possibilities
-        if (board.BattleOrder.First() == board.GoodGuyPartyLead || board.BattleOrder.First() == board.BadGuyPartyLead) _battleboard.Rest(actor2);
+        if (board.BattleOrder.First() == board.GoodGuyPartyLeadId || board.BattleOrder.First() == board.BadGuyPartyLeadId) _battleboard.Rest(actor2);
 
         var npc = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.BattleOrder[0])!;
         npc.Identity.PlayerId = Guid.Empty.ToString();
@@ -608,8 +608,8 @@ public class BattleboardTests : TestBase
         {
             MainActor = new CharacterIdentity
             {
-                Id = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead)!.Identity.Id,
-                PlayerId = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLead)!.Identity.PlayerId
+                Id = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLeadId)!.Identity.Id,
+                PlayerId = board.GetAllCharacters().FirstOrDefault(s => s.Identity.Id == board.GoodGuyPartyLeadId)!.Identity.PlayerId
             },
         };
 
@@ -642,7 +642,7 @@ public class BattleboardTests : TestBase
     {
         var board = CreateBattleboardAndStartCombat();
 
-        var attacker = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+        var attacker = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
 
         var actor = new BattleboardActor
         {
@@ -665,7 +665,7 @@ public class BattleboardTests : TestBase
     {
         var board = CreateBattleboardAndStartCombat();
 
-        var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+        var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
 
         var actor = new BattleboardActor
         {
@@ -691,9 +691,9 @@ public class BattleboardTests : TestBase
         var board = CreateBattleboardAndStartCombat();
 
         board.BadGuys.Clear();
-        board.BadGuyPartyLead = string.Empty;
+        board.BadGuyPartyLeadId = string.Empty;
 
-        var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLead)!;
+        var partyLead = board.GetAllCharacters().Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
 
         var actor = new BattleboardActor
         {

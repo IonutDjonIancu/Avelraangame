@@ -75,7 +75,7 @@ public class GameplayQuestLogic : IGameplayQuestLogic
         if (effort >= GameplayLore.Effort.Normal) rewards.Add(GameplayLore.QuestReward.Loot);
         if (effort >= GameplayLore.Effort.Gifted) rewards.Add(GameplayLore.QuestReward.Stats);
         if (effort >= GameplayLore.Effort.Chosen) rewards.Add(GameplayLore.QuestReward.Skills);
-        if (effort >= GameplayLore.Effort.Hero) rewards.Add(GameplayLore.QuestReward.SpecialSkills);
+        if (effort >= GameplayLore.Effort.Hero) rewards.Add(GameplayLore.QuestReward.Deeds);
 
         rewards.Add(GameplayLore.QuestReward.Item);
         rewards.Add(GameplayLore.QuestReward.Wealth);
