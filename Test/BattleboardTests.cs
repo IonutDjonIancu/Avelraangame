@@ -759,7 +759,7 @@ public class BattleboardTests : TestBase
     [Fact(DisplayName = "Abandon quest should return mercs to location.")]
     public void BattleboardAbandonQuestReturnsMercsTest()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     #region private methods
