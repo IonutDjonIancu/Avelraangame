@@ -75,6 +75,7 @@ public interface IValidations
     void ValidateBattleboardOnSelectQuest(BattleboardActor actor);
     void ValidateBattleboardOnFinishQuest(BattleboardActor actor);
     void ValidateBattleboardOnAbandonQuest(BattleboardActor actor);
+    void ValidateBattleboardOnNextEncounter(BattleboardActor actor);
     #endregion
 }
 
@@ -906,7 +907,6 @@ public class Validations : IValidations
         lock (_lockBattleboards)
         {
             var (attacker, board) = GetAttackerBoard(actor);
-
             if (!string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is already on a quest.");
 
             ValidateIfCharacterIsGoodPartyLead(attacker, board);
@@ -931,6 +931,20 @@ public class Validations : IValidations
             ValidateIfCharacterIsGoodPartyLead(attacker, board);
             ValidateCharacterIsAlive_p(attacker);
             ValidateCharacterIsLocked_p(attacker);
+        }
+    }
+
+    public void ValidateBattleboardOnNextEncounter(BattleboardActor actor)
+    {
+        lock (_lockBattleboards)
+        {
+            var (attacker, board) = GetAttackerBoard(actor);
+            if (string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is not doing a quest.");
+
+            ValidateIfCharacterIsGoodPartyLead(attacker, board);
+            ValidateCharacterIsAlive_p(attacker);
+            ValidateCharacterIsLocked_p(attacker);
+
         }
     }
 

@@ -2,7 +2,6 @@
 
 public class Quest
 {
-    public string QuestType { get; set; }
     public string Fame { get; set; }
     public string Description { get; set; }
     public string Result { get; set; }

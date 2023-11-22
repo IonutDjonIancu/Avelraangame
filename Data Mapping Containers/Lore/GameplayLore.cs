@@ -118,17 +118,52 @@ public class GameplayLore
         // bad
         public const string SaveVs = "SaveVs";
         public const string Combat = "Combat";
-        public const string CurseOrDisease = "CurseOrDisease";
-     
+        public const string Curse = "Curse";
+        public const string Disease = "Disease";
         // good
         public const string Boon = "Boon";
         public const string ItemFind = "ItemFind";
         public const string Storyline = "Storyline";
+        public const string Wealth = "Wealth";
+        // total 8
 
         public static readonly List<string> All = new()
         {
-            SaveVs, Combat, CurseOrDisease, Boon, ItemFind, Storyline
+            SaveVs,     // 1  
+            Combat,     // 2
+            Curse,      // 3
+            Disease,    // 4
+            Boon,       // 5
+            ItemFind,   // 6
+            Storyline,  // 7
+            Wealth,     // 8
         };
+    }
+
+    public static class EncounterTypeText
+    {
+        public static class SaveVs
+        {
+            public const string UnseenEnemy = "One of your party members is attacked, but before you reach, the unseen enemy has fled the scene.";
+            public const string Relics = "Your party stumbles upon ancient relics. You are unable to descipher the writings on the wall, and one of your party members triggers a trap.";
+            public const string TestOfStat = "One party member is challenged by a local for a trial, before you can react the combatants face each other briefly.";
+            public const string ElfWitch = "Passing through a forest, you hear an enchanted song. A tale about a world called Ryxos. The enchantment is foul and wishes you ill.";
+            public const string TrappedSpirit = "You find a man-made cave. Old trails lead in and out, but you decide it would be wise to stay on your path, but as you turn away a manifestation reaches out to grab one of you.";
+            public const string GoblinTrap = "You step into a trap, by the looks of it it's goblin made.";
+            // total 6
+
+            public static readonly List<string> All = new()
+            {
+                UnseenEnemy,    // 1
+                Relics,         // 2
+                TestOfStat,     // 3
+                ElfWitch,       // 4
+                TrappedSpirit,  // 5
+                GoblinTrap,     // 6
+            };
+        }
+
+
     }
 
     public static class QuestReward
@@ -139,44 +174,38 @@ public class GameplayLore
         public const string Stats = "Stats";
         public const string Skills = "Skills";
         public const string Deeds = "Deeds";
+        // 6 total
 
         public static readonly List<string> All = new()
         {
-            Wealth, Item, Loot, Stats, Skills, Deeds,
-        };
-    }
-
-    public static class QuestType
-    {
-
-        public const string Patrol = "Patrol";              
-        public const string Fight = "Fight";                
-        public const string Rescue = "Rescue";              
-        public const string Assassinate = "Assassinate";    
-        public const string Challenge = "Challenge";        
-        public const string Cult = "Cult";                  
-
-        // total added 6
-        public static readonly List<string> All = new()
-        {
-            Patrol,     // 1
-            Fight,      // 2
-            Rescue,     // 3
-            Assassinate,// 4
-            Challenge,  // 5 TODO: add challenge quest type
-            Cult        // 6
+            Wealth, // 1 
+            Item,   // 2
+            Loot,   // 3 
+            Stats,  // 4
+            Skills, // 5
+            Deeds,  // 6
         };
     }
 
     public static class QuestFame
     {
         public const string Mudpaddler = "Mudpaddler";
+        public const string Patrol = "Patrol";              
+        public const string Fight = "Fighter";                
+        public const string Cult = "Cult";                  
+        public const string Challenge = "Challenge";        
+        public const string Assassin = "Assassin";    
+        public const string Militia = "Militia";                
+        public const string Rescue = "Rescue";              
         public const string Sellsword = "Sellsword";
         public const string Deliverance = "Deliverance";
         public const string Furtive = "Furtive";
         public const string BaneOfTheOccult = "Bane of the occult";
+        public const string Gambler = "Gambler";
+        public const string Sweetalker = "Sweetalker";
+        public const string Gang = "Gang";
+        //  12 total
 
-        // total added 5
         public static readonly List<string> All = new()
         {
             Mudpaddler,     // 1
@@ -191,10 +220,8 @@ public class GameplayLore
     {
         public static class Repeatable
         {
-
             public static readonly QuestTemplate Mudpaddler = new()
             {
-                QuestType = QuestType.Patrol,
                 Fame = QuestFame.Mudpaddler,
                 Description = "An ordinary job for any sellsword in these lands. It doesn't shine, but it pays well. You are being handed a charcoal stained hand-drawn map on a rigid cyperus paper, probably of eastern origin. " +
                 "The huscarl in front of you explains your mission and points at where the location of several outposts lay on the map. You are to go to each outpost, gather their reports and come back. He points his finger towards a piece of " +
@@ -203,10 +230,8 @@ public class GameplayLore
                 IsRepeatable = true,
                 MaxEffortLvl = Effort.Normal,
             };
-
             public static readonly QuestTemplate Sellsword = new()
             {
-                QuestType = QuestType.Fight,
                 Fame = QuestFame.Sellsword,
                 Description = "The lowest scum in the world, blackblood, greenskinned marauders are feared everywhere for their ways to terrorize settlements. You will find disemboweled, half eaten animals or people, burned crops, and destroyed viliges when these " +
                 "hated creatures from Pel'Ravan mountains raid the lowlands, running away to hide again before any militia can be mustered. Therefore, the local marshals have been giving rewards for all sellswords and headhunters that can hunt these creatures down. " +
@@ -215,8 +240,8 @@ public class GameplayLore
                 IsRepeatable = true,
                 MaxEffortLvl = Effort.Normal,
             };
+            // 2 total
 
-            // total added 2
             public static readonly List<QuestTemplate> All = new()
             {
                 Mudpaddler, // 1
@@ -228,7 +253,6 @@ public class GameplayLore
         {
             public static readonly QuestTemplate RescueNobleFromRansom = new()
             {
-                QuestType = QuestType.Rescue,
                 Fame = QuestFame.Deliverance,
                 Description = "Following a skirmish between the armies of two local lords, a noble belonging to one of their retinue is now held for ransom. As you understand the situation, in order to avoid a border clash between the banners, " +
                 "people like you are called in to try to save the imprisoned knight from its captors. You have no involvement in the matter and it's a chance to build up reputation... as well as get your hands on a hefty reward. " +
@@ -238,10 +262,8 @@ public class GameplayLore
                 IsRepeatable = false,
                 MaxEffortLvl = Effort.Normal,
             };
-
             public static readonly QuestTemplate AmbushOutlanders = new()
             {
-                QuestType = QuestType.Assassinate,
                 Fame = QuestFame.Furtive,
                 Description = "There is strong resentment towards outlanders and their business in these lands. You are approached by a representative of a clandestine organization. Rumors hint at a nefarious plot that could tip the delicate balance of power in the realm. " +
                 "An enigmatic duo, hailing from a distant land, has drawn the attention of said organization, and they seek a pair of skilled adventurers to delve into the heart of this inconvenience. The air is thick with tension and the gravity of the task at hand hangs palpably, but you couldn't care less.",
@@ -249,10 +271,8 @@ public class GameplayLore
                 IsRepeatable = false,
                 MaxEffortLvl = Effort.Normal,
             };
-
             public static readonly QuestTemplate KillCultists = new()
             {
-                QuestType = QuestType.Cult,
                 Fame = QuestFame.BaneOfTheOccult,
                 Description = "Whispers of unholy deeds have reached the ears of the devout abbot. You listen to his story about a cult steeped in darkness, performing unspeakable rituals and sacrificing innocents to unseen entities. " +
                 "The abbot provides a cryptic map leading to the cult's hidden sanctum. The path is treacherous, and you know the woods themselves seem to murmur with an otherworldly presence.",
@@ -260,8 +280,8 @@ public class GameplayLore
                 IsRepeatable = false,
                 MaxEffortLvl = Effort.Normal,
             };
+            // total 3
 
-            // total added 3
             public static readonly List<QuestTemplate> All = new()
             {
                 RescueNobleFromRansom,  // 1

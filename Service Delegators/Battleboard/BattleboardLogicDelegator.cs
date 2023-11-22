@@ -44,19 +44,22 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     private readonly IBattleboardCombatLogic combatLogic;
     private readonly IBattleboardNonCombatLogic nonCombatLogic;
     private readonly IBattleboardQuestLogic questLogic;
+    private readonly IBattleboardEncounterLogic encounterLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
         IBattleboardCRUDLogic crudLogic,
         IBattleboardCombatLogic combatLogic,
         IBattleboardNonCombatLogic nonCombatLogic,
-        IBattleboardQuestLogic questLogic)
+        IBattleboardQuestLogic questLogic,
+        IBattleboardEncounterLogic encounterLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
         this.combatLogic = combatLogic;
         this.nonCombatLogic = nonCombatLogic;
         this.questLogic = questLogic;
+        this.encounterLogic = encounterLogic;
     }
 
     public List<Battleboard> GetBattleboards()
@@ -187,6 +190,7 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 
     public Battleboard NextEncounter(BattleboardActor actor)
     {
-        throw new NotImplementedException();
+        validations.ValidateBattleboardOnAbandonQuest(actor);
+        return encounterLogic.NextEncounter(actor);
     }
 }
