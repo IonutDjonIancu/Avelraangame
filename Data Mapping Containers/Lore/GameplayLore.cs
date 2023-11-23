@@ -116,39 +116,43 @@ public class GameplayLore
     public static class EncounterType
     {
         // bad
-        public const string SaveVs = "SaveVs";
+        public const string SaveVsStats = "SaveVs";
         public const string Combat = "Combat";
         public const string Curse = "Curse";
         public const string Disease = "Disease";
+        public const string SaveVsAssets = "SaveVsAssets";
+        public const string LoseWealth = "LoseWealth";
         // good
         public const string Boon = "Boon";
         public const string ItemFind = "ItemFind";
         public const string Storyline = "Storyline";
-        public const string Wealth = "Wealth";
-        // total 8
+        public const string GainWealth = "GainWealth";
+        // total 10
 
         public static readonly List<string> All = new()
         {
-            SaveVs,     // 1  
-            Combat,     // 2
-            Curse,      // 3
-            Disease,    // 4
-            Boon,       // 5
-            ItemFind,   // 6
-            Storyline,  // 7
-            Wealth,     // 8
+            SaveVsStats, // 1  
+            Combat,      // 2
+            Curse,       // 3
+            Disease,     // 4
+            Boon,        // 5
+            ItemFind,    // 6
+            Storyline,   // 7
+            GainWealth,  // 8
+            SaveVsAssets,// 9
+            LoseWealth,  // 10
         };
     }
 
-    public static class EncounterTypeText
+    public static class EncounterTypeResults
     {
         public static class SaveVs
         {
-            public const string UnseenEnemy = "One of your party members is attacked, but before you reach, the unseen enemy has fled the scene.";
+            public const string UnseenEnemy = "One of your party members is under attack. But before you reach him, the unseen enemy has fled the scene.";
             public const string Relics = "Your party stumbles upon ancient relics. You are unable to descipher the writings on the wall, and one of your party members triggers a trap.";
             public const string TestOfStat = "One party member is challenged by a local for a trial, before you can react the combatants face each other briefly.";
             public const string ElfWitch = "Passing through a forest, you hear an enchanted song. A tale about a world called Ryxos. The enchantment is foul and wishes you ill.";
-            public const string TrappedSpirit = "You find a man-made cave. Old trails lead in and out, but you decide it would be wise to stay on your path, but as you turn away a manifestation reaches out to grab one of you.";
+            public const string TrappedSpirit = "You find a man-made cave. Old trails lead in and out, but you decide it would be wise to stay on your path. As you turn away a manifestation reaches out to grab one of you.";
             public const string GoblinTrap = "You step into a trap, by the looks of it it's goblin made.";
             // total 6
 
