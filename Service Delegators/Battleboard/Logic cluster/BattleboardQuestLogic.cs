@@ -17,16 +17,16 @@ public class BattleboardQuestLogic : IBattleboardQuestLogic
     private readonly Snapshot snapshot;
     private readonly IDiceLogicDelegator diceLogic;
     private readonly IItemsLogicDelegator itemsLogic;
-    private readonly INpcGameplayLogic npcGameplayLogic;
+    private readonly INpcLogicDelegator npcLogic;
 
     public BattleboardQuestLogic(
         Snapshot snapshot,
         IDiceLogicDelegator diceLogic,
         IItemsLogicDelegator itemsLogic,
-        INpcGameplayLogic npcGameplayLogic)
+        INpcLogicDelegator npcLogic)
     {
         this.snapshot = snapshot;
-        this.npcGameplayLogic = npcGameplayLogic;
+        this.npcLogic = npcLogic;
         this.diceLogic = diceLogic;
         this.itemsLogic = itemsLogic;   
     }
@@ -119,7 +119,7 @@ public class BattleboardQuestLogic : IBattleboardQuestLogic
     private void ReturnMercHome(Character mercenary, Location location)
     {
         mercenary.Identity.PlayerId = Guid.Empty.ToString();
-        mercenary.Status.Worth = npcGameplayLogic.CalculateNpcWorth(mercenary, location.Effort);
+        mercenary.Status.Worth = npcLogic.CalculateNpcWorth(mercenary, location.Effort);
         location.Mercenaries.Add(mercenary);
     }
 

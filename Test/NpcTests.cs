@@ -8,7 +8,7 @@ public class NpcTests: TestBase
     public void GenerateGoodGuyTest()
     {
         var goodGuy = _npcs.GenerateGoodGuy(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Name);
-        var location = ServicesUtils.GetLocationByLocationFullName(goodGuy.Status.Position.GetPositionFullName());
+        var location = ServicesUtils.GetLocationByPositionFullName(goodGuy.Status.Position.GetPositionFullName());
 
         goodGuy.Identity.PlayerId.Should().Be(Guid.Empty.ToString());
         goodGuy.Status.Gameplay.IsNpc.Should().BeTrue();

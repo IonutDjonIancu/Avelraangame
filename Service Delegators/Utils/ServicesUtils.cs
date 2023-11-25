@@ -12,7 +12,7 @@ public static class ServicesUtils
         return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
     }
 
-    public static Location GetLocationByLocationFullName(string locationFullName)
+    public static Location GetLocationByPositionFullName(string locationFullName)
     {
         return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
     }
