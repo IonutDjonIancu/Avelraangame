@@ -940,11 +940,11 @@ public class Validations : IValidations
         {
             var (attacker, board) = GetAttackerBoard(actor);
             if (string.IsNullOrWhiteSpace(board.Quest.Id)) throw new Exception("Your party is not doing a quest.");
+            if (board.IsInCombat) throw new Exception("There are enemies about.");
 
             ValidateIfCharacterIsGoodPartyLead(attacker, board);
             ValidateCharacterIsAlive_p(attacker);
             ValidateCharacterIsLocked_p(attacker);
-
         }
     }
 

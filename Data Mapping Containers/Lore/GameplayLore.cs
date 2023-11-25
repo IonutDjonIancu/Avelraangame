@@ -148,26 +148,157 @@ public class GameplayLore
     {
         public static class SaveVs
         {
-            public const string UnseenEnemy = "One of your party members is under attack. But before you reach him, the unseen enemy has fled the scene.";
-            public const string Relics = "Your party stumbles upon ancient relics. You are unable to descipher the writings on the wall, and one of your party members triggers a trap.";
-            public const string TestOfStat = "One party member is challenged by a local for a trial, before you can react the combatants face each other briefly.";
-            public const string ElfWitch = "Passing through a forest, you hear an enchanted song. A tale about a world called Ryxos. The enchantment is foul and wishes you ill.";
-            public const string TrappedSpirit = "You find a man-made cave. Old trails lead in and out, but you decide it would be wise to stay on your path. As you turn away a manifestation reaches out to grab one of you.";
-            public const string GoblinTrap = "You step into a trap, by the looks of it it's goblin made.";
-            // total 6
+            public const string Text1 = "One of your party members is under attack. But before you reach him, the unseen enemy has fled the scene.";
+            public const string Text2 = "Your party stumbles upon ancient relics. You are unable to descipher the writings on the wall, and one of your party members triggers a trap.";
+            public const string Text3 = "One party member is challenged by a local for a trial, before you can react the combatants face each other briefly.";
+            // total 3
 
             public static readonly List<string> All = new()
             {
-                UnseenEnemy,    // 1
-                Relics,         // 2
-                TestOfStat,     // 3
-                ElfWitch,       // 4
-                TrappedSpirit,  // 5
-                GoblinTrap,     // 6
+                Text1,    
+                Text2,    
+                Text3,    
             };
         }
 
+        public static class Combat
+        {
+            public const string Text1 = "You have been waylaid by enemies...";
+            public const string Text2 = "... you should defend yourself.";
+            public const string Text3 = "There is a dangerous world out there.";
+            public const string Text4 = "Quickly, get off the road.";
+            public const string Text5 = "A fight.";
+            // total 5
 
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+                Text4,
+                Text5,
+            };
+        }
+
+        public static class Curse
+        {
+            public const string Text1 = "You've been cursed.";
+            public const string Text2 = "One of your party members suffers from a terrible curse.";
+            public const string Text3 = "You catch with the corner of your eye a strange woman, dressed in a black robe, waving her hands frantically towards you.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class Disease
+        {
+            public const string Text1 = "One of you is suffering from a strage disease.";
+            public const string Text2 = "Disease spreads among you.";
+            public const string Text3 = "You find sickness in the lands you travel.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class SaveVsAssets
+        {
+            public const string Text1 = "Passing through a forest, you hear an enchanted song. A tale about a world called Ryxos. The enchantment is foul and wishes you ill.";
+            public const string Text2 = "You find a man-made cave. Old trails lead in and out, but you decide it would be wise to stay on your path. As you turn away a manifestation reaches out to grab one of you.";
+            public const string Text3 = "You step into a trap, by the looks of it it's goblin made.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class LoseWealth
+        {
+            public const string Text1 = "Your gambling addiction does not build a frugal mind.";
+            public const string Text2 = "A game of Avelraan arcomage takes its toll on you and a nearby cat.";
+            public const string Text3 = "You discover gambling within your ranks.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class Boon
+        {
+            public const string Text1 = "You find a small well in a forest. Its walls are decorated and elven ornaments can be seen all over them. The well is in bad repair, time has taken its toll on it, and vines and animals have degraded its beauty. You spend time to clean it, and leave. A while later you start feeling better about yourself.";
+            public const string Text2 = "You pass by a village that tell you a story about a young fair maiden, living by sea. She had the power to cure all disease, and illnesses, yet somehow, she never had the strength to cure her own affliction. You ask about her name, and the peasants respond with Illiana.";
+            public const string Text3 = "A faint gust of wind wipes the sweat off your brow.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class ItemFind
+        {
+            public const string Text1 = "You run into a cave full of rusty, broken, items. One is still in good shape.";
+            public const string Text2 = "You travel along a merchant caravan for several miles, when you part ways they offer you an item.";
+            public const string Text3 = "You help a passing stranger cross a river, and are reward with an item.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class Storyline
+        {
+            public const string Text1 = "You pass along by what it seems to be man-made hill. From afar, the hillshide looks as if it resembles a face. While spending long moments watching it, a passerby tells you that this is the work of the Stone-men, an ancient civilization that ruled this world before the age of men.";
+            public const string Text2 = "During the night, you stare at the distant stars. Your eye catches a small glimpse of a green flash up on the moonless night sky. The flash turns into an aurora, and sooner rather than later it covers the entire sky in a beautiful jade green veil. The effect lasts for several hours, a mesmerizing display of light scattering most people witness once or twice in their lifetime.";
+            public const string Text3 = "You ride along the road with the pleasant orange light of the sun on the side of your cheek. You stop to enjoy the sunset and its warmth.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class GainWealth
+        {
+            public const string Text1 = "A rider finds you. He hands you a parchment. The goods you had for sale in Arada found a good price.";
+            public const string Text2 = "You stumble upon an abandoned cart. Several long dead by its sides. You uncover the goods and are amazed of its riches.";
+            public const string Text3 = "";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
     }
 
     public static class QuestReward
@@ -178,16 +309,16 @@ public class GameplayLore
         public const string Stats = "Stats";
         public const string Skills = "Skills";
         public const string Deeds = "Deeds";
-        // 6 total
+        // total 6
 
         public static readonly List<string> All = new()
         {
-            Wealth, // 1 
-            Item,   // 2
-            Loot,   // 3 
-            Stats,  // 4
-            Skills, // 5
-            Deeds,  // 6
+            Wealth,// 1 
+            Item,  // 2
+            Loot,  // 3 
+            Stats, // 4
+            Skills,// 5
+            Deeds, // 6
         };
     }
 
@@ -208,15 +339,15 @@ public class GameplayLore
         public const string Gambler = "Gambler";
         public const string Sweetalker = "Sweetalker";
         public const string Gang = "Gang";
-        //  12 total
+        //  total 12
 
         public static readonly List<string> All = new()
         {
-            Mudpaddler,     // 1
-            Sellsword,      // 2
-            Deliverance,    // 3
-            Furtive,        // 4
-            BaneOfTheOccult // 5
+            Mudpaddler,    // 1
+            Sellsword,     // 2
+            Deliverance,   // 3
+            Furtive,       // 4
+            BaneOfTheOccult// 5
         };
     }
 
@@ -244,12 +375,12 @@ public class GameplayLore
                 IsRepeatable = true,
                 MaxEffortLvl = Effort.Normal,
             };
-            // 2 total
+            // total 2
 
             public static readonly List<QuestTemplate> All = new()
             {
-                Mudpaddler, // 1
-                Sellsword   // 2
+                Mudpaddler,// 1
+                Sellsword  // 2
             };
         }
 
@@ -288,9 +419,9 @@ public class GameplayLore
 
             public static readonly List<QuestTemplate> All = new()
             {
-                RescueNobleFromRansom,  // 1
-                AmbushOutlanders,       // 2
-                KillCultists            // 3
+                RescueNobleFromRansom,// 1
+                AmbushOutlanders,     // 2
+                KillCultists          // 3
             };
         }
     }

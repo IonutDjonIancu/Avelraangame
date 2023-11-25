@@ -42,16 +42,22 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
 
             return encounterType switch
             {
-                GameplayLore.EncounterType.SaveVsStats => RunSaveVsStats(board),
+                GameplayLore.EncounterType.SaveVsStats  => RunSaveVsStatsLogic(board),
+                GameplayLore.EncounterType.Combat       => RunCombatLogic(board),
+                GameplayLore.EncounterType.Curse        => RunCurseLogic(board),
+                GameplayLore.EncounterType.Disease      => RunDiseaseLogic(board),
+                GameplayLore.EncounterType.LoseWealth   => RunLoseWealthLogic(board),
+                GameplayLore.EncounterType.Boon         => RunBoonLogic(board),
+                GameplayLore.EncounterType.ItemFind     => RunItemFindLogic(board),
+                GameplayLore.EncounterType.Storyline    => RunStorylineLogic(board),
+                GameplayLore.EncounterType.GainWealth   => RunGainWealthLogic(board),
                 _ => throw new NotImplementedException(),
             };
         }
-
-
     }
 
     #region private methods
-    private Battleboard RunSaveVsStats(Battleboard board)
+    private Battleboard RunSaveVsStatsLogic(Battleboard board)
     {
         var statToRoll = CharactersLore.Stats.All[diceLogic.Roll_1_to_n(CharactersLore.Stats.All.Count) - 1]!;
         var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
@@ -86,6 +92,46 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
         }
 
         return board;
+    }
+
+    private Battleboard RunCombatLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunCurseLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunDiseaseLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunLoseWealthLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunBoonLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunItemFindLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunStorylineLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunGainWealthLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion
