@@ -100,31 +100,15 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
         var locationName = ServicesUtils.GetLocationByPositionFullName(position.GetPositionFullName()).Name;
 
         var nrOfMobs = RollForNrOfMobs();
-
         for (int i = 0; i < nrOfMobs; i++)
-        {
-            var mob = GenerateMob();
-
-
-
-        }
-
-
-        Character GenerateMob()
         {
             var mob = npcLogic.GenerateBadGuy(locationName);
 
-            if (board.Quest.EffortLvl >= GameplayLore.Effort.Planar)
-            {
-                // add an enum here that will return the difficulty factor
-                // have this method in the service utils
-                // and use it where you don't need the effort level, but just the difficulty factor
-            }
-
-
-
-            return mob;
+            board.BadGuys.Add(mob);
         }
+        
+        board.IsInCombat = true;
+        board.GetAllCharacters().ForEach(s => s.Status.Gameplay.IsLocked = true);
 
         int RollForNrOfMobs() 
         { 
@@ -136,7 +120,7 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
             else if (rollForMobsLevel >= 80 && rollForMobsLevel < 100) { nrOfMobs = diceLogic.Roll_1_to_n(1000) + 100; extraMessage = "You are discovered by a warband's forward scouts. To hide their intentions, they won't let you live."; }
             else if (rollForMobsLevel >= 60 && rollForMobsLevel < 80)  { nrOfMobs = diceLogic.Roll_1_to_n(500) + 50;  extraMessage = "A disorganized band of ruffians blocks your path, you are attacked."; }
             else if (rollForMobsLevel >= 40 && rollForMobsLevel < 60)  { nrOfMobs = diceLogic.Roll_1_to_n(200) + 20; extraMessage = "You face an angry mob, you are in for a fight."; }
-            else if (rollForMobsLevel >= 20 && rollForMobsLevel < 40)  { nrOfMobs = diceLogic.Roll_1_to_n(100) + diceLogic.Roll_1_to_n(board.Quest.EffortLvl); extraMessage = "A large group of enemies are about."; }
+            else if (rollForMobsLevel >= 20 && rollForMobsLevel < 40)  { nrOfMobs = diceLogic.Roll_1_to_n(100) + diceLogic.Roll_1_to_n(board.Quest.EffortLvl); extraMessage = "A large group of enemies are approaching."; }
             else   /*rollForMobsLevel < 20*/                           { nrOfMobs = diceLogic.Roll_1_to_n(board.Quest.EffortLvl); extraMessage = "Some enemies approach."; }
 
             var resultText = GameplayLore.EncounterTypeResults.Combat.All[diceLogic.Roll_1_to_n(GameplayLore.EncounterTypeResults.Combat.All.Count) - 1];
