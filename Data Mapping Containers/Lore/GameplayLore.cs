@@ -4,105 +4,9 @@ namespace Data_Mapping_Containers.Lore;
 
 public class GameplayLore
 {
-    public static class Locations
-    {
-        public static class Dragonmaw
-        {
-            public const string RegionName = "Dragonmaw";
-
-            public static class Farlindor
-            {
-                public const string SubregionName = "Farlindor";
-
-                public static class Danar
-                {
-                    public const string LandName = "Danar";
-                    #region locations
-                    private const string AradaName = "Arada";
-                    public static readonly Location Arada = new()
-                    {
-                        Name = AradaName,
-                        FullName = $"{RegionName}_{SubregionName}_{LandName}_{AradaName}", // Arada
-                        Position = new()
-                        {
-                            Region = RegionName,
-                            Subregion = SubregionName,
-                            Land = LandName,
-                            Location = AradaName
-                        },
-                        Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent standing army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
-                        Effort = Effort.Normal,
-                        TravelCostFromArada = 1
-                    };
-                    private const string LanwickName = "Lanwick Province";
-                    public static readonly Location Lanwick = new()
-                    {
-                        Name = LanwickName,
-                        FullName = $"{RegionName}_{SubregionName}_{LandName}_{LanwickName}", // Lanwick
-                        Position = new()
-                        {
-                            Region = RegionName,
-                            Subregion = SubregionName,
-                            Land = LandName,
-                            Location = LanwickName
-                        },
-                        Description = "A wealthy province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
-                        Effort = Effort.Normal,
-                        TravelCostFromArada = 3
-                    };
-                    private const string BelfordshireName = "Belfordshire";
-                    public static readonly Location Belfordshire = new()
-                    {
-                        Name = BelfordshireName,
-                        FullName = $"{RegionName}_{SubregionName}_{LandName}_{BelfordshireName}", // Belfordshire
-                        Position = new()
-                        {
-                            Region = RegionName,
-                            Subregion = SubregionName,
-                            Land = LandName,
-                            Location = BelfordshireName
-                        },
-                        Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
-                        Effort = Effort.Gifted,
-                        TravelCostFromArada = 5
-                    };
-                    #endregion
-                }
-            }
-        }
-
-        public static readonly List<Location> All = new()
-        {
-            Dragonmaw.Farlindor.Danar.Arada,
-            Dragonmaw.Farlindor.Danar.Lanwick,
-            Dragonmaw.Farlindor.Danar.Belfordshire
-        };
-    }
-
-    public static class Effort
-    {
-        public const int Normal = 50; 
-        public const int Gifted = 100; 
-        public const int Chosen = 200;
-        public const int Hero = 500;
-        public const int Olympian = 1000; 
-        public const int Planar = 9000;
-    }
-
-    public static class Tradition
-    {
-        public const string Martial = CharactersLore.Tradition.Martial;
-        public const string Common = CharactersLore.Tradition.Common;
-
-        public static readonly List<string> All = new()
-        {
-            Martial, Common
-        };
-    }
-
     public static class Camping
     {
-        public const string Nightfall = "Nigh falls and your party members gather around the crackling campfire. They share a hearty meal, the tantalizing aroma of roasted game filling the air.";
+        public const string Nightfall = "Night falls and your party members gather around the crackling campfire. They share a hearty meal, the tantalizing aroma of roasted game filling the air.";
         public const string Campfire = "Amidst the flickering flames of the campfire, a palpable silence hangs in the air. You observe your comrades, wrapped in solitude, meticulously inspecting and polishing their armor, sharpening weapons with unwavering focus, and performing personal, secretive tasks that speak to their unique backgrounds and skills.";
         public const string Laughter = "From the shelter of your campsite, you watch the slow orange sun descend into the sunset. Laughter and camaraderie fill the camp as stories and experiences are shared, bringing a sense of unity and warmth to your secluded wilderness campsite.";
         public const string Rainy = "As the rain continues to pour from the heavens, your party members huddle beneath the shelter of a makeshift canopy and tents, you are given a brief respite from the perils of your quest, offering a chance to recharge, bond, and reflect on the adventures that still lie ahead.";
@@ -112,7 +16,17 @@ public class GameplayLore
             Nightfall, Campfire, Laughter, Rainy
         };
     }
-
+    
+    public static class Effort
+    {
+        public const int Normal = 50; 
+        public const int Gifted = 100; 
+        public const int Chosen = 200;
+        public const int Hero = 500;
+        public const int Olympian = 1000; 
+        public const int Planar = 9000;
+    }
+    
     public static class EncounterType
     {
         // bad
@@ -143,7 +57,7 @@ public class GameplayLore
             LoseWealth,  // 10
         };
     }
-
+    
     public static class EncounterTypeResults
     {
         public static class SaveVs
@@ -299,6 +213,127 @@ public class GameplayLore
                 Text3,
             };
         }
+    }
+    
+    public static class EncounterTexts
+    {
+        public static class CombatEncounters
+        {
+            public const string Normal = "Some enemies approach.";
+            public const string Gifted = "A large group of enemies are approaching.";
+            public const string Chosen = "You face an angry mob, you are in for a fight.";
+            public const string Hero = "A disorganized band of ruffians blocks your path, you are attacked.";
+            public const string Olympian = "You are discovered by a warband's forward scouts. To hide their intentions, they won't let you live.";
+            public const string Planar = "You run into an army's avangarde. They mistake you for enemy scouts and attack.";
+
+            public static readonly List<string> All = new()
+            {
+                Normal, Gifted, Chosen, Hero, Olympian, Planar
+            };
+        }
+
+        public static class CurseEncounters
+        {
+            public const string Skills = "Curse of the Unskilled.";
+            public const string Stats = "Curse of the Deformed.";
+            public const string Assets = "Curse of the Feeble.";
+            public const string Item = "Curse of the Broken.";
+            public const string Items = "Curse of the Wrecked.";
+            public const string WealthWorthAndFame = "Curse of the Unremembered.";
+
+            public static readonly List<string> All = new()
+            {
+                Skills, Stats, Assets, Item, Items, WealthWorthAndFame
+            };
+        }
+
+    }
+
+    
+    public static class Locations
+    {
+        public static class Dragonmaw
+        {
+            public const string RegionName = "Dragonmaw";
+
+            public static class Farlindor
+            {
+                public const string SubregionName = "Farlindor";
+
+                public static class Danar
+                {
+                    public const string LandName = "Danar";
+                    #region locations
+                    private const string AradaName = "Arada";
+                    public static readonly Location Arada = new()
+                    {
+                        Name = AradaName,
+                        FullName = $"{RegionName}_{SubregionName}_{LandName}_{AradaName}", // Arada
+                        Position = new()
+                        {
+                            Region = RegionName,
+                            Subregion = SubregionName,
+                            Land = LandName,
+                            Location = AradaName
+                        },
+                        Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent standing army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
+                        Effort = Effort.Normal,
+                        TravelCostFromArada = 1
+                    };
+                    private const string LanwickName = "Lanwick Province";
+                    public static readonly Location Lanwick = new()
+                    {
+                        Name = LanwickName,
+                        FullName = $"{RegionName}_{SubregionName}_{LandName}_{LanwickName}", // Lanwick
+                        Position = new()
+                        {
+                            Region = RegionName,
+                            Subregion = SubregionName,
+                            Land = LandName,
+                            Location = LanwickName
+                        },
+                        Description = "A wealthy province in the kingdom of Danar, famous for its horsemen that make up the strong cavalry of the danarian elite. Although it's mostly flatlands, the north-western part has a four-hundred meter high hill, on top of which rests Lanwick Fortress, overlookin lake De'lac to the north.",
+                        Effort = Effort.Normal,
+                        TravelCostFromArada = 3
+                    };
+                    private const string BelfordshireName = "Belfordshire";
+                    public static readonly Location Belfordshire = new()
+                    {
+                        Name = BelfordshireName,
+                        FullName = $"{RegionName}_{SubregionName}_{LandName}_{BelfordshireName}", // Belfordshire
+                        Position = new()
+                        {
+                            Region = RegionName,
+                            Subregion = SubregionName,
+                            Land = LandName,
+                            Location = BelfordshireName
+                        },
+                        Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
+                        Effort = Effort.Gifted,
+                        TravelCostFromArada = 5
+                    };
+                    #endregion
+                }
+            }
+        }
+
+        public static readonly List<Location> All = new()
+        {
+            Dragonmaw.Farlindor.Danar.Arada,
+            Dragonmaw.Farlindor.Danar.Lanwick,
+            Dragonmaw.Farlindor.Danar.Belfordshire
+        };
+    }
+
+    public static class Tradition
+    {
+        public const string Martial = CharactersLore.Tradition.Martial;
+        public const string Common = CharactersLore.Tradition.Common;
+
+        public static readonly List<string> All = new()
+        {
+            Martial, Common
+        };
     }
 
     public static class QuestReward

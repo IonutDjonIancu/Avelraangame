@@ -190,7 +190,7 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
 
     public Battleboard NextEncounter(BattleboardActor actor)
     {
-        validations.ValidateBattleboardOnAbandonQuest(actor);
+        validations.ValidateBattleboardOnNextEncounter(actor);
         return encounterLogic.NextEncounter(actor);
     }
 }

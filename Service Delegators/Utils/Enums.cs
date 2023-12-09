@@ -4,7 +4,7 @@ public static class Enums
 {
     public enum Difficulty
     {
-        Normal,
+        Normal = 1,
         Gifted,
         Chosen,
         Hero,
