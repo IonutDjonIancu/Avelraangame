@@ -111,9 +111,9 @@ public class GameplayLore
 
         public static class Disease
         {
-            public const string Text1 = "One of you is suffering from a strage disease.";
-            public const string Text2 = "Disease spreads among you.";
-            public const string Text3 = "You find sickness in the lands you travel.";
+            public const string Text1 = "One of us is suffering from a strage disease";
+            public const string Text2 = "Disease spreads among us";
+            public const string Text3 = "We find sickness in the lands we travel";
             // total 3
 
             public static readonly List<string> All = new()

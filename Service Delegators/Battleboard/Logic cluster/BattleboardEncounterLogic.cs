@@ -139,7 +139,7 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
         var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
         var difficulty = ServicesUtils.GetDifficultyFromEffort(board.Quest.EffortLvl);
         var difficultyFactor = 0.1 * (int)difficulty;
-        var resultText = EncounterTypeResults.Combat.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Combat.All.Count) - 1];
+        var resultText = EncounterTypeResults.Curse.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Curse.All.Count) - 1];
         var extraMessage = string.Empty;
 
         CurseSkills(character);
@@ -229,7 +229,7 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
             foreach (var property in item.Sheet.Skills.GetType().GetProperties())
             {
                 var currentValue = (int)property.GetValue(item.Sheet.Skills)!;
-                property.SetValue(item.Sheet.Skills, (int)(currentValue * difficultyFactor));
+                property.SetValue(item.Sheet.Skills, (int)(currentValue * (1 - difficultyFactor)));
             }
 
             extraMessage += $"{EncounterTexts.CurseEncounters.Item} {character.Status.Name}'s {item.Name} skills have been reduced by {(int)difficulty * 10}%. ";
@@ -275,7 +275,17 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
 
     private Battleboard RunDiseaseLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
+
+        foreach (var stat in character.Sheet.Stats.GetType().GetProperties())
+        {
+            var currentValue = (int)(stat.GetValue(character.Sheet.Stats)!);
+            stat.SetValue(character.Sheet.Stats, (int)(currentValue * 0.9));
+        }
+
+        board.LastActionResult = $"{character.Status.Name} says '{EncounterTypeResults.Disease.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Disease.All.Count) - 1]}'.";
+
+        return board;
     }
 
     private Battleboard RunLoseWealthLogic(Battleboard board)
