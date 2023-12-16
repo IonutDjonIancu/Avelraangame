@@ -187,8 +187,8 @@ public class GameplayLore
         public static class Storyline
         {
             public const string Text1 = "You pass along by what it seems to be man-made hill. From afar, the hillshide looks as if it resembles a face. While spending long moments watching it, a passerby tells you that this is the work of the Stone-men, an ancient civilization that ruled this world before the age of men.";
-            public const string Text2 = "During the night, you stare at the distant stars. Your eye catches a small glimpse of a green flash up on the moonless night sky. The flash turns into an aurora, and sooner rather than later it covers the entire sky in a beautiful jade green veil. The effect lasts for several hours, a mesmerizing display of light scattering most people witness once or twice in their lifetime.";
-            public const string Text3 = "You ride along the road with the pleasant orange light of the sun on the side of your cheek. You stop to enjoy the sunset and its warmth.";
+            public const string Text2 = "During the night, you stare at the distant stars. Your eye catches a small glimpse of a green flash up on the moonless night sky. The flash turns into an aurora, and sooner rather than later it covers the entire sky in a beautiful jade green veil. The effect lasts for several hours, a mesmerizing display of light scattering most people witness once or twice in their entire lifetime.";
+            public const string Text3 = "You ride along the road with the pleasant ochre light of the sun on the side of your cheek. You stop to enjoy the sunset and its warmth, the brown-orange sun covering half the size of the horizon.";
             // total 3
 
             public static readonly List<string> All = new()

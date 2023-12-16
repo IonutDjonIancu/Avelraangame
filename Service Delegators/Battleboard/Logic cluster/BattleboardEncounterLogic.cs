@@ -371,17 +371,56 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
 
     private Battleboard RunStorylineLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        board.LastActionResult = EncounterTypeResults.Storyline.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Storyline.All.Count) - 1];
+
+        return board;
     }
 
     private Battleboard RunGainWealthLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
+        var difficulty = (int)ServicesUtils.GetDifficultyFromEffort(board.Quest.EffortLvl);
+        var difficultyFactor = 0.1 * difficulty;
+        character.Status.Wealth += (int)(character.Status.Wealth * difficultyFactor);
+
+        board.LastActionResult = $"{EncounterTypeResults.GainWealth.All[diceLogic.Roll_1_to_n(EncounterTypeResults.GainWealth.All.Count) - 1]} {character.Status.Name} gains wealth.";
+
+        return board;
     }
 
     private Battleboard RunExperienceLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
+        var extraMessage = string.Empty;
+
+        var roll = diceLogic.Roll_d20_withReroll();
+        character.LevelUp.SkillPoints += diceLogic.Roll_1_to_n(6);
+
+        if (roll < 20)
+        {
+            character.LevelUp.SkillPoints += diceLogic.Roll_1_to_n(6);
+            character.LevelUp.StatPoints += diceLogic.Roll_1_to_n(6);
+            extraMessage = $"{character.Status.Name} gains skills and stat points.";
+        }
+        else if (roll < 40)
+        {
+            character.LevelUp.SkillPoints += diceLogic.Roll_1_to_n(6);
+            character.LevelUp.StatPoints += diceLogic.Roll_1_to_n(6);
+            character.LevelUp.AssetPoints += diceLogic.Roll_1_to_n(6);
+            extraMessage = $"{character.Status.Name} gains skills, stat and asset points.";
+        }
+        else if (roll < 60)
+        {
+            character.LevelUp.SkillPoints += diceLogic.Roll_1_to_n(6);
+            character.LevelUp.StatPoints += diceLogic.Roll_1_to_n(6);
+            character.LevelUp.AssetPoints += diceLogic.Roll_1_to_n(6);
+            character.LevelUp.DeedPoints += diceLogic.Roll_1_to_n(6);
+            extraMessage = $"{character.Status.Name} gains skills, stat, asset and deed points.";
+        }
+
+        board.LastActionResult = $"{EncounterTypeResults.Experience.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Experience.All.Count) - 1]} {extraMessage}";
+
+        return board;
     }
 
     #endregion
