@@ -29,18 +29,18 @@ public class GameplayLore
     
     public static class EncounterType
     {
-        // bad
+        // bad 5
         public const string SaveVsStats = "SaveVs";
         public const string Combat = "Combat";
         public const string Curse = "Curse";
         public const string Disease = "Disease";
-        public const string SaveVsAssets = "SaveVsAssets";
         public const string LoseWealth = "LoseWealth";
-        // good
+        // good 5
         public const string Boon = "Boon";
         public const string ItemFind = "ItemFind";
         public const string Storyline = "Storyline";
         public const string GainWealth = "GainWealth";
+        public const string Experience = "Experience";
         // total 10
 
         public static readonly List<string> All = new()
@@ -53,8 +53,8 @@ public class GameplayLore
             ItemFind,    // 6
             Storyline,   // 7
             GainWealth,  // 8
-            SaveVsAssets,// 9
-            LoseWealth,  // 10
+            LoseWealth,  // 9
+            Experience   // 10
         };
     }
     
@@ -141,7 +141,7 @@ public class GameplayLore
 
         public static class LoseWealth
         {
-            public const string Text1 = "Your gambling addiction does not build a frugal mind.";
+            public const string Text1 = "The gambling addiction does not build a frugal mind.";
             public const string Text2 = "A game of Avelraan arcomage takes its toll on you and a nearby cat.";
             public const string Text3 = "You discover gambling within your ranks.";
             // total 3
@@ -203,7 +203,22 @@ public class GameplayLore
         {
             public const string Text1 = "A rider finds you. He hands you a parchment. The goods you had for sale in Arada found a good price.";
             public const string Text2 = "You stumble upon an abandoned cart. Several long dead by its sides. You uncover the goods and are amazed of its riches.";
-            public const string Text3 = "";
+            public const string Text3 = "The goods you found a while back have made some wealth for you.";
+            // total 3
+
+            public static readonly List<string> All = new()
+            {
+                Text1,
+                Text2,
+                Text3,
+            };
+        }
+
+        public static class Experience
+        {
+            public const string Text1 = "Your experience serves you well.";
+            public const string Text2 = "A passerby stranger trains you in his arts.";
+            public const string Text3 = "The sunrise brings new experiences.";
             // total 3
 
             public static readonly List<string> All = new()

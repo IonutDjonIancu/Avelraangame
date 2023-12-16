@@ -7,7 +7,6 @@ namespace Service_Delegators;
 public interface IBattleboardEncounterLogic
 {
     Battleboard NextEncounter(BattleboardActor actor);
-    Battleboard LastEncounter(BattleboardActor actor);
 }
 
 public class BattleboardEncounterLogic : IBattleboardEncounterLogic
@@ -38,27 +37,43 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
             var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             var board = BattleboardUtils.GetBattleboard(attacker, snapshot);
 
-            board.Quest.EncountersLeft--;
-
-            var encounterType = EncounterType.All[diceLogic.Roll_1_to_n(EncounterType.All.Count) - 1];
-
-            return encounterType switch
-            {
-                EncounterType.SaveVsStats  => RunSaveVsStatsLogic(board),
-                EncounterType.Combat       => RunCombatLogic(board),
-                EncounterType.Curse        => RunCurseLogic(board),
-                EncounterType.Disease      => RunDiseaseLogic(board),
-                EncounterType.LoseWealth   => RunLoseWealthLogic(board),
-                EncounterType.Boon         => RunBoonLogic(board),
-                EncounterType.ItemFind     => RunItemFindLogic(board),
-                EncounterType.Storyline    => RunStorylineLogic(board),
-                EncounterType.GainWealth   => RunGainWealthLogic(board),
-                _ => throw new NotImplementedException(),
-            };
+            return board.Quest.EncountersLeft > 0 
+                ? GenerateNextEncounter(attacker, board)
+                : GenerateLastEncounter(attacker, board);
         }
     }
 
     #region private methods
+    private Battleboard GenerateLastEncounter(Character attacker, Battleboard board)
+    {
+
+    }
+
+    private Battleboard GenerateNextEncounter(Character attacker, Battleboard board)
+    {
+        board.Quest.EncountersLeft--;
+
+        var encounterType = EncounterType.All[diceLogic.Roll_1_to_n(EncounterType.All.Count) - 1];
+
+        return encounterType switch
+        {
+            // bad
+            EncounterType.SaveVsStats => RunSaveVsStatsLogic(board),
+            EncounterType.Combat => RunCombatLogic(board),
+            EncounterType.Curse => RunCurseLogic(board),
+            EncounterType.Disease => RunDiseaseLogic(board),
+            EncounterType.LoseWealth => RunLoseWealthLogic(board),
+
+            // good
+            EncounterType.Boon => RunBoonLogic(board),
+            EncounterType.ItemFind => RunItemFindLogic(board),
+            EncounterType.Storyline => RunStorylineLogic(board),
+            EncounterType.GainWealth => RunGainWealthLogic(board),
+            EncounterType.Experience => RunExperienceLogic(board),
+            _ => throw new NotImplementedException(),
+        };
+    }
+
     private Battleboard RunSaveVsStatsLogic(Battleboard board)
     {
         var statToRoll = CharactersLore.Stats.All[diceLogic.Roll_1_to_n(CharactersLore.Stats.All.Count) - 1]!;
@@ -290,12 +305,50 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
 
     private Battleboard RunLoseWealthLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
+        var difficulty = (int)ServicesUtils.GetDifficultyFromEffort(board.Quest.EffortLvl);
+        var difficultyFactor = 0.1 * difficulty;
+        character.Status.Wealth -= (int)(character.Status.Wealth * difficultyFactor);
+
+        board.LastActionResult = EncounterTypeResults.LoseWealth.All[diceLogic.Roll_1_to_n(EncounterTypeResults.LoseWealth.All.Count) - 1];
+
+        return board;
     }
 
     private Battleboard RunBoonLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
+
+        var roll = diceLogic.Roll_1_to_n(3);
+
+        if (roll == 1)
+        {
+            foreach (var stat in character.Sheet.Stats.GetType().GetProperties())
+            {
+                var currentValue = (int)stat.GetValue(character.Sheet.Stats)!;
+                stat.SetValue(character.Sheet.Stats, currentValue * 0.01);
+            }
+        }
+        else if (roll == 2)
+        {
+            foreach (var asset in character.Sheet.Assets.GetType().GetProperties())
+            {
+                var currentValue = (int)asset.GetValue(character.Sheet.Assets)!;
+                asset.SetValue(character.Sheet.Assets, currentValue * 0.01);
+            }
+        }
+        else
+        {
+            foreach (var skill in character.Sheet.Skills.GetType().GetProperties())
+            {
+                var currentValue = (int)skill.GetValue(character.Sheet.Skills)!;
+                skill.SetValue(character.Sheet.Skills, currentValue * 0.01);
+            }
+        }
+
+        board.LastActionResult = EncounterTypeResults.Boon.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Boon.All.Count) - 1];
+
+        return board;
     }
 
     private Battleboard RunItemFindLogic(Battleboard board)
@@ -309,6 +362,11 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
     }
 
     private Battleboard RunGainWealthLogic(Battleboard board)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Battleboard RunExperienceLogic(Battleboard board)
     {
         throw new NotImplementedException();
     }
