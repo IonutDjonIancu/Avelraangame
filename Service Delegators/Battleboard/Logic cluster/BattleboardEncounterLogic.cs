@@ -320,6 +320,7 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
         var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
 
         var roll = diceLogic.Roll_1_to_n(3);
+        var extraMessage = string.Empty;
 
         if (roll == 1)
         {
@@ -328,6 +329,8 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
                 var currentValue = (int)stat.GetValue(character.Sheet.Stats)!;
                 stat.SetValue(character.Sheet.Stats, currentValue * 0.01);
             }
+
+            extraMessage = $"{character.Status.Name} stats are increased.";
         }
         else if (roll == 2)
         {
@@ -336,6 +339,8 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
                 var currentValue = (int)asset.GetValue(character.Sheet.Assets)!;
                 asset.SetValue(character.Sheet.Assets, currentValue * 0.01);
             }
+
+            extraMessage = $"{character.Status.Name} assets are increased.";
         }
         else
         {
@@ -344,16 +349,24 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
                 var currentValue = (int)skill.GetValue(character.Sheet.Skills)!;
                 skill.SetValue(character.Sheet.Skills, currentValue * 0.01);
             }
+
+            extraMessage = $"{character.Status.Name} skills are increased.";
         }
 
-        board.LastActionResult = EncounterTypeResults.Boon.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Boon.All.Count) - 1];
+        board.LastActionResult = $"{EncounterTypeResults.Boon.All[diceLogic.Roll_1_to_n(EncounterTypeResults.Boon.All.Count) - 1]} {extraMessage}";
 
         return board;
     }
 
     private Battleboard RunItemFindLogic(Battleboard board)
     {
-        throw new NotImplementedException();
+        var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
+
+        character.Inventory.Supplies.Add(itemsLogic.GenerateRandomItem());
+
+        board.LastActionResult = $"{EncounterTypeResults.ItemFind.All[diceLogic.Roll_1_to_n(EncounterTypeResults.ItemFind.All.Count) - 1]} {character.Status.Name} gains an item.";
+
+        return board;
     }
 
     private Battleboard RunStorylineLogic(Battleboard board)

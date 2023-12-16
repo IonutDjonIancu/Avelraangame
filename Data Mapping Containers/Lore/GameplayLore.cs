@@ -157,7 +157,7 @@ public class GameplayLore
         public static class Boon
         {
             public const string Text1 = "You find a small well in a forest. Its walls are decorated and elven ornaments can be seen all over them. The well is in bad repair, time has taken its toll on it, and vines and animals have degraded its beauty. You spend time to clean it, and leave. A while later you start feeling better about yourself.";
-            public const string Text2 = "You pass by a village that tell you a story about a young fair maiden, living by sea. She had the power to cure all disease, and illnesses, yet somehow, she never had the strength to cure her own affliction. You ask about her name, and the peasants respond with Illiana.";
+            public const string Text2 = "You pass by a village that tell you a story about a young fair maiden living by the sea. She had the power to cure all disease, all illnesses, yet somehow, she never had the strength to cure her own affliction. You ask about her name, but the peasants can't agree to remember which was it.";
             public const string Text3 = "A faint gust of wind wipes the sweat off your brow.";
             // total 3
 
