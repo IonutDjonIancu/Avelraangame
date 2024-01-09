@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Service_Delegators;
 
 namespace Tests;
 
@@ -58,7 +57,9 @@ public class TestBase : IDisposable
         LoadBattleboardService(services);
     }
 
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
     public void Dispose()
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
     {
         _scope.Dispose();
     }

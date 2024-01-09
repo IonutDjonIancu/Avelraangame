@@ -385,7 +385,7 @@ public class GameplayLore
         public const string Sellsword = "Sellsword";
         public const string Deliverance = "Deliverance";
         public const string Furtive = "Furtive";
-        public const string BaneOfTheOccult = "Bane of the occult";
+        public const string Occult = "Bane of the occult";
         public const string Gambler = "Gambler";
         public const string Sweetalker = "Sweetalker";
         public const string Gang = "Gang";
@@ -397,7 +397,7 @@ public class GameplayLore
             Sellsword,     // 2
             Deliverance,   // 3
             Furtive,       // 4
-            BaneOfTheOccult// 5
+            Occult// 5
         };
     }
 
@@ -458,7 +458,7 @@ public class GameplayLore
             };
             public static readonly QuestTemplate KillCultists = new()
             {
-                Fame = QuestFame.BaneOfTheOccult,
+                Fame = QuestFame.Occult,
                 Description = "Whispers of unholy deeds have reached the ears of the devout abbot. You listen to his story about a cult steeped in darkness, performing unspeakable rituals and sacrificing innocents to unseen entities. " +
                 "The abbot provides a cryptic map leading to the cult's hidden sanctum. The path is treacherous, and you know the woods themselves seem to murmur with an otherworldly presence.",
                 Result = "You were never able to track down the abbot upon your arrival, but a monastery boy gives you a small linnen bag with your reward, inside you find a papyrus note thanking you.",

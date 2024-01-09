@@ -38,18 +38,53 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
             var board = BattleboardUtils.GetBattleboard(attacker, snapshot);
 
             return board.Quest.EncountersLeft > 0 
-                ? GenerateNextEncounter(attacker, board)
-                : GenerateLastEncounter(attacker, board);
+                ? GenerateNextEncounter(board)
+                : GenerateLastEncounter(board);
         }
     }
 
     #region private methods
-    private Battleboard GenerateLastEncounter(Character attacker, Battleboard board)
+    private Battleboard GenerateLastEncounter(Battleboard board)
     {
-
+        return board.Quest.Fame switch
+        {
+            QuestFame.Mudpaddler => RunMudpaddlerLogic(board),
+            QuestFame.Sellsword => RunSellswordLogic(board),
+            QuestFame.Deliverance => RunDeliveranceLogic(board),
+            QuestFame.Furtive => RunFurtiveLogic(board),
+            QuestFame.Occult => RunOccultLogic(board),
+            _ => throw new NotImplementedException()
+        };
     }
 
-    private Battleboard GenerateNextEncounter(Character attacker, Battleboard board)
+    private static Battleboard RunMudpaddlerLogic(Battleboard board)
+    {
+        board.LastActionResult = "You find the last outpost. The men are cheerful to see this trip end.";
+
+        return board;
+    }
+
+    private Battleboard RunSellswordLogic(Battleboard board)
+    {
+        return RunCombatLogic(board);
+    }
+
+    private Battleboard RunDeliveranceLogic(Battleboard board)
+    {
+        return RunCombatLogic(board);
+    }
+
+    private Battleboard RunFurtiveLogic(Battleboard board)
+    {
+        return RunCombatLogic(board);
+    }
+
+    private Battleboard RunOccultLogic(Battleboard board)
+    {
+        return RunCombatLogic(board);
+    }
+
+    private Battleboard GenerateNextEncounter(Battleboard board)
     {
         board.Quest.EncountersLeft--;
 
@@ -320,7 +355,7 @@ public class BattleboardEncounterLogic : IBattleboardEncounterLogic
         var character = board.GoodGuys[diceLogic.Roll_1_to_n(board.GoodGuys.Count) - 1]!;
 
         var roll = diceLogic.Roll_1_to_n(3);
-        var extraMessage = string.Empty;
+        string extraMessage;
 
         if (roll == 1)
         {
