@@ -32,9 +32,9 @@ public interface IBattleboardLogicDelegator
 
     // quest
     Battleboard SelectQuest(BattleboardActor actor);
-    Battleboard NextEncounter(BattleboardActor actor);
     Battleboard FinishQuest(BattleboardActor actor);
     Battleboard AbandonQuest(BattleboardActor actor);
+    Battleboard NextEncounter(BattleboardActor actor);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
