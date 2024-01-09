@@ -9,9 +9,9 @@ public class Battleboard
     public bool CanLvlUp { get; set; }
     public int RoundNr { get; set; }
 
-    public string GoodGuyPartyLead { get; set; }
+    public string GoodGuyPartyLeadId { get; set; }
     public List<Character> GoodGuys { get; set; } = new();
-    public string BadGuyPartyLead { get; set; }
+    public string BadGuyPartyLeadId { get; set; }
     public List<Character> BadGuys { get; set; } = new();
     public List<string> BattleOrder { get; set; } = new();
 

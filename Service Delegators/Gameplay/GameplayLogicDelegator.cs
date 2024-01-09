@@ -40,7 +40,6 @@ public class GameplayLogicDelegator : IGameplayLogicDelegator
         return quests.GenerateLocationQuests(locationEffortLevel);
     }
 
-
     public Ladder GetLadder()
     {
         return characters.GetCharactersLadder();

@@ -64,8 +64,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         lock (_lock)
         {
             var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
+            
+            RunAttackLogic(attacker, board, defender);
+            RunPostOffenseEvaluation(board);
 
-            return RunAttackLogic(attacker, board, defender);
+            return board;
         }
     }
 
@@ -74,8 +77,11 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         lock (_lock)
         {
             var (attacker, board, defender) = BattleboardUtils.GetAttackerBoardDefender(actor, snapshot);
+            
+            RunCastLogic(attacker, board, defender);
+            RunPostOffenseEvaluation(board);
 
-            return RunCastLogic(attacker, board, defender);
+            return board;
         }
     }
 
@@ -164,7 +170,10 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         {
             var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
-            return RunTrapsLogic(attacker, board);
+            RunTrapsLogic(attacker, board);
+            RunPostOffenseEvaluation(board);
+
+            return board;
         }
     }
 
@@ -211,20 +220,25 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
                 target = board.GoodGuys[enemyIndex];
             }
 
-            Battleboard resultBoard = skillToUse switch
+            switch (skillToUse)
             {
-                CharactersLore.Skills.Melee => RunAttackLogic(npc, board, target),
-                CharactersLore.Skills.Traps => RunTrapsLogic(npc, board),
-                _ => RunCastLogic(npc, board, target),
-            };
+                case CharactersLore.Skills.Melee:
+                    RunAttackLogic(npc, board, target);
+                    break;
+                case CharactersLore.Skills.Traps:
+                    RunTrapsLogic(npc, board);
+                    break;
+                default:
+                    RunCastLogic(npc, board, target);
+                    break;
+            }
 
             var aiResultMessage = $"<< Ai >> {board.LastActionResult}";
-
-            resultBoard.LastActionResult = aiResultMessage;
+            board.LastActionResult = aiResultMessage;
 
             MoveOrRemoveFromBattleOrder(npc, board);
 
-            return resultBoard;
+            return board;
         }
     }
 
@@ -268,9 +282,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         {
             var (attacker, board) = BattleboardUtils.GetAttackerBoard(actor, snapshot);
 
-            ChooseNewPartyLeadIfPartyLeadDead(attacker, board);
-
-            if (board.GoodGuyPartyLead == string.Empty && board.BadGuyPartyLead == string.Empty)
+            if (board.GoodGuyPartyLeadId == string.Empty && board.BadGuyPartyLeadId == string.Empty)
             {
                 ReturnNpcsHomeIfAllPlayersAreDead(attacker, board, snapshot);
 
@@ -356,22 +368,6 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         board.BadGuys.Where(s => !s.Status.Gameplay.IsAlive).ToList().ForEach(s => board.BadGuys.Remove(s));
     }
 
-    private void ChooseNewPartyLeadIfPartyLeadDead(Character partyLead, Battleboard board)
-    {
-        if (partyLead.Status.Gameplay.IsAlive) return;
-
-        if (partyLead.Status.Gameplay.IsGoodGuy)
-        {
-            var anySurvivor = board.GoodGuys.Where(s => s.Status.Gameplay.IsAlive && !s.Status.Gameplay.IsNpc).OrderByDescending(s => s.Status.Worth).FirstOrDefault();
-            board.GoodGuyPartyLead = anySurvivor != null ? anySurvivor.Identity.Id : string.Empty;
-        }
-        else
-        {
-            var anySurvivor = board.BadGuys.Where(s => s.Status.Gameplay.IsAlive && !s.Status.Gameplay.IsNpc).OrderByDescending(s => s.Status.Worth).FirstOrDefault();
-            board.BadGuyPartyLead = anySurvivor != null ? anySurvivor.Identity.Id : string.Empty;
-        }
-    }
-
     private static void LootWealth(Character partyLead, Battleboard board)
     {
         var totalLootWealth = board.GetAllCharacters().Where(s => !s.Status.Gameplay.IsAlive).ToList().Sum(s => s.Status.Wealth);
@@ -387,7 +383,6 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         {
             survivor.Status.Wealth += partyShare / survivors.Count;
         }
-
     }
 
     private static void LootDeadMan(Character deadMan, Character partyLead)
@@ -427,7 +422,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
     }
 
-    private Battleboard RunTrapsLogic(Character attacker, Battleboard board)
+    private void RunTrapsLogic(Character attacker, Battleboard board)
     {
         var attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Traps, attacker);
         var spotters = 0;
@@ -495,16 +490,14 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         }
 
         MoveOrRemoveFromBattleOrder(attacker, board);
-
-        return board;
     }
 
-    private Battleboard RunCastLogic(Character attacker, Battleboard board, Character defender)
+    private void RunCastLogic(Character attacker, Battleboard board, Character defender)
     {
         if (defender.Sheet.Assets.Purge >= 100)
         {
             board.LastActionResult = "Your target is immune to arcane and psionic effects.";
-            return board;
+            return;
         }
 
         var isAttackerPsionist = attacker.Sheet.Skills.Psionics >= attacker.Sheet.Skills.Arcane;
@@ -578,7 +571,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             if (attackDiff <= 0) 
             {
                 board.LastActionResult = $"Your target has saved vs. your {(isAttackerPsionist ? "energy surge." : "spellcast.")}";
-                return board;
+                return;
             }
 
             var effect = isAttackerPsionist
@@ -604,11 +597,9 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
         CheckDefenderIsDead(defender, board);
         MoveOrRemoveFromBattleOrder(attacker, board);
-
-        return board;
     }
 
-    private Battleboard RunAttackLogic(Character attacker, Battleboard board, Character defender)
+    private void RunAttackLogic(Character attacker, Battleboard board, Character defender)
     {
         var attackerRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Melee, attacker);
         var defenderRoll = dice.Roll_game_dice(board.CanLvlUp, CharactersLore.Skills.Melee, defender);
@@ -638,7 +629,7 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
         if (result <= 0)
         {
             board.LastActionResult = $"{attacker.Status.Name} missed.";
-            return board;
+            return;
         }
 
         var harmPercentage = result * 0.2;
@@ -650,13 +641,37 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
         CheckDefenderIsDead(defender, board);
         MoveOrRemoveFromBattleOrder(attacker, board);
+    }
 
-        return board;
+    private static void RunPostOffenseEvaluation(Battleboard board)
+    {
+        var goodGuyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
+        var badGuyLead = board.BadGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
+
+        if (goodGuyLead != null && !goodGuyLead.Status.Gameplay.IsAlive)
+        {
+            var candidate = board.GoodGuys
+                .OrderByDescending(s => s.Status.Worth)
+                .FirstOrDefault(s => s.Status.Gameplay.IsAlive && !s.Status.Gameplay.IsNpc) 
+                ?? board.GoodGuys.FirstOrDefault(s => s.Status.Gameplay.IsAlive);
+
+            board.GoodGuyPartyLeadId = candidate != null ? candidate.Identity.Id : string.Empty;
+        }
+
+        if (badGuyLead != null && !badGuyLead.Status.Gameplay.IsAlive)
+        {
+            var candidate = board.BadGuys
+                .OrderByDescending(s => s.Status.Worth)
+                .FirstOrDefault(s => s.Status.Gameplay.IsAlive && !s.Status.Gameplay.IsNpc) 
+                ?? board.BadGuys.FirstOrDefault(s => s.Status.Gameplay.IsAlive);
+
+            board.BadGuyPartyLeadId = candidate != null ? candidate.Identity.Id : string.Empty;
+        }
     }
 
     private void ApplyTacticalRoll(Battleboard board)
     {
-        var goodGuyPartyLead = board.GoodGuys.First(s => s.Identity.Id == board.GoodGuyPartyLead).Status.Name;
+        var goodGuyPartyLead = board.GoodGuys.First(s => s.Identity.Id == board.GoodGuyPartyLeadId).Status.Name;
 
         var highestRollerGoodGuy = board.GoodGuys.OrderByDescending(s => s.Sheet.Skills.Tactics).First()!;
         var highestRollerBadGuy = board.BadGuys.OrderByDescending(s => s.Sheet.Skills.Tactics).First()!;

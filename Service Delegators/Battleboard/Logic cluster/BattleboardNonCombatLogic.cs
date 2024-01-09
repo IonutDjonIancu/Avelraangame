@@ -37,6 +37,8 @@ public class BattleboardNonCombatLogic : IBattleboardNonCombatLogic
                 member.Sheet.Assets.ResolveLeft = member.Sheet.Assets.Resolve;
                 member.Sheet.Assets.ManaLeft = member.Sheet.Assets.Mana;
                 member.Sheet.Assets.ActionsLeft = member.Sheet.Assets.Actions;
+
+                member.Inventory.Provisions -= 2;
             }
 
             var index = dice.Roll_1_to_n(GameplayLore.Camping.All.Count) - 1;

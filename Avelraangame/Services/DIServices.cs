@@ -113,6 +113,7 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<INpcLogicDelegator, NpcLogicDelegator>();
         // subservices
         builder.Services.AddTransient<INpcCreateLogic, NpcCreateLogic>();
+        builder.Services.AddTransient<INpcGameplayLogic, NpcGameplayLogic>();
     }
 
     private static void LoadGameplayService(WebApplicationBuilder builder)
@@ -133,6 +134,8 @@ public class DIServices : IDIServices
         builder.Services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
         builder.Services.AddTransient<IBattleboardCombatLogic, BattleboardCombatLogic>();
         builder.Services.AddTransient<IBattleboardNonCombatLogic, BattleboardNonCombatLogic>();
+        builder.Services.AddTransient<IBattleboardQuestLogic, BattleboardQuestLogic>();
+        builder.Services.AddTransient<IBattleboardEncounterLogic, BattleboardEncounterLogic>();
     }
     #endregion
 }

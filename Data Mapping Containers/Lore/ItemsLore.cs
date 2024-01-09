@@ -168,10 +168,11 @@ public class ItemsLore
         public const string Twohanded = "Twohanded";
         public const string Ranged = "Ranged";
         public const string Garment = "Garment";
+        public const string Tradeable = "Tradeable";
 
         public static readonly List<string> All = new()
         {
-            Onehanded, Twohanded, Ranged, Garment
+            Onehanded, Twohanded, Ranged, Garment, Tradeable
         };
     }
 

@@ -13,6 +13,7 @@ public class NpcTests: TestBase
         goodGuy.Status.Gameplay.IsNpc.Should().BeTrue();
         goodGuy.Status.Gameplay.IsLocked.Should().BeFalse();
         goodGuy.Status.Position.Should().Be(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Position);
+        goodGuy.Status.Worth.Should().BeGreaterThan(0);
 
         CharactersLore.Races.Playable.All.Should().Contain(goodGuy.Status.Traits.Race);
     }
