@@ -244,7 +244,7 @@ public class BattleboardTests : TestBase
         board.GoodGuys.Select(s => s.Identity.Id).Should().Contain(actor1char.Mercenaries.First().Identity.Id);
     }
 
-    [Fact(DisplayName = "Leaving a battleboard takes your mercs with you.")]
+    [Fact(DisplayName = "Leaving a battleboard returns the mercs to town.")]
     public void LeaveBattleboardWithMercsTest()
     {
         var actor1 = CreateBattleboardActor(PlayerName1);
@@ -272,9 +272,10 @@ public class BattleboardTests : TestBase
 
         _battleboard.JoinBattleboard(actor2);
         board.GoodGuys.Select(s => s.Identity.Id).Should().Contain(actor2char.Mercenaries.First().Identity.Id);
+        var actor2FirstMerc = actor2char.Mercenaries.First();
 
         _battleboard.LeaveBattleboard(actor2);
-        board.GoodGuys.Select(s => s.Identity.Id).Should().NotContain(actor2char.Mercenaries.First().Identity.Id);
+        location.Mercenaries.Find(m => m.Identity.Id == actor2FirstMerc.Identity.Id).Should().NotBeNull();
     }
 
     [Fact(DisplayName = "Starting combat should lock all characters on battleboard.")]
