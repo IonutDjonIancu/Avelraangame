@@ -12,13 +12,16 @@ public class NpcCreateLogic : INpcCreateLogic
 {
     private readonly IDiceLogicDelegator dice;
     private readonly IItemsLogicDelegator items;
+    private readonly INpcGameplayLogic npcGameplayLogic;
 
     public NpcCreateLogic(
         IDiceLogicDelegator dice,
-        IItemsLogicDelegator items)
+        IItemsLogicDelegator items,
+        INpcGameplayLogic npcGameplayLogic)
     {
         this.dice = dice;
         this.items = items;
+        this.npcGameplayLogic = npcGameplayLogic;
     }
 
     public Character GenerateNpcCharacter(string locationName, bool isGood)
@@ -418,23 +421,7 @@ public class NpcCreateLogic : INpcCreateLogic
 
     private void SetWorth(Character character, Location location)
     {
-        var skillsAverage = (character.Sheet.Skills.Melee
-            + character.Sheet.Skills.Arcane
-            + character.Sheet.Skills.Psionics
-            + character.Sheet.Skills.Hide
-            + character.Sheet.Skills.Traps
-            + character.Sheet.Skills.Tactics
-            + character.Sheet.Skills.Social
-            + character.Sheet.Skills.Apothecary
-            + character.Sheet.Skills.Travel
-            + character.Sheet.Skills.Sail)
-            / 10;
-
-        var roll = Randomize(location.Effort);
-
-        character.Status.Worth = character.Status.EntityLevel * 20
-            + roll
-            + skillsAverage;
+        character.Status.Worth = npcGameplayLogic.CalculateNpcWorth(character, location.Effort);
     }
 
     private int Randomize(int max)

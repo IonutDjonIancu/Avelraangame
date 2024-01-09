@@ -6,30 +6,41 @@ public interface INpcLogicDelegator
 {
     Character GenerateBadGuy(string locationName);
     Character GenerateGoodGuy(string locationName);
+
+    int CalculateNpcWorth(Character character, int locationEffortLvl);
 }
 
 public class NpcLogicDelegator : INpcLogicDelegator
 {
     private readonly IValidations validations;
-    private readonly INpcCreateLogic createLogic;
+    private readonly INpcCreateLogic npcCreateLogic;
+    private readonly INpcGameplayLogic npcGameplayLogic;
 
     public NpcLogicDelegator(
         IValidations validations,
-        INpcCreateLogic createLogic)
+        INpcCreateLogic npcCreateLogic,
+        INpcGameplayLogic npcGameplayLogic)
     {
         this.validations = validations;
-        this.createLogic = createLogic;
+        this.npcCreateLogic = npcCreateLogic;
+        this.npcGameplayLogic = npcGameplayLogic;
     }
 
     public Character GenerateGoodGuy(string locationName)
     {
         validations.ValidateLocation(locationName);
-        return createLogic.GenerateNpcCharacter(locationName, true);
+        return npcCreateLogic.GenerateNpcCharacter(locationName, true);
     }
 
     public Character GenerateBadGuy(string locationName)
     {
         validations.ValidateLocation(locationName);
-        return createLogic.GenerateNpcCharacter(locationName, false);
+        return npcCreateLogic.GenerateNpcCharacter(locationName, false);
+    }
+
+    public int CalculateNpcWorth(Character character, int locationEffortLvl)
+    {
+        validations.ValidateBeforeNpcCalculateWorth(character, locationEffortLvl);
+        return npcGameplayLogic.CalculateNpcWorth(character, locationEffortLvl);
     }
 }

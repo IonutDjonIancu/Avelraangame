@@ -33,6 +33,7 @@ internal static class ItemCategoriesAndSubcategories
         else if (item.Subtype == ItemsLore.Subtypes.Wealth.Gems) item.Subcategory = ItemsLore.Subcategories.Garment;
         else if (item.Subtype == ItemsLore.Subtypes.Wealth.Valuables) item.Subcategory = ItemsLore.Subcategories.Garment;
         else if (item.Subtype == ItemsLore.Subtypes.Wealth.Trinket) item.Subcategory = ItemsLore.Subcategories.Garment;
+        else if (item.Subtype == ItemsLore.Subtypes.Wealth.Goods) item.Subcategory = ItemsLore.Subcategories.Tradeable;
     }
 
     #region private methods

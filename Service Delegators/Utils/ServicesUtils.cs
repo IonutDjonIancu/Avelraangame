@@ -1,5 +1,6 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Lore;
+using static Service_Delegators.Enums;
 
 namespace Service_Delegators;
 
@@ -12,14 +13,19 @@ public static class ServicesUtils
         return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
     }
 
-    public static Location GetLocationByLocationFullName(string locationFullName)
+    public static Location GetLocationByPositionFullName(string locationFullName)
     {
         return GameplayLore.Locations.All.Find(s => s.FullName == locationFullName)!;
     }
 
-    public static Location GetLocationByPosition(Position position)
+    public static Location GetLoreLocationByPosition(Position position)
     {
         return GameplayLore.Locations.All.Find(s => s.FullName == position.GetPositionFullName())!;
+    }
+
+    public static Location GetSnapshotLocationByPosition(Position position, Snapshot snapshot)
+    {
+        return snapshot.Locations.Find(s => s.FullName == GetLocationFullNameFromPosition(position)) ?? throw new Exception("Location not found.");
     }
 
     public static string GetLocationFullNameFromPosition(Position position)
@@ -46,5 +52,18 @@ public static class ServicesUtils
         }
 
         throw new Exception("Character not found.");
+    }
+
+    public static Difficulty GetDifficultyFromEffort(int effort)
+    {
+        return effort switch
+        {
+            <= 50 => Difficulty.Normal,
+            <= 100 => Difficulty.Gifted,
+            <= 200 => Difficulty.Chosen,
+            <= 500 => Difficulty.Hero,
+            <= 1000 => Difficulty.Olympian,
+            _ => Difficulty.Planar,
+        };
     }
 }

@@ -4,15 +4,18 @@ namespace Service_Delegators;
 
 public interface IBattleboardLogicDelegator
 {
+    // gets
     List<Battleboard> GetBattleboards();
     Battleboard FindBattleboard(string battleboardId);
     Battleboard FindCharacterBattleboard(BattleboardActor actor);
 
+    // crud
     Battleboard CreateBattleboard(BattleboardActor actor);
     Battleboard JoinBattleboard(BattleboardActor actor);
     Battleboard KickFromBattleboard(BattleboardActor actor);
     void LeaveBattleboard(BattleboardActor actor);
 
+    // combat
     Battleboard StartCombat(BattleboardActor actor);
     Battleboard Attack(BattleboardActor actor);
     Battleboard Cast(BattleboardActor actor);
@@ -24,7 +27,14 @@ public interface IBattleboardLogicDelegator
     Battleboard EndRound(BattleboardActor actor);
     Battleboard EndCombat(BattleboardActor actor);
     
+    // non-combat
     Battleboard MakeCamp(BattleboardActor actor);
+
+    // quest
+    Battleboard SelectQuest(BattleboardActor actor);
+    Battleboard FinishQuest(BattleboardActor actor);
+    Battleboard AbandonQuest(BattleboardActor actor);
+    Battleboard NextEncounter(BattleboardActor actor);
 }
 
 public class BattleboardLogicDelegator : IBattleboardLogicDelegator
@@ -33,17 +43,23 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     private readonly IBattleboardCRUDLogic crudLogic;
     private readonly IBattleboardCombatLogic combatLogic;
     private readonly IBattleboardNonCombatLogic nonCombatLogic;
+    private readonly IBattleboardQuestLogic questLogic;
+    private readonly IBattleboardEncounterLogic encounterLogic;
 
     public BattleboardLogicDelegator(
         IValidations validations,
         IBattleboardCRUDLogic crudLogic,
         IBattleboardCombatLogic combatLogic,
-        IBattleboardNonCombatLogic nonCombatLogic)
+        IBattleboardNonCombatLogic nonCombatLogic,
+        IBattleboardQuestLogic questLogic,
+        IBattleboardEncounterLogic encounterLogic)
     {
         this.crudLogic = crudLogic;
         this.validations = validations;
         this.combatLogic = combatLogic;
         this.nonCombatLogic = nonCombatLogic;
+        this.questLogic = questLogic;
+        this.encounterLogic = encounterLogic;
     }
 
     public List<Battleboard> GetBattleboards()
@@ -151,5 +167,30 @@ public class BattleboardLogicDelegator : IBattleboardLogicDelegator
     {
         validations.ValidateBattleboardOnMakeCamp(actor);
         return nonCombatLogic.MakeCamp(actor);
+    }
+
+    public Battleboard SelectQuest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnSelectQuest(actor);
+        return questLogic.StartQuest(actor);
+    }
+
+    public Battleboard FinishQuest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnFinishQuest(actor);
+        return questLogic.EndQuest(actor);
+
+    }
+
+    public Battleboard AbandonQuest(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnAbandonQuest(actor);
+        return questLogic.StopQuest(actor);
+    }
+
+    public Battleboard NextEncounter(BattleboardActor actor)
+    {
+        validations.ValidateBattleboardOnNextEncounter(actor);
+        return encounterLogic.NextEncounter(actor);
     }
 }

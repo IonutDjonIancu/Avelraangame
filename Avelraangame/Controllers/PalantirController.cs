@@ -997,5 +997,81 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Battleboards/SelectQuest
+    [HttpPut("Battleboards/SelectQuest")]
+    public IActionResult SelectQuest([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.SelectQuest(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/FinishQuest
+    [HttpPut("Battleboards/FinishQuest")]
+    public IActionResult FinishQuest([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.FinishQuest(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/AbandonQuest
+    [HttpPut("Battleboards/AbandonQuest")]
+    public IActionResult AbandonQuest([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.AbandonQuest(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/NextEncounter
+    [HttpPut("Battleboards/NextEncounter")]
+    public IActionResult NextEncounter([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.NextEncounter(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 }

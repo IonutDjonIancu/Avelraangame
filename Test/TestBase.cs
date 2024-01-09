@@ -57,7 +57,9 @@ public class TestBase : IDisposable
         LoadBattleboardService(services);
     }
 
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
     public void Dispose()
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
     {
         _scope.Dispose();
     }
@@ -147,6 +149,7 @@ public class TestBase : IDisposable
         services.AddTransient<INpcLogicDelegator, NpcLogicDelegator>();
         // subservices
         services.AddTransient<INpcCreateLogic, NpcCreateLogic>();
+        services.AddTransient<INpcGameplayLogic, NpcGameplayLogic>();
     }
 
     private static void LoadGameplayService(IServiceCollection services)
@@ -167,5 +170,7 @@ public class TestBase : IDisposable
         services.AddTransient<IBattleboardCRUDLogic, BattleboardCRUDLogic>();
         services.AddTransient<IBattleboardCombatLogic, BattleboardCombatLogic>();
         services.AddTransient<IBattleboardNonCombatLogic, BattleboardNonCombatLogic>();
+        services.AddTransient<IBattleboardQuestLogic, BattleboardQuestLogic>();
+        services.AddTransient<IBattleboardEncounterLogic, BattleboardEncounterLogic>();
     }
 }

@@ -29,7 +29,7 @@ public class DatabaseImportLogic : IDatabaseImportLogic
 
     public void ImportPlayer(string playerJsonString)
     {
-        var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString);
+        var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString)!;
 
         lock (_lock)
         {
