@@ -118,15 +118,15 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Database
-    // PUT: /api/palantir/Database/ExportDatabase
-    [HttpPut("Database/ExportDatabase")]
-    public IActionResult ExportDatabase([FromQuery] Request request)
+    // PUT: /api/palantir/Database/ExportSnapshot
+    [HttpPut("Database/ExportSnapshot")]
+    public IActionResult ExportSnapshot([FromQuery] Request request)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ExportDatabase(playerId);
+            database.ExportSnapshot(playerId);
 
             return Ok("Database exported successfully.");
         }
@@ -137,15 +137,15 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Database/ExportLogs
-    [HttpPut("Database/ExportLogs")]
-    public IActionResult ExportLogs([FromQuery] Request request, int days)
+    // PUT: /api/palantir/Database/ImportSnapshot
+    [HttpPut("Database/ImportSnapshot")]
+    public IActionResult ImportSnapshot([FromQuery] Request request, [FromBody] string snapshotJsonString)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ExportLogs(playerId, days);
+            database.ImportSnapshot(playerId, snapshotJsonString);
 
             return Ok("Logs exported successfully.");
         }

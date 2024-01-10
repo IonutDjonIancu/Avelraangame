@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Mapping Containers", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Independent Modules", "Independent Modules\Independent Modules.csproj", "{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence Manager", "Persistance Manager\Persistence Manager.csproj", "{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service Delegators", "Service Delegators\Service Delegators.csproj", "{BCC07B90-693E-4AAE-BF34-85A38CA2D561}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Test\Tests.csproj", "{D85430E7-C986-4A27-A5CB-896170974A84}"
@@ -38,10 +36,6 @@ Global
 		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CEFB8D2-4FE8-4AE2-A402-88F15951F9D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6F953E-6C48-46BD-9079-8F86B3B3C88B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCC07B90-693E-4AAE-BF34-85A38CA2D561}.Release|Any CPU.ActiveCfg = Release|Any CPU
