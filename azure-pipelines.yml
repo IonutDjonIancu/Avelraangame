@@ -8,24 +8,36 @@ pr:
 pool:
   vmImage: "windows-latest"
 
+variables:
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  solution: '**/Avelraangame.Avelraangame.sln'
+  project: '**/Avelraangame.Avelraangame.csproj'
+
 steps:
-  - task: UseDotNet@2
+  - task: NuGetToolInstaller@1
+    name: 'NuGetToolInstaller'
+    displayName: 'NuGet tool installer'
+
+  - task: NuGetCommand@2
     inputs:
-      packageType: "sdk"
-      version: "6.x"
-      installationPath: $(Agent.ToolsDirectory)/dotnet
-
-  - script: dotnet restore
-    displayName: "Restore Dependencies"
-
-  - script: dotnet build --configuration Release
-    displayName: "Build Project"
-
-  - script: dotnet test
-    displayName: "Run Tests"
-
+      command: 'restore'
+      restoreSolution: '$(solution)'
+      feedsToUse: 'select'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      projects: '$(solution)'
+      arguments: '--configuration $(BuildConfiguration)'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory))'
+      zipAfterPublish: false
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-      ArtifactName: "drop"
-    displayName: "Publish Artifacts"
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'AzureTestProject'
+      publishLocation: 'Container'
+  
