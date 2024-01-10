@@ -46,7 +46,6 @@
     <ProjectReference Include="..\Avelraangame\Avelraangame.csproj" />
     <ProjectReference Include="..\Data Mapping Containers\Data Mapping Containers.csproj" />
     <ProjectReference Include="..\Independent Modules\Independent Modules.csproj" />
-    <ProjectReference Include="..\Persistance Manager\Persistence Manager.csproj" />
     <ProjectReference Include="..\Service Delegators\Service Delegators.csproj" />
   </ItemGroup>
 

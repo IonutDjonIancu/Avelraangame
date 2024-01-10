@@ -2,9 +2,9 @@
 
 public interface IDatabaseLogicDelegator
 {
-    void ExportDatabase(string requesterId);
-    void ExportLogs(string requesterId, int days);
-    void ImportPlayer(string requesterId, string playerJsonString);
+    void ExportSnapshot(string requesterId);
+    void ImportSnapshot(string requesterId, string snapshotJson);
+    void ImportPlayer(string requesterId, string playerJson);
 }
 
 public class DatabaseLogicDelegator : IDatabaseLogicDelegator
@@ -23,21 +23,21 @@ public class DatabaseLogicDelegator : IDatabaseLogicDelegator
         this.importLogic = importLogic;
     }
 
-    public void ExportDatabase(string requesterId)
+    public void ExportSnapshot(string requesterId)
     {
-        validations.ValidateDatabaseExportImportOperations(requesterId);
-        exportLogic.ExportDatabase();
+        validations.ValidateSnapshotExportImportOperations(requesterId, string.Empty, true);
+        exportLogic.ExportSnapshot();
     }
 
-    public void ExportLogs(string requesterId, int days)
+    public void ImportSnapshot(string requesterId, string snapshotJson)
     {
-        validations.ValidateDatabaseExportImportOperations(requesterId);
-        exportLogic.ExportLogs(days);
+        validations.ValidateSnapshotExportImportOperations(requesterId, snapshotJson, false);
+        importLogic.ImportSnapshot(snapshotJson);
     }
 
-    public void ImportPlayer(string requesterId, string playerJsonString)
+    public void ImportPlayer(string requesterId, string playerJson)
     {
-        validations.ValidateDatabasePlayerImport(requesterId, playerJsonString);
-        importLogic.ImportPlayer(playerJsonString);
+        validations.ValidateDatabasePlayerImport(requesterId, playerJson);
+        importLogic.ImportPlayer(playerJson);
     }
 }

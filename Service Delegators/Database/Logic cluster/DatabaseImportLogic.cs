@@ -1,38 +1,42 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
 public interface IDatabaseImportLogic
 {
+    void ImportSnapshot(string snapshotJsonString);
     void ImportPlayer(string playerJsonString);
 }
 
 public class DatabaseImportLogic : IDatabaseImportLogic
 {
-    private readonly Snapshot snapshot;
-    private readonly IPersistenceService persistence;
+    private Snapshot snapshot;
     private readonly IPlayerLogicDelegator players;
 
     private readonly object _lock = new();
 
     public DatabaseImportLogic(
         Snapshot snapshot,
-        IPersistenceService persistence,
         IPlayerLogicDelegator players)
     {
         this.snapshot = snapshot;
-        this.persistence = persistence;
         this.players = players;
+    }
+
+    public void ImportSnapshot(string snapshotJsonString)
+    {
+        lock (_lock)
+        {
+            snapshot = JsonConvert.DeserializeObject<Snapshot>(snapshotJsonString)!;
+        }
     }
 
     public void ImportPlayer(string playerJsonString)
     {
-        var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString)!;
-
         lock (_lock)
         {
+            var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString)!;
             var oldPlayer = snapshot.Players.Find(p => p.Identity.Id == newPlayer.Identity.Id);
 
             if (oldPlayer != null)
@@ -41,7 +45,6 @@ public class DatabaseImportLogic : IDatabaseImportLogic
             }
 
             snapshot.Players.Add(newPlayer);
-            persistence.PersistPlayer(newPlayer.Identity.Id);
         }
     }
 }

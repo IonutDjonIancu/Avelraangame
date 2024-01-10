@@ -12,8 +12,8 @@ public interface IValidations
     #endregion
 
     #region database
-    void ValidateDatabaseExportImportOperations(string requesterId);
-    void ValidateDatabasePlayerImport(string requesterId, string playerJson);
+    void ValidateSnapshotExportImportOperations(string requesterId, string snapshotJsonString, bool isExport);
+    void ValidateDatabasePlayerImport(string requesterId, string playerJsonString);
     #endregion
 
     #region items
@@ -103,7 +103,7 @@ public class Validations : IValidations
     {
         lock (_lockApi)
         {
-            var player = GetPlayerByName_p(request.PlayerName);
+            var player = GetPlayerByName(request.PlayerName);
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
             if (request.Token != player.Identity.Token) throw new Exception("Token mismatch.");
@@ -114,25 +114,39 @@ public class Validations : IValidations
     #endregion
 
     #region database validations
-    public void ValidateDatabaseExportImportOperations(string requesterId)
+    public void ValidateSnapshotExportImportOperations(string requesterId, string snapshotJsonString, bool isExport)
     {
         lock (_lockDatabase)
         {
             ValidatePlayerIsAdmin_p(requesterId);
+
+            if (isExport) return;
+
+            try
+            {
+                JsonConvert.DeserializeObject<Snapshot>(snapshotJsonString);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
+            }
         }
     }
 
-    public void ValidateDatabasePlayerImport(string requesterId, string playerJson)
+    public void ValidateDatabasePlayerImport(string requesterId, string playerJsonString)
     {
-        ValidateDatabaseExportImportOperations(requesterId);
+        lock ( _lockDatabase)
+        {
+            ValidatePlayerIsAdmin_p(requesterId);
 
-        try
-        {
-            JsonConvert.DeserializeObject<Player>(playerJson);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
+            try
+            {
+                JsonConvert.DeserializeObject<Player>(playerJsonString);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
+            }
         }
     }
     #endregion
@@ -613,7 +627,7 @@ public class Validations : IValidations
         lock (_lockBattleboards)
         {
             ValidateGuid_p(battleboardId);
-            GetBattleboard_p(battleboardId);
+            GetBattleboardById(battleboardId);
         }
     }
 
@@ -683,7 +697,7 @@ public class Validations : IValidations
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
 
-            var board = GetBattleboard_p(actor.BattleboardId!);
+            var board = GetBattleboardById(actor.BattleboardId!);
 
             if (!string.IsNullOrWhiteSpace(board.Quest.Id) && !actor.WantsToBeGood!.Value) throw new Exception("You can only join party as friendly during questing.");
             if (board.IsInCombat) throw new Exception(boardInCombat);
@@ -705,7 +719,7 @@ public class Validations : IValidations
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsLocked_p(character);
 
-            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+            var battleboard = GetBattleboardById(character.Status.Gameplay.BattleboardId);
             ValidateCharacterIsOnBattleboard(battleboard, character);
 
             if (character.Status.Gameplay.IsGoodGuy)
@@ -734,7 +748,7 @@ public class Validations : IValidations
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
 
-            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+            var battleboard = GetBattleboardById(character.Status.Gameplay.BattleboardId);
             ValidateCharacterIsOnBattleboard(battleboard, character);
 
             if (battleboard.IsInCombat) throw new Exception(boardInCombat);
@@ -749,7 +763,7 @@ public class Validations : IValidations
             ValidateObject_p(actor.MainActor);
 
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-            var board = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+            var board = GetBattleboardById(character.Status.Gameplay.BattleboardId);
 
             if (board.IsInCombat) throw new Exception("Battleboard already in combat.");
             
@@ -871,7 +885,7 @@ public class Validations : IValidations
             ValidateObject_p(actor.MainActor);
 
             var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-            var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
+            var board = GetBattleboardById(attacker.Status.Gameplay.BattleboardId);
 
             if (board.BattleOrder.Count > 0) throw new Exception("There are still characters with actions.");
         }
@@ -973,7 +987,7 @@ public class Validations : IValidations
     #region generic
     private static void ValidateBool_P(bool? value, string message = "")
     {
-        if (value == null) throw new Exception("Bool value cannot be null.");
+        if (value == null) throw new Exception(message.Length > 0 ? message : "Bool value cannot be null.");
     }
 
     private static void ValidateString_p(string str, string message = "")
@@ -1007,14 +1021,14 @@ public class Validations : IValidations
     private void ValidatePlayerExists_p(string playerId)
     {
         ValidateString_p(playerId);
-        GetPlayer_p(playerId);
+        GetPlayerById(playerId);
     }
 
     private void ValidatePlayerIsAdmin_p(string playerId)
     {
         ValidatePlayerExists_p(playerId);
 
-        var playerName = GetPlayer_p(playerId)!.Identity.Name;
+        var playerName = GetPlayerById(playerId)!.Identity.Name;
 
         if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
     }
@@ -1122,7 +1136,7 @@ public class Validations : IValidations
         ValidateObject_p(actor.MainActor);
 
         var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-        var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
+        var board = GetBattleboardById(attacker.Status.Gameplay.BattleboardId);
 
         if (!board.BattleOrder.Contains(attacker.Identity.Id)) throw new Exception("Character is exhausted and has no action points left for round.");
 
@@ -1137,17 +1151,17 @@ public class Validations : IValidations
     #endregion
 
     #region getter methods
-    private Player GetPlayer_p(string playerId)
+    private Player GetPlayerById(string playerId)
     {
         return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("PLayer not found.");
     }
 
-    private Player GetPlayerByName_p(string name)
+    private Player GetPlayerByName(string name)
     {
         return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
     }
 
-    private Battleboard GetBattleboard_p(string battleboardId)
+    private Battleboard GetBattleboardById(string battleboardId)
     {
         var boardNotFound = "Battleboard not found.";
 
