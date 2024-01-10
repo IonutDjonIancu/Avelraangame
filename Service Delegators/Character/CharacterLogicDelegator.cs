@@ -1,6 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Lore;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
@@ -37,7 +36,6 @@ public interface ICharacterLogicDelegator
 public class CharacterLogicDelegator : ICharacterLogicDelegator
 {
     private readonly IValidations validations;
-    private readonly IPersistenceService persistence;
     private readonly ICharacterCRUDLogic createLogic;
     private readonly ICharacterUpdateLogic infoLogic;
     private readonly ICharacterItemsLogic itemsLogic;
@@ -48,7 +46,6 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
 
     public CharacterLogicDelegator(
         IValidations validations,
-        IPersistenceService persistence,
         ICharacterCRUDLogic createLogic,
         ICharacterUpdateLogic infoLogic,
         ICharacterItemsLogic itemsLogic,
@@ -58,7 +55,6 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         ICharacterNpcInteraction npcInteractionLogic)
     {
         this.validations = validations;
-        this.persistence = persistence;
         this.createLogic = createLogic;
         this.infoLogic = infoLogic;
         this.itemsLogic = itemsLogic;
@@ -71,177 +67,127 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
     public CharacterStub CreateCharacterStub(string playerId)
     {
         validations.ValidateCharacterMaxNrAllowed(playerId);
-        var stub = createLogic.CreateStub(playerId);
-        return stub;
+        return createLogic.CreateStub(playerId);
     }
 
     public Character SaveCharacterStub(CharacterRacialTraits traits, string playerId)
     {
         validations.ValidateCharacterCreateTraits(traits, playerId);
-        var character = createLogic.SaveStub(traits, playerId);
-        return PersistAndReturn(character);
+        return createLogic.SaveStub(traits, playerId);
     }
 
     public void DeleteCharacter(CharacterIdentity identity)
     {
         validations.ValidateCharacterBeforeDelete(identity);
         createLogic.DeleteCharacter(identity);
-        PersistOnly(identity.PlayerId);
     }
 
     public Character EquipCharacterItem(CharacterEquip equip)
     {
         validations.ValidateCharacterEquipUnequipItem(equip, true);
-        var character = itemsLogic.EquipItem(equip);
-        return PersistAndReturn(character);
+        return itemsLogic.EquipItem(equip);
     }
 
     public Character UnequipCharacterItem(CharacterEquip unequip)
     {
         validations.ValidateCharacterEquipUnequipItem(unequip, false);
-        var character = itemsLogic.UnequipItem(unequip);
-        return PersistAndReturn(character);
+        return itemsLogic.UnequipItem(unequip);
     }
 
     public Character UpdateCharacterName(string name, CharacterIdentity identity)
     {
         validations.ValidateCharacterUpdateName(name, identity);
-        var character = infoLogic.ChangeName(name, identity);
-        return PersistAndReturn(character);
+        return infoLogic.ChangeName(name, identity);
     }
 
     public Character LearnCharacterSpecialSkill(CharacterAddSpecialSkill spskAdd)
     {
         validations.ValidateCharacterLearnSpecialSkill(spskAdd);
-        var character = specialSkillsLogic.ApplySpecialSkill(spskAdd);
-        return PersistAndReturn(character);
+        return specialSkillsLogic.ApplySpecialSkill(spskAdd);
     }
 
     public Character AddCharacterFame(string fame, CharacterIdentity identity)
     {
         validations.ValidateCharacterAddFame(fame, identity);
-        var character = infoLogic.AddFame(fame, identity);
-        return PersistAndReturn(character);
+        return infoLogic.AddFame(fame, identity);
     }
 
     public Character AddCharacterWealth(int wealth, CharacterIdentity identity)
     {
         validations.ValidateCharacterAddWealth(wealth, identity);
-        var character = infoLogic.AddWealth(wealth, identity);
-        return PersistAndReturn(character);
+        return infoLogic.AddWealth(wealth, identity);
     }
     
     public Character KillCharacter(CharacterIdentity identity)
     {
         validations.ValidateCharacterBeforeKill(identity);
-        var character = createLogic.KillChar(identity);
-        return PersistAndReturn(character);
+        return createLogic.KillChar(identity);
     }
 
     public Character IncreaseCharacterStats(string stat, CharacterIdentity identity)
     {
         validations.ValidateAttributesBeforeIncrease(stat, CharactersLore.AttributeTypes.Stats, identity);    
-        var character = levelupLogic.IncreaseStats(stat, identity);
-        return PersistAndReturn(character);
+        return levelupLogic.IncreaseStats(stat, identity);
     }
     
     public Character IncreaseCharacterAssets(string asset, CharacterIdentity identity)
     {
         validations.ValidateAttributesBeforeIncrease(asset, CharactersLore.AttributeTypes.Assets, identity);    
-        var character = levelupLogic.IncreaseAsset(asset, identity);
-
-        return PersistAndReturn(character);
+        return levelupLogic.IncreaseAsset(asset, identity);
     }
 
     public Character IncreaseCharacterSkills(string skill, CharacterIdentity identity)
     {
         validations.ValidateAttributesBeforeIncrease(skill, CharactersLore.AttributeTypes.Skills, identity);
-        var character = levelupLogic.IncreaseSkill(skill, identity);
-
-        return PersistAndReturn(character);
+        return levelupLogic.IncreaseSkill(skill, identity);
     }
 
     public Character TravelCharacterToLocation(CharacterTravel travel)
     {
         validations.ValidateCharacterBeforeTravel(travel);
-        var character = travelLogic.MoveToLocation(travel);
-
-        return PersistAndReturn(character);
+        return travelLogic.MoveToLocation(travel);
     }
 
     public Character HireMercenaryForCharacter(CharacterHireMercenary hireMercenary)
     {
         validations.ValidateMercenaryBeforeHire(hireMercenary);
-        var character = npcInteractionLogic.HireMercenary(hireMercenary);
-
-        return PersistAndReturn(character);
+        return npcInteractionLogic.HireMercenary(hireMercenary);
     }
 
     public Character SellItem(CharacterTrade tradeItem)
     {
         validations.ValidateCharacterItemBeforeSell(tradeItem);
-        var character = itemsLogic.BuyOrSellItem(tradeItem);
-
-        return PersistAndReturn(character);
+        return itemsLogic.BuyOrSellItem(tradeItem);
     }
 
     public Character BuyItem(CharacterTrade tradeItem)
     {
         validations.ValidateCharacterItemBeforeBuy(tradeItem);
-        var character = itemsLogic.BuyOrSellItem(tradeItem);
-
-        return PersistAndReturn(character);
+        return itemsLogic.BuyOrSellItem(tradeItem);
     }
 
     public Character BuyProvisions(CharacterTrade tradeItem)
     {
         validations.ValidateCharacterBeforeBuyProvisions(tradeItem);
-        var character = itemsLogic.BuyProvisions(tradeItem);
-
-        return PersistAndReturn(character);
+        return itemsLogic.BuyProvisions(tradeItem);
     }
 
     public Character GiveProvisions(CharacterTrade tradeItem)
     {
         validations.ValidateCharacterBeforeGiveProvisions(tradeItem);
-        var character = itemsLogic.GiveProvisions(tradeItem);
-
-        PersistOnly(tradeItem.TargetIdentity.PlayerId);
-
-        return PersistAndReturn(character);
+        return itemsLogic.GiveProvisions(tradeItem);
     }
 
     public Character GiveWealth(CharacterTrade tradeItem)
     {
         validations.ValidateCharacterBeforeGiveWealth(tradeItem);
-        var character = itemsLogic.GiveWealth(tradeItem);
-
-        PersistOnly(tradeItem.TargetIdentity.PlayerId);
-
-        return PersistAndReturn(character);
+        return itemsLogic.GiveWealth(tradeItem);
     }
 
     public Character GiveItem(CharacterTrade tradeItem)
     {
         validations.ValidateCharacterBeforeGiveItem(tradeItem);
-        var character = itemsLogic.GiveItem(tradeItem);
-
-        PersistOnly(tradeItem.TargetIdentity.PlayerId);
-
-        return PersistAndReturn(character);
+        return itemsLogic.GiveItem(tradeItem);
     }
 
-    #region private methods
-    private Character PersistAndReturn(Character character)
-    {
-        persistence.PersistPlayer(character.Identity.PlayerId);
-
-        return character;
-    }
-
-    private void PersistOnly(string playerId)
-    {
-        persistence.PersistPlayer(playerId);
-    }
-    #endregion
 }

@@ -44,7 +44,6 @@ public class TestBase : IDisposable
         LoadSnapshot(services);
         LoadValidations(services);
         
-        LoadPersistence(services);
         LoadDatabaseService(services);
 
         LoadPlayerService(services);
@@ -85,11 +84,6 @@ public class TestBase : IDisposable
     private static void LoadValidations(IServiceCollection services)
     {
         services.AddSingleton<IValidations, Validations>();
-    }
-
-    private static void LoadPersistence(IServiceCollection services)
-    {
-        services.AddTransient<IPersistenceService, PersistenceService>();
     }
 
     private static void LoadDatabaseService(IServiceCollection services)
