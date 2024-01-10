@@ -39,5 +39,3 @@ steps:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'AzureTestProject'
-      publishLocation: 'Container'
-  
