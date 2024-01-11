@@ -35,10 +35,6 @@ steps:
     command: test
     projects: '**/Avelraangame/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
-- task: PublishTestResults@2
-  inputs:
-    testResultsFiles: '**/*.xml'  
-    searchFolder: '$(System.DefaultWorkingDirectory)'
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)' 
