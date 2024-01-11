@@ -13,34 +13,50 @@ variables:
   project: '../../Avelraangame.Avelraangame.csproj'
 
 steps:
-  - task: DotNetCoreCLI@2
-    displayName: 'NuGet tool installer'
+  - task: UseDotNet@2
+    displayName: 'Use DotNet 6'  
     inputs:
-      command: 'restore'
+      packageType: 'sdk'
+      version: '6.0.415'
+      installationPath: $(Agent.ToolsDirectory)/dotnet
 
   - task: DotNetCoreCLI@2
-    displayName: 'Restore and publish NuGet packages'
+    displayName: 'Dotnet build Release'
     inputs:
-      command: 'restore'
-      projects: '$(solution)'
-
+      command: 'build'
+      projects: '**/Avelraangame.csproj'
+      arguments: '--configuration Release'   
   - task: DotNetCoreCLI@2
-    displayName: 'Run tests'
+    displayName: Restore dotnet tools
     inputs:
-      command: 'test'
-      projects: '$(solution)'
-      arguments: '--configuration $(BuildConfiguration)'
-
+      command: custom
+      custom: tool
+      arguments: restore
   - task: DotNetCoreCLI@2
-    displayName: 'Publish artifacts'
+    displayName: 'Dotnet publish'
     inputs:
-      command: 'publish'
-      publishWebProjects: true
-      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-      zipAfterPublish: true
-
+      command: publish
+      publishWebProjects: false  # If this input is set to true, the projects property value is skipped, and the task tries to find the web projects (web.config file or a wwwroot folder) in the repository and run the publish command on them
+      arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)' ## --configuration Release or Debug, output specifies the output directory for the published files to be
+      zipAfterPublish: true # If this input is set to true, folders created by the publish command will be zipped and deleted.
+      projects: '**/Avelraangame.csproj' # specifies the project file to be published. It uses a wildcard pattern to find any project file with the name "DionysosRouter.csproj" in any subdirectory. This allows it to work with multiple project files if they exist.   
   - task: PublishBuildArtifacts@1
-    displayName: 'Publish artifacts to Azure App Service'
+    displayName: "Publish Artifacts"
     inputs:
-      PathtoPublish: $(Build.ArtifactStagingDirectory)
-      ArtifactName: AzureTestProject
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'AvelraangameArtifact'
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download Build Artifacts'
+    inputs:
+      buildType: 'current' # current,' meaning it will download artifacts from the current build.
+      downloadType: 'single' # In this case, it's set to 'single,' which means it will download a single set of artifacts
+      artifactName: 'AvelraangameArtifact'
+      downloadPath: '$(System.ArtifactsDirectory)' # This parameter indicates the directory where the downloaded artifacts will be stored
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: $(ServiceConnectionName) # Replace with your service connection name
+      appType: 'webApp'
+      WebAppName: $(WebAppName) # Replace with your Azure App Service name
+      package: '$(System.ArtifactsDirectory)/Avelraangame/Avelraangame.zip' # Path to your deployment package
+
