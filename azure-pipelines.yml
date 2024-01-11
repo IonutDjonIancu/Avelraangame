@@ -45,6 +45,9 @@ steps:
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'AvelraangameArtifact'
+  - script: ls $(Build.ArtifactStagingDirectory)
+    displayName: 'List Artifact Staging Directory Contents'
+
   - task: DownloadBuildArtifacts@0
     displayName: 'Download Build Artifacts'
     inputs:
