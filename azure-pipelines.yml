@@ -2,40 +2,54 @@ trigger:
   branches:
     include:
       - main
-pr:
-  - "*"
+  pr:
+    - '*'
 
 pool:
-  vmImage: "windows-latest"
+  vmImage: 'windows-latest'
 
 variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  solution: '**/Avelraangame.Avelraangame.sln'
-  project: '**/Avelraangame.Avelraangame.csproj'
+  solution: '../../Avelraangame.Avelraangame.sln'
+  project: '../../Avelraangame.Avelraangame.csproj'
 
 steps:
-  - task: NuGetToolInstaller@1
-    name: 'NuGetToolInstaller'
+  - task: DotNetCoreCLI@2
     displayName: 'NuGet tool installer'
-
-  - task: NuGetCommand@2
     inputs:
       command: 'restore'
       restoreSolution: '$(solution)'
-      feedsToUse: 'select'
+      feedToUse: 'select'
+
   - task: DotNetCoreCLI@2
+    displayName: 'Restore and publish NuGet packages'
+    inputs:
+      command: 'restore'
+      projects: '$(solution)'
+      feedToUse: 'select'
+      additionalArguments: '--publish-output $(Build.ArtifactStagingDirectory)/NUPKGS'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run tests'
     inputs:
       command: 'test'
       projects: '$(solution)'
       arguments: '--configuration $(BuildConfiguration)'
+
   - task: DotNetCoreCLI@2
+    displayName: 'Publish artifacts'
     inputs:
       command: 'publish'
-      publishWebProjects: false
+      publishWebProjects: true
       arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-      zipAfterPublish: false
+      zipAfterPublish: true
+
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish artifacts to Azure App Service'
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'AzureTestProject'
+      PathtoPublish: $(Build.ArtifactStagingDirectory)
+      ArtifactName: AzureTestProject
+      AzureSubscription: Subscription 1
+      AzureResourceGroup: Avelraangameresourcegroup
+      AzureAppServiceName: Avelraangame
