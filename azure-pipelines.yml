@@ -2,8 +2,6 @@ trigger:
   branches:
     include:
       - main
-  pr:
-    - '*'
 
 pool:
   vmImage: 'windows-latest'
@@ -19,16 +17,12 @@ steps:
     displayName: 'NuGet tool installer'
     inputs:
       command: 'restore'
-      restoreSolution: '$(solution)'
-      feedToUse: 'select'
 
   - task: DotNetCoreCLI@2
     displayName: 'Restore and publish NuGet packages'
     inputs:
       command: 'restore'
       projects: '$(solution)'
-      feedToUse: 'select'
-      additionalArguments: '--publish-output $(Build.ArtifactStagingDirectory)/NUPKGS'
 
   - task: DotNetCoreCLI@2
     displayName: 'Run tests'
@@ -50,6 +44,3 @@ steps:
     inputs:
       PathtoPublish: $(Build.ArtifactStagingDirectory)
       ArtifactName: AzureTestProject
-      AzureSubscription: Subscription 1
-      AzureResourceGroup: Avelraangameresourcegroup
-      AzureAppServiceName: Avelraangame
