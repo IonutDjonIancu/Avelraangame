@@ -55,8 +55,8 @@ steps:
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
-      azureSubscription: $(ServiceConnectionName) # Replace with your service connection name
+      azureSubscription: Subscription 1
       appType: 'webApp'
-      WebAppName: $(WebAppName) # Replace with your Azure App Service name
+      WebAppName: Avelraangame
       package: '$(System.ArtifactsDirectory)/Avelraangame/Avelraangame.zip' # Path to your deployment package
 
