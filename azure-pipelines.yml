@@ -61,5 +61,5 @@ steps:
       ConnectedServiceName: 'AvelraanServiceConnection'
       appType: 'webApp'
       WebAppName: 'Avelraangame'
-      package: '$(System.ArtifactsDirectory)/Avelraangame/Avelraangame.zip' # Path to your deployment package
+      package: '$(System.ArtifactsDirectory)/AvelraangameArtifact/Avelraangame.zip' # Path to your deployment package
 
