@@ -120,13 +120,13 @@ public class PalantirController : ControllerBase
     #region Database
     // PUT: /api/palantir/Database/ExportSnapshot
     [HttpPut("Database/ExportSnapshot")]
-    public IActionResult ExportSnapshot([FromQuery] Request request)
+    public IActionResult ExportSnapshot([FromQuery] Request request, DbRequestsInfo dbRequestsInfo)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ExportSnapshot(playerId);
+            database.ExportSnapshot(playerId, dbRequestsInfo);
 
             return Ok("Database exported successfully.");
         }
@@ -139,13 +139,13 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Database/ImportSnapshot
     [HttpPut("Database/ImportSnapshot")]
-    public IActionResult ImportSnapshot([FromQuery] Request request, [FromBody] string snapshotJsonString)
+    public IActionResult ImportSnapshot([FromQuery] Request request, [FromBody] DbRequestsInfo dbRequestsInfo)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ImportSnapshot(playerId, snapshotJsonString);
+            database.ImportSnapshot(playerId, dbRequestsInfo);
 
             return Ok("Logs exported successfully.");
         }
@@ -158,13 +158,13 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Database/ImportPlayer
     [HttpPut("Database/ImportPlayer")]
-    public IActionResult ImportPlayer([FromQuery] Request request, [FromBody] string playerJsonString)
+    public IActionResult ImportPlayer([FromQuery] Request request, [FromBody] DbRequestsInfo dbRequestsInfo)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ImportPlayer(playerId, playerJsonString);
+            database.ImportPlayer(playerId, dbRequestsInfo);
 
             return Ok("Player imported successfully.");
         }

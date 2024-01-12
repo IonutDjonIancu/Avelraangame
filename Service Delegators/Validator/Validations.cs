@@ -12,8 +12,8 @@ public interface IValidations
     #endregion
 
     #region database
-    void ValidateSnapshotExportImportOperations(string requesterId, string snapshotJsonString, bool isExport);
-    void ValidateDatabasePlayerImport(string requesterId, string playerJsonString);
+    void ValidateSnapshotExportImportOperations(string requesterId, DbRequestsInfo dbReqInfo);
+    void ValidateDatabasePlayerImport(string requesterId, DbRequestsInfo dbReqInfo);
     #endregion
 
     #region items
@@ -114,17 +114,22 @@ public class Validations : IValidations
     #endregion
 
     #region database validations
-    public void ValidateSnapshotExportImportOperations(string requesterId, string snapshotJsonString, bool isExport)
+    public void ValidateSnapshotExportImportOperations(string requesterId, DbRequestsInfo dbReqInfo)
     {
         lock (_lockDatabase)
         {
-            ValidatePlayerIsAdmin_p(requesterId);
+            ValidateObject_p(dbReqInfo);
 
-            if (isExport) return;
+            ValidatePlayerIsAdmin_p(requesterId);
+            ValidateDbRequestInfo(dbReqInfo);
+
+            if (dbReqInfo.IsExport) return;
+
+            ValidateString_p(dbReqInfo.SnapshotJsonString!);
 
             try
             {
-                JsonConvert.DeserializeObject<Snapshot>(snapshotJsonString);
+                JsonConvert.DeserializeObject<Snapshot>(dbReqInfo.SnapshotJsonString!);
             }
             catch (Exception ex)
             {
@@ -133,15 +138,17 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidateDatabasePlayerImport(string requesterId, string playerJsonString)
+    public void ValidateDatabasePlayerImport(string requesterId, DbRequestsInfo dbReqInfo)
     {
         lock ( _lockDatabase)
         {
             ValidatePlayerIsAdmin_p(requesterId);
+            ValidateDbRequestInfo(dbReqInfo);
+            ValidateString_p(dbReqInfo.PlayerJsonString!);
 
             try
             {
-                JsonConvert.DeserializeObject<Player>(playerJsonString);
+                JsonConvert.DeserializeObject<Player>(dbReqInfo.PlayerJsonString!);
             }
             catch (Exception ex)
             {
@@ -1031,6 +1038,16 @@ public class Validations : IValidations
         var playerName = GetPlayerById(playerId)!.Identity.Name;
 
         if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
+    }
+
+    private static void ValidateDbRequestInfo(DbRequestsInfo dbReqInfo)
+    {
+        ValidateObject_p(dbReqInfo);
+        ValidateString_p(dbReqInfo.Password);
+        ValidateString_p(dbReqInfo.Secret);
+
+        if (dbReqInfo.Password != "") throw new Exception("Wrong Avelraan password provided.");
+        if (dbReqInfo.Secret != "") throw new Exception("Wrong Avelraan secret provided.");
     }
     #endregion
 

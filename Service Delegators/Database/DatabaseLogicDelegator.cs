@@ -1,10 +1,12 @@
-﻿namespace Service_Delegators;
+﻿using Data_Mapping_Containers.Dtos;
+
+namespace Service_Delegators;
 
 public interface IDatabaseLogicDelegator
 {
-    void ExportSnapshot(string requesterId);
-    void ImportSnapshot(string requesterId, string snapshotJson);
-    void ImportPlayer(string requesterId, string playerJson);
+    void ExportSnapshot(string requesterId, DbRequestsInfo dbRequestsInfo);
+    void ImportSnapshot(string requesterId, DbRequestsInfo dbRequestsInfo);
+    void ImportPlayer(string requesterId, DbRequestsInfo dbRequestsInfo);
 }
 
 public class DatabaseLogicDelegator : IDatabaseLogicDelegator
@@ -23,21 +25,21 @@ public class DatabaseLogicDelegator : IDatabaseLogicDelegator
         this.importLogic = importLogic;
     }
 
-    public void ExportSnapshot(string requesterId)
+    public void ExportSnapshot(string requesterId, DbRequestsInfo dbRequestsInfo)
     {
-        validations.ValidateSnapshotExportImportOperations(requesterId, string.Empty, true);
+        validations.ValidateSnapshotExportImportOperations(requesterId, dbRequestsInfo);
         exportLogic.ExportSnapshot();
     }
 
-    public void ImportSnapshot(string requesterId, string snapshotJson)
+    public void ImportSnapshot(string requesterId, DbRequestsInfo dbRequestsInfo)
     {
-        validations.ValidateSnapshotExportImportOperations(requesterId, snapshotJson, false);
-        importLogic.ImportSnapshot(snapshotJson);
+        validations.ValidateSnapshotExportImportOperations(requesterId, dbRequestsInfo);
+        importLogic.ImportSnapshot(dbRequestsInfo.SnapshotJsonString!);
     }
 
-    public void ImportPlayer(string requesterId, string playerJson)
+    public void ImportPlayer(string requesterId, DbRequestsInfo dbRequestsInfo)
     {
-        validations.ValidateDatabasePlayerImport(requesterId, playerJson);
-        importLogic.ImportPlayer(playerJson);
+        validations.ValidateDatabasePlayerImport(requesterId, dbRequestsInfo);
+        importLogic.ImportPlayer(dbRequestsInfo.PlayerJsonString!);
     }
 }
