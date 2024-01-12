@@ -1,4 +1,5 @@
 using Avelraangame;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,12 @@ builder.Services.AddCors(options =>
 });
 #endregion
 
+IConfiguration configuration = new ConfigurationBuilder()
+        .AddEnvironmentVariables() // Load environment variables
+        .Build();
+
 #region services
+builder.Services.AddSingleton(configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
