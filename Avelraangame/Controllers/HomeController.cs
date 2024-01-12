@@ -5,9 +5,9 @@ namespace Avelraangame.Controllers;
 [Route("/")]
 public class HomeController : Controller
 {
-    [HttpGet("/Home")]
+    [HttpGet("/")]
     public IActionResult Index()
     {
-        return Ok("All okay!");
+        return Ok("Mae govannen...");
     }
 }
