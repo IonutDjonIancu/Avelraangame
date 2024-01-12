@@ -22,7 +22,7 @@ public class DatabaseExportLogic : IDatabaseExportLogic
     {
         this.appSettings = appSettings;
         this.snapshot = snapshot;
-        mailingModule = new MailingModule(appSettings.AvelraanEmail, appSettings.AvelraanEmailPass);
+        mailingModule = new MailingModule(Environment.GetEnvironmentVariable("AvelraanEmail")!, Environment.GetEnvironmentVariable("AvelraanPassword")!);
     }
 
     public void ExportSnapshot()

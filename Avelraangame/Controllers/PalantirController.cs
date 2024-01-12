@@ -50,7 +50,9 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        return Ok("All okay!");
+        string mySetting = Environment.GetEnvironmentVariable("AvelraanEmail")!;
+
+        return Ok(mySetting);
     }
     #endregion
 

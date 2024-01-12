@@ -1046,8 +1046,8 @@ public class Validations : IValidations
         ValidateString_p(dbReqInfo.Password);
         ValidateString_p(dbReqInfo.Secret);
 
-        if (dbReqInfo.Password != "") throw new Exception("Wrong Avelraan password provided.");
-        if (dbReqInfo.Secret != "") throw new Exception("Wrong Avelraan secret provided.");
+        if (dbReqInfo.Password != Environment.GetEnvironmentVariable("AvelraanPassword")) throw new Exception("Wrong Avelraan password provided.");
+        if (dbReqInfo.Secret != Environment.GetEnvironmentVariable("AvelraanSecret")) throw new Exception("Wrong Avelraan secret provided.");
     }
     #endregion
 
