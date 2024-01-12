@@ -14,7 +14,7 @@ Log.Logger = new LoggerConfiguration()
 #region cors
 const string myAllowSpecificOrigins = "allowSpecificOrigins";
 const string av_diceRoller_app = "https://avelraandiceroller.web.app";
-const string av_client_app_local = "http://localhost:4200";
+const string av_client_app_local = "http://localhost:8080";
 //const string av_client_app = ""; // TODO: to replace this url with app production url
 
 builder.Services.AddCors(options =>
@@ -47,11 +47,8 @@ DIServices.LoadBusinessLogicServices(builder);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
