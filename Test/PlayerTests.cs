@@ -1,4 +1,6 @@
-﻿namespace Tests;
+﻿using Data_Mapping_Containers.Dtos;
+
+namespace Tests;
 
 [Collection("PlayerTests")]
 [Trait("Category", "PlayerServiceTests")]
@@ -8,10 +10,13 @@ public class PlayerTests : TestBase
     public void CreatePlayerTest()
     {
         // Arrange
-        var playerName = "JoeDoe";
+        var playerData = new PlayerData
+        {
+            Name = "Joe"
+        };
 
         // Act
-        var result = _players.CreatePlayer(playerName);
+        var result = _players.CreatePlayer(playerData);
 
         // Assert
         result.Should().NotBeNull();
@@ -23,8 +28,13 @@ public class PlayerTests : TestBase
     [Fact(DisplayName = "Creating player with existing name should throw")]
     public void DuplicatePlayerNameTest()
     {
-        _players.CreatePlayer("John");
-        Assert.Throws<Exception>(() => _players.CreatePlayer("John"));
+        var playerData = new PlayerData
+        {
+            Name = "Joe"
+        };
+
+        _players.CreatePlayer(playerData);
+        Assert.Throws<Exception>(() => _players.CreatePlayer(playerData));
     }
 
     [Fact(DisplayName = "Creating more players than the limit should throw")]
@@ -32,11 +42,15 @@ public class PlayerTests : TestBase
     {
         for (int i = 0; i < 20; i++)
         {
+            var playerData = new PlayerData
+            {
+                Name = $"aaa{i}"
+            };
             var playerName = $"aaa{i}";
-            _players.CreatePlayer(playerName);
+            _players.CreatePlayer(playerData);
         }
 
-        Assert.Throws<Exception>(() => _players.CreatePlayer("John"));
+        Assert.Throws<Exception>(() => _players.CreatePlayer(new PlayerData { Name = "just another player" }));
     }
 
     [Theory(DisplayName = "Wrong player name should throw")]
@@ -45,6 +59,11 @@ public class PlayerTests : TestBase
     [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
     public void WrongPlayerNameTest(string name)
     {
-        Assert.Throws<Exception>(() => _players.CreatePlayer(name));
+        var playerData = new PlayerData
+        {
+            Name = name
+        };
+
+        Assert.Throws<Exception>(() => _players.CreatePlayer(playerData));
     }
 }

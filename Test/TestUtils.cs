@@ -4,7 +4,12 @@ public static class TestUtils
 {
     internal static string CreatePlayer(string name, IPlayerLogicDelegator _players, Snapshot _snapshot)
     {
-        _players.CreatePlayer(name);
+        var playerData = new PlayerData
+        {
+            Name = name
+        };
+
+        _players.CreatePlayer(playerData);
         
         return _snapshot.Players.Find(s => s.Identity.Name == name)!.Identity.Id;
     }

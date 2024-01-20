@@ -21,7 +21,7 @@ public interface IValidations
     #endregion
 
     #region player
-    void ValidatePlayerCreate(string playerName);
+    void ValidatePlayerCreate(PlayerData playerData);
     void ValidatePlayerLogin(PlayerLogin login);
     void ValidatePlayerUpdateName(string newPlayerName, string playerId);
     void ValidatePlayerDelete(string playerId);
@@ -159,17 +159,18 @@ public class Validations : IValidations
     #endregion
 
     #region player validations
-    public void ValidatePlayerCreate(string playerName)
+    public void ValidatePlayerCreate(PlayerData playerData)
     {
         lock (_lockPlayers)
         {
-            ValidateString_p(playerName);
-            if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
+            ValidateObject_p(playerData);
+            ValidateString_p(playerData.Name);
+            if (playerData.Name.Length > 20) throw new Exception($"Player name: {playerData.Name} is too long, 20 characters max.");
             if (snapshot.Players.Count >= 20) throw new Exception("Server has reached the limit number of players, please contact admins.");
 
             // we don't care for player misspelling their names
             // names will be unique during creation
-            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) throw new Exception("Name unavailable.");
+            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerData.Name.ToLower())) throw new Exception("This name is not allowed.");
         }
     }
 
@@ -1037,7 +1038,7 @@ public class Validations : IValidations
 
         var playerName = GetPlayerById(playerId)!.Identity.Name;
 
-        if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
+        if (playerName != Environment.GetEnvironmentVariable("AvelraanAdmin")) throw new Exception("Player is not an admin.");
     }
 
     private static void ValidateDbRequestInfo(DbRequestsInfo dbReqInfo)

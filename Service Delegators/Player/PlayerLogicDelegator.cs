@@ -4,7 +4,7 @@ namespace Service_Delegators;
 
 public interface IPlayerLogicDelegator
 {
-    Authenticator CreatePlayer(string playerName);
+    Authenticator CreatePlayer(PlayerData playerData);
     string LoginPlayer(PlayerLogin login);
     void UpdatePlayerName(string newPlayerName, string playerId);
     void DeletePlayer(string playerId);
@@ -27,10 +27,10 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
         this.playerOps = playerOps;
     }
 
-    public Authenticator CreatePlayer(string playerName)
+    public Authenticator CreatePlayer(PlayerData playerData)
     {
-        validations.ValidatePlayerCreate(playerName);
-        return playerAuth.AuthenticatePlayer(playerName);
+        validations.ValidatePlayerCreate(playerData);
+        return playerAuth.AuthenticatePlayer(playerData.Name);
     }
 
     public string LoginPlayer(PlayerLogin login)

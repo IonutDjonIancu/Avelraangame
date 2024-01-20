@@ -80,7 +80,6 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetPlayer(playerId).Characters.Find(s => s.Identity.Id == characterId));
     }
 
-
     // GET: /api/palantir/Metadata/GetSpecialSkills
     [HttpGet("Metadata/GetSpecialSkills")]
     public IActionResult GetSpecialSkills()
@@ -179,15 +178,15 @@ public class PalantirController : ControllerBase
     #region Player
     // POST: /api/palantir/Player/CreatePlayer
     [HttpPost("Player/CreatePlayer")]
-    public IActionResult CreatePlayer([FromQuery] string playerName)
+    public IActionResult CreatePlayer([FromBody] PlayerData playerData) 
     {
         try
         {
-            var autheticatorSetupInfo = players.CreatePlayer(playerName);
+            var authenticatorSetupInfo = players.CreatePlayer(playerData);
 
-            if (autheticatorSetupInfo == null) return Conflict("Unable to create player."); 
+            if (authenticatorSetupInfo == null) return Conflict("Unable to create player."); 
             
-            return Ok(autheticatorSetupInfo);
+            return Ok(authenticatorSetupInfo);
         }
         catch (Exception ex)
         {
@@ -198,7 +197,7 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Player/LoginPlayer
     [HttpPut("Player/LoginPlayer")]
-    public IActionResult LoginPlayer([FromQuery] PlayerLogin login)
+    public IActionResult LoginPlayer([FromBody] PlayerLogin login)
     {
         try
         {
@@ -215,7 +214,7 @@ public class PalantirController : ControllerBase
 
     // DELETE: /api/palantir/Player/DeletePlayer
     [HttpDelete("Player/DeletePlayer")]
-    public IActionResult DeletePlayer([FromQuery] Request request)
+    public IActionResult DeletePlayer([FromBody] Request request)
     {
         try
         {
