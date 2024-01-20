@@ -80,7 +80,6 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetPlayer(playerId).Characters.Find(s => s.Identity.Id == characterId));
     }
 
-
     // GET: /api/palantir/Metadata/GetSpecialSkills
     [HttpGet("Metadata/GetSpecialSkills")]
     public IActionResult GetSpecialSkills()
@@ -198,7 +197,7 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Player/LoginPlayer
     [HttpPut("Player/LoginPlayer")]
-    public IActionResult LoginPlayer([FromQuery] PlayerLogin login)
+    public IActionResult LoginPlayer([FromBody] PlayerLogin login)
     {
         try
         {
@@ -215,7 +214,7 @@ public class PalantirController : ControllerBase
 
     // DELETE: /api/palantir/Player/DeletePlayer
     [HttpDelete("Player/DeletePlayer")]
-    public IActionResult DeletePlayer([FromQuery] Request request)
+    public IActionResult DeletePlayer([FromBody] Request request)
     {
         try
         {
