@@ -170,7 +170,7 @@ public class Validations : IValidations
 
             // we don't care for player misspelling their names
             // names will be unique during creation
-            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerData.Name.ToLower())) throw new Exception("Name unavailable.");
+            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerData.Name.ToLower())) throw new Exception("This name is not allowed.");
         }
     }
 

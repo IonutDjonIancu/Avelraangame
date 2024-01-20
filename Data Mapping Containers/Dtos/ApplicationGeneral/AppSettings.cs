@@ -7,8 +7,8 @@ public class AppSettings
     public string DbPlayersPath { get; set; }
     public string LogPath { get; set; }
     public string AvelraanEmail { get; set; }
-    public string AvelraanEmailPass { get; set; }
-    public string AveelraanSecretKey { get; set; }
+    public string AvelraanPassword { get; set; }
+    public string AveelraanSecret { get; set; }
 
     public AdminData AdminData { get; set; }
 }

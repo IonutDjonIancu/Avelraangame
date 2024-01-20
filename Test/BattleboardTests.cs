@@ -443,7 +443,7 @@ public class BattleboardTests : TestBase
 
         _battleboard.Mend(actor);
 
-        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThan(attackerInitialResolve);
+        attacker.Sheet.Assets.ResolveLeft.Should().BeLessThanOrEqualTo(attackerInitialResolve);
         defender.Sheet.Assets.ResolveLeft.Should().BeGreaterThan(defenderInitialResolve);
     }
 

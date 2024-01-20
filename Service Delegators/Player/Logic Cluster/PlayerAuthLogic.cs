@@ -40,7 +40,7 @@ public class PlayerAuthLogic : IPlayerAuthLogic
                     Token = token,
                 },
                 LastAction = DateTime.Now.ToShortDateString(),
-                IsAdmin = appSettings.AdminData.Admins.Contains(playerName),
+                IsAdmin = playerName == Environment.GetEnvironmentVariable("AvelraanAdmin"),
             };
 
             snapshot.Players.Add(player);
