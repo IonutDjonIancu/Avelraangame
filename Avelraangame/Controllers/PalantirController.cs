@@ -179,15 +179,15 @@ public class PalantirController : ControllerBase
     #region Player
     // POST: /api/palantir/Player/CreatePlayer
     [HttpPost("Player/CreatePlayer")]
-    public IActionResult CreatePlayer([FromQuery] string playerName)
+    public IActionResult CreatePlayer([FromBody] PlayerData playerData) 
     {
         try
         {
-            var autheticatorSetupInfo = players.CreatePlayer(playerName);
+            var authenticatorSetupInfo = players.CreatePlayer(playerData);
 
-            if (autheticatorSetupInfo == null) return Conflict("Unable to create player."); 
+            if (authenticatorSetupInfo == null) return Conflict("Unable to create player."); 
             
-            return Ok(autheticatorSetupInfo);
+            return Ok(authenticatorSetupInfo);
         }
         catch (Exception ex)
         {
