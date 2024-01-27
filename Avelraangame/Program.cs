@@ -1,16 +1,6 @@
 using Avelraangame;
-using Microsoft.Extensions.Configuration;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
-#region logger
-var path = $"{Directory.GetCurrentDirectory()}\\Resources\\Log Files\\Logs.txt";
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .WriteTo.File(path, rollingInterval: RollingInterval.Day)
-    .CreateLogger();
-#endregion
 
 #region cors
 const string myAllowSpecificOrigins = "allowSpecificOrigins";
