@@ -49,6 +49,7 @@ public class CharacterTests : TestBase
 
         character.Status.Traits.Race.Should().Be(CharactersLore.Races.Playable.Human);
         character.Status.Traits.Class.Should().Be(CharactersLore.Classes.Warrior);
+        character.Status.Traits.Icon.Should().BeLessThanOrEqualTo(3);
         character.Status.Name.Should().NotBeNullOrWhiteSpace();
         character.Status.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         character.Status.Fame.Should().NotBeNullOrWhiteSpace();
