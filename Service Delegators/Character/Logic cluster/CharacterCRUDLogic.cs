@@ -1,5 +1,6 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Lore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Service_Delegators;
 
@@ -72,7 +73,8 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
             };
 
             SetStatus(traits, stub, character);
-            SetSheet(stub, character);
+            SetSheet(stub, character); 
+            SetIcon(character);
             SetSuppliesAndProvisions(character);
             SetWealthAndWorth(character);
 
@@ -180,6 +182,12 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
     private void SetSheet(CharacterStub stub, Character character)
     {
         characterSheet.SetCharacterSheet(stub.StatPoints, stub.SkillPoints, character);
+    }
+
+    private void SetIcon(Character character)
+    {
+        var iconNr = dice.Roll_1_to_n(3);
+        character.Status.Traits.Icon = iconNr;
     }
 
     private static void SetStatus(CharacterRacialTraits traits, CharacterStub stub, Character character)
