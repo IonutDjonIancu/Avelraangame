@@ -65,14 +65,22 @@ public class PalantirController : ControllerBase
     [HttpGet("Metadata/GetPlayer")]
     public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token)
     {
-        var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
+        try
+        {
+            var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
+            var player = metadata.GetPlayer(playerId);
 
-        return Ok(metadata.GetPlayer(playerId));
+            return Ok(player);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     // GET: /api/palantir/Metadata/GetPlayerCharacter
     [HttpGet("Metadata/GetPlayerCharacter")]
-    public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
+    public IActionResult GetPlayerCharacter([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
     {
         var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
 
