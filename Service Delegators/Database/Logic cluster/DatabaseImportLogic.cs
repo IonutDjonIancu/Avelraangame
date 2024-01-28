@@ -41,7 +41,7 @@ public class DatabaseImportLogic : IDatabaseImportLogic
 
             if (oldPlayer != null)
             {
-                players.DeletePlayer(oldPlayer.Identity.Id);
+                snapshot.Players.Remove(oldPlayer);
             }
 
             snapshot.Players.Add(newPlayer);

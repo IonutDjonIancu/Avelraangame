@@ -7,7 +7,7 @@ public interface IPlayerLogicDelegator
     Authenticator CreatePlayer(PlayerData playerData);
     string LoginPlayer(PlayerLogin login);
     void UpdatePlayerName(string newPlayerName, string playerId);
-    void DeletePlayer(string playerId);
+    void DeletePlayer(PlayerDelete delete);
 }
 
 public class PlayerLogicDelegator : IPlayerLogicDelegator
@@ -45,9 +45,9 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
         playerOps.UpdateName(newPlayerName, playerId);
     }
 
-    public void DeletePlayer(string playerId)
+    public void DeletePlayer(PlayerDelete delete)
     {
-        validations.ValidatePlayerDelete(playerId);
-        playerOps.Remove(playerId);
+        validations.ValidatePlayerDelete(delete);
+        playerOps.Remove(delete.PlayerData.Name);
     }
 }

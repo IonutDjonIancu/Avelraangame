@@ -24,7 +24,7 @@ public interface IValidations
     void ValidatePlayerCreate(PlayerData playerData);
     void ValidatePlayerLogin(PlayerLogin login);
     void ValidatePlayerUpdateName(string newPlayerName, string playerId);
-    void ValidatePlayerDelete(string playerId);
+    void ValidatePlayerDelete(PlayerDelete delete);
     #endregion
 
     #region character
@@ -103,6 +103,8 @@ public class Validations : IValidations
     {
         lock (_lockApi)
         {
+            ValidateObject_p(request);
+
             var player = GetPlayerByName(request.PlayerName);
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
@@ -197,11 +199,16 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidatePlayerDelete(string playerId)
+    public void ValidatePlayerDelete(PlayerDelete delete)
     {
         lock (_lockPlayers)
         {
-            ValidatePlayerExists_p(playerId);
+            ValidateObject_p(delete);
+            ValidateObject_p(delete.PlayerData);
+            ValidateObject_p(delete);
+
+            ValidatePlayerIsAdmin_p(delete.PlayerData.Id);
+            ValidatePlayerExistsByName_p(delete.PlayerData.Name);
         }
     }
     #endregion
@@ -1030,6 +1037,12 @@ public class Validations : IValidations
     {
         ValidateString_p(playerId);
         GetPlayerById(playerId);
+    }
+
+    private void ValidatePlayerExistsByName_p(string playerName)
+    {
+        ValidateString_p(playerName);
+        GetPlayerByName(playerName);
     }
 
     private void ValidatePlayerIsAdmin_p(string playerId)

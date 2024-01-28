@@ -208,13 +208,14 @@ public class PalantirController : ControllerBase
 
     // DELETE: /api/palantir/Player/DeletePlayer
     [HttpDelete("Player/DeletePlayer")]
-    public IActionResult DeletePlayer([FromBody] Request request)
+    public IActionResult DeletePlayer([FromBody] PlayerDelete delete)
     {
         try
         {
-            var playerId = validations.ValidateApiRequest(request);
+            var playerId = validations.ValidateApiRequest(delete.Request);
+            delete.PlayerData.Id = playerId;
 
-            players.DeletePlayer(playerId);
+            players.DeletePlayer(delete);
 
             return Ok("Player deleted successfully.");
         }
