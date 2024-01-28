@@ -169,6 +169,24 @@ public class PalantirController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // PUT: /api/palantir/Database/Purge
+    [HttpPut("Database/Purge")]
+    public IActionResult Purge([FromQuery] Request request, DbRequestsInfo dbRequestsInfo)
+    {
+        try
+        {
+            var playerId = validations.ValidateApiRequest(request);
+
+            database.ExportSnapshot(playerId, dbRequestsInfo);
+
+            return Ok("Database exported successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
     #endregion
 
     #region Player

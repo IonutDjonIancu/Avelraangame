@@ -7,6 +7,7 @@ public interface IDatabaseImportLogic
 {
     void ImportSnapshot(string snapshotJsonString);
     void ImportPlayer(string playerJsonString);
+    void Purge();
 }
 
 public class DatabaseImportLogic : IDatabaseImportLogic
@@ -45,6 +46,17 @@ public class DatabaseImportLogic : IDatabaseImportLogic
             }
 
             snapshot.Players.Add(newPlayer);
+        }
+    }
+
+    public void Purge()
+    {
+        lock (_lock)
+        {
+            snapshot.Stubs.Clear();
+            snapshot.Players.Where(s => s.IsAdmin == false).ToList().Clear();
+            snapshot.Locations.Clear();
+            snapshot.Battleboards.Clear();
         }
     }
 }

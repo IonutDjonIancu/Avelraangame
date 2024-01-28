@@ -125,7 +125,7 @@ public class Validations : IValidations
             ValidatePlayerIsAdmin_p(requesterId);
             ValidateDbRequestInfo(dbReqInfo);
 
-            if (dbReqInfo.IsExport) return;
+            if (dbReqInfo.IsShortOperation) return;
 
             ValidateString_p(dbReqInfo.SnapshotJsonString!);
 
