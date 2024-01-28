@@ -13,16 +13,13 @@ public interface IDatabaseImportLogic
 public class DatabaseImportLogic : IDatabaseImportLogic
 {
     private Snapshot snapshot;
-    private readonly IPlayerLogicDelegator players;
 
     private readonly object _lock = new();
 
     public DatabaseImportLogic(
-        Snapshot snapshot,
-        IPlayerLogicDelegator players)
+        Snapshot snapshot)
     {
         this.snapshot = snapshot;
-        this.players = players;
     }
 
     public void ImportSnapshot(string snapshotJsonString)

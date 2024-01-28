@@ -47,6 +47,6 @@ public class DatabaseLogicDelegator : IDatabaseLogicDelegator
     public void Purge(string requesterId, DbRequestsInfo dbRequestsInfo)
     {
         validations.ValidateSnapshotExportImportOperations(requesterId, dbRequestsInfo);
-        importLogic.Purge(dbRequestsInfo.PlayerJsonString!);
+        importLogic.Purge();
     }
 }
