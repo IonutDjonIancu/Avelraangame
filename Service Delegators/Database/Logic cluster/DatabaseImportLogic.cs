@@ -7,21 +7,19 @@ public interface IDatabaseImportLogic
 {
     void ImportSnapshot(string snapshotJsonString);
     void ImportPlayer(string playerJsonString);
+    void Purge();
 }
 
 public class DatabaseImportLogic : IDatabaseImportLogic
 {
     private Snapshot snapshot;
-    private readonly IPlayerLogicDelegator players;
 
     private readonly object _lock = new();
 
     public DatabaseImportLogic(
-        Snapshot snapshot,
-        IPlayerLogicDelegator players)
+        Snapshot snapshot)
     {
         this.snapshot = snapshot;
-        this.players = players;
     }
 
     public void ImportSnapshot(string snapshotJsonString)
@@ -41,10 +39,21 @@ public class DatabaseImportLogic : IDatabaseImportLogic
 
             if (oldPlayer != null)
             {
-                players.DeletePlayer(oldPlayer.Identity.Id);
+                snapshot.Players.Remove(oldPlayer);
             }
 
             snapshot.Players.Add(newPlayer);
+        }
+    }
+
+    public void Purge()
+    {
+        lock (_lock)
+        {
+            snapshot.Stubs.Clear();
+            snapshot.Players.Where(s => s.IsAdmin == false).ToList().Clear();
+            snapshot.Locations.Clear();
+            snapshot.Battleboards.Clear();
         }
     }
 }

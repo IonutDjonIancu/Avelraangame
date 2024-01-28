@@ -40,7 +40,7 @@ public class PlayerTests : TestBase
     [Fact(DisplayName = "Creating more players than the limit should throw")]
     public void MaxPlayersReachedTest()
     {
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
             var playerData = new PlayerData
             {

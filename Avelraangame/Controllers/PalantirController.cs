@@ -1,5 +1,4 @@
-﻿using Serilog;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Service_Delegators;
@@ -131,7 +130,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -150,7 +148,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -169,7 +166,24 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Database/Purge
+    [HttpPut("Database/Purge")]
+    public IActionResult Purge([FromQuery] Request request, DbRequestsInfo dbRequestsInfo)
+    {
+        try
+        {
+            var playerId = validations.ValidateApiRequest(request);
+
+            database.ExportSnapshot(playerId, dbRequestsInfo);
+
+            return Ok("Database exported successfully.");
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex.Message);
         }
     }
@@ -190,7 +204,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -207,26 +220,25 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
 
     // DELETE: /api/palantir/Player/DeletePlayer
     [HttpDelete("Player/DeletePlayer")]
-    public IActionResult DeletePlayer([FromBody] Request request)
+    public IActionResult DeletePlayer([FromBody] PlayerDelete delete)
     {
         try
         {
-            var playerId = validations.ValidateApiRequest(request);
+            var playerId = validations.ValidateApiRequest(delete.Request);
+            delete.PlayerData.Id = playerId;
 
-            players.DeletePlayer(playerId);
+            players.DeletePlayer(delete);
 
             return Ok("Player deleted successfully.");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -254,7 +266,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -274,7 +285,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -292,7 +302,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -310,7 +319,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -328,7 +336,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -346,7 +353,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -364,7 +370,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -382,7 +387,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -400,7 +404,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -418,7 +421,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -436,7 +438,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -454,7 +455,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -472,7 +472,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -490,7 +489,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -508,7 +506,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -526,7 +523,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -544,7 +540,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -562,7 +557,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -580,7 +574,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -599,7 +592,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -616,7 +608,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -635,7 +626,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -652,7 +642,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -671,7 +660,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -688,7 +676,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -707,7 +694,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -726,7 +712,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -745,7 +730,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -764,7 +748,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -783,7 +766,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -802,7 +784,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -821,7 +802,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -840,7 +820,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -859,7 +838,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -878,7 +856,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -897,7 +874,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -916,7 +892,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -935,7 +910,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -954,7 +928,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -973,7 +946,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -992,7 +964,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -1011,7 +982,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -1030,7 +1000,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -1049,7 +1018,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -1068,7 +1036,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }

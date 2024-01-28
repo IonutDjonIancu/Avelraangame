@@ -8,5 +8,5 @@ public class DbRequestsInfo
     public string? SnapshotJsonString { get; set; }
     public string? PlayerJsonString { get; set; }
 
-    public bool IsExport { get; set; } = false;
+    public bool IsShortOperation { get; set; } = false;
 }

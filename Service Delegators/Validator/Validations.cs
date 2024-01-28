@@ -24,7 +24,7 @@ public interface IValidations
     void ValidatePlayerCreate(PlayerData playerData);
     void ValidatePlayerLogin(PlayerLogin login);
     void ValidatePlayerUpdateName(string newPlayerName, string playerId);
-    void ValidatePlayerDelete(string playerId);
+    void ValidatePlayerDelete(PlayerDelete delete);
     #endregion
 
     #region character
@@ -103,6 +103,8 @@ public class Validations : IValidations
     {
         lock (_lockApi)
         {
+            ValidateObject_p(request);
+
             var player = GetPlayerByName(request.PlayerName);
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
@@ -123,7 +125,7 @@ public class Validations : IValidations
             ValidatePlayerIsAdmin_p(requesterId);
             ValidateDbRequestInfo(dbReqInfo);
 
-            if (dbReqInfo.IsExport) return;
+            if (dbReqInfo.IsShortOperation) return;
 
             ValidateString_p(dbReqInfo.SnapshotJsonString!);
 
@@ -166,7 +168,7 @@ public class Validations : IValidations
             ValidateObject_p(playerData);
             ValidateString_p(playerData.Name);
             if (playerData.Name.Length > 20) throw new Exception($"Player name: {playerData.Name} is too long, 20 characters max.");
-            if (snapshot.Players.Count >= 20) throw new Exception("Server has reached the limit number of players, please contact admins.");
+            if (snapshot.Players.Count >= 10) throw new Exception("Server has reached the limit number of players, please contact admins.");
 
             // we don't care for player misspelling their names
             // names will be unique during creation
@@ -197,11 +199,16 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidatePlayerDelete(string playerId)
+    public void ValidatePlayerDelete(PlayerDelete delete)
     {
         lock (_lockPlayers)
         {
-            ValidatePlayerExists_p(playerId);
+            ValidateObject_p(delete);
+            ValidateObject_p(delete.PlayerData);
+            ValidateObject_p(delete);
+
+            ValidatePlayerIsAdmin_p(delete.PlayerData.Id!);
+            ValidatePlayerExistsByName_p(delete.PlayerData.Name);
         }
     }
     #endregion
@@ -1030,6 +1037,12 @@ public class Validations : IValidations
     {
         ValidateString_p(playerId);
         GetPlayerById(playerId);
+    }
+
+    private void ValidatePlayerExistsByName_p(string playerName)
+    {
+        ValidateString_p(playerName);
+        GetPlayerByName(playerName);
     }
 
     private void ValidatePlayerIsAdmin_p(string playerId)
