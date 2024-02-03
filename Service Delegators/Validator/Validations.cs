@@ -1075,7 +1075,7 @@ public class Validations : IValidations
     private static void ValidateCulture_p(string culture)
     {
         ValidateString_p(culture, "Invalid culture string.");
-        if (!CharactersLore.Cultures.All.Contains(culture)) throw new Exception($"Culture {culture} not found.");
+        if (!CharactersLore.Cultures.AllPlayable.Any(playableCultures => playableCultures.Contains(culture))) throw new Exception($"Culture {culture} not found.");
     }
 
     private static void ValidateTradition_p(string tradition)
@@ -1105,6 +1105,10 @@ public class Validations : IValidations
         else if (origins.Race == CharactersLore.Races.Playable.Dwarf)
         {
             if (!CharactersLore.Cultures.Dwarf.All.Contains(origins.Culture)) throw new Exception(invalidCombination);
+        }
+        else if (origins.Race == CharactersLore.Races.Playable.Orc)
+        {
+            if (!CharactersLore.Cultures.Orc.All.Contains(origins.Culture)) throw new Exception(invalidCombination);
         }
     }
 

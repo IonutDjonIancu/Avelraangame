@@ -6,12 +6,13 @@ namespace Avelraangame;
 public interface IMetadataService
 {
     List<Location> GetAllLocations();
+    List<string> GetRaces();
+    List<List<string>> GetCultures();
     List<string> GetClasses();
-    List<string> GetCultures();
     Player GetPlayer(string playerId);
     Players GetPlayers();
-    List<string> GetRaces();
     List<SpecialSkill> GetSpecialSkills();
+    CharacterTraits GetTraits();
 }
 
 public class MetadataService : IMetadataService
@@ -57,7 +58,7 @@ public class MetadataService : IMetadataService
         return CharactersLore.Races.Playable.All;
     }
 
-    public List<string> GetCultures()
+    public List<List<string>> GetCultures()
     {
         return CharactersLore.Cultures.All;
     }
@@ -65,6 +66,17 @@ public class MetadataService : IMetadataService
     public List<string> GetClasses()
     {
         return CharactersLore.Classes.All;
+    }
+
+    public CharacterTraits GetTraits()
+    {
+        return new CharacterTraits
+        {
+            Races = CharactersLore.Races.All,
+            Cultures = CharactersLore.Cultures.AllPlayable,
+            Classes = CharactersLore.Classes.All,
+            Traditions = CharactersLore.Tradition.All
+        };
     }
     #endregion
 
