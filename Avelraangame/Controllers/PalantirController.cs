@@ -115,6 +115,13 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetClasses());
     }
 
+    // GET: /api/palantir/Metadata/GetTraits
+    [HttpGet("Metadata/GetTraits")]
+    public IActionResult GetTraits()
+    {
+        return Ok(metadata.GetTraits());
+    }
+
     // GET: /api/palantir/Metadata/GetAllLocations
     [HttpGet("Metadata/GetAllLocations")]
     public IActionResult GetAllLocations()

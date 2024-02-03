@@ -90,12 +90,21 @@ public class CharactersLore
 
         public static class Animal
         {
-            public const string Direwolf = "Werewolf";
-            public const string Direbear = "Werebear";
+
+
+            public const string Werewolf = "Werewolf";
+            public const string Werebear = "Werewolf";
+            public const string Direwolf = "Direwolf";
+            public const string Direbear = "Direbear";
+            public const string Pigfolk = "Pigfolk";
 
             public static readonly List<string> All = new()
             {
-                Direwolf, Direbear
+                Werewolf,
+                Werebear,
+                Direwolf, 
+                Direbear,
+                Pigfolk
             };
         }
 
@@ -110,21 +119,22 @@ public class CharactersLore
             };
         }
 
-        public static readonly List<string> All = new()
+        public static readonly List<List<string>> All = new()
         {
-            Human.Danarian,
+            Human.All,
+            Elf.All,
+            Dwarf.All,
+            Orc.All,
+            Animal.All,
+            Undead.All,
+        };
 
-            Elf.Highborn,
-
-            Dwarf.Undermountain,
-
-            Orc.Greenskin,
-
-            Animal.Direwolf,
-            Animal.Direbear,
-
-            Undead.Zombie,
-            Undead.Skeleton
+        public static readonly List<List<string>> AllPlayable = new()
+        {
+            Human.All,
+            Elf.All,
+            Dwarf.All,
+            Orc.All,
         };
     }
 
