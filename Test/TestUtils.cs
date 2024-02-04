@@ -6,7 +6,7 @@ public static class TestUtils
     {
         var playerData = new PlayerData
         {
-            Name = name
+            PlayerName = name
         };
 
         _players.CreatePlayer(playerData);
@@ -54,6 +54,16 @@ public static class TestUtils
         {
             Id = character.Identity.Id,
             PlayerId = character.Identity.PlayerId,
+        };
+    }
+
+    internal static CharacterData GetCharacterData(Character character)
+    {
+        return new CharacterData
+        {
+            CharacterId = character.Identity.Id,
+            PlayerId = character.Identity.PlayerId,
+            CharacterName = character.Status.Name
         };
     }
 }

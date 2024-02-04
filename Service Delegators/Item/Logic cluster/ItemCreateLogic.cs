@@ -28,7 +28,7 @@ public class ItemCreateLogic : IItemCreateLogic
             }
         };
 
-        SetItemLevelAndLevelName(item, dice);
+        SetItemLevelNameAndIcon(item, dice);
         
         if (type.Length > 0)
         {
@@ -53,16 +53,17 @@ public class ItemCreateLogic : IItemCreateLogic
     }
 
     #region private methods
-    private static void SetItemLevelAndLevelName(Item item, IDiceLogicDelegator dice)
+    private static void SetItemLevelNameAndIcon(Item item, IDiceLogicDelegator dice)
     {
         var roll = dice.Roll_d20_withReroll();
-
-        if (roll >= 100) { item.Level = 6; item.LevelName = ItemsLore.LevelNames.Relic; }
+        if      (roll >= 100){ item.Level = 6; item.LevelName = ItemsLore.LevelNames.Relic; }
         else if (roll >= 80) { item.Level = 5; item.LevelName = ItemsLore.LevelNames.Artifact; }
         else if (roll >= 50) { item.Level = 4; item.LevelName = ItemsLore.LevelNames.Heirloom; }
         else if (roll >= 40) { item.Level = 3; item.LevelName = ItemsLore.LevelNames.Masterwork; }
         else if (roll >= 20) { item.Level = 2; item.LevelName = ItemsLore.LevelNames.Refined; }
         else  /*(roll >=   1)*/ { item.Level = 1; item.LevelName = ItemsLore.LevelNames.Common; }
+
+        item.Icon = dice.Roll_1_to_n(3);
     }
     private static void TaintItem(Item item, IDiceLogicDelegator dice)
     {

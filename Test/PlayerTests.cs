@@ -12,7 +12,7 @@ public class PlayerTests : TestBase
         // Arrange
         var playerData = new PlayerData
         {
-            Name = "Joe"
+            PlayerName = "Joe"
         };
 
         // Act
@@ -30,7 +30,7 @@ public class PlayerTests : TestBase
     {
         var playerData = new PlayerData
         {
-            Name = "Joe"
+            PlayerName = "Joe"
         };
 
         _players.CreatePlayer(playerData);
@@ -44,13 +44,13 @@ public class PlayerTests : TestBase
         {
             var playerData = new PlayerData
             {
-                Name = $"aaa{i}"
+                PlayerName = $"aaa{i}"
             };
             var playerName = $"aaa{i}";
             _players.CreatePlayer(playerData);
         }
 
-        Assert.Throws<Exception>(() => _players.CreatePlayer(new PlayerData { Name = "just another player" }));
+        Assert.Throws<Exception>(() => _players.CreatePlayer(new PlayerData { PlayerName = "just another player" }));
     }
 
     [Theory(DisplayName = "Wrong player name should throw")]
@@ -61,7 +61,7 @@ public class PlayerTests : TestBase
     {
         var playerData = new PlayerData
         {
-            Name = name
+            PlayerName = name
         };
 
         Assert.Throws<Exception>(() => _players.CreatePlayer(playerData));

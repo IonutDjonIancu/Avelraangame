@@ -13,7 +13,7 @@ public interface ICharacterLogicDelegator
     Character EquipCharacterItem(CharacterEquip equip);
     Character UnequipCharacterItem(CharacterEquip unequip);
 
-    Character UpdateCharacterName(string name, CharacterIdentity identity);
+    Character UpdateCharacterName(CharacterData characterData);
     Character AddCharacterFame(string fame, CharacterIdentity identity);
     Character AddCharacterWealth(int wealth, CharacterIdentity identity);
 
@@ -94,10 +94,10 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return itemsLogic.UnequipItem(unequip);
     }
 
-    public Character UpdateCharacterName(string name, CharacterIdentity identity)
+    public Character UpdateCharacterName(CharacterData characterData)
     {
-        validations.ValidateCharacterUpdateName(name, identity);
-        return infoLogic.ChangeName(name, identity);
+        validations.ValidateCharacterUpdateName(characterData);
+        return infoLogic.ChangeName(characterData);
     }
 
     public Character LearnCharacterSpecialSkill(CharacterAddSpecialSkill spskAdd)

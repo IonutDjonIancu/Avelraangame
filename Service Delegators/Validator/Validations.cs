@@ -28,7 +28,7 @@ public interface IValidations
     #endregion
 
     #region character
-    void ValidateCharacterUpdateName(string name, CharacterIdentity identity);
+    void ValidateCharacterUpdateName(CharacterData characterData);
     void ValidateCharacterMaxNrAllowed(string playerId);
     void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId);
     void ValidateCharacterBeforeDelete(CharacterIdentity identity);
@@ -166,13 +166,13 @@ public class Validations : IValidations
         lock (_lockPlayers)
         {
             ValidateObject_p(playerData);
-            ValidateString_p(playerData.Name);
-            if (playerData.Name.Length > 20) throw new Exception($"Player name: {playerData.Name} is too long, 20 characters max.");
+            ValidateString_p(playerData.PlayerName);
+            if (playerData.PlayerName.Length > 20) throw new Exception($"Player name: {playerData.PlayerName} is too long, 20 characters max.");
             if (snapshot.Players.Count >= 10) throw new Exception("Server has reached the limit number of players, please contact admins.");
 
             // we don't care for player misspelling their names
             // names will be unique during creation
-            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerData.Name.ToLower())) throw new Exception("This name is not allowed.");
+            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerData.PlayerName.ToLower())) throw new Exception("This name is not allowed.");
         }
     }
 
@@ -207,8 +207,8 @@ public class Validations : IValidations
             ValidateObject_p(delete.PlayerData);
             ValidateObject_p(delete);
 
-            ValidatePlayerIsAdmin_p(delete.PlayerData.Id!);
-            ValidatePlayerExistsByName_p(delete.PlayerData.Name);
+            ValidatePlayerIsAdmin_p(delete.PlayerData.PlayerId!);
+            ValidatePlayerExistsByName_p(delete.PlayerData.PlayerName);
         }
     }
     #endregion
@@ -225,14 +225,22 @@ public class Validations : IValidations
     #endregion
 
     #region character validations
-    public void ValidateCharacterUpdateName(string name, CharacterIdentity identity)
+    public void ValidateCharacterUpdateName(CharacterData characterData)
     {
         lock (_lockCharacters)
         {
-            ValidateString_p(name);
-            if (name.Length >= 20) throw new Exception("Character name too long.");
+            ValidateObject_p(characterData);
+            ValidateString_p(characterData.CharacterId);
+            ValidateString_p(characterData.PlayerId!);
+            ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(new CharacterIdentity 
+            { 
+                Id = characterData.CharacterId, 
+                PlayerId = characterData.PlayerId! 
+            }, snapshot));
 
-            ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(identity, snapshot));
+            ValidateString_p(characterData.CharacterName);
+
+            if (characterData.CharacterName.Length >= 20) throw new Exception("Character name too long.");
         }
     }
 
