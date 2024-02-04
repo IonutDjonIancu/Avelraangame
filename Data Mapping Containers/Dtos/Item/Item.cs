@@ -5,6 +5,7 @@ public class Item
     public ItemIdentity Identity { get; set; }
 
     public string Name { get; set; }
+    public int Icon { get; set; }
 
     public int Level { get; set; }
     public string LevelName { get; set; }

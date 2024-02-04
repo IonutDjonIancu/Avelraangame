@@ -72,8 +72,14 @@ public class MetadataService : IMetadataService
     {
         return new CharacterTraits
         {
-            Races = CharactersLore.Races.All,
-            Cultures = CharactersLore.Cultures.AllPlayable,
+            Races = CharactersLore.Races.Playable.All,
+            Cultures = new CharacterCultures
+            {
+                Human = CharactersLore.Cultures.Human.All,
+                Elf = CharactersLore.Cultures.Elf.All,
+                Dwarf = CharactersLore.Cultures.Dwarf.All,
+                Orc = CharactersLore.Cultures.Orc.All,
+            },
             Classes = CharactersLore.Classes.All,
             Traditions = CharactersLore.Tradition.All
         };

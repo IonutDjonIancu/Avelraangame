@@ -74,7 +74,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
 
             SetStatus(traits, stub, character);
             SetSheet(stub, character); 
-            SetIcon(character);
+            SetIcon(traits, character);
             SetSuppliesAndProvisions(character);
             SetWealthAndWorth(character);
 
@@ -184,10 +184,17 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         characterSheet.SetCharacterSheet(stub.StatPoints, stub.SkillPoints, character);
     }
 
-    private void SetIcon(Character character)
+    private void SetIcon(CharacterRacialTraits traits, Character character)
     {
-        var iconNr = dice.Roll_1_to_n(3);
-        character.Status.Traits.Icon = iconNr;
+        if (traits.Icon != 0)
+        {
+            character.Status.Traits.Icon = traits.Icon;
+
+        } else
+        {
+            var iconNr = dice.Roll_1_to_n(3);
+            character.Status.Traits.Icon = iconNr;
+        }
     }
 
     private static void SetStatus(CharacterRacialTraits traits, CharacterStub stub, Character character)

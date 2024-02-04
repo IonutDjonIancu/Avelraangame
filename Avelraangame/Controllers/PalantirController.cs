@@ -246,7 +246,7 @@ public class PalantirController : ControllerBase
         try
         {
             var playerId = validations.ValidateApiRequest(delete.Request);
-            delete.PlayerData.Id = playerId;
+            delete.PlayerData.PlayerId = playerId;
 
             players.DeletePlayer(delete);
 
@@ -323,12 +323,12 @@ public class PalantirController : ControllerBase
 
     // PUT: /api/palantir/Character/UpdateCharacterName
     [HttpPut("Character/UpdateCharacterName")]
-    public IActionResult UpdateCharacterName([FromQuery] Request request, string name, string characterId)
+    public IActionResult UpdateCharacterName([FromQuery] Request request, CharacterData characterData)
     {
         try
         {
-            var playerId = validations.ValidateApiRequest(request);
-            var character = characters.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
+            characterData.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.UpdateCharacterName(characterData);
 
             return Ok(character);
         }

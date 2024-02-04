@@ -30,7 +30,7 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
     public Authenticator CreatePlayer(PlayerData playerData)
     {
         validations.ValidatePlayerCreate(playerData);
-        return playerAuth.AuthenticatePlayer(playerData.Name);
+        return playerAuth.AuthenticatePlayer(playerData.PlayerName);
     }
 
     public string LoginPlayer(PlayerLogin login)
@@ -48,6 +48,6 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
     public void DeletePlayer(PlayerDelete delete)
     {
         validations.ValidatePlayerDelete(delete);
-        playerOps.Remove(delete.PlayerData.Name);
+        playerOps.Remove(delete.PlayerData.PlayerName);
     }
 }
