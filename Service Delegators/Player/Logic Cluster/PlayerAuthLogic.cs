@@ -31,7 +31,7 @@ public class PlayerAuthLogic : IPlayerAuthLogic
             {
                 Identity = new PlayerIdentity
                 {
-                    Name = playerName,
+                    Name = playerName.ToLower(),
                     Id = id,
                     Token = token,
                 },
