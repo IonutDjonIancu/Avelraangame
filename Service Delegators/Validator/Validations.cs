@@ -566,7 +566,7 @@ public class Validations : IValidations
             ValidateObject_p(tradeItem.TargetIdentity);
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);
@@ -588,7 +588,7 @@ public class Validations : IValidations
             ValidateObject_p(tradeItem.TargetIdentity);
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);
@@ -608,10 +608,10 @@ public class Validations : IValidations
             ValidateObject_p(tradeItem);
             ValidateObject_p(tradeItem.CharacterIdentity);
             ValidateObject_p(tradeItem.TargetIdentity);
-            ValidateString_p(tradeItem.ItemId);
+            ValidateString_p(tradeItem.ItemId!);
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);

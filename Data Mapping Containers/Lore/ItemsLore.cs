@@ -404,7 +404,7 @@ public class ItemsLore
             "Raw",
             "Poorly crafted",
             "Regular",
-            "Conventional",
+            "Unremarkable",
             "Normal",
             "Ordinary",
             "Simple",
@@ -424,7 +424,8 @@ public class ItemsLore
             "Elegant",
             "Fine",
             "Gracious",
-            "Elaborate"
+            "Elaborate",
+            "Remarkable"
         };
 
         public static readonly List<string> Masterwork = new()

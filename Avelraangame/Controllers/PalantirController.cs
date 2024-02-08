@@ -61,23 +61,6 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetPlayers());
     }
 
-    // GET: /api/palantir/Metadata/GetPlayer
-    [HttpGet("Metadata/GetPlayer")]
-    public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token)
-    {
-        try
-        {
-            var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
-            var player = metadata.GetPlayer(playerId);
-
-            return Ok(player);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     // GET: /api/palantir/Metadata/GetPlayerCharacter
     [HttpGet("Metadata/GetPlayerCharacter")]
     public IActionResult GetPlayerCharacter([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
@@ -205,6 +188,24 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Player
+    // GET: /api/palantir/Player/GetPlayer
+    [HttpGet("Player/GetPlayer")]
+    public IActionResult GetPlayer([FromQuery] Request request)
+    {
+        try
+        {
+            var playerId = validations.ValidateApiRequest(request);
+            var player = metadata.GetPlayer(playerId);
+
+            return Ok(player);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
     // POST: /api/palantir/Player/CreatePlayer
     [HttpPost("Player/CreatePlayer")]
     public IActionResult CreatePlayer([FromBody] PlayerData playerData) 
