@@ -105,7 +105,7 @@ public class Validations : IValidations
         {
             ValidateObject_p(request);
 
-            var player = GetPlayerByName(request.PlayerName);
+            var player = GetPlayerByName(request.PlayerName.ToLower());
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
             if (request.Token != player.Identity.Token) throw new Exception("Token mismatch.");
@@ -124,38 +124,29 @@ public class Validations : IValidations
 
             ValidatePlayerIsAdmin_p(requesterId);
             ValidateDbRequestInfo(dbReqInfo);
-
-            if (dbReqInfo.IsShortOperation) return;
-
-            ValidateString_p(dbReqInfo.SnapshotJsonString!);
-
-            try
-            {
-                JsonConvert.DeserializeObject<Snapshot>(dbReqInfo.SnapshotJsonString!);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
-            }
         }
     }
 
     public void ValidateDatabasePlayerImport(string requesterId, DbRequestsInfo dbReqInfo)
     {
-        lock ( _lockDatabase)
+        lock (_lockDatabase)
         {
             ValidatePlayerIsAdmin_p(requesterId);
             ValidateDbRequestInfo(dbReqInfo);
             ValidateString_p(dbReqInfo.PlayerJsonString!);
 
+            Player import;
+
             try
             {
-                JsonConvert.DeserializeObject<Player>(dbReqInfo.PlayerJsonString!);
+                import = JsonConvert.DeserializeObject<Player>(dbReqInfo.PlayerJsonString!)!;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
             }
+
+            var player = GetPlayerByName(import.Identity.Name) ?? throw new Exception("Player not found.");
         }
     }
     #endregion
@@ -1196,12 +1187,12 @@ public class Validations : IValidations
     #region getter methods
     private Player GetPlayerById(string playerId)
     {
-        return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("PLayer not found.");
+        return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("Player not found.");
     }
 
     private Player GetPlayerByName(string name)
     {
-        return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
+        return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("Player not found.");
     }
 
     private Battleboard GetBattleboardById(string battleboardId)
