@@ -1,4 +1,6 @@
 ﻿using System.Net.Mail;
+using System.Numerics;
+using System.Text;
 using Data_Mapping_Containers.Dtos;
 using Independent_Modules;
 using Newtonsoft.Json;
@@ -7,7 +9,7 @@ namespace Service_Delegators;
 
 public interface IDatabaseExportLogic
 {
-    void ExportSnapshot();
+    void ExportPlayers();
 }
 
 public class DatabaseExportLogic : IDatabaseExportLogic
@@ -22,14 +24,22 @@ public class DatabaseExportLogic : IDatabaseExportLogic
     {
         this.appSettings = appSettings;
         this.snapshot = snapshot;
-        mailingModule = new MailingModule(Environment.GetEnvironmentVariable("AvelraanEmail")!, Environment.GetEnvironmentVariable("AvelraanPassword")!);
+        mailingModule = new MailingModule(Environment.GetEnvironmentVariable("AvelraanEmail")!, Environment.GetEnvironmentVariable("AvelraanGmailPassword")!);
     }
 
-    public void ExportSnapshot()
+    public void ExportPlayers()
     {
-        var snapshotJson = JsonConvert.SerializeObject(snapshot);
+        var playersJson = JsonConvert.SerializeObject(snapshot.Players);
+        byte[] bytes = Encoding.UTF8.GetBytes(playersJson);
+        using (MemoryStream stream = new (bytes))
+        {
+            var attachments = new List<Attachment>
+            {
+                new (stream, "players.txt", "text/plain")
+            };
 
-        SendEmail($"Avelraan SNAPSHOT export {DateTime.Now.ToShortDateString()}", snapshotJson, new List<Attachment>());
+            SendEmail($"Avelraan PLAYERS export @ {DateTime.Now.ToShortDateString()}", "Players data are attached as a text file.", attachments);
+        }
     }
 
     #region private methods
