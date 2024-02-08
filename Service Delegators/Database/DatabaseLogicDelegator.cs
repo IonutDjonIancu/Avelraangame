@@ -29,7 +29,7 @@ public class DatabaseLogicDelegator : IDatabaseLogicDelegator
     public void ExportSnapshot(string requesterId, DbRequestsInfo dbRequestsInfo)
     {
         validations.ValidateSnapshotExportImportOperations(requesterId, dbRequestsInfo);
-        exportLogic.ExportSnapshot();
+        exportLogic.ExportPlayers();
     }
 
     public void ImportSnapshot(string requesterId, DbRequestsInfo dbRequestsInfo)
