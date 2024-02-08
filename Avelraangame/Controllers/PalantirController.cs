@@ -132,24 +132,6 @@ public class PalantirController : ControllerBase
         }
     }
 
-    // PUT: /api/palantir/Database/ImportSnapshot
-    [HttpPut("Database/ImportSnapshot")]
-    public IActionResult ImportSnapshot([FromQuery] Request request, [FromBody] DbRequestsInfo dbRequestsInfo)
-    {
-        try
-        {
-            var playerId = validations.ValidateApiRequest(request);
-
-            database.ImportSnapshot(playerId, dbRequestsInfo);
-
-            return Ok("Logs exported successfully.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     // PUT: /api/palantir/Database/ImportPlayer
     [HttpPut("Database/ImportPlayer")]
     public IActionResult ImportPlayer([FromQuery] Request request, [FromBody] DbRequestsInfo dbRequestsInfo)
@@ -161,24 +143,6 @@ public class PalantirController : ControllerBase
             database.ImportPlayer(playerId, dbRequestsInfo);
 
             return Ok("Player imported successfully.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Database/Purge
-    [HttpPut("Database/Purge")]
-    public IActionResult Purge([FromQuery] Request request, DbRequestsInfo dbRequestsInfo)
-    {
-        try
-        {
-            var playerId = validations.ValidateApiRequest(request);
-
-            database.ExportSnapshot(playerId, dbRequestsInfo);
-
-            return Ok("Database exported successfully.");
         }
         catch (Exception ex)
         {

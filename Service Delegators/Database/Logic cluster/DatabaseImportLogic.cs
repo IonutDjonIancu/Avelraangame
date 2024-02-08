@@ -5,9 +5,7 @@ namespace Service_Delegators;
 
 public interface IDatabaseImportLogic
 {
-    void ImportSnapshot(string snapshotJsonString);
     void ImportPlayer(string playerJsonString);
-    void Purge();
 }
 
 public class DatabaseImportLogic : IDatabaseImportLogic
@@ -22,38 +20,18 @@ public class DatabaseImportLogic : IDatabaseImportLogic
         this.snapshot = snapshot;
     }
 
-    public void ImportSnapshot(string snapshotJsonString)
-    {
-        lock (_lock)
-        {
-            snapshot = JsonConvert.DeserializeObject<Snapshot>(snapshotJsonString)!;
-        }
-    }
-
     public void ImportPlayer(string playerJsonString)
     {
         lock (_lock)
         {
-            var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString)!;
-            var oldPlayer = snapshot.Players.Find(p => p.Identity.Id == newPlayer.Identity.Id);
+            var import = JsonConvert.DeserializeObject<Player>(playerJsonString)!;
+            var player = snapshot.Players.Find(p => p.Identity.Name == import.Identity.Name)!;
 
-            if (oldPlayer != null)
+            import.Characters.ForEach(c => 
             {
-                snapshot.Players.Remove(oldPlayer);
-            }
-
-            snapshot.Players.Add(newPlayer);
-        }
-    }
-
-    public void Purge()
-    {
-        lock (_lock)
-        {
-            snapshot.Stubs.Clear();
-            snapshot.Players.Where(s => s.IsAdmin == false).ToList().Clear();
-            snapshot.Locations.Clear();
-            snapshot.Battleboards.Clear();
+                c.Identity.Id = Guid.NewGuid().ToString();
+                player.Characters.Add(c);
+            });
         }
     }
 }
