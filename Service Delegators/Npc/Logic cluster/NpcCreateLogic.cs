@@ -317,7 +317,6 @@ public class NpcCreateLogic : INpcCreateLogic
 
         if (character.Inventory.Head != null) allWornItems.Add(character.Inventory.Head);
         if (character.Inventory.Body != null) allWornItems.Add(character.Inventory.Body);
-        if (character.Inventory.Shield != null) allWornItems.Add(character.Inventory.Shield);
         if (character.Inventory.Mainhand != null) allWornItems.Add(character.Inventory.Mainhand);
         if (character.Inventory.Offhand != null) allWornItems.Add(character.Inventory.Offhand);
         if (character.Inventory.Ranged != null) allWornItems.Add(character.Inventory.Ranged);
@@ -369,9 +368,19 @@ public class NpcCreateLogic : INpcCreateLogic
 
         if (dice.Roll_true_false()) character.Inventory.Head = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Helm);
         if (dice.Roll_true_false()) character.Inventory.Body = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Armour);
-        if (dice.Roll_true_false()) character.Inventory.Shield = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
-        if (dice.Roll_true_false()) character.Inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+        if (dice.Roll_true_false())
+        {
+            var roll = dice.Roll_true_false();
 
+            if (roll)
+            {
+                character.Inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Protection, ItemsLore.Subtypes.Protections.Shield);
+            }
+            else
+            {
+                if (dice.Roll_true_false()) character.Inventory.Offhand = items.GenerateSpecificItem(ItemsLore.Types.Weapon, ItemsLore.Subtypes.Weapons.Dagger);
+            }
+        }
 
         if (character.Status.Traits.Race == CharactersLore.Races.Playable.Human)
         {

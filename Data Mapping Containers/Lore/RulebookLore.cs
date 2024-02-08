@@ -91,7 +91,7 @@ public class RulebookLore
                 public const int Defence      = 0;
                 public const int Purge        = 0;
                 public const int Mana         = 0;
-                public const int Actions      = 0;    
+                public const int Actions      = 1;    
                 // skills
                 public const int Melee        = 40;
                 public const int Arcane       = 10;
@@ -124,7 +124,7 @@ public class RulebookLore
                 public const int Defence      = 0;
                 public const int Purge        = 0;
                 public const int Mana         = 40;
-                public const int Actions      = 1;    
+                public const int Actions      = 2;    
                 // skills
                 public const int Melee        = 20;
                 public const int Arcane       = 40;
@@ -157,7 +157,7 @@ public class RulebookLore
                 public const int Defense      = 10;
                 public const int Purge        = 10;
                 public const int Mana         = 0;
-                public const int Actions      = 0;    
+                public const int Actions      = 1;    
                 // skills
                 public const int Melee        = 30;
                 public const int Arcane       = 0;
@@ -190,7 +190,7 @@ public class RulebookLore
                 public const int Defense      = 0;
                 public const int Purge        = 0;
                 public const int Mana         = 0;
-                public const int Actions      = 0;    
+                public const int Actions      = 1;    
                 // skills
                 public const int Melee        = 10;
                 public const int Arcane       = 0;

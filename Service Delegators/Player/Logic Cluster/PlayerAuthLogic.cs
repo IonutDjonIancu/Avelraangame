@@ -12,15 +12,11 @@ public interface IPlayerAuthLogic
 public class PlayerAuthLogic : IPlayerAuthLogic
 {
     private readonly object _lock = new();
-    private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
     private readonly IAuthenticatorModule authModule;
 
-    public PlayerAuthLogic(
-        AppSettings appSettings,
-        Snapshot snapshot)
+    public PlayerAuthLogic(Snapshot snapshot)
     {
-        this.appSettings = appSettings;
         this.snapshot = snapshot;
         authModule = new AuthenticatorModule();
     }
