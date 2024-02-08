@@ -1192,7 +1192,7 @@ public class Validations : IValidations
 
     private Player GetPlayerByName(string name)
     {
-        return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("Player not found.");
+        return snapshot.Players.Find(s => s.Identity.Name.ToLower() == name.ToLower()) ?? throw new Exception("Player not found.");
     }
 
     private Battleboard GetBattleboardById(string battleboardId)
