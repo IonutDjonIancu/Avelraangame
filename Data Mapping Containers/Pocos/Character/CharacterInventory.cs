@@ -10,7 +10,7 @@ public class CharacterInventory
     public Item? Offhand { get; set; }
     public Item? Ranged { get; set; }
 
-    public List<Item>? Heraldry { get; set; } = new();
+    public List<Item> Heraldry { get; set; } = new();
 
     public int Provisions { get; set; }
     public List<Item> Supplies { get; set; } = new();
