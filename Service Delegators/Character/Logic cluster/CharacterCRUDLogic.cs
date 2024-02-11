@@ -144,6 +144,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         for (int i = 0; i < roll; i++)
         {
             var item = items.GenerateRandomItem();
+            item.Identity.CharacterId = character.Identity.Id;
             character.Inventory.Supplies.Add(item);
         }
 

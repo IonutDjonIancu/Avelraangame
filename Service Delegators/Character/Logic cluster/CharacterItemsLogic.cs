@@ -200,6 +200,8 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         var paySum = item.Value - item.Value * character.Sheet.Skills.Social / 1000;
         var finalSum = paySum <= 0 ? 1 : paySum;
 
+        item.Identity.Id = character.Identity.Id;
+
         character.Inventory.Supplies.Add(item);
         character.Status.Wealth -= finalSum;
         location.Market.Remove(item);
