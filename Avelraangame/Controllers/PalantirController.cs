@@ -463,7 +463,7 @@ public class PalantirController : ControllerBase
         try
         {
             tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.SellItem(tradeItem);
+            var character = characters.BuyItem(tradeItem);
 
             return Ok(character);
         }

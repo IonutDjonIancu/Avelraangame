@@ -187,8 +187,9 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     #region private methods
     private static void SellItem(Character character, Item item, Location location)
     {
-        var moneyBack = item.Value + item.Value * character.Sheet.Skills.Social / 1000;
-        item.Value += (int)Math.Round(item.Value * 0.15);
+        var moneyBack = (int)Math.Round((decimal)(item.Value + item.Value * character.Sheet.Skills.Social / 1000));
+        item.Value += moneyBack; // the merchant will now try to sell the item to the value that he bought it
+        item.Identity.CharacterId = Guid.Empty.ToString();
 
         location.Market.Add(item);
         character.Inventory.Supplies.Remove(item);
@@ -197,13 +198,9 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
     private static void BuyItem(Character character, Item item, Location location)
     {
-        var paySum = item.Value - item.Value * character.Sheet.Skills.Social / 1000;
-        var finalSum = paySum <= 0 ? 1 : paySum;
-
-        item.Identity.Id = character.Identity.Id;
-
+        item.Identity.CharacterId = character.Identity.Id;
         character.Inventory.Supplies.Add(item);
-        character.Status.Wealth -= finalSum;
+        character.Status.Wealth -= item.Value;
         location.Market.Remove(item);
     }
 
