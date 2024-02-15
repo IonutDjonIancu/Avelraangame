@@ -463,7 +463,7 @@ public class PalantirController : ControllerBase
         try
         {
             tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.SellItem(tradeItem);
+            var character = characters.BuyItem(tradeItem);
 
             return Ok(character);
         }
@@ -594,8 +594,8 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // POST: /api/palantir/Gameplay/GetLadder
-    [HttpPost("Gameplay/GetLadder")]
+    // GET: /api/palantir/Gameplay/GetLadder
+    [HttpGet("Gameplay/GetLadder")]
     public IActionResult GetLadder()
     {
         try
