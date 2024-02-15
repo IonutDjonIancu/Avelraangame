@@ -594,8 +594,8 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Gameplay
-    // POST: /api/palantir/Gameplay/GetLadder
-    [HttpPost("Gameplay/GetLadder")]
+    // GET: /api/palantir/Gameplay/GetLadder
+    [HttpGet("Gameplay/GetLadder")]
     public IActionResult GetLadder()
     {
         try

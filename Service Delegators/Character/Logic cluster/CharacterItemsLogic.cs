@@ -188,7 +188,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     private static void SellItem(Character character, Item item, Location location)
     {
         var moneyBack = (int)Math.Round((decimal)(item.Value + item.Value * character.Sheet.Skills.Social / 1000));
-        item.Value += moneyBack; // the merchant will now try to sell the item to the value that he bought it
+        item.Value = moneyBack; // the merchant will now try to sell the item to the value that he bought it
         item.Identity.CharacterId = Guid.Empty.ToString();
 
         location.Market.Add(item);
