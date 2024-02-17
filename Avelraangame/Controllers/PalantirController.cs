@@ -252,6 +252,23 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Characters
+    // GET: /api/palantir/Character/Character
+    [HttpGet("Character/Character")]
+    public IActionResult Character([FromQuery] Request request)
+    {
+        try
+        {
+            var playerId = validations.ValidateApiRequest(request);
+            characters.Character(playerId);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     // GET: /api/palantir/Character/CreateCharacter
     [HttpGet("Character/CreateCharacter")]
     public IActionResult CreateCharacter([FromQuery] Request request, [FromQuery] string stubId)

@@ -6,6 +6,7 @@ namespace Service_Delegators;
 
 public interface ICharacterCRUDLogic
 {
+    void ClearStubs(string playerId);
     CharacterStub CreateStub(string playerId);
     Character SaveStub(CharacterRacialTraits traits, string playerId);
     Character KillChar(CharacterIdentity charIdentity);
@@ -34,6 +35,14 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         this.items = items;
         this.characterSheet = characterSheet;
         this.gameplayLogic = gameplayLogic;
+    }
+
+    public void ClearStubs(string playerId)
+    {
+        lock (_lock)
+        {
+            snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
+        }
     }
 
     public CharacterStub CreateStub(string playerId)
