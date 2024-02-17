@@ -6,19 +6,19 @@ public static class TestUtils
     {
         var playerData = new PlayerData
         {
-            PlayerName = name
+            PlayerName = name.ToLower()
         };
 
         _players.CreatePlayer(playerData);
         
-        return _snapshot.Players.Find(s => s.Identity.Name == name)!.Identity.Id;
+        return _snapshot.Players.Find(s => s.Identity.Name == name.ToLower())!.Identity.Id;
     }
 
     internal static Player CreateAndGetPlayer(string name, IPlayerLogicDelegator _players, Snapshot _snapshot)
     {
-        CreatePlayer(name, _players, _snapshot);
+        CreatePlayer(name.ToLower(), _players, _snapshot);
 
-        return _snapshot.Players.Find(s => s.Identity.Name == name)!;
+        return _snapshot.Players.Find(s => s.Identity.Name == name.ToLower())!;
     }
 
     internal static Player GetPlayer(string id, Snapshot _snapshot)
@@ -36,8 +36,8 @@ public static class TestUtils
             Tradition = CharactersLore.Tradition.Martial
         };
 
-        var playerId = CreatePlayer(playerName, _players, _snapshot);
-        _characters.CreateCharacterStub(playerId);
+        var playerId = CreatePlayer(playerName.ToLower(), _players, _snapshot);
+        _characters.CreateCharacterStub(playerId, "");
         return _characters.SaveCharacterStub(traits, playerId);
     }
 

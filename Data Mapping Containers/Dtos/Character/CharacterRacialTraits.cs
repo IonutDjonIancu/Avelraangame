@@ -6,5 +6,5 @@ public class CharacterRacialTraits
     public string Culture { get; set; }
     public string Tradition { get; set; }
     public string Class { get; set; }
-    public int? Icon { get; set; }
+    public int Icon { get; set; }
 }
