@@ -264,12 +264,12 @@ public class PalantirController : ControllerBase
     #region Characters
     // GET: /api/palantir/Character/CreateCharacter
     [HttpGet("Character/CreateCharacter")]
-    public IActionResult CreateCharacter([FromQuery] Request request)
+    public IActionResult CreateCharacter([FromQuery] Request request, [FromQuery] string stubId)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
-            var stub = characters.CreateCharacterStub(playerId);
+            var stub = characters.CreateCharacterStub(playerId, stubId);
 
             return Ok(stub);
         }

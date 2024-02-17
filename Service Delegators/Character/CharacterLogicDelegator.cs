@@ -6,7 +6,7 @@ namespace Service_Delegators;
 
 public interface ICharacterLogicDelegator
 {
-    CharacterStub CreateCharacterStub(string playerId);
+    CharacterStub CreateCharacterStub(string playerId, string stubId);
     Character SaveCharacterStub(CharacterRacialTraits traits, string playerId);
     Character KillCharacter(CharacterIdentity identity);
     void DeleteCharacter(CharacterIdentity identity);
@@ -68,11 +68,11 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         this.npcInteractionLogic = npcInteractionLogic;
     }
 
-    public CharacterStub CreateCharacterStub(string playerId)
+    public CharacterStub CreateCharacterStub(string playerId, string stubId)
     {
         validations.ValidateCharacterMaxNrAllowed(playerId);
-        var stub = createLogic.CreateStub(playerId);
-        return stub;
+        validations.ValidateStubId(playerId, stubId);
+        return createLogic.CreateStub(playerId);
     }
 
     public Character SaveCharacterStub(CharacterRacialTraits traits, string playerId)

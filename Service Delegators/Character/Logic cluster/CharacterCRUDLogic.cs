@@ -40,10 +40,12 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         lock (_lock)
         {
             snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
+
             var entityLevel = RandomizeEntityLevel();
 
             var stub = new CharacterStub
             {
+                Id = Guid.NewGuid().ToString(),
                 PlayerId = playerId,
                 EntityLevel = entityLevel,
                 StatPoints = RandomizeStatPoints(entityLevel),
