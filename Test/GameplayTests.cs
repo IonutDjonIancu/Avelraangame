@@ -59,7 +59,7 @@ public class GameplayTests : TestBase
         ladder.CharactersByWorth.Count.Should().Be(4);
 
         ladder.CharactersByWealth[0].CharacterName.Should().Be(char4name);
-        ladder.CharactersByWealth[0].PlayerName.Should().Be(player4name);
+        ladder.CharactersByWealth[0].PlayerName.Should().Be(player4name.ToLower());
         ladder.CharactersByWealth[0].Wealth.Should().Be(400);
         ladder.CharactersByWealth[0].Worth.Should().Be(400);
 

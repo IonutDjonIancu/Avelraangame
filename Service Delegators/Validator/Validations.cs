@@ -30,6 +30,7 @@ public interface IValidations
     #region character
     void ValidateCharacterUpdateName(CharacterData characterData);
     void ValidateCharacterMaxNrAllowed(string playerId);
+    void ValidateStubId(string playerId, string stubId);
     void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId);
     void ValidateCharacterBeforeDelete(CharacterIdentity identity);
     void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill trait);
@@ -239,9 +240,25 @@ public class Validations : IValidations
     {
         lock (_lockCharacters)
         {
+            ValidateString_p(playerId);
+
             var playerCharsCount = snapshot.Players.Find(p => p.Identity.Id == playerId)!.Characters.Where(s => s.Status.Gameplay.IsAlive).ToList().Count;
             
             if (playerCharsCount >= 5) throw new Exception("Max number of alive characters reached (5 alive characters allowed per player).");
+        }
+    }
+
+    public void ValidateStubId(string playerId, string stubId)
+    {
+        lock (_lockCharacters)
+        {
+            var stub = snapshot.Stubs.FirstOrDefault(s => s.PlayerId == playerId);
+
+            if (stub == null) return;
+
+            ValidateString_p(stubId);
+
+            if (stub.Id != stubId) throw new Exception("Wrong request data.");
         }
     }
 

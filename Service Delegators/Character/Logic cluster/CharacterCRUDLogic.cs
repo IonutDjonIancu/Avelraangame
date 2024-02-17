@@ -6,6 +6,7 @@ namespace Service_Delegators;
 
 public interface ICharacterCRUDLogic
 {
+    void ClearStubs(string playerId);
     CharacterStub CreateStub(string playerId);
     Character SaveStub(CharacterRacialTraits traits, string playerId);
     Character KillChar(CharacterIdentity charIdentity);
@@ -36,15 +37,25 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         this.gameplayLogic = gameplayLogic;
     }
 
+    public void ClearStubs(string playerId)
+    {
+        lock (_lock)
+        {
+            snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
+        }
+    }
+
     public CharacterStub CreateStub(string playerId)
     {
         lock (_lock)
         {
             snapshot.Stubs.RemoveAll(s => s.PlayerId == playerId);
+
             var entityLevel = RandomizeEntityLevel();
 
             var stub = new CharacterStub
             {
+                Id = Guid.NewGuid().ToString(),
                 PlayerId = playerId,
                 EntityLevel = entityLevel,
                 StatPoints = RandomizeStatPoints(entityLevel),

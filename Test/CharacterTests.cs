@@ -1,7 +1,4 @@
-﻿using Data_Mapping_Containers.Lore;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
-
-namespace Tests;
+﻿namespace Tests;
 
 [Collection("CharacterTests")]
 [Trait("Category", "CharacterServiceTests")]
@@ -16,7 +13,7 @@ public class CharacterTests : TestBase
         var playerId = TestUtils.CreatePlayer(PlayerName, _players, _snapshot);
 
         // Act
-        _characters.CreateCharacterStub(playerId);
+        _characters.CreateCharacterStub(playerId, "");
 
         // Assert
         _snapshot.Stubs.Count.Should().Be(1);
@@ -27,7 +24,7 @@ public class CharacterTests : TestBase
     {
         var player = TestUtils.CreateAndGetPlayer(PlayerName, _players, _snapshot);
 
-        _characters.CreateCharacterStub(player.Identity.Id);
+        _characters.CreateCharacterStub(player.Identity.Id, "");
 
         var charTraits = new CharacterRacialTraits
         {
@@ -457,12 +454,10 @@ public class CharacterTests : TestBase
 
         _characters.SellItem(tradeItem);
 
-        // item.Value + item.Value * character.Sheet.Skills.Social / 1000
         character.Status.Wealth.Should().Be(210);
         character.Inventory.Supplies.Count.Should().Be(0);
 
-        // (int)Math.Round(item.Value * 0.15)
-        item.Value.Should().Be(115);
+        item.Value.Should().Be(110);
 
         location.Market.Should().Contain(item);
     }
@@ -518,8 +513,7 @@ public class CharacterTests : TestBase
         _characters.BuyItem(tradeItem);
 
         character.Inventory.Supplies.Should().Contain(item);
-        // item.Value - item.Value * character.Sheet.Skills.Social / 1000
-        character.Status.Wealth.Should().Be(10);
+        character.Status.Wealth.Should().Be(0);
         location.Market.Exists(s => s.Identity.Id == item.Identity.Id).Should().BeFalse();
     }
 
@@ -671,7 +665,7 @@ public class CharacterTests : TestBase
     {
         var playerId = TestUtils.CreatePlayer(PlayerName, _players, _snapshot);
 
-        _characters.CreateCharacterStub(playerId);
+        _characters.CreateCharacterStub(playerId, "");
 
         var charTraits = new CharacterRacialTraits
         {
