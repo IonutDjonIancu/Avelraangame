@@ -4,7 +4,12 @@ public static class TestUtils
 {
     internal static string CreatePlayer(string name, IPlayerLogicDelegator _players, Snapshot _snapshot)
     {
-        _players.CreatePlayer(name);
+        var playerData = new PlayerData
+        {
+            PlayerName = name
+        };
+
+        _players.CreatePlayer(playerData);
         
         return _snapshot.Players.Find(s => s.Identity.Name == name)!.Identity.Id;
     }
@@ -49,6 +54,16 @@ public static class TestUtils
         {
             Id = character.Identity.Id,
             PlayerId = character.Identity.PlayerId,
+        };
+    }
+
+    internal static CharacterData GetCharacterData(Character character)
+    {
+        return new CharacterData
+        {
+            CharacterId = character.Identity.Id,
+            PlayerId = character.Identity.PlayerId,
+            CharacterName = character.Status.Name
         };
     }
 }

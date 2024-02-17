@@ -1,5 +1,4 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
 using Service_Delegators;
 
 namespace Avelraangame;
@@ -39,7 +38,6 @@ public class DIServices : IDIServices
     // these will be the general services that will contain the business logic of the app
     public static void LoadBusinessLogicServices(WebApplicationBuilder builder)
     {
-        LoadPersistenceService(builder);
         LoadDatabaseService(builder);
         LoadDiceService(builder);
         LoadItemsService(builder);
@@ -51,11 +49,6 @@ public class DIServices : IDIServices
     }
 
     #region private methods
-    private static void LoadPersistenceService(WebApplicationBuilder builder)
-    {
-        builder.Services.AddTransient<IPersistenceService, PersistenceService>();
-    }
-
     private static void LoadDatabaseService(WebApplicationBuilder builder)
     {
         // delegator

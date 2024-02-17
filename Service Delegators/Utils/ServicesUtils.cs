@@ -1,5 +1,6 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Lore;
+using static Service_Delegators.Enums;
 
 namespace Service_Delegators;
 
@@ -51,5 +52,18 @@ public static class ServicesUtils
         }
 
         throw new Exception("Character not found.");
+    }
+
+    public static Difficulty GetDifficultyFromEffort(int effort)
+    {
+        return effort switch
+        {
+            <= 50 => Difficulty.Normal,
+            <= 100 => Difficulty.Gifted,
+            <= 200 => Difficulty.Chosen,
+            <= 500 => Difficulty.Hero,
+            <= 1000 => Difficulty.Olympian,
+            _ => Difficulty.Planar,
+        };
     }
 }

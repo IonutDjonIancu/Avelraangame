@@ -1,6 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Newtonsoft.Json;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
@@ -11,37 +10,49 @@ public interface IDatabaseImportLogic
 
 public class DatabaseImportLogic : IDatabaseImportLogic
 {
-    private readonly Snapshot snapshot;
-    private readonly IPersistenceService persistence;
-    private readonly IPlayerLogicDelegator players;
+    private Snapshot snapshot;
 
     private readonly object _lock = new();
 
     public DatabaseImportLogic(
-        Snapshot snapshot,
-        IPersistenceService persistence,
-        IPlayerLogicDelegator players)
+        Snapshot snapshot)
     {
         this.snapshot = snapshot;
-        this.persistence = persistence;
-        this.players = players;
     }
 
     public void ImportPlayer(string playerJsonString)
     {
-        var newPlayer = JsonConvert.DeserializeObject<Player>(playerJsonString);
-
         lock (_lock)
         {
-            var oldPlayer = snapshot.Players.Find(p => p.Identity.Id == newPlayer.Identity.Id);
+            var import = JsonConvert.DeserializeObject<Player>(playerJsonString)!;
+            var player = snapshot.Players.Find(p => p.Identity.Name == import.Identity.Name)!;
 
-            if (oldPlayer != null)
+            import.Characters.ForEach(c => 
             {
-                players.DeletePlayer(oldPlayer.Identity.Id);
-            }
+                var newCharacterId = Guid.NewGuid().ToString();
+                c.Identity.Id = newCharacterId;
+                c.Identity.PlayerId = player.Identity.Id;
+                
+                c.Mercenaries.ForEach(m => m.Identity.PlayerId = player.Identity.Id);
 
-            snapshot.Players.Add(newPlayer);
-            persistence.PersistPlayer(newPlayer.Identity.Id);
+                c.Inventory.Supplies.ForEach(i => i.Identity.CharacterId = newCharacterId);
+
+                if (c.Inventory.Head != null) c.Inventory.Head.Identity.CharacterId = newCharacterId;
+                if (c.Inventory.Body != null) c.Inventory.Body.Identity.CharacterId = newCharacterId;
+                if (c.Inventory.Mainhand != null) c.Inventory.Mainhand.Identity.CharacterId = newCharacterId;
+                if (c.Inventory.Offhand != null) c.Inventory.Offhand.Identity.CharacterId = newCharacterId;
+                if (c.Inventory.Ranged != null) c.Inventory.Ranged.Identity.CharacterId = newCharacterId;
+                if (c.Inventory.Heraldry!.Count > 0)
+                {
+                    c.Inventory.Heraldry.ForEach(h => h.Identity.CharacterId = newCharacterId);
+                }
+
+                c.Status.Gameplay.BattleboardId = "";
+                c.Status.Gameplay.IsHidden = false;
+                c.Status.Gameplay.IsLocked = false;
+                
+                player.Characters.Add(c);
+            });
         }
     }
 }

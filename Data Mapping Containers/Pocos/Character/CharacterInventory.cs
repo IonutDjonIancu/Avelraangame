@@ -6,12 +6,11 @@ public class CharacterInventory
 {
     public Item? Head { get; set; }
     public Item? Body { get; set; }
-    public Item? Shield { get; set; }
     public Item? Mainhand { get; set; }
     public Item? Offhand { get; set; }
     public Item? Ranged { get; set; }
 
-    public List<Item>? Heraldry { get; set; } = new();
+    public List<Item> Heraldry { get; set; } = new();
 
     public int Provisions { get; set; }
     public List<Item> Supplies { get; set; } = new();
@@ -22,7 +21,6 @@ public class CharacterInventory
 
         if (Head != null) listOfItems.Add(Head);
         if (Body != null) listOfItems.Add(Body);
-        if (Shield != null) listOfItems.Add(Shield);
         if (Mainhand != null) listOfItems.Add(Mainhand);
         if (Offhand != null) listOfItems.Add(Offhand);
         if (Ranged != null) listOfItems.Add(Ranged);

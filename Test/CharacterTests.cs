@@ -34,7 +34,8 @@ public class CharacterTests : TestBase
             Race = CharactersLore.Races.Playable.Human,
             Culture = CharactersLore.Cultures.Human.Danarian,
             Class = CharactersLore.Classes.Warrior,
-            Tradition = GameplayLore.Tradition.Martial
+            Tradition = GameplayLore.Tradition.Martial,
+            Icon = 3
         };
 
         _characters.SaveCharacterStub(charTraits, player.Identity.Id);
@@ -49,6 +50,7 @@ public class CharacterTests : TestBase
 
         character.Status.Traits.Race.Should().Be(CharactersLore.Races.Playable.Human);
         character.Status.Traits.Class.Should().Be(CharactersLore.Classes.Warrior);
+        character.Status.Traits.Icon.Should().BeLessThanOrEqualTo(3);
         character.Status.Name.Should().NotBeNullOrWhiteSpace();
         character.Status.EntityLevel.Should().BeGreaterThanOrEqualTo(1);
         character.Status.Fame.Should().NotBeNullOrWhiteSpace();
@@ -80,7 +82,10 @@ public class CharacterTests : TestBase
 
         var newName = "new name";
 
-        _characters.UpdateCharacterName(newName, TestUtils.GetCharacterIdentity(character));
+        var data = TestUtils.GetCharacterData(character);
+        data.CharacterName = newName;
+
+        _characters.UpdateCharacterName(data);
 
         character.Status.Name.Should().Be(newName);
     }
@@ -90,9 +95,11 @@ public class CharacterTests : TestBase
     {
         var character = CreateCharacter();
 
+        var data = TestUtils.GetCharacterData(character);
         var newName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        data.CharacterName = newName;
 
-        Assert.Throws<Exception>(() => _characters.UpdateCharacterName(newName, TestUtils.GetCharacterIdentity(character)));
+        Assert.Throws<Exception>(() => _characters.UpdateCharacterName(data));
     }
 
     [Fact(DisplayName = "Deleting a character should remove it from player on snapshot")]
@@ -403,12 +410,14 @@ public class CharacterTests : TestBase
         };
 
         character.Status.Gameplay.IsLocked = true;
+        var data = TestUtils.GetCharacterData(character);
+        data.CharacterName = "new name";
 
         // not allowed actions during character lock
         Assert.Throws<Exception>(() => _characters.DeleteCharacter(charIdentity));
         Assert.Throws<Exception>(() => _characters.EquipCharacterItem(equip));
         Assert.Throws<Exception>(() => _characters.UnequipCharacterItem(equip));
-        Assert.Throws<Exception>(() => _characters.UpdateCharacterName("newName", charIdentity));
+        Assert.Throws<Exception>(() => _characters.UpdateCharacterName(data));
         Assert.Throws<Exception>(() => _characters.AddCharacterWealth(100, charIdentity));
         Assert.Throws<Exception>(() => _characters.IncreaseCharacterStats(CharactersLore.Stats.Strength, charIdentity));
         Assert.Throws<Exception>(() => _characters.IncreaseCharacterAssets(CharactersLore.Assets.Harm, charIdentity));

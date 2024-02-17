@@ -2,7 +2,7 @@
 
 public class AdminData
 {
-    public List<string> Admins { get; set; }
+    public string Admin { get; set; }
     public List<string> Banned { get; set; }
     public List<string> Recipients { get; set; }
 }

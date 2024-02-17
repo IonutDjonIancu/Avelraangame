@@ -6,7 +6,7 @@ public interface ICharacterUpdateLogic
 {
     Character AddFame(string fame, CharacterIdentity charIdentity);
     Character AddWealth(int wealth, CharacterIdentity charIdentity);
-    Character ChangeName(string name, CharacterIdentity charIdentity);
+    Character ChangeName(CharacterData characterData);
 }
 
 public class CharacterUpdateLogic : ICharacterUpdateLogic
@@ -20,12 +20,17 @@ public class CharacterUpdateLogic : ICharacterUpdateLogic
         this.snapshot = snapshot;
     }
 
-    public Character ChangeName(string name, CharacterIdentity charIdentity)
+    public Character ChangeName(CharacterData characterData)
     {
         lock (_lock)
         {
-            var character = ServicesUtils.GetPlayerCharacter(charIdentity, snapshot);
-            character.Status!.Name = name;
+            var character = ServicesUtils.GetPlayerCharacter(new CharacterIdentity
+            {
+                Id = characterData.CharacterId,
+                PlayerId = characterData.PlayerId!,
+            }, snapshot);
+
+            character.Status!.Name = characterData.CharacterName;
 
             return character;
         }

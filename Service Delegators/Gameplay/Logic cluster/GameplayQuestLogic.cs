@@ -49,7 +49,6 @@ public class GameplayQuestLogic : IGameplayQuestLogic
 
             var quest = new Quest
             {
-                QuestType = template.QuestType,
                 Fame = template.Fame,
                 Description = template.Description,
                 Result = template.Result,

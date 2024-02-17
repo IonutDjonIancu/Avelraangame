@@ -29,11 +29,11 @@ public class PlayerOperationsLogic : IPlayerOperationsLogic
         }
     }
 
-    public void Remove(string playerId)
+    public void Remove(string playerName)
     {
         lock(_lock)
         {
-            var player = snapshot.Players.Find(s => s.Identity.Id == playerId)!;
+            var player = snapshot.Players.Find(s => s.Identity.Name == playerName)!;
             snapshot.Players.Remove(player);
         }
     }

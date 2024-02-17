@@ -1,6 +1,5 @@
 ﻿using Data_Mapping_Containers.Dtos;
 using Data_Mapping_Containers.Lore;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
@@ -28,7 +27,6 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
 
     public BattleboardCombatLogic(
         Snapshot snapshot,
-        IPersistenceService persistence,
         IDiceLogicDelegator dice,
         ICharacterLogicDelegator characters)
     {

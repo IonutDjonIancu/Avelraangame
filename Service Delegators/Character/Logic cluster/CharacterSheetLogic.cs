@@ -76,7 +76,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
 
     private void SetCharacterSheetForElf(int statPoints, int skillPoints, Character character)
     {
-        var charsheet = new CharacterSheet
+        character.Sheet = new CharacterSheet
         {
             Stats = new CharacterStats
             {
@@ -91,18 +91,18 @@ public class CharacterSheetLogic : ICharacterSheetLogic
             Skills = new CharacterSkills()
         };
 
-        if (character.Status.Traits.Culture == CharactersLore.Cultures.Elf.Highborn) ModifySheetForHighborn(charsheet);
+        if (character.Status.Traits.Culture == CharactersLore.Cultures.Elf.Highborn) ModifySheetForHighborn(character.Sheet);
 
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
         CalculateAssets(character.Sheet);
         CalculateSkills(character.Sheet);
 
-        charsheet.Assets.Purge = 0;
+        character.Sheet.Assets.Purge = 0;
     }
 
     private void SetCharacterSheetForDwarf(int statPoints, int skillPoints, Character character)
     {
-        var charsheet = new CharacterSheet
+        character.Sheet = new CharacterSheet
         {
             Stats = new CharacterStats
             {
@@ -117,7 +117,7 @@ public class CharacterSheetLogic : ICharacterSheetLogic
             Skills = new CharacterSkills()
         };
 
-        if (character.Status.Traits.Culture == CharactersLore.Cultures.Dwarf.Undermountain) ModifySheetForUndermountain(charsheet);
+        if (character.Status.Traits.Culture == CharactersLore.Cultures.Dwarf.Undermountain) ModifySheetForUndermountain(character.Sheet);
 
         DistributeClassAttributes(character.Sheet, character.Status.Traits.Class!, statPoints, skillPoints);
         CalculateAssets(character.Sheet);

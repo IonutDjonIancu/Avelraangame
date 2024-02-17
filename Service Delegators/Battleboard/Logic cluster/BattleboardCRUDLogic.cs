@@ -133,7 +133,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         {
             Character charToRemove;
             Battleboard board;
-
+            
             if (string.IsNullOrWhiteSpace(actor.TargetId))
             {
                 charToRemove = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
@@ -160,12 +160,7 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
 
                 charToRemove.Mercenaries.ForEach(s =>
                 {
-                    s.Status.Gameplay.BattleboardId = string.Empty;
-                    s.Status.Gameplay.IsGoodGuy = false;
-                    s.Status.Gameplay.IsHidden = false;
-
-                    board.GoodGuys.Remove(s);
-                    board.BattleOrder.Remove(s.Identity.Id);
+                    RemoveMerc(charToRemove, s, true, board);
                 });
             }
             else
@@ -182,15 +177,11 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
 
                 charToRemove.Mercenaries.ForEach(s =>
                 {
-                    s.Status.Gameplay.BattleboardId = string.Empty;
-                    s.Status.Gameplay.IsGoodGuy = false;
-                    s.Status.Gameplay.IsHidden = false;
-
-                    board.BadGuys.Remove(s);
-                    board.BattleOrder.Remove(s.Identity.Id);
+                    RemoveMerc(charToRemove, s, false, board);
                 });
             }
 
+            charToRemove.Mercenaries.Clear();
             charToRemove.Status.Gameplay.BattleboardId = string.Empty;
             charToRemove.Status.Gameplay.IsGoodGuy = false;
             charToRemove.Status.Gameplay.IsHidden = false;
@@ -205,4 +196,25 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
             return board;
         }
     }
+
+    #region private methods
+    private void RemoveMerc(Character employer, Character merc, bool isGoodGuy, Battleboard board)
+    {
+        var location = snapshot.Locations.FirstOrDefault(s => s.FullName == employer.Status.Position.GetPositionFullName())!;
+
+        _ = isGoodGuy ? board.GoodGuys.Remove(merc) : board.BadGuys.Remove(merc);
+
+        merc.Status.Gameplay.BattleboardId = string.Empty;
+        merc.Status.Gameplay.IsGoodGuy = false;
+        merc.Status.Gameplay.IsHidden = false;
+
+        board.BattleOrder.Remove(merc.Identity.Id);
+
+        if (merc.Status.Gameplay.IsAlive)
+        {
+            merc.Identity.PlayerId = Guid.Empty.ToString();
+            location.Mercenaries.Add(merc);
+        }
+    }
+    #endregion
 }

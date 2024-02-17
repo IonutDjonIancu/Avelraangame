@@ -74,12 +74,11 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     public Character EquipItem(CharacterEquip equip)
     {
         var hasToUnequip = false;
+        var character = ServicesUtils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
+        var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
 
         lock (_lock)
         {
-            var character = ServicesUtils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
-            var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId);
-
             if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand) hasToUnequip = character.Inventory.Mainhand != null;
             else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Offhand) hasToUnequip = character.Inventory.Offhand != null;
             else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Ranged) hasToUnequip = character.Inventory.Ranged != null;
@@ -91,9 +90,6 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
         lock (_lock)
         {
-            var character = ServicesUtils.GetPlayerCharacter(equip.CharacterIdentity, snapshot);
-            var item = character.Inventory.Supplies!.Find(i => i.Identity.Id == equip.ItemId)!;
-
             if      (equip.InventoryLocation == ItemsLore.InventoryLocation.Head) character.Inventory.Head = item;
             else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Body) character.Inventory.Body = item;
             else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Mainhand) character.Inventory.Mainhand = item;
@@ -114,9 +110,9 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         lock (_lock)
         {
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var location = snapshot.Locations.Find(s => s.Position == character.Status.Position)!;
+            var location = snapshot.Locations.Find(s => s.FullName == ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position))!;
 
-            if (tradeItem.IsToBuy)
+            if (tradeItem.IsToBuy.GetValueOrDefault())
             {
                 var item = location.Market.Find(s => s.Identity.Id == tradeItem.ItemId)!;
                 BuyItem(character, item, location);
@@ -137,8 +133,8 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         {
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
 
-            character.Inventory.Provisions += tradeItem.Amount;
-            character.Status.Wealth -= tradeItem.Amount * 2;
+            character.Inventory.Provisions += tradeItem.Amount.GetValueOrDefault();
+            character.Status.Wealth -= tradeItem.Amount.GetValueOrDefault() * 2;
 
             return character;
         }
@@ -149,10 +145,10 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         lock (_lock)
         {
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
-            character.Inventory.Provisions -= tradeItem.Amount;
-            target.Inventory.Provisions += tradeItem.Amount;
+            character.Inventory.Provisions -= tradeItem.Amount.GetValueOrDefault();
+            target.Inventory.Provisions += tradeItem.Amount.GetValueOrDefault();
 
             return character;
         }
@@ -163,10 +159,10 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         lock (_lock)
         {
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
-            character.Status.Wealth -= tradeItem.Amount;
-            target.Status.Wealth += tradeItem.Amount;
+            character.Status.Wealth -= tradeItem.Amount.GetValueOrDefault();
+            target.Status.Wealth += tradeItem.Amount.GetValueOrDefault();
 
             return character;
         }
@@ -177,7 +173,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         lock (_lock)
         {
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
 
@@ -191,8 +187,9 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     #region private methods
     private static void SellItem(Character character, Item item, Location location)
     {
-        var moneyBack = item.Value + item.Value * character.Sheet.Skills.Social / 1000;
-        item.Value += (int)Math.Round(item.Value * 0.15);
+        var moneyBack = (int)Math.Round((decimal)(item.Value + item.Value * character.Sheet.Skills.Social / 1000));
+        item.Value = moneyBack; // the merchant will now try to sell the item to the value that he bought it
+        item.Identity.CharacterId = Guid.Empty.ToString();
 
         location.Market.Add(item);
         character.Inventory.Supplies.Remove(item);
@@ -201,11 +198,9 @@ public class CharacterItemsLogic : ICharacterItemsLogic
 
     private static void BuyItem(Character character, Item item, Location location)
     {
-        var paySum = item.Value - item.Value * character.Sheet.Skills.Social / 1000;
-        var finalSum = paySum <= 0 ? 1 : paySum;
-
+        item.Identity.CharacterId = character.Identity.Id;
         character.Inventory.Supplies.Add(item);
-        character.Status.Wealth -= finalSum;
+        character.Status.Wealth -= item.Value;
         location.Market.Remove(item);
     }
 

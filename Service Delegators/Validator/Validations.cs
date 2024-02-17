@@ -12,8 +12,8 @@ public interface IValidations
     #endregion
 
     #region database
-    void ValidateDatabaseExportImportOperations(string requesterId);
-    void ValidateDatabasePlayerImport(string requesterId, string playerJson);
+    void ValidateSnapshotExportImportOperations(string requesterId, DbRequestsInfo dbReqInfo);
+    void ValidateDatabasePlayerImport(string requesterId, DbRequestsInfo dbReqInfo);
     #endregion
 
     #region items
@@ -21,14 +21,14 @@ public interface IValidations
     #endregion
 
     #region player
-    void ValidatePlayerCreate(string playerName);
+    void ValidatePlayerCreate(PlayerData playerData);
     void ValidatePlayerLogin(PlayerLogin login);
     void ValidatePlayerUpdateName(string newPlayerName, string playerId);
-    void ValidatePlayerDelete(string playerId);
+    void ValidatePlayerDelete(PlayerDelete delete);
     #endregion
 
     #region character
-    void ValidateCharacterUpdateName(string name, CharacterIdentity identity);
+    void ValidateCharacterUpdateName(CharacterData characterData);
     void ValidateCharacterMaxNrAllowed(string playerId);
     void ValidateStubId(string playerId, string stubId);
     void ValidateCharacterCreateTraits(CharacterRacialTraits traits, string playerId);
@@ -104,7 +104,9 @@ public class Validations : IValidations
     {
         lock (_lockApi)
         {
-            var player = GetPlayerByName_p(request.PlayerName);
+            ValidateObject_p(request);
+
+            var player = GetPlayerByName(request.PlayerName.ToLower());
 
             if (appSettings.AdminData.Banned.Contains(player.Identity.Name.ToLower())) throw new Exception("Player is banned.");
             if (request.Token != player.Identity.Token) throw new Exception("Token mismatch.");
@@ -115,41 +117,54 @@ public class Validations : IValidations
     #endregion
 
     #region database validations
-    public void ValidateDatabaseExportImportOperations(string requesterId)
+    public void ValidateSnapshotExportImportOperations(string requesterId, DbRequestsInfo dbReqInfo)
+    {
+        lock (_lockDatabase)
+        {
+            ValidateObject_p(dbReqInfo);
+
+            ValidatePlayerIsAdmin_p(requesterId);
+            ValidateDbRequestInfo(dbReqInfo);
+        }
+    }
+
+    public void ValidateDatabasePlayerImport(string requesterId, DbRequestsInfo dbReqInfo)
     {
         lock (_lockDatabase)
         {
             ValidatePlayerIsAdmin_p(requesterId);
-        }
-    }
+            ValidateDbRequestInfo(dbReqInfo);
+            ValidateString_p(dbReqInfo.PlayerJsonString!);
 
-    public void ValidateDatabasePlayerImport(string requesterId, string playerJson)
-    {
-        ValidateDatabaseExportImportOperations(requesterId);
+            Player import;
 
-        try
-        {
-            JsonConvert.DeserializeObject<Player>(playerJson);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
+            try
+            {
+                import = JsonConvert.DeserializeObject<Player>(dbReqInfo.PlayerJsonString!)!;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unable to parse player json string. JsonConvert threw error: {ex}");
+            }
+
+            var player = GetPlayerByName(import.Identity.Name) ?? throw new Exception("Player not found.");
         }
     }
     #endregion
 
     #region player validations
-    public void ValidatePlayerCreate(string playerName)
+    public void ValidatePlayerCreate(PlayerData playerData)
     {
         lock (_lockPlayers)
         {
-            ValidateString_p(playerName);
-            if (playerName.Length > 20) throw new Exception($"Player name: {playerName} is too long, 20 characters max.");
-            if (snapshot.Players.Count >= 20) throw new Exception("Server has reached the limit number of players, please contact admins.");
+            ValidateObject_p(playerData);
+            ValidateString_p(playerData.PlayerName);
+            if (playerData.PlayerName.Length > 20) throw new Exception($"Player name: {playerData.PlayerName} is too long, 20 characters max.");
+            if (snapshot.Players.Count >= 10) throw new Exception("Server has reached the limit number of players, please contact admins.");
 
             // we don't care for player misspelling their names
             // names will be unique during creation
-            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerName.ToLower())) throw new Exception("Name unavailable.");
+            if (snapshot.Players.Exists(p => p.Identity.Name.ToLower() == playerData.PlayerName.ToLower())) throw new Exception("This name is not allowed.");
         }
     }
 
@@ -176,11 +191,16 @@ public class Validations : IValidations
         }
     }
 
-    public void ValidatePlayerDelete(string playerId)
+    public void ValidatePlayerDelete(PlayerDelete delete)
     {
         lock (_lockPlayers)
         {
-            ValidatePlayerExists_p(playerId);
+            ValidateObject_p(delete);
+            ValidateObject_p(delete.PlayerData);
+            ValidateObject_p(delete);
+
+            ValidatePlayerIsAdmin_p(delete.PlayerData.PlayerId!);
+            ValidatePlayerExistsByName_p(delete.PlayerData.PlayerName);
         }
     }
     #endregion
@@ -197,14 +217,22 @@ public class Validations : IValidations
     #endregion
 
     #region character validations
-    public void ValidateCharacterUpdateName(string name, CharacterIdentity identity)
+    public void ValidateCharacterUpdateName(CharacterData characterData)
     {
         lock (_lockCharacters)
         {
-            ValidateString_p(name);
-            if (name.Length >= 20) throw new Exception("Character name too long.");
+            ValidateObject_p(characterData);
+            ValidateString_p(characterData.CharacterId);
+            ValidateString_p(characterData.PlayerId!);
+            ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(new CharacterIdentity 
+            { 
+                Id = characterData.CharacterId, 
+                PlayerId = characterData.PlayerId! 
+            }, snapshot));
 
-            ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(identity, snapshot));
+            ValidateString_p(characterData.CharacterName);
+
+            if (characterData.CharacterName.Length >= 20) throw new Exception("Character name too long.");
         }
     }
 
@@ -546,7 +574,7 @@ public class Validations : IValidations
             ValidateObject_p(tradeItem.TargetIdentity);
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);
@@ -568,7 +596,7 @@ public class Validations : IValidations
             ValidateObject_p(tradeItem.TargetIdentity);
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);
@@ -588,10 +616,10 @@ public class Validations : IValidations
             ValidateObject_p(tradeItem);
             ValidateObject_p(tradeItem.CharacterIdentity);
             ValidateObject_p(tradeItem.TargetIdentity);
-            ValidateString_p(tradeItem.ItemId);
+            ValidateString_p(tradeItem.ItemId!);
 
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
-            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity, snapshot);
+            var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);
@@ -630,7 +658,7 @@ public class Validations : IValidations
         lock (_lockBattleboards)
         {
             ValidateGuid_p(battleboardId);
-            GetBattleboard_p(battleboardId);
+            GetBattleboardById(battleboardId);
         }
     }
 
@@ -700,7 +728,7 @@ public class Validations : IValidations
             ValidateCharacterIsLocked_p(character);
             if (character.Status.Gameplay.BattleboardId != string.Empty) throw new Exception(charAlreadyOnBoard);
 
-            var board = GetBattleboard_p(actor.BattleboardId!);
+            var board = GetBattleboardById(actor.BattleboardId!);
 
             if (!string.IsNullOrWhiteSpace(board.Quest.Id) && !actor.WantsToBeGood!.Value) throw new Exception("You can only join party as friendly during questing.");
             if (board.IsInCombat) throw new Exception(boardInCombat);
@@ -722,7 +750,7 @@ public class Validations : IValidations
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsLocked_p(character);
 
-            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+            var battleboard = GetBattleboardById(character.Status.Gameplay.BattleboardId);
             ValidateCharacterIsOnBattleboard(battleboard, character);
 
             if (character.Status.Gameplay.IsGoodGuy)
@@ -751,7 +779,7 @@ public class Validations : IValidations
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsLocked_p(character);
 
-            var battleboard = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+            var battleboard = GetBattleboardById(character.Status.Gameplay.BattleboardId);
             ValidateCharacterIsOnBattleboard(battleboard, character);
 
             if (battleboard.IsInCombat) throw new Exception(boardInCombat);
@@ -766,7 +794,7 @@ public class Validations : IValidations
             ValidateObject_p(actor.MainActor);
 
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-            var board = GetBattleboard_p(character.Status.Gameplay.BattleboardId);
+            var board = GetBattleboardById(character.Status.Gameplay.BattleboardId);
 
             if (board.IsInCombat) throw new Exception("Battleboard already in combat.");
             
@@ -888,7 +916,7 @@ public class Validations : IValidations
             ValidateObject_p(actor.MainActor);
 
             var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-            var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
+            var board = GetBattleboardById(attacker.Status.Gameplay.BattleboardId);
 
             if (board.BattleOrder.Count > 0) throw new Exception("There are still characters with actions.");
         }
@@ -990,7 +1018,7 @@ public class Validations : IValidations
     #region generic
     private static void ValidateBool_P(bool? value, string message = "")
     {
-        if (value == null) throw new Exception("Bool value cannot be null.");
+        if (value == null) throw new Exception(message.Length > 0 ? message : "Bool value cannot be null.");
     }
 
     private static void ValidateString_p(string str, string message = "")
@@ -1024,16 +1052,32 @@ public class Validations : IValidations
     private void ValidatePlayerExists_p(string playerId)
     {
         ValidateString_p(playerId);
-        GetPlayer_p(playerId);
+        GetPlayerById(playerId);
+    }
+
+    private void ValidatePlayerExistsByName_p(string playerName)
+    {
+        ValidateString_p(playerName);
+        GetPlayerByName(playerName);
     }
 
     private void ValidatePlayerIsAdmin_p(string playerId)
     {
         ValidatePlayerExists_p(playerId);
 
-        var playerName = GetPlayer_p(playerId)!.Identity.Name;
+        var playerName = GetPlayerById(playerId)!.Identity.Name;
 
-        if (!appSettings.AdminData.Admins.Contains(playerName)) throw new Exception("Player is not an admin.");
+        if (playerName != Environment.GetEnvironmentVariable("AvelraanAdmin")) throw new Exception("Player is not an admin.");
+    }
+
+    private static void ValidateDbRequestInfo(DbRequestsInfo dbReqInfo)
+    {
+        ValidateObject_p(dbReqInfo);
+        ValidateString_p(dbReqInfo.Password);
+        ValidateString_p(dbReqInfo.Secret);
+
+        if (dbReqInfo.Password != Environment.GetEnvironmentVariable("AvelraanPassword")) throw new Exception("Wrong Avelraan password provided.");
+        if (dbReqInfo.Secret != Environment.GetEnvironmentVariable("AvelraanSecret")) throw new Exception("Wrong Avelraan secret provided.");
     }
     #endregion
 
@@ -1047,7 +1091,7 @@ public class Validations : IValidations
     private static void ValidateCulture_p(string culture)
     {
         ValidateString_p(culture, "Invalid culture string.");
-        if (!CharactersLore.Cultures.All.Contains(culture)) throw new Exception($"Culture {culture} not found.");
+        if (!CharactersLore.Cultures.AllPlayable.Any(playableCultures => playableCultures.Contains(culture))) throw new Exception($"Culture {culture} not found.");
     }
 
     private static void ValidateTradition_p(string tradition)
@@ -1077,6 +1121,10 @@ public class Validations : IValidations
         else if (origins.Race == CharactersLore.Races.Playable.Dwarf)
         {
             if (!CharactersLore.Cultures.Dwarf.All.Contains(origins.Culture)) throw new Exception(invalidCombination);
+        }
+        else if (origins.Race == CharactersLore.Races.Playable.Orc)
+        {
+            if (!CharactersLore.Cultures.Orc.All.Contains(origins.Culture)) throw new Exception(invalidCombination);
         }
     }
 
@@ -1139,7 +1187,7 @@ public class Validations : IValidations
         ValidateObject_p(actor.MainActor);
 
         var attacker = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
-        var board = GetBattleboard_p(attacker.Status.Gameplay.BattleboardId);
+        var board = GetBattleboardById(attacker.Status.Gameplay.BattleboardId);
 
         if (!board.BattleOrder.Contains(attacker.Identity.Id)) throw new Exception("Character is exhausted and has no action points left for round.");
 
@@ -1154,17 +1202,17 @@ public class Validations : IValidations
     #endregion
 
     #region getter methods
-    private Player GetPlayer_p(string playerId)
+    private Player GetPlayerById(string playerId)
     {
-        return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("PLayer not found.");
+        return snapshot.Players.Find(s => s.Identity.Id == playerId) ?? throw new Exception("Player not found.");
     }
 
-    private Player GetPlayerByName_p(string name)
+    private Player GetPlayerByName(string name)
     {
-        return snapshot.Players.Find(s => s.Identity.Name == name) ?? throw new Exception("PLayer not found.");
+        return snapshot.Players.Find(s => s.Identity.Name.ToLower() == name.ToLower()) ?? throw new Exception("Player not found.");
     }
 
-    private Battleboard GetBattleboard_p(string battleboardId)
+    private Battleboard GetBattleboardById(string battleboardId)
     {
         var boardNotFound = "Battleboard not found.";
 

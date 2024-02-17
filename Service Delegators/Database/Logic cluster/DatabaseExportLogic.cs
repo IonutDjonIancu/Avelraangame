@@ -1,92 +1,55 @@
 ﻿using System.Net.Mail;
+using System.Numerics;
+using System.Text;
 using Data_Mapping_Containers.Dtos;
 using Independent_Modules;
+using Newtonsoft.Json;
 
 namespace Service_Delegators;
 
 public interface IDatabaseExportLogic
 {
-    void ExportDatabase();
-    void ExportLogs(int days);
+    void ExportPlayers();
 }
 
 public class DatabaseExportLogic : IDatabaseExportLogic
 {
     private readonly AppSettings appSettings;
     private readonly IMailingModule mailingModule;
+    private readonly Snapshot snapshot;
 
-    public DatabaseExportLogic(AppSettings appSettings)
+    public DatabaseExportLogic(
+        AppSettings appSettings,
+        Snapshot snapshot)
     {
         this.appSettings = appSettings;
-        mailingModule = new MailingModule(appSettings.AvelraanEmail, appSettings.AvelraanEmailPass);
+        this.snapshot = snapshot;
+        mailingModule = new MailingModule(Environment.GetEnvironmentVariable("AvelraanEmail")!, Environment.GetEnvironmentVariable("AvelraanGmailPassword")!);
     }
 
-    public void ExportDatabase()
+    public void ExportPlayers()
     {
-        var attachments = SetExportDatabaseAttachments();
+        var playersJson = JsonConvert.SerializeObject(snapshot.Players);
+        byte[] bytes = Encoding.UTF8.GetBytes(playersJson);
+        using (MemoryStream stream = new (bytes))
+        {
+            var attachments = new List<Attachment>
+            {
+                new (stream, "players.txt", "text/plain")
+            };
 
-        if (attachments.Count == 0) return;
-
-        SendEmails("Avelraan DATABASE export", attachments);
+            SendEmail($"Avelraan PLAYERS export @ {DateTime.Now.ToShortDateString()}", "Players data are attached as a text file.", attachments);
+        }
     }
-
-    public void ExportLogs(int days)
-    {
-        var logsLocation = appSettings.LogPath;
-        var attachments = GetLogFilesAsAttachments(logsLocation, days);
-
-        if (attachments.Count == 0) return;
-
-        SendEmails("Avelraan LOGS export", attachments);
-    }
-
 
     #region private methods
-    private void SendEmails(string subject, List<Attachment> attachments)
+    private void SendEmail(string subject, string message, List<Attachment> attachments)
     {
-        var message = $"Export date: {DateTime.Now.ToShortDateString()}";
-
         foreach (var email in appSettings.AdminData.Recipients)
         {
             mailingModule.SendEmail(email, subject, message, attachments);
             Thread.Sleep(3000);
         }
-    }
-
-    private List<Attachment> SetExportDatabaseAttachments()
-    {
-        var listOfAttachments = new List<Attachment>();
-
-        // players
-        var paths = Directory.GetFiles(appSettings.DbPlayersPath);
-        foreach (var path in paths)
-        {
-            var playerAttachment = new Attachment(path);
-            listOfAttachments.Add(playerAttachment);
-        }
-
-        return listOfAttachments;
-    }
-
-    private static List<Attachment> GetLogFilesAsAttachments(string logsPath, int days)
-    {
-        var listOfAttachments = new List<Attachment>();
-        var listOfPaths = Directory.GetFiles(logsPath).Reverse().ToList();
-        var counter = 1;
-
-        foreach (var path in listOfPaths)
-        {
-            if (counter > days || counter >= 7)
-            {
-                return listOfAttachments;
-            }
-
-            var attachment = new Attachment(path);
-            listOfAttachments.Add(attachment);
-            counter++;
-        }
-
-        return listOfAttachments;
     }
     #endregion
 }

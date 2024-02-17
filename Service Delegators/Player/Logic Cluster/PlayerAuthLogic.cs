@@ -5,56 +5,49 @@ namespace Service_Delegators;
 
 public interface IPlayerAuthLogic
 {
-    (Authenticator auth, Player player) AuthenticatePlayer(string playerName);
+    Authenticator AuthenticatePlayer(string playerName);
     Player AuthorizePlayer(PlayerLogin login);
 }
 
 public class PlayerAuthLogic : IPlayerAuthLogic
 {
     private readonly object _lock = new();
-    private readonly AppSettings appSettings;
     private readonly Snapshot snapshot;
     private readonly IAuthenticatorModule authModule;
 
-    public PlayerAuthLogic(
-        AppSettings appSettings,
-        Snapshot snapshot)
+    public PlayerAuthLogic(Snapshot snapshot)
     {
-        this.appSettings = appSettings;
         this.snapshot = snapshot;
         authModule = new AuthenticatorModule();
     }
 
-    public (Authenticator auth, Player player) AuthenticatePlayer(string playerName)
+    public Authenticator AuthenticatePlayer(string playerName)
     {
-        var id = Guid.NewGuid().ToString();
-        var token = Guid.NewGuid().ToString();
-
         lock (_lock)
         {
+            var id = Guid.NewGuid().ToString();
+            var token = Guid.NewGuid().ToString();
             var player = new Player()
             {
                 Identity = new PlayerIdentity
                 {
-                    Name = playerName,
+                    Name = playerName.ToLower(),
                     Id = id,
                     Token = token,
                 },
                 LastAction = DateTime.Now.ToShortDateString(),
-                IsAdmin = appSettings.AdminData.Admins.Contains(playerName),
+                IsAdmin = playerName == Environment.GetEnvironmentVariable("AvelraanAdmin"),
             };
 
             snapshot.Players.Add(player);
 
             var (imageUrl, code) = authModule.GenerateSetupCode(player.Identity.Id, player.Identity.Name);
 
-            var auth = new Authenticator()
+            return new Authenticator()
             {
                 SetupCode = code,
                 SetupImage = imageUrl,
             };
-
-            return (auth, player);
         }
     }
 

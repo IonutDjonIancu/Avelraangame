@@ -1,5 +1,4 @@
-﻿using Serilog;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Data_Mapping_Containers.Dtos;
 using Service_Delegators;
@@ -50,7 +49,7 @@ public class PalantirController : ControllerBase
     [HttpGet("Test/GetOk")]
     public IActionResult GetOk()
     {
-        return Ok("All okay!");
+        return Ok("All okay.");
     }
     #endregion
 
@@ -62,24 +61,14 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetPlayers());
     }
 
-    // GET: /api/palantir/Metadata/GetPlayer
-    [HttpGet("Metadata/GetPlayer")]
-    public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token)
-    {
-        var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
-
-        return Ok(metadata.GetPlayer(playerId));
-    }
-
     // GET: /api/palantir/Metadata/GetPlayerCharacter
     [HttpGet("Metadata/GetPlayerCharacter")]
-    public IActionResult GetPlayer([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
+    public IActionResult GetPlayerCharacter([FromQuery] string playerName, [FromQuery] string token, [FromQuery] string characterId)
     {
         var playerId = validations.ValidateApiRequest(new Request() { PlayerName = playerName, Token = token });
 
         return Ok(metadata.GetPlayer(playerId).Characters.Find(s => s.Identity.Id == characterId));
     }
-
 
     // GET: /api/palantir/Metadata/GetSpecialSkills
     [HttpGet("Metadata/GetSpecialSkills")]
@@ -109,6 +98,13 @@ public class PalantirController : ControllerBase
         return Ok(metadata.GetClasses());
     }
 
+    // GET: /api/palantir/Metadata/GetTraits
+    [HttpGet("Metadata/GetTraits")]
+    public IActionResult GetTraits()
+    {
+        return Ok(metadata.GetTraits());
+    }
+
     // GET: /api/palantir/Metadata/GetAllLocations
     [HttpGet("Metadata/GetAllLocations")]
     public IActionResult GetAllLocations()
@@ -118,87 +114,83 @@ public class PalantirController : ControllerBase
     #endregion
 
     #region Database
-    // PUT: /api/palantir/Database/ExportDatabase
-    [HttpPut("Database/ExportDatabase")]
-    public IActionResult ExportDatabase([FromQuery] Request request)
+    // PUT: /api/palantir/Database/ExportSnapshot
+    [HttpPut("Database/ExportSnapshot")]
+    public IActionResult ExportSnapshot([FromQuery] Request request, DbRequestsInfo dbRequestsInfo)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ExportDatabase(playerId);
+            database.ExportSnapshot(playerId, dbRequestsInfo);
 
             return Ok("Database exported successfully.");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
-
-    // PUT: /api/palantir/Database/ExportLogs
-    [HttpPut("Database/ExportLogs")]
-    public IActionResult ExportLogs([FromQuery] Request request, int days)
-    {
-        try
-        {
-            var playerId = validations.ValidateApiRequest(request);
-
-            database.ExportLogs(playerId, days);
-
-            return Ok("Logs exported successfully.");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
 
     // PUT: /api/palantir/Database/ImportPlayer
     [HttpPut("Database/ImportPlayer")]
-    public IActionResult ImportPlayer([FromQuery] Request request, [FromBody] string playerJsonString)
+    public IActionResult ImportPlayer([FromQuery] Request request, [FromBody] DbRequestsInfo dbRequestsInfo)
     {
         try
         {
             var playerId = validations.ValidateApiRequest(request);
 
-            database.ImportPlayer(playerId, playerJsonString);
+            database.ImportPlayer(playerId, dbRequestsInfo);
 
             return Ok("Player imported successfully.");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
     #endregion
 
     #region Player
-    // POST: /api/palantir/Player/CreatePlayer
-    [HttpPost("Player/CreatePlayer")]
-    public IActionResult CreatePlayer([FromQuery] string playerName)
+    // GET: /api/palantir/Player/GetPlayer
+    [HttpGet("Player/GetPlayer")]
+    public IActionResult GetPlayer([FromQuery] Request request)
     {
         try
         {
-            var autheticatorSetupInfo = players.CreatePlayer(playerName);
+            var playerId = validations.ValidateApiRequest(request);
+            var player = metadata.GetPlayer(playerId);
 
-            if (autheticatorSetupInfo == null) return Conflict("Unable to create player."); 
-            
-            return Ok(autheticatorSetupInfo);
+            return Ok(player);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // POST: /api/palantir/Player/CreatePlayer
+    [HttpPost("Player/CreatePlayer")]
+    public IActionResult CreatePlayer([FromBody] PlayerData playerData) 
+    {
+        try
+        {
+            var authenticatorSetupInfo = players.CreatePlayer(playerData);
+
+            if (authenticatorSetupInfo == null) return Conflict("Unable to create player."); 
+            
+            return Ok(authenticatorSetupInfo);
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex.Message);
         }
     }
 
     // PUT: /api/palantir/Player/LoginPlayer
     [HttpPut("Player/LoginPlayer")]
-    public IActionResult LoginPlayer([FromQuery] PlayerLogin login)
+    public IActionResult LoginPlayer([FromBody] PlayerLogin login)
     {
         try
         {
@@ -208,26 +200,25 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
 
     // DELETE: /api/palantir/Player/DeletePlayer
     [HttpDelete("Player/DeletePlayer")]
-    public IActionResult DeletePlayer([FromQuery] Request request)
+    public IActionResult DeletePlayer([FromBody] PlayerDelete delete)
     {
         try
         {
-            var playerId = validations.ValidateApiRequest(request);
+            var playerId = validations.ValidateApiRequest(delete.Request);
+            delete.PlayerData.PlayerId = playerId;
 
-            players.DeletePlayer(playerId);
+            players.DeletePlayer(delete);
 
             return Ok("Player deleted successfully.");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -255,7 +246,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -275,7 +265,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -293,25 +282,23 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
 
     // PUT: /api/palantir/Character/UpdateCharacterName
     [HttpPut("Character/UpdateCharacterName")]
-    public IActionResult UpdateCharacterName([FromQuery] Request request, string name, string characterId)
+    public IActionResult UpdateCharacterName([FromQuery] Request request, CharacterData characterData)
     {
         try
         {
-            var playerId = validations.ValidateApiRequest(request);
-            var character = characters.UpdateCharacterName(name, new CharacterIdentity { Id = characterId, PlayerId = playerId });
+            characterData.PlayerId = validations.ValidateApiRequest(request);
+            var character = characters.UpdateCharacterName(characterData);
 
             return Ok(character);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -329,7 +316,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -347,7 +333,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -365,7 +350,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -383,7 +367,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -401,7 +384,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -419,7 +401,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -437,7 +418,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -455,7 +435,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -473,7 +452,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -485,13 +463,12 @@ public class PalantirController : ControllerBase
         try
         {
             tradeItem.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.SellItem(tradeItem);
+            var character = characters.BuyItem(tradeItem);
 
             return Ok(character);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -509,7 +486,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -527,7 +503,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -545,7 +520,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -563,7 +537,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -581,7 +554,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -600,7 +572,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -617,15 +588,14 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
     #endregion
 
     #region Gameplay
-    // POST: /api/palantir/Gameplay/GetLadder
-    [HttpPost("Gameplay/GetLadder")]
+    // GET: /api/palantir/Gameplay/GetLadder
+    [HttpGet("Gameplay/GetLadder")]
     public IActionResult GetLadder()
     {
         try
@@ -636,7 +606,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -653,7 +622,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -672,7 +640,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -689,7 +656,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -708,7 +674,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -727,7 +692,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -746,7 +710,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -765,7 +728,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -784,7 +746,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -803,7 +764,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -822,7 +782,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -841,7 +800,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -860,7 +818,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -879,7 +836,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -898,7 +854,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -917,7 +872,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -936,7 +890,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -955,7 +908,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -974,7 +926,6 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
             return BadRequest(ex.Message);
         }
     }
@@ -993,7 +944,78 @@ public class PalantirController : ControllerBase
         }
         catch (Exception ex)
         {
-            Log.Error(ex, ex.Message);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/SelectQuest
+    [HttpPut("Battleboards/SelectQuest")]
+    public IActionResult SelectQuest([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.SelectQuest(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/FinishQuest
+    [HttpPut("Battleboards/FinishQuest")]
+    public IActionResult FinishQuest([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.FinishQuest(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/AbandonQuest
+    [HttpPut("Battleboards/AbandonQuest")]
+    public IActionResult AbandonQuest([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.AbandonQuest(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // PUT: /api/palantir/Battleboards/NextEncounter
+    [HttpPut("Battleboards/NextEncounter")]
+    public IActionResult NextEncounter([FromQuery] Request request, [FromBody] BattleboardActor actor)
+    {
+        try
+        {
+            actor.MainActor.PlayerId = validations.ValidateApiRequest(request);
+
+            var battleboard = battleboards.NextEncounter(actor);
+
+            return Ok(battleboard);
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex.Message);
         }
     }

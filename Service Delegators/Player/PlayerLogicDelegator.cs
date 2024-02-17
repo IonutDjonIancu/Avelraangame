@@ -1,65 +1,53 @@
 ﻿using Data_Mapping_Containers.Dtos;
-using Persistance_Manager;
 
 namespace Service_Delegators;
 
 public interface IPlayerLogicDelegator
 {
-    Authenticator CreatePlayer(string playerName);
+    Authenticator CreatePlayer(PlayerData playerData);
     string LoginPlayer(PlayerLogin login);
     void UpdatePlayerName(string newPlayerName, string playerId);
-    void DeletePlayer(string playerId);
+    void DeletePlayer(PlayerDelete delete);
 }
 
 public class PlayerLogicDelegator : IPlayerLogicDelegator
 {
     private readonly IValidations validations;
-    private readonly IPersistenceService persistence;
     private readonly IPlayerAuthLogic playerAuth;
     private readonly IPlayerOperationsLogic playerOps;
 
 
     public PlayerLogicDelegator(
         IValidations validations,
-        IPersistenceService persistence,
         IPlayerAuthLogic playerAuth,
         IPlayerOperationsLogic playerOps)
     {
         this.validations = validations;
-        this.persistence = persistence;
         this.playerAuth = playerAuth;
         this.playerOps = playerOps;
     }
 
-    public Authenticator CreatePlayer(string playerName)
+    public Authenticator CreatePlayer(PlayerData playerData)
     {
-        validations.ValidatePlayerCreate(playerName);
-        var (auth, player) = playerAuth.AuthenticatePlayer(playerName);
-        persistence.PersistPlayer(player.Identity.Id);
-
-        return auth;
+        validations.ValidatePlayerCreate(playerData);
+        return playerAuth.AuthenticatePlayer(playerData.PlayerName);
     }
 
     public string LoginPlayer(PlayerLogin login)
     {
         validations.ValidatePlayerLogin(login);
-        var player = playerAuth.AuthorizePlayer(login);
-        persistence.PersistPlayer(player.Identity.Id);
-
-        return player.Identity.Token;
+        return playerAuth.AuthorizePlayer(login).Identity.Token;
     }
 
     public void UpdatePlayerName(string newPlayerName, string playerId)
     {
         validations.ValidatePlayerUpdateName(newPlayerName, playerId);
-        var player = playerOps.UpdateName(newPlayerName, playerId);
-        persistence.PersistPlayer(player.Identity.Id);
+        playerOps.UpdateName(newPlayerName, playerId);
     }
 
-    public void DeletePlayer(string playerId)
+    public void DeletePlayer(PlayerDelete delete)
     {
-        validations.ValidatePlayerDelete(playerId);
-        playerOps.Remove(playerId);
-        persistence.RemovePlayer(playerId);
+        validations.ValidatePlayerDelete(delete);
+        playerOps.Remove(delete.PlayerData.PlayerName);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Service_Delegators;
 
 namespace Tests;
 
@@ -45,7 +44,6 @@ public class TestBase : IDisposable
         LoadSnapshot(services);
         LoadValidations(services);
         
-        LoadPersistence(services);
         LoadDatabaseService(services);
 
         LoadPlayerService(services);
@@ -58,7 +56,9 @@ public class TestBase : IDisposable
         LoadBattleboardService(services);
     }
 
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
     public void Dispose()
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
     {
         _scope.Dispose();
     }
@@ -84,11 +84,6 @@ public class TestBase : IDisposable
     private static void LoadValidations(IServiceCollection services)
     {
         services.AddSingleton<IValidations, Validations>();
-    }
-
-    private static void LoadPersistence(IServiceCollection services)
-    {
-        services.AddTransient<IPersistenceService, PersistenceService>();
     }
 
     private static void LoadDatabaseService(IServiceCollection services)
