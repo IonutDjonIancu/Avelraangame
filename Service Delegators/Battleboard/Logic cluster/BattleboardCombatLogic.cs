@@ -562,6 +562,16 @@ public class BattleboardCombatLogic : IBattleboardCombatLogic
             else
             {
                 defenderRoll = dice.Roll_game_dice(true, CharactersLore.Stats.Willpower, defender);
+
+                var attackerAbsRoll = dice.Roll_game_dice(false, CharactersLore.Stats.Abstract, attacker);
+                var defenderWilRoll = dice.Roll_game_dice(false, CharactersLore.Stats.Willpower, attacker);
+                var result = attackerAbsRoll - defenderWilRoll;
+
+                defenderRoll -= result;
+                if (defenderRoll < 0)
+                {
+                    defenderRoll = 0;
+                }
             }
 
             var attackDiff = attackerRoll - defenderRoll;

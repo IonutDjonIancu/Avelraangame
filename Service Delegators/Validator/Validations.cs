@@ -232,7 +232,7 @@ public class Validations : IValidations
 
             ValidateString_p(characterData.CharacterName);
 
-            if (characterData.CharacterName.Length >= 20) throw new Exception("Character name too long.");
+            if (characterData.CharacterName.Length > 30) throw new Exception("Character name too long.");
         }
     }
 

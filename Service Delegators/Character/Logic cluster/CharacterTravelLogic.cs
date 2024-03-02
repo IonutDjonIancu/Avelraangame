@@ -5,7 +5,7 @@ namespace Service_Delegators;
 
 public interface ICharacterTravelLogic
 {
-    Character MoveToLocation(CharacterTravel travel);
+    CharacterTravelResponse MoveToLocation(CharacterTravel travel);
 }
 
 public class CharacterTravelLogic : ICharacterTravelLogic
@@ -23,11 +23,14 @@ public class CharacterTravelLogic : ICharacterTravelLogic
         this.dice = dice;
     }
 
-    public Character MoveToLocation(CharacterTravel travel)
+    public CharacterTravelResponse MoveToLocation(CharacterTravel travel)
     {
         lock (_lock)
         {
+            CharacterTravelResponse travelResponse = new();
+
             var character = ServicesUtils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
+            travelResponse.Character = character;
 
             var currentLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position);
             var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
@@ -60,6 +63,8 @@ public class CharacterTravelLogic : ICharacterTravelLogic
             {
                 character.Inventory.Provisions -= travelCostPerPerson * 10;
                 character.Mercenaries.Clear();
+
+                travelResponse.Result = GameplayLore.Travel.Disastrous;
             }
             else if (highestRoll <= effort / 5)
             {
@@ -73,36 +78,44 @@ public class CharacterTravelLogic : ICharacterTravelLogic
                         character.Mercenaries.RemoveAt(i);
                     }
                 }
+
+                travelResponse.Result = GameplayLore.Travel.Grievous;
             }
             else if (highestRoll <= effort / 2)
             {
                 character.Inventory.Provisions -= travelCostPerPerson * 2;
                 character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson * 2);
+
+                travelResponse.Result = GameplayLore.Travel.Adverse;
             }
             else if (highestRoll <= effort)
             {
                 character.Inventory.Provisions -= travelCostPerPerson + 1;
                 character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson);
+
+                travelResponse.Result = GameplayLore.Travel.Unfortunate;
             }
             else if (highestRoll >= 10 * effort)
             {
                 // minimum cost accounted for, party lives off the land
+                travelResponse.Result = GameplayLore.Travel.Excellent;
             }
             else if (highestRoll >= 5 * effort)
             {
                 character.Inventory.Provisions -= travelCostPerPerson / 5 + 1;
-                character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5);
+                character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 5 + 1);
+
+                travelResponse.Result = GameplayLore.Travel.Favourable;
             }
             else if (highestRoll >= 2 * effort)
             {
-                character.Inventory.Provisions -= travelCostPerPerson / 2;
-                character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2);
+                character.Inventory.Provisions -= travelCostPerPerson / 2 + 1;
+                character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2 + 1);
+
+                travelResponse.Result = GameplayLore.Travel.Convenient;
             }
 
-            character.Inventory.Provisions -= 1;
-            character.Mercenaries.ForEach(s => s.Inventory.Provisions -= 1);
-
-            return character;
+            return travelResponse;
         }
     }
 

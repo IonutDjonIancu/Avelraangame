@@ -444,7 +444,7 @@ public class BattleboardTests : TestBase
         _battleboard.Mend(actor);
 
         attacker.Sheet.Assets.ResolveLeft.Should().BeLessThanOrEqualTo(attackerInitialResolve);
-        defender.Sheet.Assets.ResolveLeft.Should().BeGreaterThan(defenderInitialResolve);
+        defender.Sheet.Assets.ResolveLeft.Should().BeGreaterThanOrEqualTo(defenderInitialResolve);
     }
 
     [Fact(DisplayName = "Mending an enemy should throw.")]

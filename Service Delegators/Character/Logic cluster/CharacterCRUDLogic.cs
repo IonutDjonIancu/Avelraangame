@@ -87,7 +87,6 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
             SetSheet(stub, character); 
             SetIcon(traits, character);
             SetSuppliesAndProvisions(character);
-            SetWealthAndWorth(character);
 
             //TODO: set cultural bonuses like Human Danarian gets extra armour pieces, etc, wood elves get a bow, etc
 
@@ -97,6 +96,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
             player.Characters!.Add(character);
 
             gameplayLogic.GetOrGenerateLocation(character.Status.Position);
+            SetWealthAndWorth(character);
 
             return character;
         }
@@ -169,17 +169,6 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
 
     private void SetWealthAndWorth(Character character)
     {
-        var sumOfSkills = character.Sheet.Skills.Melee
-            + character.Sheet.Skills.Arcane
-            + character.Sheet.Skills.Psionics
-            + character.Sheet.Skills.Hide
-            + character.Sheet.Skills.Traps
-            + character.Sheet.Skills.Tactics
-            + character.Sheet.Skills.Social
-            + character.Sheet.Skills.Apothecary
-            + character.Sheet.Skills.Travel
-            + character.Sheet.Skills.Sail;
-
         var wealth = 10;
         var rollTimes = dice.Roll_1_to_n(6);
         for (int i = 0; i < rollTimes; i++)
@@ -187,7 +176,7 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
             wealth += dice.Roll_1_to_n(100);
         }
 
-        character.Status.Worth = (int)((sumOfSkills + wealth) * 0.25);
+        character.Status.Worth = ServicesUtils.CalculateWorth(character, dice);
         character.Status.Wealth = wealth;
     }
 
@@ -235,9 +224,9 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
             Position = new Position
             {
                 Region = GameplayLore.Locations.Dragonmaw.RegionName,
-                Subregion = GameplayLore.Locations.Dragonmaw.Farlindor.SubregionName,
-                Land = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.LandName,
-                Location = GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Arada.Name
+                Subregion = GameplayLore.Locations.Dragonmaw.Soudheim.SubregionName,
+                Land = GameplayLore.Locations.Dragonmaw.Soudheim.Danar.LandName,
+                Location = GameplayLore.Locations.Dragonmaw.Soudheim.Danar.Arada.Name
             },
             Worth = 0,
             Wealth = 0,

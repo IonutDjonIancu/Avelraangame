@@ -446,9 +446,9 @@ public class PalantirController : ControllerBase
         try
         {
             travel.CharacterIdentity.PlayerId = validations.ValidateApiRequest(request);
-            var character = characters.TravelCharacterToLocation(travel);
+            var characterTravelResponse = characters.TravelCharacterToLocation(travel);
 
-            return Ok(character);
+            return Ok(characterTravelResponse);
         }
         catch (Exception ex)
         {
