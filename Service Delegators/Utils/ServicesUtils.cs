@@ -66,4 +66,54 @@ public static class ServicesUtils
             _ => Difficulty.Planar,
         };
     }
+
+    public static int CalculateWorth(Character character, IDiceLogicDelegator dice)
+    {
+        var location = GetLoreLocationByPosition(character.Status.Position);
+
+        int[] stats =
+        {
+            character.Sheet.Stats.Strength,
+            character.Sheet.Stats.Constitution,
+            character.Sheet.Stats.Agility,
+            character.Sheet.Stats.Willpower,
+            character.Sheet.Stats.Perception,
+            character.Sheet.Stats.Abstract
+        };
+
+        int[] skills =
+        {
+            character.Sheet.Skills.Arcane,
+            character.Sheet.Skills.Psionics,
+            character.Sheet.Skills.Hide,
+            character.Sheet.Skills.Traps,
+            character.Sheet.Skills.Tactics,
+            character.Sheet.Skills.Social,
+            character.Sheet.Skills.Apothecary,
+            character.Sheet.Skills.Travel,
+            character.Sheet.Skills.Sail
+        };
+
+        int[] assets =
+        {
+            character.Sheet.Assets.Harm,
+            character.Sheet.Assets.Spot,
+            (int)character.Sheet.Assets.Purge,
+            (int)character.Sheet.Assets.Defense,
+            (int)character.Sheet.Assets.DefenseFinal,
+            character.Sheet.Assets.Resolve,
+            character.Sheet.Assets.ResolveLeft,
+            character.Sheet.Assets.Mana,
+            character.Sheet.Assets.ManaLeft,
+            (int)character.Sheet.Assets.Actions,
+            (int)character.Sheet.Assets.ActionsLeft
+        };
+
+        var statsAvg = stats.Average();
+        var assetsAvg = assets.Average();
+        var skillsAvg = skills.Average();
+        var allAverage = (statsAvg + skillsAvg + assetsAvg) / 3;
+
+        return (int)(location.Effort + allAverage);
+    }
 }

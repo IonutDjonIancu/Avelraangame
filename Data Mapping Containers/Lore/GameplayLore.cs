@@ -16,6 +16,23 @@ public class GameplayLore
             Nightfall, Campfire, Laughter, Rainy
         };
     }
+
+    public static class Travel
+    {
+        public const string Disastrous = "You arrive at your destination on the brink of starvation. Your provisions ran out soon enough and you were forced to beg for food, unable to live off the land due to lacking the proper travelling skillset. Your companions abandon you and you owe a band of merchants for saving you by sparing some of their food.";
+        public const string Grievous = "You barely made it to your destination. Your provisions ran out during the harsh trip and some companions have abandoned you.";
+        public const string Adverse = "It was a costly trip for you. You have lost your way many times and that took its toll on your provisions.";
+        public const string Unfortunate = "An easy trip for you and your men, but the bad weather slowed you down.";
+        public const string Convenient = "Travelling was easy and at a normal pace.";
+        public const string Favourable = "Your travels are swift and without incident.";
+        public const string Excellent = "As always, your travelling skills have proven more than amazing. You manage to live off the land, make use of no provisions along the way.";
+
+
+        public static readonly List<string> All = new()
+        {
+            Disastrous, Grievous, Adverse, Unfortunate, Convenient, Favourable, Excellent
+        };
+    }
     
     public static class Effort
     {
@@ -271,9 +288,9 @@ public class GameplayLore
         {
             public const string RegionName = "Dragonmaw";
 
-            public static class Farlindor
+            public static class Soudheim
             {
-                public const string SubregionName = "Farlindor";
+                public const string SubregionName = "Soudheim";
 
                 public static class Danar
                 {
@@ -291,11 +308,11 @@ public class GameplayLore
                             Land = LandName,
                             Location = AradaName
                         },
-                        Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent standing army, and hundreds of thousands families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
+                        Description = "The capital of The Kingdom of Danar. A well fortified city with two fortresses, a keep, several garisons with a small, but permanent standing army, and a few thousand families living in or around it. This is where the King of Danar lives, a long lasting member of the Arada family.",
                         Effort = Effort.Normal,
                         TravelCostFromArada = 1
                     };
-                    private const string LanwickName = "Lanwick Province";
+                    private const string LanwickName = "Lanwick";
                     public static readonly Location Lanwick = new()
                     {
                         Name = LanwickName,
@@ -324,7 +341,7 @@ public class GameplayLore
                             Location = BelfordshireName
                         },
                         Description = "A modest settlement, mostly inhabited by soldiers safeguarding the southern border of Danar with the forests of Pel'Ravan mountains, merchants stopping by and their mercenaries. Expect mud, sweat, horses and the sharpening of steel to be omnious here.",
-                        Effort = Effort.Gifted,
+                        Effort = Effort.Normal,
                         TravelCostFromArada = 5
                     };
                     #endregion
@@ -334,9 +351,9 @@ public class GameplayLore
 
         public static readonly List<Location> All = new()
         {
-            Dragonmaw.Farlindor.Danar.Arada,
-            Dragonmaw.Farlindor.Danar.Lanwick,
-            Dragonmaw.Farlindor.Danar.Belfordshire
+            Dragonmaw.Soudheim.Danar.Arada,
+            Dragonmaw.Soudheim.Danar.Lanwick,
+            Dragonmaw.Soudheim.Danar.Belfordshire
         };
     }
 

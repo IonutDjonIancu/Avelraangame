@@ -403,7 +403,7 @@ public class CharacterTests : TestBase
         var charTravel = new CharacterTravel
         {
             CharacterIdentity = GetCharIdentity(character),
-            Destination = ServicesUtils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Farlindor.Danar.Belfordshire.FullName),
+            Destination = ServicesUtils.GetPositionByLocationFullName(GameplayLore.Locations.Dragonmaw.Soudheim.Danar.Belfordshire.FullName),
         };
 
         character.Status.Gameplay.IsLocked = true;
@@ -636,8 +636,8 @@ public class CharacterTests : TestBase
     }
 
     [Theory(DisplayName = "Character travel should move to new position")]
-    [InlineData("Dragonmaw_Farlindor_Danar_Belfordshire")]
-    [InlineData("Dragonmaw_Farlindor_Danar_Arada")]
+    [InlineData("Dragonmaw_Soudheim_Danar_Belfordshire")]
+    [InlineData("Dragonmaw_Soudheim_Danar_Arada")]
     public void CharacterTravelTest(string locationFullName)
     {
         var character = CreateCharacter();

@@ -15,10 +15,14 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
     private readonly object _lock = new();
 
     private readonly Snapshot snapshot;
+    private readonly IDiceLogicDelegator dice;
 
-    public CharacterLevelupLogic(Snapshot snapshot)
+    public CharacterLevelupLogic(
+        Snapshot snapshot, 
+        IDiceLogicDelegator dice)
     {
         this.snapshot = snapshot;
+        this.dice = dice;
     }
 
     public Character IncreaseStats(string stat, CharacterIdentity identity)
@@ -48,6 +52,8 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
             else throw new Exception($"Cannot increase <<{stat.ToUpper()}>> beyond its limit.");
 
             character!.LevelUp!.StatPoints--;
+
+            character.Status.Worth = ServicesUtils.CalculateWorth(character, dice);
 
             return character;
         }
@@ -81,6 +87,8 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
             else throw new Exception($"Cannot increase <<{asset}>> beyond its limit.");
 
             character!.LevelUp!.AssetPoints--;
+
+            character.Status.Worth = ServicesUtils.CalculateWorth(character, dice);
 
             return character;
         }
@@ -117,6 +125,8 @@ public class CharacterLevelupLogic : ICharacterLevelupLogic
             else throw new Exception($"Cannot increase <<{skill}>> beyond its limit.");
 
             character.LevelUp!.SkillPoints--;
+
+            character.Status.Worth = ServicesUtils.CalculateWorth(character, dice);
 
             return character;
         }

@@ -32,6 +32,7 @@ public class GameplayCharactersLogic : IGameplayCharactersLogic
                 CharacterName = character.Status.Name,
                 PlayerName = snapshot.Players.Find(p => p.Identity.Id == character.Identity.PlayerId)!.Identity.Name,
                 Race = character.Status.Traits.Race,
+                EntityLevel = character.Status.EntityLevel,
                 Icon = character.Status.Traits.Icon,
                 Wealth = character.Status.Wealth,
                 Worth = character.Status.Worth,

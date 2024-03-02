@@ -24,7 +24,7 @@ public interface ICharacterLogicDelegator
     
     Character HireMercenaryForCharacter(CharacterHireMercenary hireMercenary);
     Character LearnCharacterSpecialSkill(CharacterAddSpecialSkill spskAdd);
-    Character TravelCharacterToLocation(CharacterTravel travel);
+    CharacterTravelResponse TravelCharacterToLocation(CharacterTravel travel);
 
     Character SellItem(CharacterTrade tradeItem);
     Character BuyItem(CharacterTrade tradeItem);
@@ -149,7 +149,7 @@ public class CharacterLogicDelegator : ICharacterLogicDelegator
         return levelupLogic.IncreaseSkill(skill, identity);
     }
 
-    public Character TravelCharacterToLocation(CharacterTravel travel)
+    public CharacterTravelResponse TravelCharacterToLocation(CharacterTravel travel)
     {
         validations.ValidateCharacterBeforeTravel(travel);
         return travelLogic.MoveToLocation(travel);

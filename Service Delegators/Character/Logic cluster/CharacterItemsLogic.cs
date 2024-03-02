@@ -19,10 +19,13 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     private readonly object _lock = new();
 
     private readonly Snapshot snapshot;
+    private readonly IDiceLogicDelegator dice;
 
-    public CharacterItemsLogic(Snapshot snapshot)
+    public CharacterItemsLogic(
+        Snapshot snapshot, IDiceLogicDelegator dice)
     {
         this.snapshot = snapshot;
+        this.dice = dice;
     }
 
     public Character UnequipItem(CharacterEquip unequip)
@@ -64,6 +67,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
             }
 
             AddRemoveItemBonuses(character, item, false);
+            character.Status.Worth = ServicesUtils.CalculateWorth(character, dice);
 
             character.Inventory.Supplies!.Add(item);
 
@@ -98,6 +102,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
             else if (equip.InventoryLocation == ItemsLore.InventoryLocation.Heraldry) character.Inventory!.Heraldry!.Add(item);
 
             AddRemoveItemBonuses(character, item, true);
+            character.Status.Worth = ServicesUtils.CalculateWorth(character, dice);
 
             character.Inventory.Supplies.Remove(item);
 
@@ -232,7 +237,7 @@ public class CharacterItemsLogic : ICharacterItemsLogic
         character.Sheet.Assets.ActionsLeft  = character.Sheet.Assets.Actions;
 
         // skills
-        character.Sheet.Skills.Melee       += multiplier * item.Sheet.Skills.Melee;
+        character.Sheet.Skills.Melee        += multiplier * item.Sheet.Skills.Melee;
         character.Sheet.Skills.Arcane       += multiplier * item.Sheet.Skills.Arcane;
         character.Sheet.Skills.Psionics     += multiplier * item.Sheet.Skills.Psionics;
         character.Sheet.Skills.Hide         += multiplier * item.Sheet.Skills.Hide;
