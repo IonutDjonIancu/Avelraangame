@@ -19,14 +19,13 @@ public class GameplayLore
 
     public static class Travel
     {
-        public const string Disastrous = "You arrive at your destination on the brink of starvation. Your provisions ran out soon enough and you were forced to beg for food, unable to live off the land due to lacking the proper travelling skillset. Your companions abandon you and you owe a band of merchants for saving you by sparing some of their food.";
-        public const string Grievous = "You barely made it to your destination. Your provisions ran out during the harsh trip and some companions have abandoned you.";
+        public const string Disastrous = "You miraculously arrive at your destination after a near fatal trip. Some of your provisions were rotten so you had to ask for food, unable to live off the land due to lacking the proper travelling skillset. Your companions abandon you and you owe a band of merchants for saving you by sharing some of their supplies with you.";
+        public const string Grievous = "You barely made it to your destination. It was a harsh trip and some companions have abandoned you due to your miscalculated ways.";
         public const string Adverse = "It was a costly trip for you. You have lost your way many times and that took its toll on your provisions.";
         public const string Unfortunate = "An easy trip for you and your men, but the bad weather slowed you down.";
         public const string Convenient = "Travelling was easy and at a normal pace.";
         public const string Favourable = "Your travels are swift and without incident.";
-        public const string Excellent = "As always, your travelling skills have proven more than amazing. You manage to live off the land, make use of no provisions along the way.";
-
+        public const string Excellent = "Your travelling skills have proven more than amazing. You manage to live off the land, making use of almost no provisions along the way.";
 
         public static readonly List<string> All = new()
         {

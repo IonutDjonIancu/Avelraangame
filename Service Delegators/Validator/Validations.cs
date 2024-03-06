@@ -285,6 +285,10 @@ public class Validations : IValidations
         { 
             ValidateObject_p(identity);
             ValidateCharacterIsLocked_p(ServicesUtils.GetPlayerCharacter(identity, snapshot));
+            if (!string.IsNullOrEmpty(ServicesUtils.GetPlayerCharacter(identity, snapshot).Status.Gameplay.BattleboardId))
+            {
+                throw new Exception("Character is on a battleboard, leave battleboard first before deleting character.");
+            }
         }
     }
     public void ValidateCharacterLearnSpecialSkill(CharacterAddSpecialSkill spsk)
@@ -720,8 +724,6 @@ public class Validations : IValidations
             ValidateObject_p(actor.MainActor);
             ValidateString_p(actor.BattleboardId!);
             ValidateBool_P(actor.WantsToBeGood);
-
-
 
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);

@@ -14,13 +14,16 @@ public class CharacterTravelLogic : ICharacterTravelLogic
 
     private readonly Snapshot snapshot;
     private readonly IDiceLogicDelegator dice;
+    private readonly IGameplayLogicDelegator gameplay;
 
     public CharacterTravelLogic(
         Snapshot snapshot,
-        IDiceLogicDelegator dice)
+        IDiceLogicDelegator dice,
+        IGameplayLogicDelegator gameplay)
     {
         this.snapshot = snapshot;
         this.dice = dice;
+        this.gameplay = gameplay;
     }
 
     public CharacterTravelResponse MoveToLocation(CharacterTravel travel)
@@ -28,14 +31,13 @@ public class CharacterTravelLogic : ICharacterTravelLogic
         lock (_lock)
         {
             CharacterTravelResponse travelResponse = new();
+            var destination = gameplay.GetOrGenerateLocation(travel.Destination);
 
             var character = ServicesUtils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
             travelResponse.Character = character;
 
             var currentLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position);
             var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
-            var destinationLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(travel.Destination);
-            var destination = GameplayLore.Locations.All.Find(s => s.FullName == destinationLocationFullName)!;
 
             int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);
             var totalPeopleInParty = character.Mercenaries.Count + 1; // including the party lead
@@ -108,6 +110,13 @@ public class CharacterTravelLogic : ICharacterTravelLogic
                 travelResponse.Result = GameplayLore.Travel.Favourable;
             }
             else if (highestRoll >= 2 * effort)
+            {
+                character.Inventory.Provisions -= travelCostPerPerson / 2 + 1;
+                character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2 + 1);
+
+                travelResponse.Result = GameplayLore.Travel.Convenient;
+            } 
+            else
             {
                 character.Inventory.Provisions -= travelCostPerPerson / 2 + 1;
                 character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2 + 1);
