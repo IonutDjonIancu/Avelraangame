@@ -79,28 +79,76 @@ public class BattleboardCRUDLogic : IBattleboardCRUDLogic
         {
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             var board = snapshot.Battleboards.Find(s => s.Id == actor.BattleboardId)!;
-            character.Status.Gameplay.BattleboardId = board.Id;
-            character.Status.Gameplay.IsGoodGuy = actor.WantsToBeGood!.Value;
 
-            // you can only join party as good guy
-            // for joining bad guys check arenas logic
-
-            var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
-
-            if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
+            if (!actor.IsForArena.GetValueOrDefault())
             {
-                board.GoodGuyPartyLeadId = character.Identity.Id;
+                character.Status.Gameplay.BattleboardId = board.Id;
+                character.Status.Gameplay.IsGoodGuy = true;
+
+                // you can only join party as good guy
+                // for joining bad guys check arena logic below
+
+                var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
+
+                if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
+                {
+                    board.GoodGuyPartyLeadId = character.Identity.Id;
+                }
+
+                board.GoodGuys.Add(character);
+
+                character.Mercenaries.ForEach(s =>
+                {
+                    s.Status.Gameplay.BattleboardId = board.Id;
+                    s.Status.Gameplay.IsGoodGuy = true;
+
+                    board.GoodGuys.Add(s);
+                });
+            } 
+            else
+            {
+                character.Status.Gameplay.BattleboardId = board.Id;
+                character.Status.Gameplay.IsGoodGuy = actor.WantsToBeGood.GetValueOrDefault();
+
+                if (actor.WantsToBeGood.GetValueOrDefault())
+                {
+                    var partyLead = board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!;
+
+                    if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
+                    {
+                        board.GoodGuyPartyLeadId = character.Identity.Id;
+                    }
+
+                    board.GoodGuys.Add(character);
+
+                    character.Mercenaries.ForEach(s =>
+                    {
+                        s.Status.Gameplay.BattleboardId = board.Id;
+                        s.Status.Gameplay.IsGoodGuy = true;
+
+                        board.GoodGuys.Add(s);
+                    });
+                }
+                else
+                {
+                    var partyLead = board.BadGuys.Find(s => s.Identity.Id == board.BadGuyPartyLeadId)!;
+
+                    if (partyLead == null || character.Status.Worth > partyLead.Status.Worth)
+                    {
+                        board.BadGuyPartyLeadId = character.Identity.Id;
+                    }
+
+                    board.BadGuys.Add(character);
+
+                    character.Mercenaries.ForEach(s =>
+                    {
+                        s.Status.Gameplay.BattleboardId = board.Id;
+                        s.Status.Gameplay.IsGoodGuy = false;
+
+                        board.BadGuys.Add(s);
+                    });
+                }
             }
-
-            board.GoodGuys.Add(character);
-
-            character.Mercenaries.ForEach(s =>
-            {
-                s.Status.Gameplay.BattleboardId = board.Id;
-                s.Status.Gameplay.IsGoodGuy = true;
-
-                board.GoodGuys.Add(s);
-            });
 
             return board;
         }

@@ -717,13 +717,13 @@ public class Validations : IValidations
         var charAlreadyOnBoard = "Character is already on a battleboard.";
         var boardInCombat = "Unable to join battleboard during combat";
         var cannotAddMoreThan1Char = "You cannot add more than 1 character that you own to the party.";
+        var partyNotAtSameLocation = "You cannot join a party that has either moved away or is not at your location.";
 
         lock (_lockBattleboards)
         {
             ValidateObject_p(actor);
             ValidateObject_p(actor.MainActor);
             ValidateString_p(actor.BattleboardId!);
-            ValidateBool_P(actor.WantsToBeGood);
 
             var character = ServicesUtils.GetPlayerCharacter(actor.MainActor, snapshot);
             ValidateCharacterIsAlive_p(character);
@@ -732,10 +732,9 @@ public class Validations : IValidations
 
             var board = GetBattleboardById(actor.BattleboardId!);
 
-            if (!string.IsNullOrWhiteSpace(board.Quest.Id) && !actor.WantsToBeGood!.Value) throw new Exception("You can only join party as friendly during questing.");
+            if (board.GoodGuys.Find(s => s.Identity.Id == board.GoodGuyPartyLeadId)!.Status.Position.Location != character.Status.Position.Location) throw new Exception(partyNotAtSameLocation);
             if (board.IsInCombat) throw new Exception(boardInCombat);
             if (board.GoodGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
-            if (board.BadGuys.Where(s => !s.Status.Gameplay.IsNpc && s.Identity.PlayerId == character.Identity.PlayerId).Any()) throw new Exception(cannotAddMoreThan1Char);
         }
     }
 

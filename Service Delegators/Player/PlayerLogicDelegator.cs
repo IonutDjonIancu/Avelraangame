@@ -6,6 +6,7 @@ public interface IPlayerLogicDelegator
 {
     Authenticator CreatePlayer(PlayerData playerData);
     string LoginPlayer(PlayerLogin login);
+    string LoginTestPlayer(string playerName);
     void UpdatePlayerName(string newPlayerName, string playerId);
     void DeletePlayer(PlayerDelete delete);
 }
@@ -37,6 +38,11 @@ public class PlayerLogicDelegator : IPlayerLogicDelegator
     {
         validations.ValidatePlayerLogin(login);
         return playerAuth.AuthorizePlayer(login).Identity.Token;
+    }
+
+    public string LoginTestPlayer(string playerName)
+    {
+        return playerAuth.AuthorizeTestPlayer(playerName).Identity.Token;
     }
 
     public void UpdatePlayerName(string newPlayerName, string playerId)

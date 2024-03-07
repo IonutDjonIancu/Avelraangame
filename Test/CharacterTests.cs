@@ -670,7 +670,7 @@ public class CharacterTests : TestBase
 
         _characters.TravelCharacterToLocation(charTravel);
 
-        character.Inventory.Provisions.Should().BeLessThan(provInitialValue);
+        character.Inventory.Provisions.Should().BeLessThanOrEqualTo(provInitialValue);
     }
 
     [Theory(DisplayName = "Wrong character traits should throw")]

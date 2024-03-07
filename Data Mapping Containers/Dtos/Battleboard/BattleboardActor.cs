@@ -9,4 +9,5 @@ public class BattleboardActor
     public string? BattleboardId { get; set; }
     public string? TargetId { get; set; }
     public string? QuestId { get; set; }
+    public bool? IsForArena { get; set; }
 }
