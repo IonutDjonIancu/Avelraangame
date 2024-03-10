@@ -7,6 +7,7 @@ public interface IPlayerAuthLogic
 {
     Authenticator AuthenticatePlayer(string playerName);
     Player AuthorizePlayer(PlayerLogin login);
+    Player AuthorizeTestPlayer(string playerName);
 }
 
 public class PlayerAuthLogic : IPlayerAuthLogic
@@ -65,6 +66,18 @@ public class PlayerAuthLogic : IPlayerAuthLogic
 
             player.Identity.Token = Guid.NewGuid().ToString();
             player.LastAction = DateTime.Now.ToShortDateString();
+
+            return player;
+        }
+    }
+
+    public Player AuthorizeTestPlayer(string playerName)
+    {
+        lock (_lock)
+        {
+            var player = snapshot.Players.Find(p => p.Identity.Name == playerName)!;
+
+            player.Identity.Token = Guid.NewGuid().ToString();
 
             return player;
         }

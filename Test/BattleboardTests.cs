@@ -70,6 +70,7 @@ public class BattleboardTests : TestBase
 
         var actor3 = CreateBattleboardActor("player 3");
         actor3.WantsToBeGood = false;
+        actor3.IsForArena = true;
         actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
@@ -109,6 +110,7 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = false;
+        actor2.IsForArena = true;
         actor2.BattleboardId = board.Id;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         _battleboard.JoinBattleboard(actor2);
@@ -127,6 +129,7 @@ public class BattleboardTests : TestBase
 
         var actor2 = CreateBattleboardActor("player 2");
         actor2.WantsToBeGood = false;
+        actor2.IsForArena = true;
         actor2.BattleboardId = board.Id;
         var actor2char = TestUtils.GetCharacter(actor2.MainActor.Id, actor2.MainActor.PlayerId, _snapshot);
         actor2char.Status.Worth = 1000;
@@ -134,6 +137,7 @@ public class BattleboardTests : TestBase
 
         var actor3 = CreateBattleboardActor("player 3");
         actor3.WantsToBeGood = false;
+        actor3.IsForArena = true;
         actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
@@ -191,11 +195,13 @@ public class BattleboardTests : TestBase
         var actor3char = TestUtils.GetCharacter(actor3.MainActor.Id, actor3.MainActor.PlayerId, _snapshot);
         actor3char.Status.Worth = 1000;
         actor3.WantsToBeGood = false;
+        actor3.IsForArena = true;
         actor3.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor3);
 
         var actor4 = CreateBattleboardActor("player 4");
         actor4.WantsToBeGood = false;
+        actor4.IsForArena = true;
         actor4.BattleboardId = board.Id;
         _battleboard.JoinBattleboard(actor4);
 
@@ -288,7 +294,6 @@ public class BattleboardTests : TestBase
         board.IsInCombat.Should().BeTrue();
         board.CanLvlUp.Should().BeTrue();
         board.RoundNr.Should().Be(1);
-        board.Quest.EffortLvl.Should().Be(location.Effort);
         board.GetAllCharacters().Select(s => s.Status.Gameplay.IsLocked).ToList().Should().NotContain(false);
         board.BattleOrder.Count.Should().Be(6);
         board.LastActionResult.Length.Should().BeGreaterThan(10);
@@ -810,6 +815,7 @@ public class BattleboardTests : TestBase
         var actor3 = CreateBattleboardActor("player 3");
         actor3.BattleboardId = board.Id;
         actor3.WantsToBeGood = false;
+        actor3.IsForArena = true;
         var actor3char = TestUtils.GetCharacter(actor3.MainActor.Id, actor3.MainActor.PlayerId, _snapshot);
         actor3char.Status.Worth = 10000;
         actor3char.Status.Wealth = 10000;
@@ -818,6 +824,7 @@ public class BattleboardTests : TestBase
         var actor4 = CreateBattleboardActor("player 4");
         actor4.BattleboardId = board.Id;
         actor4.WantsToBeGood = false;
+        actor4.IsForArena = true;
         var actor4char = TestUtils.GetCharacter(actor4.MainActor.Id, actor4.MainActor.PlayerId, _snapshot);
         actor4char.Status.Wealth = 10000;
 

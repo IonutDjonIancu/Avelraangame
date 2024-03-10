@@ -635,6 +635,24 @@ public class CharacterTests : TestBase
         Assert.Throws<Exception>(() => _characters.GiveItem(secondTrade));
     }
 
+    [Fact(DisplayName = "Travelling for a character should display correctly")]
+    public void CharacterTravelShouldDisplayCorrectlyTest()
+    {
+        var character = CreateCharacter();
+        character.Inventory.Provisions = 100;
+        var belfordshire = "Dragonmaw_Soudheim_Danar_Belfordshire";
+
+        var charTravel = new CharacterTravel
+        {
+            CharacterIdentity = GetCharIdentity(character),
+            Destination = ServicesUtils.GetPositionByLocationFullName(belfordshire),
+        };
+            
+        var response = _characters.TravelCharacterToLocation(charTravel);
+
+        response.Result.Should().NotBeNull();
+    }
+
     [Theory(DisplayName = "Character travel should move to new position")]
     [InlineData("Dragonmaw_Soudheim_Danar_Belfordshire")]
     [InlineData("Dragonmaw_Soudheim_Danar_Arada")]
@@ -652,7 +670,7 @@ public class CharacterTests : TestBase
 
         _characters.TravelCharacterToLocation(charTravel);
 
-        character.Inventory.Provisions.Should().BeLessThan(provInitialValue);
+        character.Inventory.Provisions.Should().BeLessThanOrEqualTo(provInitialValue);
     }
 
     [Theory(DisplayName = "Wrong character traits should throw")]

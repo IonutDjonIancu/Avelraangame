@@ -14,13 +14,16 @@ public class CharacterTravelLogic : ICharacterTravelLogic
 
     private readonly Snapshot snapshot;
     private readonly IDiceLogicDelegator dice;
+    private readonly IGameplayLogicDelegator gameplay;
 
     public CharacterTravelLogic(
         Snapshot snapshot,
-        IDiceLogicDelegator dice)
+        IDiceLogicDelegator dice,
+        IGameplayLogicDelegator gameplay)
     {
         this.snapshot = snapshot;
         this.dice = dice;
+        this.gameplay = gameplay;
     }
 
     public CharacterTravelResponse MoveToLocation(CharacterTravel travel)
@@ -28,36 +31,26 @@ public class CharacterTravelLogic : ICharacterTravelLogic
         lock (_lock)
         {
             CharacterTravelResponse travelResponse = new();
+            var destination = gameplay.GetOrGenerateLocation(travel.Destination);
 
             var character = ServicesUtils.GetPlayerCharacter(travel.CharacterIdentity, snapshot);
             travelResponse.Character = character;
 
+            var board = snapshot.Battleboards.Find(s => s.Id == character.Status.Gameplay.BattleboardId);
+
             var currentLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(character.Status.Position);
             var location = GameplayLore.Locations.All.Find(s => s.FullName == currentLocationFullName)!;
-            var destinationLocationFullName = ServicesUtils.GetLocationFullNameFromPosition(travel.Destination);
-            var destination = GameplayLore.Locations.All.Find(s => s.FullName == destinationLocationFullName)!;
 
             int travelCostPerPerson = CalculateDistanceCost(location.TravelCostFromArada, destination.TravelCostFromArada);
-            var totalPeopleInParty = character.Mercenaries.Count + 1; // including the party lead
+            var totalPeopleInParty = GetTotalPeopleInParty(character, board);
+            
             var totalProvisionsCost = travelCostPerPerson * totalPeopleInParty;
-            var totalProvisions = character.Inventory.Provisions + character.Mercenaries.Select(s => s.Inventory.Provisions).Sum();
+
+            var totalProvisions = GetTotalProvisionsOfParty(character, board);
             if (totalProvisionsCost > totalProvisions) throw new Exception($"Not enough provisions for all the party to travel to {destination.Position.Location}.");
 
             var effort = dice.Roll_1_to_n(destination.Effort);
-            var listOfRolls = new List<int>();
-
-            var characterRoll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, character);
-            character.Status.Position = destination.Position;
-            listOfRolls.Add(characterRoll);
-
-            foreach (var npc in character.Mercenaries)
-            {
-                var npcRoll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, npc);
-                npc.Status.Position = destination.Position;
-                listOfRolls.Add(npcRoll);
-            }
-
-            var highestRoll = listOfRolls.Max();
+            var highestRoll = GetHighestRollOfParty(character, board);
 
             if (highestRoll <= effort / 10)
             {
@@ -113,18 +106,111 @@ public class CharacterTravelLogic : ICharacterTravelLogic
                 character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2 + 1);
 
                 travelResponse.Result = GameplayLore.Travel.Convenient;
+            } 
+            else
+            {
+                character.Inventory.Provisions -= travelCostPerPerson / 2 + 1;
+                character.Mercenaries.ForEach(s => s.Inventory.Provisions -= travelCostPerPerson / 2 + 1);
+
+                travelResponse.Result = GameplayLore.Travel.Convenient;
             }
+
+            MovePartyToDestination(character, board, destination.Position);
 
             return travelResponse;
         }
     }
 
     #region private methods
-    public static int CalculateDistanceCost(int travelFromCost, int destinationToCost)
+    private static void MovePartyToDestination(Character mainChr, Battleboard? board, Position destination)
+    {
+        if (board != null)
+        {
+            board.GoodGuys.ForEach(s =>
+            {
+                s.Status.Position = destination;
+                s.Mercenaries.ForEach(p => p.Status.Position = destination);
+            });
+        }
+        else
+        {
+            mainChr.Status.Position = destination;
+            mainChr.Mercenaries.ForEach(s => s.Status.Position = destination);
+        }
+    }
+    private int GetHighestRollOfParty(Character mainChr, Battleboard? board)
+    {
+        var listOfRolls = new List<int>();
+
+        if (board != null)
+        {
+            listOfRolls.Add(RollForCharacters(board.GoodGuys));
+            board.GoodGuys.ForEach(s => listOfRolls.Add(RollForCharacters(s.Mercenaries)));
+        }
+        else
+        {
+            listOfRolls.Add(dice.Roll_game_dice(false, CharactersLore.Skills.Travel, mainChr));
+            listOfRolls.Add(RollForCharacters(mainChr.Mercenaries));
+        }
+
+        return listOfRolls.Max();
+    }
+
+    private static int GetTotalProvisionsOfParty(Character mainChr, Battleboard? board)
+    {
+        var totalProvisions = 0;
+        if (board != null)
+        {
+            board.GoodGuys.ForEach(s =>
+            {
+                totalProvisions += s.Inventory.Provisions;
+                s.Mercenaries.ForEach(p => totalProvisions += p.Inventory.Provisions);
+            });
+        }
+        else
+        {
+            totalProvisions += mainChr.Inventory.Provisions;
+            mainChr.Mercenaries.ForEach(s => totalProvisions += s.Inventory.Provisions);
+        }
+
+        return totalProvisions;
+    }
+
+    private static int GetTotalPeopleInParty(Character mainChr, Battleboard? board)
+    {
+        var totalPeopleInParty = 0;
+
+        if (board != null)
+        {
+            totalPeopleInParty += board.GoodGuys.Count;
+            board.GoodGuys.ForEach(s => totalPeopleInParty += s.Mercenaries.Count);
+        }
+        else
+        {
+            totalPeopleInParty += mainChr.Mercenaries.Count + 1; // including the party lead
+        }
+
+        return totalPeopleInParty;
+    }
+
+    private static int CalculateDistanceCost(int travelFromCost, int destinationToCost)
     {
         var value = travelFromCost - destinationToCost;
 
         return 1 + value <= 0 ? value * (-1) : value;
+    }
+
+    private int RollForCharacters(List<Character> chars)
+    {
+        var highestRoll = 0;
+
+        chars.ForEach(chr =>
+        {
+            var roll = dice.Roll_game_dice(false, CharactersLore.Skills.Travel, chr);
+            if (roll > highestRoll) highestRoll = roll;
+        });
+
+        return highestRoll;
     }
     #endregion
 }

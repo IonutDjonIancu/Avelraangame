@@ -119,6 +119,22 @@ public class CharacterCRUDLogic : ICharacterCRUDLogic
         {
             var player = snapshot.Players.Find(s => s.Identity.Id == charIdentity.PlayerId)!;
             var character = player.Characters.Find(s => s.Identity.Id == charIdentity.Id)!;
+
+            character.Mercenaries.ForEach(merc =>
+            {
+                if (merc.Status.Gameplay.IsAlive)
+                {
+                    merc.Identity.PlayerId = Guid.Empty.ToString();
+                    merc.Status.Gameplay.BattleboardId = string.Empty;
+                    merc.Status.Gameplay.IsHidden = false;
+                    merc.Status.Gameplay.IsLocked = false;
+                    merc.Status.Position.Region = GameplayLore.Locations.Dragonmaw.RegionName;
+                    merc.Status.Position.Subregion = GameplayLore.Locations.Dragonmaw.Soudheim.SubregionName;
+                    merc.Status.Position.Land = GameplayLore.Locations.Dragonmaw.Soudheim.Danar.LandName;
+                    merc.Status.Position.Region = GameplayLore.Locations.Dragonmaw.Soudheim.Danar.Arada.Name;
+                }
+            });
+
             player.Characters.Remove(character);
         }
     }
