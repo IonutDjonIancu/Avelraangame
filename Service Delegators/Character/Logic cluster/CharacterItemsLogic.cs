@@ -177,15 +177,19 @@ public class CharacterItemsLogic : ICharacterItemsLogic
     {
         lock (_lock)
         {
-            var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var initiator = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
+            var board = snapshot.Battleboards.Find(s => s.Id == initiator.Status.Gameplay.BattleboardId)!;
+            var item = board.GoodGuys.SelectMany(s => s.Inventory.Supplies).ToList().Find(s => s.Identity.Id == tradeItem.ItemId)!;
+
+            var source = board.GoodGuys.Find(s => s.Identity.Id == item.Identity.CharacterId)!;   
             var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
-            var item = character.Inventory.Supplies.Find(s => s.Identity.Id == tradeItem.ItemId)!;
+            item.Identity.CharacterId = target.Identity.Id;
 
-            character.Inventory.Supplies.Remove(item);
+            source.Inventory.Supplies.Remove(item);
             target.Inventory.Supplies.Add(item);
 
-            return character;
+            return source;
         }
     }
 

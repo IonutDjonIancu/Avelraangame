@@ -625,13 +625,18 @@ public class Validations : IValidations
             var character = ServicesUtils.GetPlayerCharacter(tradeItem.CharacterIdentity, snapshot);
             var target = ServicesUtils.GetPlayerCharacter(tradeItem.TargetIdentity!, snapshot);
 
+            var board = snapshot.Battleboards.Find(s => s.Id == character.Status.Gameplay.BattleboardId) ?? throw new Exception("You are not the leader of a battleboard.");
+            if (!board.GoodGuys.Exists(s => s.Identity.Id == target.Identity.Id)) throw new Exception("Character target not on your board.");
+
             ValidateCharacterIsAlive_p(character);
             ValidateCharacterIsAlive_p(target);
 
             ValidateCharacterIsLocked_p(character);
             ValidateCharacterIsLocked_p(target);
 
-            if (!character.Inventory.Supplies.Exists(s => s.Identity.Id == tradeItem.ItemId)) throw new Exception("You have no such item among your supplies.");
+            var doesItemExist = board.GoodGuys.SelectMany(s => s.Inventory.Supplies).Any(s => s.Identity.Id == tradeItem.ItemId);
+
+            if (!doesItemExist) throw new Exception("You have no such item among your supplies.");
         }
     }
     #endregion
